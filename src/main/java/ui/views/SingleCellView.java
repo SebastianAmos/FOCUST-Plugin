@@ -1,0 +1,538 @@
+package ui.views;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JRadioButton;
+import javax.swing.JFileChooser;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.JSeparator;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
+import java.awt.Color;
+import javax.swing.border.MatteBorder;
+import javax.swing.ButtonGroup;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.JTextPane;
+
+public class SingleCellView extends JFrame {
+
+	private JPanel paneSingleCell;
+	private JTextField txtbInputDir;
+	private JTextField txtGBXPrimary;
+	private JTextField txtGBYPrimary;
+	private JTextField txtGBZPrimary;
+	private JTextField txtBgSubPrimaryVar;
+	private JTextField txtDMXPrimary;
+	private JTextField txtDMYPrimary;
+	private JTextField txtDMZPrimary;
+	private JTextField txtThresholdPrimary;
+	private JTextField txtGBXSecondary;
+	private JTextField txtGBYSecondary;
+	private JTextField txtGBZSecondary;
+	private JTextField txtBgSubSecondaryVar;
+	private JTextField txtDMXSecondary;
+	private JTextField txtDMYSecondary;
+	private JTextField txtDMZSecondary;
+	private JTextField txtThresholdSecondary;
+	private JTextField txtOutputDir;
+	private final ButtonGroup OutputDir = new ButtonGroup();
+	private final ButtonGroup PrimaryBgSub = new ButtonGroup();
+	private final ButtonGroup SecondaryBgSub = new ButtonGroup();
+	private JTextField txtSingleCellChannel3Name;
+	private JTextField txtSingleCellChannel4Name;
+	private JTextField txtSingleCellGrouping;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SingleCellView frame = new SingleCellView();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public SingleCellView() {
+		setTitle("FOCUST: Single Cell Analysis");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/windowBuilder/resources/icon2.png")));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 806, 485);
+		paneSingleCell = new JPanel();
+		paneSingleCell.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(paneSingleCell);
+		paneSingleCell.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Process a Dataset:");
+		lblNewLabel.setFont(new Font("Gadugi", Font.BOLD, 14));
+		lblNewLabel.setBounds(10, 0, 133, 29);
+		paneSingleCell.add(lblNewLabel);
+		
+		JLabel lblYouMustHave = new JLabel("You must have optimized your segmentation parameters.");
+		lblYouMustHave.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblYouMustHave.setBounds(136, 0, 401, 29);
+		paneSingleCell.add(lblYouMustHave);
+		
+		JLabel lblSelectAnInput = new JLabel("Select an input directory:");
+		lblSelectAnInput.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblSelectAnInput.setBounds(20, 28, 167, 29);
+		paneSingleCell.add(lblSelectAnInput);
+		
+		JButton btnInputDir = new JButton("Browse");
+		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnInputDir.setBounds(193, 28, 96, 29);
+		paneSingleCell.add(btnInputDir);
+		
+		JLabel lblSeperateOutputDirectory = new JLabel("Seperate output directory?");
+		lblSeperateOutputDirectory.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblSeperateOutputDirectory.setBounds(20, 68, 167, 29);
+		paneSingleCell.add(lblSeperateOutputDirectory);
+		
+		JRadioButton rbOutputDirNo = new JRadioButton("No");
+		rbOutputDirNo.setSelected(true);
+		OutputDir.add(rbOutputDirNo);
+		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirNo.setBounds(193, 71, 48, 23);
+		paneSingleCell.add(rbOutputDirNo);
+		
+		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
+		OutputDir.add(rbOutputDirYes);
+		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirYes.setBounds(243, 71, 48, 23);
+		paneSingleCell.add(rbOutputDirYes);
+		
+		JButton btnOutputDir = new JButton("Browse");
+		btnOutputDir.setEnabled(false);
+		btnOutputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnOutputDir.setBounds(297, 68, 96, 29);
+		paneSingleCell.add(btnOutputDir);
+		
+		txtbInputDir = new JTextField();
+		txtbInputDir.setBounds(299, 28, 289, 29);
+		paneSingleCell.add(txtbInputDir);
+		txtbInputDir.setColumns(10);
+		
+		txtOutputDir = new JTextField();
+		txtOutputDir.setEnabled(false);
+		txtOutputDir.setColumns(10);
+		txtOutputDir.setBounds(403, 68, 289, 29);
+		paneSingleCell.add(txtOutputDir);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBackground(new Color(255, 255, 255));
+		separator.setForeground(new Color(169, 169, 169));
+		separator.setBounds(12, 108, 768, 2);
+		paneSingleCell.add(separator);
+		
+		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
+		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblHowManyChannels.setBounds(20, 117, 237, 29);
+		paneSingleCell.add(lblHowManyChannels);
+		
+		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
+		cbChannelTotal.setMaximumRowCount(3);
+		cbChannelTotal.setBounds(252, 119, 37, 25);
+		paneSingleCell.add(cbChannelTotal);
+		
+		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
+		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
+		lblSegmentPrimary.setBounds(322, 153, 187, 29);
+		paneSingleCell.add(lblSegmentPrimary);
+		
+		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
+		lblSegmentSecondary.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSegmentSecondary.setFont(new Font("Gadugi", Font.BOLD, 14));
+		lblSegmentSecondary.setBounds(576, 153, 187, 29);
+		paneSingleCell.add(lblSegmentSecondary);
+		
+		JPanel PrimaryObjectPanel = new JPanel();
+		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.setBounds(322, 211, 187, 182);
+		paneSingleCell.add(PrimaryObjectPanel);
+		PrimaryObjectPanel.setLayout(null);
+		
+		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
+		lblBgSubPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblBgSubPrimary.setBounds(10, 0, 161, 29);
+		PrimaryObjectPanel.add(lblBgSubPrimary);
+		
+		JRadioButton rbBgSubPrimaryNo = new JRadioButton("No");
+		rbBgSubPrimaryNo.setSelected(true);
+		PrimaryBgSub.add(rbBgSubPrimaryNo);
+		rbBgSubPrimaryNo.setBackground(new Color(211, 211, 211));
+		rbBgSubPrimaryNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbBgSubPrimaryNo.setBounds(10, 24, 43, 23);
+		PrimaryObjectPanel.add(rbBgSubPrimaryNo);
+		
+		JRadioButton rbBgSubPrimaryYes = new JRadioButton("Yes");
+		rbBgSubPrimaryYes.setEnabled(false);
+		PrimaryBgSub.add(rbBgSubPrimaryYes);
+		rbBgSubPrimaryYes.setBackground(new Color(211, 211, 211));
+		rbBgSubPrimaryYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbBgSubPrimaryYes.setBounds(50, 24, 48, 23);
+		PrimaryObjectPanel.add(rbBgSubPrimaryYes);
+		
+		JLabel lblGaussianBlurPrimary = new JLabel("3D Gaussian blur:");
+		lblGaussianBlurPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblGaussianBlurPrimary.setBounds(10, 47, 161, 29);
+		PrimaryObjectPanel.add(lblGaussianBlurPrimary);
+		
+		JLabel lblRadius = new JLabel("Radius:\r\n");
+		lblRadius.setEnabled(false);
+		lblRadius.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblRadius.setBounds(98, 21, 48, 29);
+		PrimaryObjectPanel.add(lblRadius);
+		
+		txtGBXPrimary = new JTextField();
+		txtGBXPrimary.setBackground(new Color(211, 211, 211));
+		txtGBXPrimary.setBounds(20, 73, 41, 20);
+		PrimaryObjectPanel.add(txtGBXPrimary);
+		txtGBXPrimary.setColumns(10);
+		
+		JLabel lblX = new JLabel("x");
+		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblX.setBounds(10, 69, 21, 29);
+		PrimaryObjectPanel.add(lblX);
+		
+		JLabel lblY = new JLabel("y");
+		lblY.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblY.setBounds(65, 69, 21, 29);
+		PrimaryObjectPanel.add(lblY);
+		
+		txtGBYPrimary = new JTextField();
+		txtGBYPrimary.setColumns(10);
+		txtGBYPrimary.setBackground(new Color(211, 211, 211));
+		txtGBYPrimary.setBounds(75, 73, 41, 20);
+		PrimaryObjectPanel.add(txtGBYPrimary);
+		
+		JLabel lblZ = new JLabel("z");
+		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblZ.setBounds(120, 69, 21, 29);
+		PrimaryObjectPanel.add(lblZ);
+		
+		txtGBZPrimary = new JTextField();
+		txtGBZPrimary.setColumns(10);
+		txtGBZPrimary.setBackground(new Color(211, 211, 211));
+		txtGBZPrimary.setBounds(130, 73, 41, 20);
+		PrimaryObjectPanel.add(txtGBZPrimary);
+		
+		txtBgSubPrimaryVar = new JTextField();
+		txtBgSubPrimaryVar.setEnabled(false);
+		txtBgSubPrimaryVar.setColumns(10);
+		txtBgSubPrimaryVar.setBackground(new Color(211, 211, 211));
+		txtBgSubPrimaryVar.setBounds(145, 25, 31, 20);
+		PrimaryObjectPanel.add(txtBgSubPrimaryVar);
+		
+		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
+		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblDetectMaximaPrimary.setBounds(10, 96, 161, 29);
+		PrimaryObjectPanel.add(lblDetectMaximaPrimary);
+		
+		JLabel lblX_1 = new JLabel("x");
+		lblX_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblX_1.setBounds(10, 117, 21, 29);
+		PrimaryObjectPanel.add(lblX_1);
+		
+		txtDMXPrimary = new JTextField();
+		txtDMXPrimary.setColumns(10);
+		txtDMXPrimary.setBackground(new Color(211, 211, 211));
+		txtDMXPrimary.setBounds(20, 121, 41, 20);
+		PrimaryObjectPanel.add(txtDMXPrimary);
+		
+		JLabel lblY_1 = new JLabel("y");
+		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblY_1.setBounds(65, 117, 21, 29);
+		PrimaryObjectPanel.add(lblY_1);
+		
+		txtDMYPrimary = new JTextField();
+		txtDMYPrimary.setColumns(10);
+		txtDMYPrimary.setBackground(new Color(211, 211, 211));
+		txtDMYPrimary.setBounds(75, 121, 41, 20);
+		PrimaryObjectPanel.add(txtDMYPrimary);
+		
+		JLabel lblZ_1 = new JLabel("z");
+		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblZ_1.setBounds(120, 117, 21, 29);
+		PrimaryObjectPanel.add(lblZ_1);
+		
+		txtDMZPrimary = new JTextField();
+		txtDMZPrimary.setColumns(10);
+		txtDMZPrimary.setBackground(new Color(211, 211, 211));
+		txtDMZPrimary.setBounds(130, 121, 41, 20);
+		PrimaryObjectPanel.add(txtDMZPrimary);
+		
+		JLabel lblThreshold = new JLabel("Threshold:");
+		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblThreshold.setBounds(10, 144, 76, 29);
+		PrimaryObjectPanel.add(lblThreshold);
+		
+		txtThresholdPrimary = new JTextField();
+		txtThresholdPrimary.setColumns(10);
+		txtThresholdPrimary.setBackground(new Color(211, 211, 211));
+		txtThresholdPrimary.setBounds(76, 148, 55, 20);
+		PrimaryObjectPanel.add(txtThresholdPrimary);
+		
+		JLabel lblWhichChannel = new JLabel("Which channel? ");
+		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblWhichChannel.setBounds(337, 178, 106, 29);
+		paneSingleCell.add(lblWhichChannel);
+		
+		JComboBox cbChannelPrimary = new JComboBox();
+		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbChannelPrimary.setMaximumRowCount(4);
+		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		cbChannelPrimary.setBounds(450, 180, 37, 25);
+		paneSingleCell.add(cbChannelPrimary);
+		
+		JPanel SecondaryObjectPanel = new JPanel();
+		SecondaryObjectPanel.setLayout(null);
+		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
+		SecondaryObjectPanel.setBounds(576, 211, 187, 182);
+		paneSingleCell.add(SecondaryObjectPanel);
+		
+		JLabel lblBgSubSecondary = new JLabel("Background subtraction?");
+		lblBgSubSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblBgSubSecondary.setBounds(10, 0, 161, 29);
+		SecondaryObjectPanel.add(lblBgSubSecondary);
+		
+		JRadioButton rdbtnNewRadioButton_1_1 = new JRadioButton("No");
+		rdbtnNewRadioButton_1_1.setSelected(true);
+		SecondaryBgSub.add(rdbtnNewRadioButton_1_1);
+		rdbtnNewRadioButton_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rdbtnNewRadioButton_1_1.setBackground(new Color(211, 211, 211));
+		rdbtnNewRadioButton_1_1.setBounds(10, 24, 43, 23);
+		SecondaryObjectPanel.add(rdbtnNewRadioButton_1_1);
+		
+		JRadioButton rdbtnYes_1_1 = new JRadioButton("Yes");
+		rdbtnYes_1_1.setEnabled(false);
+		SecondaryBgSub.add(rdbtnYes_1_1);
+		rdbtnYes_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rdbtnYes_1_1.setBackground(new Color(211, 211, 211));
+		rdbtnYes_1_1.setBounds(50, 24, 48, 23);
+		SecondaryObjectPanel.add(rdbtnYes_1_1);
+		
+		JLabel lblGaussianBlurSecondary = new JLabel("3D Gaussian blur:");
+		lblGaussianBlurSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblGaussianBlurSecondary.setBounds(10, 47, 161, 29);
+		SecondaryObjectPanel.add(lblGaussianBlurSecondary);
+		
+		JLabel lblRadius_1 = new JLabel("Radius:\r\n");
+		lblRadius_1.setEnabled(false);
+		lblRadius_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblRadius_1.setBounds(98, 21, 48, 29);
+		SecondaryObjectPanel.add(lblRadius_1);
+		
+		txtGBXSecondary = new JTextField();
+		txtGBXSecondary.setColumns(10);
+		txtGBXSecondary.setBackground(new Color(211, 211, 211));
+		txtGBXSecondary.setBounds(20, 73, 41, 20);
+		SecondaryObjectPanel.add(txtGBXSecondary);
+		
+		JLabel lblX_2 = new JLabel("x");
+		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblX_2.setBounds(10, 69, 21, 29);
+		SecondaryObjectPanel.add(lblX_2);
+		
+		JLabel lblY_2 = new JLabel("y");
+		lblY_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblY_2.setBounds(65, 69, 21, 29);
+		SecondaryObjectPanel.add(lblY_2);
+		
+		txtGBYSecondary = new JTextField();
+		txtGBYSecondary.setColumns(10);
+		txtGBYSecondary.setBackground(new Color(211, 211, 211));
+		txtGBYSecondary.setBounds(75, 73, 41, 20);
+		SecondaryObjectPanel.add(txtGBYSecondary);
+		
+		JLabel lblZ_2 = new JLabel("z");
+		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblZ_2.setBounds(120, 69, 21, 29);
+		SecondaryObjectPanel.add(lblZ_2);
+		
+		txtGBZSecondary = new JTextField();
+		txtGBZSecondary.setColumns(10);
+		txtGBZSecondary.setBackground(new Color(211, 211, 211));
+		txtGBZSecondary.setBounds(130, 73, 41, 20);
+		SecondaryObjectPanel.add(txtGBZSecondary);
+		
+		txtBgSubSecondaryVar = new JTextField();
+		txtBgSubSecondaryVar.setEnabled(false);
+		txtBgSubSecondaryVar.setColumns(10);
+		txtBgSubSecondaryVar.setBackground(new Color(211, 211, 211));
+		txtBgSubSecondaryVar.setBounds(145, 25, 31, 20);
+		SecondaryObjectPanel.add(txtBgSubSecondaryVar);
+		
+		JLabel lblDetectMaximaSecondary = new JLabel("3D detect maxima radius:");
+		lblDetectMaximaSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblDetectMaximaSecondary.setBounds(10, 96, 161, 29);
+		SecondaryObjectPanel.add(lblDetectMaximaSecondary);
+		
+		JLabel lblX_1_1 = new JLabel("x");
+		lblX_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblX_1_1.setBounds(10, 117, 21, 29);
+		SecondaryObjectPanel.add(lblX_1_1);
+		
+		txtDMXSecondary = new JTextField();
+		txtDMXSecondary.setColumns(10);
+		txtDMXSecondary.setBackground(new Color(211, 211, 211));
+		txtDMXSecondary.setBounds(20, 121, 41, 20);
+		SecondaryObjectPanel.add(txtDMXSecondary);
+		
+		JLabel lblY_1_1 = new JLabel("y");
+		lblY_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblY_1_1.setBounds(65, 117, 21, 29);
+		SecondaryObjectPanel.add(lblY_1_1);
+		
+		txtDMYSecondary = new JTextField();
+		txtDMYSecondary.setColumns(10);
+		txtDMYSecondary.setBackground(new Color(211, 211, 211));
+		txtDMYSecondary.setBounds(75, 121, 41, 20);
+		SecondaryObjectPanel.add(txtDMYSecondary);
+		
+		JLabel lblZ_1_1 = new JLabel("z");
+		lblZ_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblZ_1_1.setBounds(120, 117, 21, 29);
+		SecondaryObjectPanel.add(lblZ_1_1);
+		
+		txtDMZSecondary = new JTextField();
+		txtDMZSecondary.setColumns(10);
+		txtDMZSecondary.setBackground(new Color(211, 211, 211));
+		txtDMZSecondary.setBounds(130, 121, 41, 20);
+		SecondaryObjectPanel.add(txtDMZSecondary);
+		
+		JLabel lblThreshold_1 = new JLabel("Threshold:");
+		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblThreshold_1.setBounds(10, 144, 76, 29);
+		SecondaryObjectPanel.add(lblThreshold_1);
+		
+		txtThresholdSecondary = new JTextField();
+		txtThresholdSecondary.setColumns(10);
+		txtThresholdSecondary.setBackground(new Color(211, 211, 211));
+		txtThresholdSecondary.setBounds(76, 148, 55, 20);
+		SecondaryObjectPanel.add(txtThresholdSecondary);
+		
+		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
+		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblWhichChannel_1.setBounds(589, 178, 106, 29);
+		paneSingleCell.add(lblWhichChannel_1);
+		
+		JComboBox cbChannelSecondary = new JComboBox();
+		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbChannelSecondary.setSelectedIndex(3);
+		cbChannelSecondary.setMaximumRowCount(4);
+		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		cbChannelSecondary.setBounds(702, 180, 37, 25);
+		paneSingleCell.add(cbChannelSecondary);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel.setBounds(307, 150, 469, 255);
+		paneSingleCell.add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
+		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
+		lblSegmentationParameters.setBounds(433, 118, 216, 29);
+		paneSingleCell.add(lblSegmentationParameters);
+		
+		JButton btnHelp = new JButton("Help");
+		btnHelp.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnHelp.setBounds(684, 11, 96, 29);
+		paneSingleCell.add(btnHelp);
+		
+		JButton btnBackToMenu = new JButton("Back to Menu");
+		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnBackToMenu.setBounds(10, 373, 133, 29);
+		paneSingleCell.add(btnBackToMenu);
+		
+		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
+		btnRunAnalysis.setBounds(10, 406, 279, 29);
+		paneSingleCell.add(btnRunAnalysis);
+		
+		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
+		lblNameChannel2.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblNameChannel2.setBounds(10, 150, 116, 29);
+		paneSingleCell.add(lblNameChannel2);
+		
+		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
+		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblNameChannel3.setBounds(10, 184, 116, 29);
+		paneSingleCell.add(lblNameChannel3);
+		
+		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
+		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblNameChannel4.setBounds(10, 217, 116, 29);
+		paneSingleCell.add(lblNameChannel4);
+		
+		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
+		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblGroupingInfo.setBounds(10, 257, 116, 29);
+		paneSingleCell.add(lblGroupingInfo);
+		
+		JTextField txtSingleCellChannel2Name = new JTextField();
+		txtSingleCellChannel2Name.setColumns(10);
+		txtSingleCellChannel2Name.setBounds(120, 150, 176, 29);
+		paneSingleCell.add(txtSingleCellChannel2Name);
+		
+		txtSingleCellChannel3Name = new JTextField();
+		txtSingleCellChannel3Name.setColumns(10);
+		txtSingleCellChannel3Name.setBounds(120, 184, 176, 29);
+		paneSingleCell.add(txtSingleCellChannel3Name);
+		
+		txtSingleCellChannel4Name = new JTextField();
+		txtSingleCellChannel4Name.setColumns(10);
+		txtSingleCellChannel4Name.setBounds(120, 217, 176, 29);
+		paneSingleCell.add(txtSingleCellChannel4Name);
+		
+		txtSingleCellGrouping = new JTextField();
+		txtSingleCellGrouping.setColumns(10);
+		txtSingleCellGrouping.setBounds(120, 257, 176, 29);
+		paneSingleCell.add(txtSingleCellGrouping);
+		
+		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
+		txtpnanyConditionsfactorsSpecific.setBackground(UIManager.getColor("CheckBox.light"));
+		txtpnanyConditionsfactorsSpecific.setFont(new Font("Gadugi", Font.PLAIN, 10));
+		txtpnanyConditionsfactorsSpecific.setEditable(false);
+		txtpnanyConditionsfactorsSpecific.setText("*Any conditions/factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
+		txtpnanyConditionsfactorsSpecific.setBounds(10, 291, 289, 67);
+		paneSingleCell.add(txtpnanyConditionsfactorsSpecific);
+		
+		JButton btnSaveConfigSingleCell = new JButton("Save Parameters");
+		btnSaveConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnSaveConfigSingleCell.setBounds(607, 406, 156, 29);
+		paneSingleCell.add(btnSaveConfigSingleCell);
+		
+		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
+		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnLoadConfigSingleCell.setBounds(441, 406, 156, 29);
+		paneSingleCell.add(btnLoadConfigSingleCell);
+	}
+}
