@@ -1,0 +1,455 @@
+2022-12-19 14:15:34,294 [Worker-7: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2022-12-19 14:17:44,256 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.sebastianamos:FOCUST:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:17:53,170 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:17:53,171 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:17:53,171 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:17:53,171 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:17:53,172 [Worker-12: Importing Maven projects] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:17:53,196 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:17:53,197 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:17:56,963 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:17:56,963 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:17:56,992 [Worker-12: Importing Maven projects] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:17:56,994 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671430676941
+2022-12-19 14:17:57,017 [Worker-12: Importing Maven projects] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:17:57,019 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:17:57,019 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:17:57,038 [Worker-12: Importing Maven projects] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:17:57,039 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:17:58,290 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:17:58,297 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:17:58,494 [Worker-12: Importing Maven projects] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:18:04,080 [Worker-12: Importing Maven projects] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 30 sec
+2022-12-19 14:18:05,880 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:18:05,880 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:18:05,880 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:18:05,881 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:18:05,882 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:18:05,882 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:18:05,882 [Worker-21: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:18:05,909 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:18:05,909 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:18:05,964 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:18:05,964 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:18:05,982 [Worker-21: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:18:05,984 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671430685964
+2022-12-19 14:18:06,004 [Worker-21: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:18:06,006 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:18:06,006 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:18:06,032 [Worker-21: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:18:06,034 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:18:06,086 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:18:06,086 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:18:06,106 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:18:08,579 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:18:08,580 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:18:08,582 [Worker-21: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:22:44,811 [Worker-3: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2022-12-19 14:22:51,680 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:22:51,681 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:22:51,681 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:22:51,682 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:22:51,683 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:22:51,683 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:22:51,683 [Worker-2: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:22:51,738 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:22:51,739 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:22:52,685 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:22:52,686 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:22:52,723 [Worker-2: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:22:52,724 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671430972639
+2022-12-19 14:22:52,803 [Worker-2: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:22:52,805 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:22:52,805 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:22:52,830 [Worker-2: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:22:52,832 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:22:53,066 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:22:53,067 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:22:53,088 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:22:54,941 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:22:54,941 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:22:54,944 [Worker-2: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:27:45,691 [Worker-24: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUST:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:27:47,233 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:47,233 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:47,321 [Worker-24: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:27:47,323 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671431267177
+2022-12-19 14:27:47,365 [Worker-24: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:27:47,367 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:47,367 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:47,397 [Worker-24: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:27:47,399 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:27:47,619 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:27:47,620 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:27:47,638 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2022-12-19 14:27:47,993 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:27:47,993 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:27:47,995 [Worker-24: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:27:48,721 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:27:50,063 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUST:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:27:51,203 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:27:51,204 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:27:51,205 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:27:51,205 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:27:51,205 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:27:51,205 [Worker-6: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:27:51,229 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:51,229 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:51,526 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:51,526 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:51,545 [Worker-6: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:27:51,547 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671431271510
+2022-12-19 14:27:51,576 [Worker-6: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:27:51,577 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:51,578 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:51,611 [Worker-6: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:27:51,612 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:27:51,717 [Worker-6: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:27:51,723 [Worker-6: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:27:51,724 [Worker-6: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:27:53,022 [Worker-6: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 1.00 sec, update config takes 1.00 sec 
+2022-12-19 14:27:53,623 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:53,623 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:27:53,623 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:27:53,624 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:27:53,625 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:27:53,625 [Worker-25: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:27:53,655 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:53,655 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:27:53,719 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:53,720 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:53,764 [Worker-25: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:27:53,765 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671431273719
+2022-12-19 14:27:53,801 [Worker-25: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:27:53,803 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:27:53,804 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:27:53,843 [Worker-25: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:27:53,845 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:27:53,917 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:27:53,917 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:27:53,939 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:27:54,743 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:27:54,743 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:27:54,749 [Worker-25: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:29:02,144 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:29:02,145 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:29:02,164 [Worker-6: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:29:02,165 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671431342144
+2022-12-19 14:29:02,182 [Worker-6: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:29:02,183 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:29:02,183 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:29:02,200 [Worker-6: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:29:02,201 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:29:02,216 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:29:02,216 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:29:02,266 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:29:02,389 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:29:02,389 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:29:02,405 [Worker-6: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:44:22,239 [Worker-5: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2022-12-19 14:48:40,355 [Worker-3: Building] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:48:46,941 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:46,941 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:47,053 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:48:47,055 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432526925
+2022-12-19 14:48:47,081 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:48:47,082 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:47,082 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:47,119 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:48:47,120 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:48:48,661 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:48:48,661 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:48:48,678 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:48:51,194 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:48:51,194 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:48:51,197 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:48:51,712 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:48:53,008 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:48:55,157 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:55,157 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:48:55,157 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:48:55,158 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:48:55,187 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:55,187 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:55,462 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:55,462 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:55,491 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:48:55,493 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432535444
+2022-12-19 14:48:55,554 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:48:55,563 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:55,563 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:55,585 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:48:55,586 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:48:55,778 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:48:55,798 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:48:55,799 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:48:57,151 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 1.00 sec, update config takes 2.00 sec 
+2022-12-19 14:48:57,994 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:48:57,995 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:48:57,996 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:48:57,996 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:48:57,996 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:48:57,997 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:48:58,033 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:58,033 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:48:58,071 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:58,072 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:58,111 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:48:58,112 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432538071
+2022-12-19 14:48:58,134 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:48:58,136 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:48:58,137 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:48:58,171 [Worker-3: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:48:58,173 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:48:58,209 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:48:58,210 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:48:58,227 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:48:58,988 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:48:58,989 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:48:58,991 [Worker-3: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
+2022-12-19 14:52:13,881 [Worker-24: Updating Maven Dependencies] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:52:14,351 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:52:15,420 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:52:16,540 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:16,540 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:52:16,541 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:52:16,542 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:52:16,566 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:16,566 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:16,868 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:16,869 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:16,885 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:52:16,886 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432736856
+2022-12-19 14:52:16,902 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:52:16,903 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:16,903 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:16,921 [Worker-19: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:52:16,922 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:52:17,021 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:52:17,028 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:52:17,028 [Worker-19: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:52:17,999 [Worker-19: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 1.00 sec, update config takes 1.00 sec 
+2022-12-19 14:52:18,001 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:52:19,146 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:52:20,119 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:20,119 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:52:20,120 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:52:20,121 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:52:20,121 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:52:20,121 [Worker-24: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:52:20,149 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:20,149 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:20,508 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:20,509 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:20,528 [Worker-24: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:52:20,530 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432740486
+2022-12-19 14:52:20,570 [Worker-24: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:52:20,571 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:20,572 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:20,639 [Worker-24: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:52:20,640 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:52:20,752 [Worker-24: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:52:20,759 [Worker-24: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:52:20,760 [Worker-24: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:52:21,454 [Worker-24: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 1.00 sec, update config takes 1.00 sec 
+2022-12-19 14:52:21,458 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:52:22,496 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:52:23,295 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:23,295 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:52:23,295 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:52:23,295 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:52:23,296 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:52:23,297 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:52:23,319 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:23,319 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:23,621 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:23,621 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:23,642 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:52:23,643 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432743606
+2022-12-19 14:52:23,661 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:52:23,663 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:23,663 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:23,680 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:52:23,682 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:52:23,788 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:52:23,795 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:52:23,796 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:52:24,257 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 1.00 sec, update config takes 1.00 sec 
+2022-12-19 14:52:24,259 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2022-12-19 14:52:25,145 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: au.uwa.clcm.sebastianamos:FOCUSTIJ:0.1.0-SNAPSHOT @ \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\pom.xml.
+2022-12-19 14:52:25,827 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:52:25,828 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:52:25,845 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:25,845 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:26,276 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:26,277 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:26,309 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:52:26,311 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432746244
+2022-12-19 14:52:26,340 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:52:26,341 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:26,341 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:26,376 [Worker-28: Updating Maven Project] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:52:26,378 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:52:26,514 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/main/java
+2022-12-19 14:52:26,523 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /FOCUST/src/main/resources
+2022-12-19 14:52:26,525 [Worker-28: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /FOCUST/src/test/java
+2022-12-19 14:52:27,006 [Worker-28: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 0.00 sec, update config takes 1.00 sec 
+2022-12-19 14:52:27,581 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: META-INF/versions/*/module-info
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.kryo.*
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.minlog.*
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.esotericsoftware.reflectasm.*
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: com.google.inject.*
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: jnr.ffi.*
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.hadoop.yarn.*.package-info
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.apache.spark.unused.UnusedStubClass
+2022-12-19 14:52:27,582 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.hibernate.stat.ConcurrentStatisticsImpl
+2022-12-19 14:52:27,583 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.jetbrains.kotlin.daemon.common.*
+2022-12-19 14:52:27,583 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: org.junit.runner.Runner
+2022-12-19 14:52:27,583 [Worker-28: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Could not find net.imagej:ij:jar:1.53f:compile at null
+2022-12-19 14:52:27,602 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:27,602 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Adding ignore: module-info
+2022-12-19 14:52:27,623 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:27,623 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:27,639 [Worker-28: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the revision information from the scm repository, proceeding with revision of UNKNOWN : 
+Exception while executing SCM command.
+2022-12-19 14:52:27,640 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildNumber: UNKNOWN at timestamp: 1671432747623
+2022-12-19 14:52:27,657 [Worker-28: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the git repository: 
+Error while executing command.
+2022-12-19 14:52:27,658 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Executing: cmd.exe /X /C "git rev-parse --verify HEAD"
+2022-12-19 14:52:27,658 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Working directory: \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main
+2022-12-19 14:52:27,675 [Worker-28: Building] WARN  o.e.m.c.i.embedder.EclipseLogger - Cannot get the branch information from the scm repository, proceeding with UNKNOWN_BRANCH : 
+Exception while executing SCM command.
+2022-12-19 14:52:27,676 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Storing buildScmBranch: UNKNOWN_BRANCH
+2022-12-19 14:52:27,699 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:52:27,699 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:52:27,713 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2022-12-19 14:52:28,545 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2022-12-19 14:52:28,545 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-12-19 14:52:28,546 [Worker-28: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory \\UNIWA.UWA.EDU.AU\userhome\Students3\21716603\Downloads\example-legacy-plugin-main\example-legacy-plugin-main\src\test\resources
