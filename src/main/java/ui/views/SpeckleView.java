@@ -22,6 +22,7 @@ import java.awt.SystemColor;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Component;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 
 public class SpeckleView extends JFrame {
 
@@ -56,6 +57,8 @@ public class SpeckleView extends JFrame {
 	private JTextField textField_24;
 	private JTextField textField_25;
 	private JTextField textField_26;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
 	/**
 	 * Launch the application.
@@ -80,7 +83,7 @@ public class SpeckleView extends JFrame {
 		setTitle("FOCUST: Speckle Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpeckleView.class.getResource("/ui/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 973, 485);
+		setBounds(100, 100, 973, 522);
 		paneSpeckle = new JPanel();
 		paneSpeckle.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -103,12 +106,14 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(lblSeperateOutputDirectory);
 		
 		JRadioButton rbOutputDirNo = new JRadioButton("No");
+		buttonGroup_1.add(rbOutputDirNo);
 		rbOutputDirNo.setSelected(true);
 		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirNo.setBounds(191, 71, 48, 23);
 		paneSpeckle.add(rbOutputDirNo);
 		
 		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
+		buttonGroup_1.add(rbOutputDirYes);
 		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirYes.setBounds(241, 71, 48, 23);
 		paneSpeckle.add(rbOutputDirYes);
@@ -166,14 +171,14 @@ public class SpeckleView extends JFrame {
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
 		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentPrimary.setBounds(324, 153, 187, 29);
+		lblSegmentPrimary.setBounds(324, 192, 187, 29);
 		paneSpeckle.add(lblSegmentPrimary);
 		
 		JPanel PrimaryObjectPanel = new JPanel();
 		PrimaryObjectPanel.setLayout(null);
 		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(324, 211, 187, 182);
+		PrimaryObjectPanel.setBounds(324, 250, 187, 182);
 		paneSpeckle.add(PrimaryObjectPanel);
 		
 		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
@@ -297,20 +302,20 @@ public class SpeckleView extends JFrame {
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel.setBounds(339, 178, 106, 29);
+		lblWhichChannel.setBounds(339, 217, 106, 29);
 		paneSpeckle.add(lblWhichChannel);
 		
 		JComboBox cbChannelPrimary = new JComboBox();
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(452, 180, 37, 25);
+		cbChannelPrimary.setBounds(452, 219, 37, 25);
 		paneSpeckle.add(cbChannelPrimary);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(309, 150, 639, 255);
+		panel.setBounds(309, 189, 639, 255);
 		paneSpeckle.add(panel);
 		
 		JPanel SecondaryObjectPanel_1 = new JPanel();
@@ -608,7 +613,7 @@ public class SpeckleView extends JFrame {
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentationParameters.setBounds(546, 118, 216, 29);
+		lblSegmentationParameters.setBounds(546, 157, 216, 29);
 		paneSpeckle.add(lblSegmentationParameters);
 		
 		JButton btnBackToMenu = new JButton("Back to Menu");
@@ -671,12 +676,38 @@ public class SpeckleView extends JFrame {
 		
 		JButton btnSaveConfigSingleCell = new JButton("Save Parameters");
 		btnSaveConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnSaveConfigSingleCell.setBounds(609, 406, 156, 29);
+		btnSaveConfigSingleCell.setBounds(609, 445, 156, 29);
 		paneSpeckle.add(btnSaveConfigSingleCell);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(443, 406, 156, 29);
+		btnLoadConfigSingleCell.setBounds(443, 445, 156, 29);
 		paneSpeckle.add(btnLoadConfigSingleCell);
+		
+		JLabel lblPerformColocalizationAnalysis = new JLabel("Perform colocalization analysis*?");
+		lblPerformColocalizationAnalysis.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblPerformColocalizationAnalysis.setBounds(305, 117, 206, 29);
+		paneSpeckle.add(lblPerformColocalizationAnalysis);
+		
+		JRadioButton rbOutputDirNo_1 = new JRadioButton("No");
+		buttonGroup.add(rbOutputDirNo_1);
+		rbOutputDirNo_1.setSelected(true);
+		rbOutputDirNo_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirNo_1.setBounds(505, 120, 48, 23);
+		paneSpeckle.add(rbOutputDirNo_1);
+		
+		JRadioButton rbOutputDirYes_1 = new JRadioButton("Yes");
+		buttonGroup.add(rbOutputDirYes_1);
+		rbOutputDirYes_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirYes_1.setBounds(555, 120, 48, 23);
+		paneSpeckle.add(rbOutputDirYes_1);
+		
+		JTextPane txtpnthereMustBe = new JTextPane();
+		txtpnthereMustBe.setText("*There must be secondary and tertiary objects to perform colocalization.");
+		txtpnthereMustBe.setFont(new Font("Gadugi", Font.PLAIN, 10));
+		txtpnthereMustBe.setEditable(false);
+		txtpnthereMustBe.setBackground(SystemColor.controlHighlight);
+		txtpnthereMustBe.setBounds(609, 120, 339, 23);
+		paneSpeckle.add(txtpnthereMustBe);
 	}
 }
