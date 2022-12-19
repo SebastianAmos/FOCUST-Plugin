@@ -120,9 +120,13 @@ public class MainScreen extends JFrame {
 		contentPane.add(lblBatchProcessA_2_1);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/FullLogo3.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/FullLogo2.png")));
 		lblNewLabel_1.setBounds(10, 0, 445, 114);
 		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_2_2 = new JLabel("");
+		lblNewLabel_2_2.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/iconquestionmark.png")));
+		lblNewLabel_2_2.setBounds(30, 161, 43, 67);
+		contentPane.add(lblNewLabel_2_2);
 	}
-
 }
