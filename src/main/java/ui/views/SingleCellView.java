@@ -535,4 +535,22 @@ public class SingleCellView extends JFrame {
 		btnLoadConfigSingleCell.setBounds(441, 406, 156, 29);
 		paneSingleCell.add(btnLoadConfigSingleCell);
 	}
+
+	 // create the ImageJ application context with all available services
+	        final ImageJ ij = new ImageJ();
+	        ij.ui().showUI();
+	
+	        // ask the user for a file to open
+	        final File file = ij.ui().chooseFile(null, "open");
+	
+	        if (file != null) {
+	            // load the dataset
+	            final Dataset dataset = ij.scifio().datasetIO().open(file.getPath());
+	
+	            // show the image
+	            ij.ui().show(dataset);
+	
+	            // invoke the plugin
+	            ij.command().run(FOCUST.class, true);
+	        }
 }
