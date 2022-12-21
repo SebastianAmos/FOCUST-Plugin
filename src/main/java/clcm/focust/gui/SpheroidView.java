@@ -1,4 +1,4 @@
-package ui.views;
+package clcm.focust.gui;
 
 import java.awt.EventQueue;
 
@@ -16,6 +16,7 @@ public class SpheroidView extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+/*	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

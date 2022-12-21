@@ -1,4 +1,4 @@
-package ui.views;
+package clcm.focust.gui;
 
 import java.awt.EventQueue;
 
@@ -63,7 +63,7 @@ public class SpeckleView extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	/*
+/*	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -76,7 +76,7 @@ public class SpeckleView extends JFrame {
 			}
 		});
 	}
-*/
+
 	
 	/**
 	 * Create the frame.

@@ -1,4 +1,4 @@
-package ui.views;
+package clcm.focust.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -6,6 +6,23 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.scijava.plugin.Plugin;
+import org.scijava.command.Command;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.ImageCanvas;
+import ij.gui.ImageRoi;
+import ij.gui.ImageWindow;
+import ij.gui.Overlay;
+import ij.gui.Roi;
+import ij.gui.StackWindow;
+import ij.gui.Toolbar;
+import ij.plugin.PlugIn;
+
+
 import java.awt.Toolkit;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
@@ -14,13 +31,21 @@ import java.awt.Font;
 import javax.swing.UIManager;
 import javax.swing.JButton;
 
+
+
+
+
+
+
+
+
+
+
+@Plugin(type = Command.class, menuPath = "Plugins>FOCUST")
 public class MainScreen extends JFrame {
 
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -44,7 +69,7 @@ public class MainScreen extends JFrame {
 	 */
 	public MainScreen() {
 		setTitle("FOCUST");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/ui/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/ui/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 806, 476);
 		contentPane = new JPanel();
@@ -70,12 +95,12 @@ public class MainScreen extends JFrame {
 		contentPane.add(btnNewButton_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/spheroidIcon0.2.png")));
+		lblNewLabel_2.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/ui/resources/spheroidIcon0.2.png")));
 		lblNewLabel_2.setBounds(10, 241, 77, 67);
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_2_1 = new JLabel("");
-		lblNewLabel_2_1.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/singlecellicon.png")));
+		lblNewLabel_2_1.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/ui/resources/singlecellicon.png")));
 		lblNewLabel_2_1.setBounds(20, 302, 77, 67);
 		contentPane.add(lblNewLabel_2_1);
 		
@@ -85,7 +110,7 @@ public class MainScreen extends JFrame {
 		contentPane.add(btnNewButton_1_1);
 		
 		JLabel lblNewLabel_2_1_1 = new JLabel("");
-		lblNewLabel_2_1_1.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/speckleIcon.png")));
+		lblNewLabel_2_1_1.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/ui/resources/speckleIcon.png")));
 		lblNewLabel_2_1_1.setBounds(20, 359, 77, 67);
 		contentPane.add(lblNewLabel_2_1_1);
 		
@@ -120,12 +145,12 @@ public class MainScreen extends JFrame {
 		contentPane.add(lblBatchProcessA_2_1);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/FullLogo2.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/ui/resources/FullLogo3.png")));
 		lblNewLabel_1.setBounds(10, 0, 445, 114);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2_2 = new JLabel("");
-		lblNewLabel_2_2.setIcon(new ImageIcon(MainScreen.class.getResource("/ui/resources/iconquestionmark.png")));
+		lblNewLabel_2_2.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/ui/resources/iconquestionmark.png")));
 		lblNewLabel_2_2.setBounds(30, 161, 43, 67);
 		contentPane.add(lblNewLabel_2_2);
 	}
