@@ -22,10 +22,6 @@ import javax.swing.JButton;
 
 public class MainScreen extends JFrame{
 
-	/**
-	 * The serialVersionUID. 
-	 */
-	/*private static final long serialVersionUID = 2501487734017653908L; */
 	private JPanel mainPane;
 	
 	/** Button to open the optimization window. */
@@ -37,34 +33,9 @@ public class MainScreen extends JFrame{
 	/** Button to open the speckle window. */ 
 	private JButton btnSpeckle;
 	
-	
-	
-/*	
-	public static void main(String[] args) {
-		
-		
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				MainGui = new MainScreen();
-				MainGui.setVisible(true);
-			}
-		});
-	}
-	
-*/
-	/*
-	    public void run(final String arg) {
-	    	java.awt.EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					MainGui = new MainScreen();
-					MainGui.setVisible(true);
-				}
-			});
-	    }
-*/
 
 	/**
-	 * Create the frame.
+	 * construct the main menu gui. 
 	 */
 	public MainScreen() {
 		setTitle("FOCUST");

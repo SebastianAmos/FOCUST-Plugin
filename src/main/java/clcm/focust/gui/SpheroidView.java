@@ -1,7 +1,5 @@
 package clcm.focust.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -20,24 +18,7 @@ public class SpheroidView extends JFrame {
 	 private JPanel paneSpheroid;
 
 	/**
-	 * Launch the application.
-	 */
-/*	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SpheroidView frame = new SpheroidView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
+	 * construct the spheroid gui.
 	 */
 	public SpheroidView() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));

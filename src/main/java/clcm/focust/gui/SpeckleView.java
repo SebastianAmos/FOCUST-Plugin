@@ -1,6 +1,5 @@
 package clcm.focust.gui;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,8 +22,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.JTextPane;
 import java.awt.SystemColor;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Component;
-import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -34,57 +31,40 @@ public class SpeckleView extends JFrame {
 	private JPanel paneSpeckle;
 	private JTextField txtInputDir;
 	private JTextField txtOutputDir;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JTextField textField_11;
-	private JTextField textField_12;
-	private JTextField textField_13;
-	private JTextField textField_14;
-	private JTextField textField_15;
-	private JTextField txtSpeckle;
-	private JTextField textField_17;
-	private JTextField textField_18;
-	private JTextField textField_19;
-	private JTextField textField_16;
-	private JTextField textField_20;
-	private JTextField textField_21;
-	private JTextField textField_22;
-	private JTextField textField_23;
-	private JTextField textField_24;
-	private JTextField textField_25;
-	private JTextField textField_26;
+	private JTextField txtSpecklePrimaryGBx;
+	private JTextField txtSpecklePrimaryGBy;
+	private JTextField txtSpecklePrimaryGBz;
+	private JTextField txtSpecklePrimaryBG;
+	private JTextField txtSpecklePrimaryDMx;
+	private JTextField txtSpecklePrimaryDMy;
+	private JTextField txtSpecklePrimaryDMz;
+	private JTextField txtSpecklePrimaryThreshold;
+	private JTextField txtSpeckleSecondaryGBx;
+	private JTextField txtSpeckleSecondaryGBy;
+	private JTextField txtSpeckleSecondaryGBz;
+	private JTextField txtSpeckleSecondaryBG;
+	private JTextField txtSpeckleSecondaryDMx;
+	private JTextField txtSpeckleSecondaryDMy;
+	private JTextField txtSpeckleSecondaryDMz;
+	private JTextField txtSpeckleSecondaryThreshold;
+	private JTextField txtC2Name;
+	private JTextField txtC3Name;
+	private JTextField txtC4Name;
+	private JTextField txtGroupingName;
+	private JTextField txtSpeckleTertiaryGBx;
+	private JTextField txtSpeckleTertiaryGBy;
+	private JTextField txtSpeckleTertiaryGBz;
+	private JTextField txtSpeckleTertiaryBG;
+	private JTextField txtSpeckleTertiaryDMx;
+	private JTextField txtSpeckleTertiaryDMy;
+	private JTextField txtSpeckleTertiaryDMz;
+	private JTextField txtSpeckleTertiaryThreshold;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
-	/**
-	 * Launch the application.
-	 */
-/*	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SpeckleView frame = new SpeckleView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	
 	/**
-	 * Create the frame.
+	 * Construct the speckel gui.
 	 */
 	public SpeckleView() {
 		setTitle("FOCUST: Speckle Analysis");
@@ -219,11 +199,11 @@ public class SpeckleView extends JFrame {
 		lblRadius.setBounds(98, 21, 48, 29);
 		PrimaryObjectPanel.add(lblRadius);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBackground(new Color(211, 211, 211));
-		textField.setBounds(20, 73, 41, 20);
-		PrimaryObjectPanel.add(textField);
+		txtSpecklePrimaryGBx = new JTextField();
+		txtSpecklePrimaryGBx.setColumns(10);
+		txtSpecklePrimaryGBx.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryGBx.setBounds(20, 73, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryGBx);
 		
 		JLabel lblX = new JLabel("x");
 		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -235,29 +215,29 @@ public class SpeckleView extends JFrame {
 		lblY.setBounds(65, 69, 21, 29);
 		PrimaryObjectPanel.add(lblY);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBackground(new Color(211, 211, 211));
-		textField_1.setBounds(75, 73, 41, 20);
-		PrimaryObjectPanel.add(textField_1);
+		txtSpecklePrimaryGBy = new JTextField();
+		txtSpecklePrimaryGBy.setColumns(10);
+		txtSpecklePrimaryGBy.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryGBy.setBounds(75, 73, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryGBy);
 		
 		JLabel lblZ = new JLabel("z");
 		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ.setBounds(120, 69, 21, 29);
 		PrimaryObjectPanel.add(lblZ);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBackground(new Color(211, 211, 211));
-		textField_2.setBounds(130, 73, 41, 20);
-		PrimaryObjectPanel.add(textField_2);
+		txtSpecklePrimaryGBz = new JTextField();
+		txtSpecklePrimaryGBz.setColumns(10);
+		txtSpecklePrimaryGBz.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryGBz.setBounds(130, 73, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryGBz);
 		
-		textField_3 = new JTextField();
-		textField_3.setEnabled(false);
-		textField_3.setColumns(10);
-		textField_3.setBackground(new Color(211, 211, 211));
-		textField_3.setBounds(145, 25, 31, 20);
-		PrimaryObjectPanel.add(textField_3);
+		txtSpecklePrimaryBG = new JTextField();
+		txtSpecklePrimaryBG.setEnabled(false);
+		txtSpecklePrimaryBG.setColumns(10);
+		txtSpecklePrimaryBG.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryBG.setBounds(145, 25, 31, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryBG);
 		
 		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -269,44 +249,44 @@ public class SpeckleView extends JFrame {
 		lblX_1.setBounds(10, 117, 21, 29);
 		PrimaryObjectPanel.add(lblX_1);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBackground(new Color(211, 211, 211));
-		textField_4.setBounds(20, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_4);
+		txtSpecklePrimaryDMx = new JTextField();
+		txtSpecklePrimaryDMx.setColumns(10);
+		txtSpecklePrimaryDMx.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryDMx.setBounds(20, 121, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryDMx);
 		
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(65, 117, 21, 29);
 		PrimaryObjectPanel.add(lblY_1);
 		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBackground(new Color(211, 211, 211));
-		textField_5.setBounds(75, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_5);
+		txtSpecklePrimaryDMy = new JTextField();
+		txtSpecklePrimaryDMy.setColumns(10);
+		txtSpecklePrimaryDMy.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryDMy.setBounds(75, 121, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryDMy);
 		
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(120, 117, 21, 29);
 		PrimaryObjectPanel.add(lblZ_1);
 		
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBackground(new Color(211, 211, 211));
-		textField_6.setBounds(130, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_6);
+		txtSpecklePrimaryDMz = new JTextField();
+		txtSpecklePrimaryDMz.setColumns(10);
+		txtSpecklePrimaryDMz.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryDMz.setBounds(130, 121, 41, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryDMz);
 		
 		JLabel lblThreshold = new JLabel("Threshold:");
 		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold.setBounds(10, 144, 76, 29);
 		PrimaryObjectPanel.add(lblThreshold);
 		
-		textField_7 = new JTextField();
-		textField_7.setColumns(10);
-		textField_7.setBackground(new Color(211, 211, 211));
-		textField_7.setBounds(76, 148, 55, 20);
-		PrimaryObjectPanel.add(textField_7);
+		txtSpecklePrimaryThreshold = new JTextField();
+		txtSpecklePrimaryThreshold.setColumns(10);
+		txtSpecklePrimaryThreshold.setBackground(new Color(211, 211, 211));
+		txtSpecklePrimaryThreshold.setBounds(76, 148, 55, 20);
+		PrimaryObjectPanel.add(txtSpecklePrimaryThreshold);
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -364,11 +344,11 @@ public class SpeckleView extends JFrame {
 		lblRadius_1_1.setBounds(98, 21, 48, 29);
 		SecondaryObjectPanel_1.add(lblRadius_1_1);
 		
-		textField_16 = new JTextField();
-		textField_16.setColumns(10);
-		textField_16.setBackground(new Color(211, 211, 211));
-		textField_16.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel_1.add(textField_16);
+		txtSpeckleTertiaryGBx = new JTextField();
+		txtSpeckleTertiaryGBx.setColumns(10);
+		txtSpeckleTertiaryGBx.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryGBx.setBounds(20, 73, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryGBx);
 		
 		JLabel lblX_2_1 = new JLabel("x");
 		lblX_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -380,29 +360,29 @@ public class SpeckleView extends JFrame {
 		lblY_2_1.setBounds(65, 69, 21, 29);
 		SecondaryObjectPanel_1.add(lblY_2_1);
 		
-		textField_20 = new JTextField();
-		textField_20.setColumns(10);
-		textField_20.setBackground(new Color(211, 211, 211));
-		textField_20.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel_1.add(textField_20);
+		txtSpeckleTertiaryGBy = new JTextField();
+		txtSpeckleTertiaryGBy.setColumns(10);
+		txtSpeckleTertiaryGBy.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryGBy.setBounds(75, 73, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryGBy);
 		
 		JLabel lblZ_2_1 = new JLabel("z");
 		lblZ_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2_1.setBounds(120, 69, 21, 29);
 		SecondaryObjectPanel_1.add(lblZ_2_1);
 		
-		textField_21 = new JTextField();
-		textField_21.setColumns(10);
-		textField_21.setBackground(new Color(211, 211, 211));
-		textField_21.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel_1.add(textField_21);
+		txtSpeckleTertiaryGBz = new JTextField();
+		txtSpeckleTertiaryGBz.setColumns(10);
+		txtSpeckleTertiaryGBz.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryGBz.setBounds(130, 73, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryGBz);
 		
-		textField_22 = new JTextField();
-		textField_22.setEnabled(false);
-		textField_22.setColumns(10);
-		textField_22.setBackground(new Color(211, 211, 211));
-		textField_22.setBounds(145, 25, 31, 20);
-		SecondaryObjectPanel_1.add(textField_22);
+		txtSpeckleTertiaryBG = new JTextField();
+		txtSpeckleTertiaryBG.setEnabled(false);
+		txtSpeckleTertiaryBG.setColumns(10);
+		txtSpeckleTertiaryBG.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryBG.setBounds(145, 25, 31, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryBG);
 		
 		JLabel lblDetectMaximaSecondary_1 = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -414,44 +394,44 @@ public class SpeckleView extends JFrame {
 		lblX_1_1_1.setBounds(10, 117, 21, 29);
 		SecondaryObjectPanel_1.add(lblX_1_1_1);
 		
-		textField_23 = new JTextField();
-		textField_23.setColumns(10);
-		textField_23.setBackground(new Color(211, 211, 211));
-		textField_23.setBounds(20, 121, 41, 20);
-		SecondaryObjectPanel_1.add(textField_23);
+		txtSpeckleTertiaryDMx = new JTextField();
+		txtSpeckleTertiaryDMx.setColumns(10);
+		txtSpeckleTertiaryDMx.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryDMx.setBounds(20, 121, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryDMx);
 		
 		JLabel lblY_1_1_1 = new JLabel("y");
 		lblY_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1_1.setBounds(65, 117, 21, 29);
 		SecondaryObjectPanel_1.add(lblY_1_1_1);
 		
-		textField_24 = new JTextField();
-		textField_24.setColumns(10);
-		textField_24.setBackground(new Color(211, 211, 211));
-		textField_24.setBounds(75, 121, 41, 20);
-		SecondaryObjectPanel_1.add(textField_24);
+		txtSpeckleTertiaryDMy = new JTextField();
+		txtSpeckleTertiaryDMy.setColumns(10);
+		txtSpeckleTertiaryDMy.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryDMy.setBounds(75, 121, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryDMy);
 		
 		JLabel lblZ_1_1_1 = new JLabel("z");
 		lblZ_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1_1.setBounds(120, 117, 21, 29);
 		SecondaryObjectPanel_1.add(lblZ_1_1_1);
 		
-		textField_25 = new JTextField();
-		textField_25.setColumns(10);
-		textField_25.setBackground(new Color(211, 211, 211));
-		textField_25.setBounds(130, 121, 41, 20);
-		SecondaryObjectPanel_1.add(textField_25);
+		txtSpeckleTertiaryDMz = new JTextField();
+		txtSpeckleTertiaryDMz.setColumns(10);
+		txtSpeckleTertiaryDMz.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryDMz.setBounds(130, 121, 41, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryDMz);
 		
 		JLabel lblThreshold_1_1 = new JLabel("Threshold:");
 		lblThreshold_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1_1.setBounds(10, 144, 76, 29);
 		SecondaryObjectPanel_1.add(lblThreshold_1_1);
 		
-		textField_26 = new JTextField();
-		textField_26.setColumns(10);
-		textField_26.setBackground(new Color(211, 211, 211));
-		textField_26.setBounds(76, 148, 55, 20);
-		SecondaryObjectPanel_1.add(textField_26);
+		txtSpeckleTertiaryThreshold = new JTextField();
+		txtSpeckleTertiaryThreshold.setColumns(10);
+		txtSpeckleTertiaryThreshold.setBackground(new Color(211, 211, 211));
+		txtSpeckleTertiaryThreshold.setBounds(76, 148, 55, 20);
+		SecondaryObjectPanel_1.add(txtSpeckleTertiaryThreshold);
 		
 		JLabel lblWhichChannel_1_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1_1.setEnabled(false);
@@ -512,11 +492,11 @@ public class SpeckleView extends JFrame {
 		lblRadius_1.setBounds(98, 21, 48, 29);
 		SecondaryObjectPanel.add(lblRadius_1);
 		
-		textField_8 = new JTextField();
-		textField_8.setColumns(10);
-		textField_8.setBackground(new Color(211, 211, 211));
-		textField_8.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_8);
+		txtSpeckleSecondaryGBx = new JTextField();
+		txtSpeckleSecondaryGBx.setColumns(10);
+		txtSpeckleSecondaryGBx.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryGBx.setBounds(20, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryGBx);
 		
 		JLabel lblX_2 = new JLabel("x");
 		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -528,29 +508,29 @@ public class SpeckleView extends JFrame {
 		lblY_2.setBounds(65, 69, 21, 29);
 		SecondaryObjectPanel.add(lblY_2);
 		
-		textField_9 = new JTextField();
-		textField_9.setColumns(10);
-		textField_9.setBackground(new Color(211, 211, 211));
-		textField_9.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_9);
+		txtSpeckleSecondaryGBy = new JTextField();
+		txtSpeckleSecondaryGBy.setColumns(10);
+		txtSpeckleSecondaryGBy.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryGBy.setBounds(75, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryGBy);
 		
 		JLabel lblZ_2 = new JLabel("z");
 		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2.setBounds(120, 69, 21, 29);
 		SecondaryObjectPanel.add(lblZ_2);
 		
-		textField_10 = new JTextField();
-		textField_10.setColumns(10);
-		textField_10.setBackground(new Color(211, 211, 211));
-		textField_10.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_10);
+		txtSpeckleSecondaryGBz = new JTextField();
+		txtSpeckleSecondaryGBz.setColumns(10);
+		txtSpeckleSecondaryGBz.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryGBz.setBounds(130, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryGBz);
 		
-		textField_11 = new JTextField();
-		textField_11.setEnabled(false);
-		textField_11.setColumns(10);
-		textField_11.setBackground(new Color(211, 211, 211));
-		textField_11.setBounds(145, 25, 31, 20);
-		SecondaryObjectPanel.add(textField_11);
+		txtSpeckleSecondaryBG = new JTextField();
+		txtSpeckleSecondaryBG.setEnabled(false);
+		txtSpeckleSecondaryBG.setColumns(10);
+		txtSpeckleSecondaryBG.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryBG.setBounds(145, 25, 31, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryBG);
 		
 		JLabel lblDetectMaximaSecondary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -562,44 +542,44 @@ public class SpeckleView extends JFrame {
 		lblX_1_1.setBounds(10, 117, 21, 29);
 		SecondaryObjectPanel.add(lblX_1_1);
 		
-		textField_12 = new JTextField();
-		textField_12.setColumns(10);
-		textField_12.setBackground(new Color(211, 211, 211));
-		textField_12.setBounds(20, 121, 41, 20);
-		SecondaryObjectPanel.add(textField_12);
+		txtSpeckleSecondaryDMx = new JTextField();
+		txtSpeckleSecondaryDMx.setColumns(10);
+		txtSpeckleSecondaryDMx.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryDMx.setBounds(20, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryDMx);
 		
 		JLabel lblY_1_1 = new JLabel("y");
 		lblY_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1.setBounds(65, 117, 21, 29);
 		SecondaryObjectPanel.add(lblY_1_1);
 		
-		textField_13 = new JTextField();
-		textField_13.setColumns(10);
-		textField_13.setBackground(new Color(211, 211, 211));
-		textField_13.setBounds(75, 121, 41, 20);
-		SecondaryObjectPanel.add(textField_13);
+		txtSpeckleSecondaryDMy = new JTextField();
+		txtSpeckleSecondaryDMy.setColumns(10);
+		txtSpeckleSecondaryDMy.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryDMy.setBounds(75, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryDMy);
 		
 		JLabel lblZ_1_1 = new JLabel("z");
 		lblZ_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1.setBounds(120, 117, 21, 29);
 		SecondaryObjectPanel.add(lblZ_1_1);
 		
-		textField_14 = new JTextField();
-		textField_14.setColumns(10);
-		textField_14.setBackground(new Color(211, 211, 211));
-		textField_14.setBounds(130, 121, 41, 20);
-		SecondaryObjectPanel.add(textField_14);
+		txtSpeckleSecondaryDMz = new JTextField();
+		txtSpeckleSecondaryDMz.setColumns(10);
+		txtSpeckleSecondaryDMz.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryDMz.setBounds(130, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryDMz);
 		
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
 		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1.setBounds(10, 144, 76, 29);
 		SecondaryObjectPanel.add(lblThreshold_1);
 		
-		textField_15 = new JTextField();
-		textField_15.setColumns(10);
-		textField_15.setBackground(new Color(211, 211, 211));
-		textField_15.setBounds(76, 148, 55, 20);
-		SecondaryObjectPanel.add(textField_15);
+		txtSpeckleSecondaryThreshold = new JTextField();
+		txtSpeckleSecondaryThreshold.setColumns(10);
+		txtSpeckleSecondaryThreshold.setBackground(new Color(211, 211, 211));
+		txtSpeckleSecondaryThreshold.setBounds(76, 148, 55, 20);
+		SecondaryObjectPanel.add(txtSpeckleSecondaryThreshold);
 		
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setBounds(223, 3, 187, 29);
@@ -664,25 +644,25 @@ public class SpeckleView extends JFrame {
 		lblGroupingInfo.setBounds(12, 257, 116, 29);
 		paneSpeckle.add(lblGroupingInfo);
 		
-		txtSpeckle = new JTextField();
-		txtSpeckle.setColumns(10);
-		txtSpeckle.setBounds(122, 150, 176, 29);
-		paneSpeckle.add(txtSpeckle);
+		txtC2Name = new JTextField();
+		txtC2Name.setColumns(10);
+		txtC2Name.setBounds(122, 150, 176, 29);
+		paneSpeckle.add(txtC2Name);
 		
-		textField_17 = new JTextField();
-		textField_17.setColumns(10);
-		textField_17.setBounds(122, 184, 176, 29);
-		paneSpeckle.add(textField_17);
+		txtC3Name = new JTextField();
+		txtC3Name.setColumns(10);
+		txtC3Name.setBounds(122, 184, 176, 29);
+		paneSpeckle.add(txtC3Name);
 		
-		textField_18 = new JTextField();
-		textField_18.setColumns(10);
-		textField_18.setBounds(122, 217, 176, 29);
-		paneSpeckle.add(textField_18);
+		txtC4Name = new JTextField();
+		txtC4Name.setColumns(10);
+		txtC4Name.setBounds(122, 217, 176, 29);
+		paneSpeckle.add(txtC4Name);
 		
-		textField_19 = new JTextField();
-		textField_19.setColumns(10);
-		textField_19.setBounds(122, 257, 176, 29);
-		paneSpeckle.add(textField_19);
+		txtGroupingName = new JTextField();
+		txtGroupingName.setColumns(10);
+		txtGroupingName.setBounds(122, 257, 176, 29);
+		paneSpeckle.add(txtGroupingName);
 		
 		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
 		txtpnanyConditionsfactorsSpecific.setText("*Any factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
