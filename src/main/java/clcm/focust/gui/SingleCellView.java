@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import java.awt.Window;
+
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -21,10 +23,13 @@ import java.awt.Color;
 import javax.swing.border.MatteBorder;
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JTextPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SingleCellView extends JFrame {
 
@@ -78,7 +83,7 @@ public class SingleCellView extends JFrame {
 	public SingleCellView() {
 		setTitle("FOCUST: Single Cell Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 806, 485);
 		paneSingleCell = new JPanel();
 		paneSingleCell.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -470,6 +475,14 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(btnHelp);
 		
 		JButton btnBackToMenu = new JButton("Back to Menu");
+		btnBackToMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainScreen MainGui = new MainScreen();
+				MainGui.setVisible(true);
+				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);
+				win.dispose();
+			}
+		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnBackToMenu.setBounds(10, 373, 133, 29);
 		paneSingleCell.add(btnBackToMenu);

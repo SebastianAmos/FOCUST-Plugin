@@ -4,14 +4,20 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import java.awt.Window;
+
 import javax.swing.JLabel;
 import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SpheroidView extends JFrame {
 
-	private JPanel paneSpheroid;
+	 private JPanel paneSpheroid;
 
 	/**
 	 * Launch the application.
@@ -34,9 +40,9 @@ public class SpheroidView extends JFrame {
 	 * Create the frame.
 	 */
 	public SpheroidView() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/ui/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Spheroid Analysis");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 806, 485);
 		paneSpheroid = new JPanel();
 		paneSpheroid.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -53,6 +59,23 @@ public class SpheroidView extends JFrame {
 		lblYouMustHave.setBounds(136, 0, 352, 20);
 		lblYouMustHave.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		paneSpheroid.add(lblYouMustHave);
+		
+		JButton btnBackToMenu = new JButton("Back to Menu");
+		btnBackToMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainScreen MainGui = new MainScreen();
+				MainGui.setVisible(true);
+				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);
+				win.dispose();
+			}
+		});
+		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		btnBackToMenu.setBounds(10, 373, 133, 29);
+		paneSpheroid.add(btnBackToMenu);
+		
+		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
+		btnRunAnalysis.setBounds(10, 406, 279, 29);
+		paneSpheroid.add(btnRunAnalysis);
 	}
-
 }

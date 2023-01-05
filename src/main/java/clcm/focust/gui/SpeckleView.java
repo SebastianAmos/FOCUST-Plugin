@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import java.awt.Window;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -15,6 +17,7 @@ import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JTextPane;
@@ -23,6 +26,8 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SpeckleView extends JFrame {
 
@@ -83,8 +88,8 @@ public class SpeckleView extends JFrame {
 	 */
 	public SpeckleView() {
 		setTitle("FOCUST: Speckle Analysis");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SpeckleView.class.getResource("/ui/resources/icon2.png")));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SpeckleView.class.getResource("/clcm/focust/resources/icon2.png")));
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 973, 522);
 		paneSpeckle = new JPanel();
 		paneSpeckle.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -165,6 +170,7 @@ public class SpeckleView extends JFrame {
 		
 		JComboBox cbChannelTotal = new JComboBox();
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
+		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setBounds(254, 119, 37, 25);
@@ -309,6 +315,7 @@ public class SpeckleView extends JFrame {
 		
 		JComboBox cbChannelPrimary = new JComboBox();
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelPrimary.setBounds(452, 219, 37, 25);
@@ -454,7 +461,8 @@ public class SpeckleView extends JFrame {
 		
 		JComboBox cbChannelSecondary_1 = new JComboBox();
 		cbChannelSecondary_1.setEnabled(false);
-		cbChannelSecondary_1.setSelectedIndex(3);
+		cbChannelSecondary_1.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbChannelSecondary_1.setSelectedIndex(2);
 		cbChannelSecondary_1.setMaximumRowCount(4);
 		cbChannelSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelSecondary_1.setBounds(561, 30, 37, 25);
@@ -608,7 +616,7 @@ public class SpeckleView extends JFrame {
 		cbChannelSecondary.setBounds(349, 30, 37, 25);
 		panel.add(cbChannelSecondary);
 		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
-		cbChannelSecondary.setSelectedIndex(3);
+		cbChannelSecondary.setSelectedIndex(1);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		
@@ -619,6 +627,14 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(lblSegmentationParameters);
 		
 		JButton btnBackToMenu = new JButton("Back to Menu");
+		btnBackToMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainScreen MainGui = new MainScreen();
+				MainGui.setVisible(true);
+				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);
+				win.dispose();
+			}
+		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnBackToMenu.setBounds(12, 373, 133, 29);
 		paneSpeckle.add(btnBackToMenu);
