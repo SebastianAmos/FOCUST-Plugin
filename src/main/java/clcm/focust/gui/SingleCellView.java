@@ -77,7 +77,7 @@ public class SingleCellView extends JFrame {
 	 */
 	public SingleCellView() {
 		setTitle("FOCUST: Single Cell Analysis");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/windowBuilder/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 806, 485);
 		paneSingleCell = new JPanel();
