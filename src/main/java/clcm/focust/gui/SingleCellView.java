@@ -9,7 +9,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -20,16 +19,19 @@ import javax.swing.JSeparator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
 import java.awt.Color;
+
 import javax.swing.border.MatteBorder;
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.BevelBorder;
+
 import javax.swing.border.EtchedBorder;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JInternalFrame;
 
 public class SingleCellView extends JFrame {
 
@@ -59,26 +61,9 @@ public class SingleCellView extends JFrame {
 	private JTextField txtSingleCellChannel4Name;
 	private JTextField txtSingleCellGrouping;
 
-	/**
-	 * Launch the application.
-	 */
-	
-/*	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SingleCellView frame = new SingleCellView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
-	 * Create the frame.
+	 * Construct the single cell gui
 	 */
 	public SingleCellView() {
 		setTitle("FOCUST: Single Cell Analysis");
@@ -107,6 +92,12 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(lblSelectAnInput);
 		
 		JButton btnInputDir = new JButton("Browse");
+		btnInputDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			
+			}
+		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnInputDir.setBounds(193, 28, 96, 29);
 		paneSingleCell.add(btnInputDir);
@@ -216,6 +207,15 @@ public class SingleCellView extends JFrame {
 		PrimaryObjectPanel.add(lblRadius);
 		
 		txtGBXPrimary = new JTextField();
+		txtGBXPrimary.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(!Character.isDigit(c)) {
+					e.consume();
+				}
+			}
+		});
 		txtGBXPrimary.setBackground(new Color(211, 211, 211));
 		txtGBXPrimary.setBounds(20, 73, 41, 20);
 		PrimaryObjectPanel.add(txtGBXPrimary);
@@ -550,6 +550,4 @@ public class SingleCellView extends JFrame {
 		btnLoadConfigSingleCell.setBounds(441, 406, 156, 29);
 		paneSingleCell.add(btnLoadConfigSingleCell);
 	}
-
-	 
 }
