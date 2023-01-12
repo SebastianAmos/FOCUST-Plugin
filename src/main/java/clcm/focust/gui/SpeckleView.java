@@ -145,7 +145,7 @@ public class SpeckleView extends JFrame {
 		
 		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
 		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(22, 117, 237, 29);
+		lblHowManyChannels.setBounds(12, 117, 237, 29);
 		paneSpeckle.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
@@ -153,7 +153,7 @@ public class SpeckleView extends JFrame {
 		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setBounds(254, 119, 37, 25);
+		cbChannelTotal.setBounds(250, 119, 48, 25);
 		paneSpeckle.add(cbChannelTotal);
 		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
@@ -298,7 +298,7 @@ public class SpeckleView extends JFrame {
 		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(452, 219, 37, 25);
+		cbChannelPrimary.setBounds(452, 219, 48, 25);
 		paneSpeckle.add(cbChannelPrimary);
 		
 		JPanel panel = new JPanel();
@@ -445,7 +445,7 @@ public class SpeckleView extends JFrame {
 		cbChannelSecondary_1.setSelectedIndex(2);
 		cbChannelSecondary_1.setMaximumRowCount(4);
 		cbChannelSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary_1.setBounds(561, 30, 37, 25);
+		cbChannelSecondary_1.setBounds(561, 30, 48, 25);
 		panel.add(cbChannelSecondary_1);
 		
 		JLabel lblSegmentSecondary_1 = new JLabel("Tertiary Object");
@@ -593,7 +593,7 @@ public class SpeckleView extends JFrame {
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		
 		JComboBox cbChannelSecondary = new JComboBox();
-		cbChannelSecondary.setBounds(349, 30, 37, 25);
+		cbChannelSecondary.setBounds(349, 30, 48, 25);
 		panel.add(cbChannelSecondary);
 		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelSecondary.setSelectedIndex(1);

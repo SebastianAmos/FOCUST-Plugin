@@ -69,7 +69,7 @@ public class SingleCellView extends JFrame {
 		setTitle("FOCUST: Single Cell Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 806, 485);
+		setBounds(100, 100, 840, 485);
 		paneSingleCell = new JPanel();
 		paneSingleCell.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -145,14 +145,14 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
 		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(20, 117, 237, 29);
+		lblHowManyChannels.setBounds(10, 117, 237, 29);
 		paneSingleCell.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
 		cbChannelTotal.setMaximumRowCount(3);
-		cbChannelTotal.setBounds(252, 119, 37, 25);
+		cbChannelTotal.setBounds(248, 119, 48, 25);
 		paneSingleCell.add(cbChannelTotal);
 		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
@@ -313,7 +313,7 @@ public class SingleCellView extends JFrame {
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(450, 180, 37, 25);
+		cbChannelPrimary.setBounds(450, 180, 48, 25);
 		paneSingleCell.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
@@ -454,7 +454,7 @@ public class SingleCellView extends JFrame {
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(702, 180, 37, 25);
+		cbChannelSecondary.setBounds(702, 180, 48, 25);
 		paneSingleCell.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();

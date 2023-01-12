@@ -3,6 +3,9 @@ package clcm.focust.gui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import ij.gui.GenericDialog;
+
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -23,7 +26,7 @@ import javax.swing.JButton;
 public class MainScreen extends JFrame{
 
 	private JPanel mainPane;
-	
+
 	/** Button to open the optimization window. */
 	private JButton btnOptimize;
 	/** Button to open Spheroid window. */
@@ -32,7 +35,7 @@ public class MainScreen extends JFrame{
 	private JButton btnSingleCell;
 	/** Button to open the speckle window. */ 
 	private JButton btnSpeckle;
-	
+
 
 	/**
 	 * construct the main menu gui. 
@@ -55,6 +58,33 @@ public class MainScreen extends JFrame{
 		mainPane.add(lbMode);
 		
 		btnOptimize = new JButton("Optimize");
+		btnOptimize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				/*
+				 * USE @PARAMETER functions such as #@ String (choices={"Option A", "Option B"}, style="radioButtonHorizontal") myChoiceABC
+				 */
+				
+				
+				
+			/*	GenericDialog gd = new GenericDialog("Optimization Selector");
+				String[] choices = {"Spheroid Analysis", "Single Cell Analysis", "Speckle Analysis"};
+				gd.addRadioButtonGroup("Select a Mode to Optimize:", choices, 1, 3, null);
+				gd.showDialog();
+				String button = gd.getNextRadioButton(); 
+			*/	
+				
+				
+				
+			/*	SwingUtilities.invokeLater(() -> {
+					OptimizationSingleCellView OptimizeSingleCellGui = new OptimizationSingleCellView();
+					OptimizeSingleCellGui.setVisible(true);
+					Window win = SwingUtilities.getWindowAncestor(btnOptimize);
+					win.dispose();
+				}); */
+			}
+		});
 		btnOptimize.setFont(new Font("Gadugi", Font.BOLD, 13));
 		btnOptimize.setBounds(87, 169, 154, 51);
 		mainPane.add(btnOptimize);
@@ -157,4 +187,15 @@ public class MainScreen extends JFrame{
 		mainPane.add(lblQMarkIcon);
 
 	}
+
+
+	void OptimizeGuiDisplay() {
+		GenericDialog gd = new GenericDialog("Optimization Selector");
+		String[] choices = {"Spheroid Analysis", "Single Cell Analysis", "Speckle Analysis"};
+		gd.addRadioButtonGroup("Select a Mode to Optimize:", choices, 1, 3, null);
+		gd.showDialog();
+		
+	}
+	
+	
 }

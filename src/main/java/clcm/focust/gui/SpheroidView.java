@@ -22,6 +22,7 @@ import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.DefaultComboBoxModel;
 
 public class SpheroidView extends JFrame {
 
@@ -148,9 +149,11 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
+		cbChannelTotal.setSelectedIndex(1);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setBounds(252, 123, 44, 25);
+		cbChannelTotal.setBounds(252, 123, 48, 25);
 		paneSpheroid.add(cbChannelTotal);
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
@@ -345,9 +348,11 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblWhichChannel);
 		
 		JComboBox cbChannelPrimary = new JComboBox();
+		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(464, 180, 44, 25);
+		cbChannelPrimary.setBounds(464, 180, 48, 25);
 		paneSpheroid.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
@@ -444,10 +449,11 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblWhichChannel_1);
 		
 		JComboBox cbChannelSecondary = new JComboBox();
+		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(716, 180, 44, 25);
+		cbChannelSecondary.setBounds(716, 180, 48, 25);
 		paneSpheroid.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();
