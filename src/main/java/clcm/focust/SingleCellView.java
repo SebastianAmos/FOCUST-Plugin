@@ -43,22 +43,22 @@ public class SingleCellView extends JFrame {
 
 	private JPanel paneSingleCell;
 	private JTextField txtbInputDir;
-	private JTextField txtGBXPrimary;
-	private JTextField txtGBYPrimary;
-	private JTextField txtGBZPrimary;
+	private JTextField txtPriGBx;
+	private JTextField txtPriGBy;
+	private JTextField txtPriGBz;
 	private JTextField txtBgSubPrimaryVar;
-	private JTextField txtDMXPrimary;
-	private JTextField txtDMYPrimary;
-	private JTextField txtDMZPrimary;
-	private JTextField txtThresholdPrimary;
-	private JTextField txtGBXSecondary;
-	private JTextField txtGBYSecondary;
-	private JTextField txtGBZSecondary;
+	private JTextField txtPriDMx;
+	private JTextField txtPriDMy;
+	private JTextField txtPriDMz;
+	private JTextField txtPriThreshold;
+	private JTextField txtSecGBx;
+	private JTextField txtSecGBy;
+	private JTextField txtSecGBz;
 	private JTextField txtBgSubSecondaryVar;
-	private JTextField txtDMXSecondary;
-	private JTextField txtDMYSecondary;
-	private JTextField txtDMZSecondary;
-	private JTextField txtThresholdSecondary;
+	private JTextField txtSecDMx;
+	private JTextField txtSecDMy;
+	private JTextField txtSecDMz;
+	private JTextField txtSecThreshold;
 	private JTextField txtOutputDir;
 	private final ButtonGroup OutputDir = new ButtonGroup();
 	private final ButtonGroup PrimaryBgSub = new ButtonGroup();
@@ -224,8 +224,8 @@ public class SingleCellView extends JFrame {
 		lblRadius.setBounds(98, 21, 48, 29);
 		PrimaryObjectPanel.add(lblRadius);
 		
-		txtGBXPrimary = new JTextField();
-		txtGBXPrimary.addKeyListener(new KeyAdapter() {
+		txtPriGBx = new JTextField();
+		txtPriGBx.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
@@ -234,10 +234,10 @@ public class SingleCellView extends JFrame {
 				}
 			}
 		});
-		txtGBXPrimary.setBackground(new Color(211, 211, 211));
-		txtGBXPrimary.setBounds(20, 73, 41, 20);
-		PrimaryObjectPanel.add(txtGBXPrimary);
-		txtGBXPrimary.setColumns(10);
+		txtPriGBx.setBackground(new Color(211, 211, 211));
+		txtPriGBx.setBounds(20, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBx);
+		txtPriGBx.setColumns(10);
 		
 		JLabel lblX = new JLabel("x");
 		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -249,22 +249,22 @@ public class SingleCellView extends JFrame {
 		lblY.setBounds(65, 69, 21, 29);
 		PrimaryObjectPanel.add(lblY);
 		
-		txtGBYPrimary = new JTextField();
-		txtGBYPrimary.setColumns(10);
-		txtGBYPrimary.setBackground(new Color(211, 211, 211));
-		txtGBYPrimary.setBounds(75, 73, 41, 20);
-		PrimaryObjectPanel.add(txtGBYPrimary);
+		txtPriGBy = new JTextField();
+		txtPriGBy.setColumns(10);
+		txtPriGBy.setBackground(new Color(211, 211, 211));
+		txtPriGBy.setBounds(75, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBy);
 		
 		JLabel lblZ = new JLabel("z");
 		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ.setBounds(120, 69, 21, 29);
 		PrimaryObjectPanel.add(lblZ);
 		
-		txtGBZPrimary = new JTextField();
-		txtGBZPrimary.setColumns(10);
-		txtGBZPrimary.setBackground(new Color(211, 211, 211));
-		txtGBZPrimary.setBounds(130, 73, 41, 20);
-		PrimaryObjectPanel.add(txtGBZPrimary);
+		txtPriGBz = new JTextField();
+		txtPriGBz.setColumns(10);
+		txtPriGBz.setBackground(new Color(211, 211, 211));
+		txtPriGBz.setBounds(130, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBz);
 		
 		txtBgSubPrimaryVar = new JTextField();
 		txtBgSubPrimaryVar.setEnabled(false);
@@ -283,44 +283,44 @@ public class SingleCellView extends JFrame {
 		lblX_1.setBounds(10, 117, 21, 29);
 		PrimaryObjectPanel.add(lblX_1);
 		
-		txtDMXPrimary = new JTextField();
-		txtDMXPrimary.setColumns(10);
-		txtDMXPrimary.setBackground(new Color(211, 211, 211));
-		txtDMXPrimary.setBounds(20, 121, 41, 20);
-		PrimaryObjectPanel.add(txtDMXPrimary);
+		txtPriDMx = new JTextField();
+		txtPriDMx.setColumns(10);
+		txtPriDMx.setBackground(new Color(211, 211, 211));
+		txtPriDMx.setBounds(20, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMx);
 		
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(65, 117, 21, 29);
 		PrimaryObjectPanel.add(lblY_1);
 		
-		txtDMYPrimary = new JTextField();
-		txtDMYPrimary.setColumns(10);
-		txtDMYPrimary.setBackground(new Color(211, 211, 211));
-		txtDMYPrimary.setBounds(75, 121, 41, 20);
-		PrimaryObjectPanel.add(txtDMYPrimary);
+		txtPriDMy = new JTextField();
+		txtPriDMy.setColumns(10);
+		txtPriDMy.setBackground(new Color(211, 211, 211));
+		txtPriDMy.setBounds(75, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMy);
 		
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(120, 117, 21, 29);
 		PrimaryObjectPanel.add(lblZ_1);
 		
-		txtDMZPrimary = new JTextField();
-		txtDMZPrimary.setColumns(10);
-		txtDMZPrimary.setBackground(new Color(211, 211, 211));
-		txtDMZPrimary.setBounds(130, 121, 41, 20);
-		PrimaryObjectPanel.add(txtDMZPrimary);
+		txtPriDMz = new JTextField();
+		txtPriDMz.setColumns(10);
+		txtPriDMz.setBackground(new Color(211, 211, 211));
+		txtPriDMz.setBounds(130, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMz);
 		
 		JLabel lblThreshold = new JLabel("Threshold:");
 		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold.setBounds(10, 144, 76, 29);
 		PrimaryObjectPanel.add(lblThreshold);
 		
-		txtThresholdPrimary = new JTextField();
-		txtThresholdPrimary.setColumns(10);
-		txtThresholdPrimary.setBackground(new Color(211, 211, 211));
-		txtThresholdPrimary.setBounds(76, 148, 55, 20);
-		PrimaryObjectPanel.add(txtThresholdPrimary);
+		txtPriThreshold = new JTextField();
+		txtPriThreshold.setColumns(10);
+		txtPriThreshold.setBackground(new Color(211, 211, 211));
+		txtPriThreshold.setBounds(76, 148, 55, 20);
+		PrimaryObjectPanel.add(txtPriThreshold);
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -373,11 +373,11 @@ public class SingleCellView extends JFrame {
 		lblRadius_1.setBounds(98, 21, 48, 29);
 		SecondaryObjectPanel.add(lblRadius_1);
 		
-		txtGBXSecondary = new JTextField();
-		txtGBXSecondary.setColumns(10);
-		txtGBXSecondary.setBackground(new Color(211, 211, 211));
-		txtGBXSecondary.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel.add(txtGBXSecondary);
+		txtSecGBx = new JTextField();
+		txtSecGBx.setColumns(10);
+		txtSecGBx.setBackground(new Color(211, 211, 211));
+		txtSecGBx.setBounds(20, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBx);
 		
 		JLabel lblX_2 = new JLabel("x");
 		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -389,22 +389,22 @@ public class SingleCellView extends JFrame {
 		lblY_2.setBounds(65, 69, 21, 29);
 		SecondaryObjectPanel.add(lblY_2);
 		
-		txtGBYSecondary = new JTextField();
-		txtGBYSecondary.setColumns(10);
-		txtGBYSecondary.setBackground(new Color(211, 211, 211));
-		txtGBYSecondary.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel.add(txtGBYSecondary);
+		txtSecGBy = new JTextField();
+		txtSecGBy.setColumns(10);
+		txtSecGBy.setBackground(new Color(211, 211, 211));
+		txtSecGBy.setBounds(75, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBy);
 		
 		JLabel lblZ_2 = new JLabel("z");
 		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2.setBounds(120, 69, 21, 29);
 		SecondaryObjectPanel.add(lblZ_2);
 		
-		txtGBZSecondary = new JTextField();
-		txtGBZSecondary.setColumns(10);
-		txtGBZSecondary.setBackground(new Color(211, 211, 211));
-		txtGBZSecondary.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel.add(txtGBZSecondary);
+		txtSecGBz = new JTextField();
+		txtSecGBz.setColumns(10);
+		txtSecGBz.setBackground(new Color(211, 211, 211));
+		txtSecGBz.setBounds(130, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBz);
 		
 		txtBgSubSecondaryVar = new JTextField();
 		txtBgSubSecondaryVar.setEnabled(false);
@@ -423,44 +423,44 @@ public class SingleCellView extends JFrame {
 		lblX_1_1.setBounds(10, 117, 21, 29);
 		SecondaryObjectPanel.add(lblX_1_1);
 		
-		txtDMXSecondary = new JTextField();
-		txtDMXSecondary.setColumns(10);
-		txtDMXSecondary.setBackground(new Color(211, 211, 211));
-		txtDMXSecondary.setBounds(20, 121, 41, 20);
-		SecondaryObjectPanel.add(txtDMXSecondary);
+		txtSecDMx = new JTextField();
+		txtSecDMx.setColumns(10);
+		txtSecDMx.setBackground(new Color(211, 211, 211));
+		txtSecDMx.setBounds(20, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSecDMx);
 		
 		JLabel lblY_1_1 = new JLabel("y");
 		lblY_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1.setBounds(65, 117, 21, 29);
 		SecondaryObjectPanel.add(lblY_1_1);
 		
-		txtDMYSecondary = new JTextField();
-		txtDMYSecondary.setColumns(10);
-		txtDMYSecondary.setBackground(new Color(211, 211, 211));
-		txtDMYSecondary.setBounds(75, 121, 41, 20);
-		SecondaryObjectPanel.add(txtDMYSecondary);
+		txtSecDMy = new JTextField();
+		txtSecDMy.setColumns(10);
+		txtSecDMy.setBackground(new Color(211, 211, 211));
+		txtSecDMy.setBounds(75, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSecDMy);
 		
 		JLabel lblZ_1_1 = new JLabel("z");
 		lblZ_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1.setBounds(120, 117, 21, 29);
 		SecondaryObjectPanel.add(lblZ_1_1);
 		
-		txtDMZSecondary = new JTextField();
-		txtDMZSecondary.setColumns(10);
-		txtDMZSecondary.setBackground(new Color(211, 211, 211));
-		txtDMZSecondary.setBounds(130, 121, 41, 20);
-		SecondaryObjectPanel.add(txtDMZSecondary);
+		txtSecDMz = new JTextField();
+		txtSecDMz.setColumns(10);
+		txtSecDMz.setBackground(new Color(211, 211, 211));
+		txtSecDMz.setBounds(130, 121, 41, 20);
+		SecondaryObjectPanel.add(txtSecDMz);
 		
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
 		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1.setBounds(10, 144, 76, 29);
 		SecondaryObjectPanel.add(lblThreshold_1);
 		
-		txtThresholdSecondary = new JTextField();
-		txtThresholdSecondary.setColumns(10);
-		txtThresholdSecondary.setBackground(new Color(211, 211, 211));
-		txtThresholdSecondary.setBounds(76, 148, 55, 20);
-		SecondaryObjectPanel.add(txtThresholdSecondary);
+		txtSecThreshold = new JTextField();
+		txtSecThreshold.setColumns(10);
+		txtSecThreshold.setBackground(new Color(211, 211, 211));
+		txtSecThreshold.setBounds(76, 148, 55, 20);
+		SecondaryObjectPanel.add(txtSecThreshold);
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));

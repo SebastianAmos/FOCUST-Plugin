@@ -28,19 +28,19 @@ public class OptimizationSpheroidView extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtInputDir;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
-	private JTextField textField;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JTextField textField_11;
-	private JTextField textField_12;
+	private JTextField txtPriGBx;
+	private JTextField txtPriGBy;
+	private JTextField txtPriGBz;
+	private JTextField txtPriSubtractRadius;
+	private JTextField txtPriThreshold;
+	private JTextField txtPriDMx;
+	private JTextField txtPriDMy;
+	private JTextField txtPriDMz;
+	private JTextField txtSecGBx;
+	private JTextField txtSecGBy;
+	private JTextField txtSecGBz;
+	private JTextField txtSecSubtractRadius;
+	private JTextField txtSecThreshold;
 
 	/**
 	 * Launch the application.
@@ -179,36 +179,36 @@ public class OptimizationSpheroidView extends JFrame {
 		lblX.setBounds(60, 204, 21, 29);
 		contentPane.add(lblX);
 		
-		textField_1 = new JTextField();
-		textField_1.setText("2");
-		textField_1.setColumns(10);
-		textField_1.setBackground(Color.WHITE);
-		textField_1.setBounds(70, 208, 41, 20);
-		contentPane.add(textField_1);
+		txtPriGBx = new JTextField();
+		txtPriGBx.setText("2");
+		txtPriGBx.setColumns(10);
+		txtPriGBx.setBackground(Color.WHITE);
+		txtPriGBx.setBounds(70, 208, 41, 20);
+		contentPane.add(txtPriGBx);
 		
 		JLabel lblY = new JLabel("y");
 		lblY.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY.setBounds(60, 236, 21, 29);
 		contentPane.add(lblY);
 		
-		textField_2 = new JTextField();
-		textField_2.setText("2");
-		textField_2.setColumns(10);
-		textField_2.setBackground(Color.WHITE);
-		textField_2.setBounds(70, 240, 41, 20);
-		contentPane.add(textField_2);
+		txtPriGBy = new JTextField();
+		txtPriGBy.setText("2");
+		txtPriGBy.setColumns(10);
+		txtPriGBy.setBackground(Color.WHITE);
+		txtPriGBy.setBounds(70, 240, 41, 20);
+		contentPane.add(txtPriGBy);
 		
 		JLabel lblZ = new JLabel("z");
 		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ.setBounds(60, 269, 21, 29);
 		contentPane.add(lblZ);
 		
-		textField_3 = new JTextField();
-		textField_3.setText("2");
-		textField_3.setColumns(10);
-		textField_3.setBackground(Color.WHITE);
-		textField_3.setBounds(70, 273, 41, 20);
-		contentPane.add(textField_3);
+		txtPriGBz = new JTextField();
+		txtPriGBz.setText("2");
+		txtPriGBz.setColumns(10);
+		txtPriGBz.setBackground(Color.WHITE);
+		txtPriGBz.setBounds(70, 273, 41, 20);
+		contentPane.add(txtPriGBz);
 		
 		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
 		lblBgSubPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -235,12 +235,12 @@ public class OptimizationSpheroidView extends JFrame {
 		lblRadius.setBounds(271, 140, 48, 29);
 		contentPane.add(lblRadius);
 		
-		textField_4 = new JTextField();
-		textField_4.setEnabled(false);
-		textField_4.setColumns(10);
-		textField_4.setBackground(Color.WHITE);
-		textField_4.setBounds(318, 144, 31, 20);
-		contentPane.add(textField_4);
+		txtPriSubtractRadius = new JTextField();
+		txtPriSubtractRadius.setEnabled(false);
+		txtPriSubtractRadius.setColumns(10);
+		txtPriSubtractRadius.setBackground(Color.WHITE);
+		txtPriSubtractRadius.setBounds(318, 144, 31, 20);
+		contentPane.add(txtPriSubtractRadius);
 		
 		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -252,43 +252,43 @@ public class OptimizationSpheroidView extends JFrame {
 		lblThreshold.setBounds(347, 180, 76, 29);
 		contentPane.add(lblThreshold);
 		
-		textField_5 = new JTextField();
-		textField_5.setText("8");
-		textField_5.setColumns(10);
-		textField_5.setBackground(Color.WHITE);
-		textField_5.setBounds(347, 210, 65, 20);
-		contentPane.add(textField_5);
+		txtPriThreshold = new JTextField();
+		txtPriThreshold.setText("8");
+		txtPriThreshold.setColumns(10);
+		txtPriThreshold.setBackground(Color.WHITE);
+		txtPriThreshold.setBounds(347, 210, 65, 20);
+		contentPane.add(txtPriThreshold);
 		
-		textField_6 = new JTextField();
-		textField_6.setText("5");
-		textField_6.setColumns(10);
-		textField_6.setBackground(Color.WHITE);
-		textField_6.setBounds(220, 208, 41, 20);
-		contentPane.add(textField_6);
+		txtPriDMx = new JTextField();
+		txtPriDMx.setText("5");
+		txtPriDMx.setColumns(10);
+		txtPriDMx.setBackground(Color.WHITE);
+		txtPriDMx.setBounds(220, 208, 41, 20);
+		contentPane.add(txtPriDMx);
 		
 		JLabel lblY_2 = new JLabel("y");
 		lblY_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_2.setBounds(210, 236, 21, 29);
 		contentPane.add(lblY_2);
 		
-		textField_7 = new JTextField();
-		textField_7.setText("5");
-		textField_7.setColumns(10);
-		textField_7.setBackground(Color.WHITE);
-		textField_7.setBounds(220, 240, 41, 20);
-		contentPane.add(textField_7);
+		txtPriDMy = new JTextField();
+		txtPriDMy.setText("5");
+		txtPriDMy.setColumns(10);
+		txtPriDMy.setBackground(Color.WHITE);
+		txtPriDMy.setBounds(220, 240, 41, 20);
+		contentPane.add(txtPriDMy);
 		
 		JLabel lblZ_2 = new JLabel("z");
 		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2.setBounds(210, 269, 21, 29);
 		contentPane.add(lblZ_2);
 		
-		textField_8 = new JTextField();
-		textField_8.setText("5");
-		textField_8.setColumns(10);
-		textField_8.setBackground(Color.WHITE);
-		textField_8.setBounds(220, 273, 41, 20);
-		contentPane.add(textField_8);
+		txtPriDMz = new JTextField();
+		txtPriDMz.setText("5");
+		txtPriDMz.setColumns(10);
+		txtPriDMz.setBackground(Color.WHITE);
+		txtPriDMz.setBounds(220, 273, 41, 20);
+		contentPane.add(txtPriDMz);
 		
 		JLabel lblX_2 = new JLabel("x");
 		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -337,36 +337,36 @@ public class OptimizationSpheroidView extends JFrame {
 		lblX_1.setBounds(540, 206, 21, 29);
 		contentPane.add(lblX_1);
 		
-		textField = new JTextField();
-		textField.setText("3");
-		textField.setColumns(10);
-		textField.setBackground(Color.WHITE);
-		textField.setBounds(550, 210, 41, 20);
-		contentPane.add(textField);
+		txtSecGBx = new JTextField();
+		txtSecGBx.setText("3");
+		txtSecGBx.setColumns(10);
+		txtSecGBx.setBackground(Color.WHITE);
+		txtSecGBx.setBounds(550, 210, 41, 20);
+		contentPane.add(txtSecGBx);
 		
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(540, 238, 21, 29);
 		contentPane.add(lblY_1);
 		
-		textField_9 = new JTextField();
-		textField_9.setText("3");
-		textField_9.setColumns(10);
-		textField_9.setBackground(Color.WHITE);
-		textField_9.setBounds(550, 242, 41, 20);
-		contentPane.add(textField_9);
+		txtSecGBy = new JTextField();
+		txtSecGBy.setText("3");
+		txtSecGBy.setColumns(10);
+		txtSecGBy.setBackground(Color.WHITE);
+		txtSecGBy.setBounds(550, 242, 41, 20);
+		contentPane.add(txtSecGBy);
 		
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(540, 271, 21, 29);
 		contentPane.add(lblZ_1);
 		
-		textField_10 = new JTextField();
-		textField_10.setText("3");
-		textField_10.setColumns(10);
-		textField_10.setBackground(Color.WHITE);
-		textField_10.setBounds(550, 275, 41, 20);
-		contentPane.add(textField_10);
+		txtSecGBz = new JTextField();
+		txtSecGBz.setText("3");
+		txtSecGBz.setColumns(10);
+		txtSecGBz.setBackground(Color.WHITE);
+		txtSecGBz.setBounds(550, 275, 41, 20);
+		contentPane.add(txtSecGBz);
 		
 		JLabel lblBgSubPrimary_1 = new JLabel("Background subtraction?");
 		lblBgSubPrimary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -393,24 +393,24 @@ public class OptimizationSpheroidView extends JFrame {
 		lblRadius_1.setBounds(751, 142, 48, 29);
 		contentPane.add(lblRadius_1);
 		
-		textField_11 = new JTextField();
-		textField_11.setEnabled(false);
-		textField_11.setColumns(10);
-		textField_11.setBackground(Color.WHITE);
-		textField_11.setBounds(798, 146, 31, 20);
-		contentPane.add(textField_11);
+		txtSecSubtractRadius = new JTextField();
+		txtSecSubtractRadius.setEnabled(false);
+		txtSecSubtractRadius.setColumns(10);
+		txtSecSubtractRadius.setBackground(Color.WHITE);
+		txtSecSubtractRadius.setBounds(798, 146, 31, 20);
+		contentPane.add(txtSecSubtractRadius);
 		
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
 		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1.setBounds(827, 182, 76, 29);
 		contentPane.add(lblThreshold_1);
 		
-		textField_12 = new JTextField();
-		textField_12.setText("2");
-		textField_12.setColumns(10);
-		textField_12.setBackground(Color.WHITE);
-		textField_12.setBounds(827, 212, 65, 20);
-		contentPane.add(textField_12);
+		txtSecThreshold = new JTextField();
+		txtSecThreshold.setText("2");
+		txtSecThreshold.setColumns(10);
+		txtSecThreshold.setBackground(Color.WHITE);
+		txtSecThreshold.setBounds(827, 212, 65, 20);
+		contentPane.add(txtSecThreshold);
 		
 		JButton btnSecondaryProcess = new JButton("Process");
 		btnSecondaryProcess.setFont(new Font("Gadugi", Font.PLAIN, 14));

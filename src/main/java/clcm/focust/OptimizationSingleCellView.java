@@ -43,14 +43,14 @@ public class OptimizationSingleCellView extends JFrame {
 	private JTextField txtPriDMx;
 	private JTextField txtPriDMy;
 	private JTextField txtPriDMz;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_11;
-	private JTextField textField_12;
-	private JTextField textField_13;
-	private JTextField textField_14;
-	private JTextField textField_15;
+	private JTextField txtSecGBx;
+	private JTextField txtSecGBy;
+	private JTextField txtSecGBz;
+	private JTextField txtSecSubtractRadius;
+	private JTextField txtSecThreshold;
+	private JTextField txtSecDMx;
+	private JTextField txtSecDMy;
+	private JTextField txtSecDMz;
 	
 
 	/**
@@ -354,36 +354,36 @@ public class OptimizationSingleCellView extends JFrame {
 		lblX_1.setBounds(540, 206, 21, 29);
 		paneSingleCellOptimization.add(lblX_1);
 		
-		textField_4 = new JTextField();
-		textField_4.setText("3");
-		textField_4.setColumns(10);
-		textField_4.setBackground(Color.WHITE);
-		textField_4.setBounds(550, 210, 41, 20);
-		paneSingleCellOptimization.add(textField_4);
+		txtSecGBx = new JTextField();
+		txtSecGBx.setText("3");
+		txtSecGBx.setColumns(10);
+		txtSecGBx.setBackground(Color.WHITE);
+		txtSecGBx.setBounds(550, 210, 41, 20);
+		paneSingleCellOptimization.add(txtSecGBx);
 		
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(540, 238, 21, 29);
 		paneSingleCellOptimization.add(lblY_1);
 		
-		textField_5 = new JTextField();
-		textField_5.setText("3");
-		textField_5.setColumns(10);
-		textField_5.setBackground(Color.WHITE);
-		textField_5.setBounds(550, 242, 41, 20);
-		paneSingleCellOptimization.add(textField_5);
+		txtSecGBy = new JTextField();
+		txtSecGBy.setText("3");
+		txtSecGBy.setColumns(10);
+		txtSecGBy.setBackground(Color.WHITE);
+		txtSecGBy.setBounds(550, 242, 41, 20);
+		paneSingleCellOptimization.add(txtSecGBy);
 		
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(540, 271, 21, 29);
 		paneSingleCellOptimization.add(lblZ_1);
 		
-		textField_6 = new JTextField();
-		textField_6.setText("3");
-		textField_6.setColumns(10);
-		textField_6.setBackground(Color.WHITE);
-		textField_6.setBounds(550, 275, 41, 20);
-		paneSingleCellOptimization.add(textField_6);
+		txtSecGBz = new JTextField();
+		txtSecGBz.setText("3");
+		txtSecGBz.setColumns(10);
+		txtSecGBz.setBackground(Color.WHITE);
+		txtSecGBz.setBounds(550, 275, 41, 20);
+		paneSingleCellOptimization.add(txtSecGBz);
 		
 		JLabel lblBgSubPrimary_1 = new JLabel("Background subtraction?");
 		lblBgSubPrimary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -410,12 +410,12 @@ public class OptimizationSingleCellView extends JFrame {
 		lblRadius_1.setBounds(751, 142, 48, 29);
 		paneSingleCellOptimization.add(lblRadius_1);
 		
-		textField_11 = new JTextField();
-		textField_11.setEnabled(false);
-		textField_11.setColumns(10);
-		textField_11.setBackground(Color.WHITE);
-		textField_11.setBounds(798, 146, 31, 20);
-		paneSingleCellOptimization.add(textField_11);
+		txtSecSubtractRadius = new JTextField();
+		txtSecSubtractRadius.setEnabled(false);
+		txtSecSubtractRadius.setColumns(10);
+		txtSecSubtractRadius.setBackground(Color.WHITE);
+		txtSecSubtractRadius.setBounds(798, 146, 31, 20);
+		paneSingleCellOptimization.add(txtSecSubtractRadius);
 		
 		JLabel lblDetectMaximaPrimary_1 = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaPrimary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -427,43 +427,43 @@ public class OptimizationSingleCellView extends JFrame {
 		lblThreshold_1.setBounds(827, 182, 76, 29);
 		paneSingleCellOptimization.add(lblThreshold_1);
 		
-		textField_12 = new JTextField();
-		textField_12.setText("2");
-		textField_12.setColumns(10);
-		textField_12.setBackground(Color.WHITE);
-		textField_12.setBounds(827, 212, 65, 20);
-		paneSingleCellOptimization.add(textField_12);
+		txtSecThreshold = new JTextField();
+		txtSecThreshold.setText("2");
+		txtSecThreshold.setColumns(10);
+		txtSecThreshold.setBackground(Color.WHITE);
+		txtSecThreshold.setBounds(827, 212, 65, 20);
+		paneSingleCellOptimization.add(txtSecThreshold);
 		
-		textField_13 = new JTextField();
-		textField_13.setText("15");
-		textField_13.setColumns(10);
-		textField_13.setBackground(Color.WHITE);
-		textField_13.setBounds(700, 210, 41, 20);
-		paneSingleCellOptimization.add(textField_13);
+		txtSecDMx = new JTextField();
+		txtSecDMx.setText("15");
+		txtSecDMx.setColumns(10);
+		txtSecDMx.setBackground(Color.WHITE);
+		txtSecDMx.setBounds(700, 210, 41, 20);
+		paneSingleCellOptimization.add(txtSecDMx);
 		
 		JLabel lblY_2_1 = new JLabel("y");
 		lblY_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_2_1.setBounds(690, 238, 21, 29);
 		paneSingleCellOptimization.add(lblY_2_1);
 		
-		textField_14 = new JTextField();
-		textField_14.setText("15");
-		textField_14.setColumns(10);
-		textField_14.setBackground(Color.WHITE);
-		textField_14.setBounds(700, 242, 41, 20);
-		paneSingleCellOptimization.add(textField_14);
+		txtSecDMy = new JTextField();
+		txtSecDMy.setText("15");
+		txtSecDMy.setColumns(10);
+		txtSecDMy.setBackground(Color.WHITE);
+		txtSecDMy.setBounds(700, 242, 41, 20);
+		paneSingleCellOptimization.add(txtSecDMy);
 		
 		JLabel lblZ_2_1 = new JLabel("z");
 		lblZ_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2_1.setBounds(690, 271, 21, 29);
 		paneSingleCellOptimization.add(lblZ_2_1);
 		
-		textField_15 = new JTextField();
-		textField_15.setText("15");
-		textField_15.setColumns(10);
-		textField_15.setBackground(Color.WHITE);
-		textField_15.setBounds(700, 275, 41, 20);
-		paneSingleCellOptimization.add(textField_15);
+		txtSecDMz = new JTextField();
+		txtSecDMz.setText("15");
+		txtSecDMz.setColumns(10);
+		txtSecDMz.setBackground(Color.WHITE);
+		txtSecDMz.setBounds(700, 275, 41, 20);
+		paneSingleCellOptimization.add(txtSecDMz);
 		
 		JLabel lblX_2_1 = new JLabel("x");
 		lblX_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));

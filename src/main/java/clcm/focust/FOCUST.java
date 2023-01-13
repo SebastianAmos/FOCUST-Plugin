@@ -59,7 +59,6 @@ public static String storeDir = "";
 		try {
 			fileChooser = futureFileChooser.get();
 		} catch (InterruptedException | ExecutionException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -68,7 +67,6 @@ public static String storeDir = "";
 		fileChooser.setDialogTitle("Select a Directory or File(s):");
 		
 		// abort if nothing selected or return the selected files 
-		
 		int returnValue = fileChooser.showOpenDialog(null);
 		if(returnValue == JFileChooser.APPROVE_OPTION) {
 			imageFiles = fileChooser.getSelectedFiles();
