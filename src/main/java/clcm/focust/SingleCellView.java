@@ -1,4 +1,4 @@
-package clcm.focust.gui;
+package clcm.focust;
 
 import java.awt.EventQueue;
 
@@ -31,6 +31,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
 import javax.swing.JInternalFrame;
 
 public class SingleCellView extends JFrame {
@@ -61,11 +67,19 @@ public class SingleCellView extends JFrame {
 	private JTextField txtSingleCellChannel4Name;
 	private JTextField txtSingleCellGrouping;
 
-
+	FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
+	
+	
 	/**
 	 * Construct the single cell gui
 	 */
 	public SingleCellView() {
+		
+		// init the filechooser to avoid delay
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.execute(futureFileChooser);
+		
+		// Construct the gui
 		setTitle("FOCUST: Single Cell Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -94,7 +108,35 @@ public class SingleCellView extends JFrame {
 		JButton btnInputDir = new JButton("Browse");
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				File[] imageFiles;
+				String storeDir = "";
 				
+				JFileChooser fileChooser = null;
+				try {
+					fileChooser = futureFileChooser.get();
+				} catch (InterruptedException | ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				fileChooser.setMultiSelectionEnabled(true);
+				fileChooser.setDialogTitle("Select a Directory or File(s):");
+				
+				// abort if nothing selected or return the selected files 
+				
+				int returnValue = fileChooser.showOpenDialog(null);
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
+					imageFiles = fileChooser.getSelectedFiles();
+				} else {
+					return;
+				}
+				
+				// Set the output directory to match the input
+				storeDir = imageFiles[0].getParent();
+				
+				// update the textbox 
+				txtbInputDir.setText(storeDir);
 			
 			}
 		});
@@ -158,19 +200,19 @@ public class SingleCellView extends JFrame {
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
 		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentPrimary.setBounds(322, 153, 187, 29);
+		lblSegmentPrimary.setBounds(326, 166, 187, 29);
 		paneSingleCell.add(lblSegmentPrimary);
 		
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentSecondary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentSecondary.setBounds(576, 153, 187, 29);
+		lblSegmentSecondary.setBounds(580, 166, 187, 29);
 		paneSingleCell.add(lblSegmentSecondary);
 		
 		JPanel PrimaryObjectPanel = new JPanel();
 		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(322, 211, 187, 182);
+		PrimaryObjectPanel.setBounds(326, 224, 187, 182);
 		paneSingleCell.add(PrimaryObjectPanel);
 		PrimaryObjectPanel.setLayout(null);
 		
@@ -306,21 +348,21 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel.setBounds(337, 178, 106, 29);
+		lblWhichChannel.setBounds(341, 191, 106, 29);
 		paneSingleCell.add(lblWhichChannel);
 		
 		JComboBox cbChannelPrimary = new JComboBox();
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(450, 180, 48, 25);
+		cbChannelPrimary.setBounds(454, 193, 48, 25);
 		paneSingleCell.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
 		SecondaryObjectPanel.setLayout(null);
 		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
-		SecondaryObjectPanel.setBounds(576, 211, 187, 182);
+		SecondaryObjectPanel.setBounds(580, 224, 187, 182);
 		paneSingleCell.add(SecondaryObjectPanel);
 		
 		JLabel lblBgSubSecondary = new JLabel("Background subtraction?");
@@ -446,7 +488,7 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel_1.setBounds(589, 178, 106, 29);
+		lblWhichChannel_1.setBounds(593, 191, 106, 29);
 		paneSingleCell.add(lblWhichChannel_1);
 		
 		JComboBox cbChannelSecondary = new JComboBox();
@@ -454,19 +496,19 @@ public class SingleCellView extends JFrame {
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(702, 180, 48, 25);
+		cbChannelSecondary.setBounds(706, 193, 48, 25);
 		paneSingleCell.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(307, 150, 469, 255);
+		panel.setBounds(311, 163, 469, 255);
 		paneSingleCell.add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentationParameters.setBounds(433, 118, 216, 29);
+		lblSegmentationParameters.setBounds(437, 131, 216, 29);
 		paneSingleCell.add(lblSegmentationParameters);
 		
 		JButton btnHelp = new JButton("Help");
@@ -484,7 +526,7 @@ public class SingleCellView extends JFrame {
 			}
 		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnBackToMenu.setBounds(10, 373, 133, 29);
+		btnBackToMenu.setBounds(10, 373, 125, 29);
 		paneSingleCell.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
@@ -540,14 +582,9 @@ public class SingleCellView extends JFrame {
 		txtpnanyConditionsfactorsSpecific.setBounds(10, 291, 289, 67);
 		paneSingleCell.add(txtpnanyConditionsfactorsSpecific);
 		
-		JButton btnSaveConfigSingleCell = new JButton("Save Parameters");
-		btnSaveConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnSaveConfigSingleCell.setBounds(607, 406, 156, 29);
-		paneSingleCell.add(btnSaveConfigSingleCell);
-		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(441, 406, 156, 29);
+		btnLoadConfigSingleCell.setBounds(148, 373, 141, 29);
 		paneSingleCell.add(btnLoadConfigSingleCell);
 	}
 }

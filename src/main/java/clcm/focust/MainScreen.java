@@ -1,10 +1,12 @@
-package clcm.focust.gui;
+package clcm.focust;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import ij.gui.GenericDialog;
+import org.scijava.plugin.Parameter;
+import org.scijava.widget.ChoiceWidget;
 
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -24,7 +26,6 @@ import javax.swing.JButton;
 
 
 public class MainScreen extends JFrame{
-
 	private JPanel mainPane;
 
 	/** Button to open the optimization window. */
@@ -35,7 +36,6 @@ public class MainScreen extends JFrame{
 	private JButton btnSingleCell;
 	/** Button to open the speckle window. */ 
 	private JButton btnSpeckle;
-
 
 	/**
 	 * construct the main menu gui. 
@@ -60,29 +60,12 @@ public class MainScreen extends JFrame{
 		btnOptimize = new JButton("Optimize");
 		btnOptimize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
-				/*
-				 * USE @PARAMETER functions such as #@ String (choices={"Option A", "Option B"}, style="radioButtonHorizontal") myChoiceABC
-				 */
-				
-				
-				
-			/*	GenericDialog gd = new GenericDialog("Optimization Selector");
-				String[] choices = {"Spheroid Analysis", "Single Cell Analysis", "Speckle Analysis"};
-				gd.addRadioButtonGroup("Select a Mode to Optimize:", choices, 1, 3, null);
-				gd.showDialog();
-				String button = gd.getNextRadioButton(); 
-			*/	
-				
-				
-				
-			/*	SwingUtilities.invokeLater(() -> {
-					OptimizationSingleCellView OptimizeSingleCellGui = new OptimizationSingleCellView();
-					OptimizeSingleCellGui.setVisible(true);
+			SwingUtilities.invokeLater(() -> {
+				OptimizeModeSelector optimizeSelect = new OptimizeModeSelector();
+					optimizeSelect.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(btnOptimize);
 					win.dispose();
-				}); */
+				});
 			}
 		});
 		btnOptimize.setFont(new Font("Gadugi", Font.BOLD, 13));

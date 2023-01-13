@@ -1,4 +1,4 @@
-package clcm.focust.gui;
+package clcm.focust;
 
 
 import javax.swing.JFrame;
@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
@@ -24,6 +25,11 @@ import java.awt.SystemColor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.awt.event.ActionEvent;
 
 public class SpeckleView extends JFrame {
@@ -62,15 +68,15 @@ public class SpeckleView extends JFrame {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
-
 	/**
-	 * Construct the speckel gui.
+	 * Construct the speckle gui.
 	 */
 	public SpeckleView() {
+		
 		setTitle("FOCUST: Speckle Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpeckleView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 973, 522);
+		setBounds(100, 100, 973, 497);
 		paneSpeckle = new JPanel();
 		paneSpeckle.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -83,6 +89,17 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(lblSelectAnInput);
 		
 		JButton btnInputDir = new JButton("Browse");
+		btnInputDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Find and set the input directory.
+				FileBrowser.FileFinder();
+				FileBrowser.storeDir = FileBrowser.imageFiles[0].getParent();
+				
+				// update the textbox in spheroid view
+				txtInputDir.setText(FileBrowser.storeDir);
+			}
+		});
+		
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnInputDir.setBounds(191, 28, 96, 29);
 		paneSpeckle.add(btnInputDir);
@@ -196,7 +213,7 @@ public class SpeckleView extends JFrame {
 		JLabel lblRadius = new JLabel("Radius:\r\n");
 		lblRadius.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius.setEnabled(false);
-		lblRadius.setBounds(98, 21, 48, 29);
+		lblRadius.setBounds(97, 21, 48, 29);
 		PrimaryObjectPanel.add(lblRadius);
 		
 		txtSpecklePrimaryGBx = new JTextField();
@@ -236,7 +253,7 @@ public class SpeckleView extends JFrame {
 		txtSpecklePrimaryBG.setEnabled(false);
 		txtSpecklePrimaryBG.setColumns(10);
 		txtSpecklePrimaryBG.setBackground(new Color(211, 211, 211));
-		txtSpecklePrimaryBG.setBounds(145, 25, 31, 20);
+		txtSpecklePrimaryBG.setBounds(145, 25, 35, 20);
 		PrimaryObjectPanel.add(txtSpecklePrimaryBG);
 		
 		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
@@ -616,12 +633,12 @@ public class SpeckleView extends JFrame {
 			}
 		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnBackToMenu.setBounds(12, 373, 133, 29);
+		btnBackToMenu.setBounds(18, 382, 125, 29);
 		paneSpeckle.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
-		btnRunAnalysis.setBounds(12, 406, 279, 29);
+		btnRunAnalysis.setBounds(18, 415, 279, 29);
 		paneSpeckle.add(btnRunAnalysis);
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
@@ -672,14 +689,9 @@ public class SpeckleView extends JFrame {
 		txtpnanyConditionsfactorsSpecific.setBounds(12, 291, 289, 67);
 		paneSpeckle.add(txtpnanyConditionsfactorsSpecific);
 		
-		JButton btnSaveConfigSingleCell = new JButton("Save Parameters");
-		btnSaveConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnSaveConfigSingleCell.setBounds(609, 445, 156, 29);
-		paneSpeckle.add(btnSaveConfigSingleCell);
-		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(443, 445, 156, 29);
+		btnLoadConfigSingleCell.setBounds(150, 382, 147, 29);
 		paneSpeckle.add(btnLoadConfigSingleCell);
 		
 		JLabel lblPerformColocalizationAnalysis = new JLabel("Perform colocalization analysis*?");
