@@ -108,36 +108,12 @@ public class SingleCellView extends JFrame {
 		JButton btnInputDir = new JButton("Browse");
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				File[] imageFiles;
-				String storeDir = "";
+				// Find and set the input directory.
+				FOCUST.FileFinder();
+				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
 				
-				JFileChooser fileChooser = null;
-				try {
-					fileChooser = futureFileChooser.get();
-				} catch (InterruptedException | ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				fileChooser.setMultiSelectionEnabled(true);
-				fileChooser.setDialogTitle("Select a Directory or File(s):");
-				
-				// abort if nothing selected or return the selected files 
-				
-				int returnValue = fileChooser.showOpenDialog(null);
-				if(returnValue == JFileChooser.APPROVE_OPTION) {
-					imageFiles = fileChooser.getSelectedFiles();
-				} else {
-					return;
-				}
-				
-				// Set the output directory to match the input
-				storeDir = imageFiles[0].getParent();
-				
-				// update the textbox 
-				txtbInputDir.setText(storeDir);
-			
+				// update the textbox in spheroid view
+				txtbInputDir.setText(FOCUST.storeDir);
 			}
 		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));

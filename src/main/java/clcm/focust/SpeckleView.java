@@ -92,11 +92,11 @@ public class SpeckleView extends JFrame {
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
-				FileBrowser.FileFinder();
-				FileBrowser.storeDir = FileBrowser.imageFiles[0].getParent();
+				FOCUST.FileFinder();
+				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
 				
 				// update the textbox in spheroid view
-				txtInputDir.setText(FileBrowser.storeDir);
+				txtInputDir.setText(FOCUST.storeDir);
 			}
 		});
 		

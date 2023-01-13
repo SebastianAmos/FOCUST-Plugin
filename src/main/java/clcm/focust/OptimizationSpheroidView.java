@@ -131,6 +131,16 @@ public class OptimizationSpheroidView extends JFrame {
 		contentPane.add(txtInputDir);
 		
 		JButton btnInputDir = new JButton("Browse");
+		btnInputDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Find and set the input directory.
+				FOCUST.FileFinder();
+				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
+				
+				// update the textbox in spheroid view
+				txtInputDir.setText(FOCUST.storeDir);
+			}
+		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnInputDir.setBounds(183, 53, 96, 29);
 		contentPane.add(btnInputDir);

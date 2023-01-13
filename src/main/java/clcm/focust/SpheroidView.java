@@ -53,15 +53,11 @@ public class SpheroidView extends JFrame {
 	 private JTextField textField_17;
 	 private JTextField textField_21;
 
-	 /*FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
 	 
 	/**
 	 * construct the spheroid gui.
 	 */
 	public SpheroidView() {
-		
-		/*ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.execute(futureFileChooser); */
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Spheroid Analysis");
@@ -99,46 +95,12 @@ public class SpheroidView extends JFrame {
 		JButton btnInputDir = new JButton("Browse");
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
 				// Find and set the input directory.
-				FileBrowser.FileFinder();
-				FileBrowser.storeDir = FileBrowser.imageFiles[0].getParent();
+				FOCUST.FileFinder();
+				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
 				
 				// update the textbox in spheroid view
-				txtInputDir.setText(FileBrowser.storeDir);
-			
-			
-			/*	
-				File[] imageFiles;
-				String storeDir = "";
-				
-				JFileChooser fileChooser = null;
-				try {
-					fileChooser = futureFileChooser.get();
-				} catch (InterruptedException | ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				fileChooser.setMultiSelectionEnabled(true);
-				fileChooser.setDialogTitle("Select a Directory or File(s):");
-				
-				// abort if nothing selected or return the selected files 
-				
-				int returnValue = fileChooser.showOpenDialog(null);
-				if(returnValue == JFileChooser.APPROVE_OPTION) {
-					imageFiles = fileChooser.getSelectedFiles();
-				} else {
-					return;
-				}
-				
-				// Set the output directory to match the input
-				storeDir = imageFiles[0].getParent();
-				
-			*/
-				
+				txtInputDir.setText(FOCUST.storeDir);
 			}
 		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));

@@ -18,10 +18,13 @@ import org.scijava.plugin.Plugin;
 
 
 @Plugin(type = Command.class, menuPath = "Plugins>FOCUST>Run")
-
 public class FOCUST implements Command {
 
-	
+
+public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);	
+public static File[] imageFiles;
+public static String storeDir = "";
+
 /**
  * Launch the main gui for FOCUST.	
  */
@@ -34,6 +37,8 @@ public class FOCUST implements Command {
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.execute(futureFileChooser);
 	} 
 
 	@Override
@@ -43,18 +48,12 @@ public class FOCUST implements Command {
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
-	}	
-	
-	
-	public static File[] imageFiles;
-	public static String storeDir = "";
-	
-	public static void FileFinder() {
-		
-		FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.execute(futureFileChooser);
-		
+	}	
+	
+
+	public static void FileFinder() {
 		
 		JFileChooser fileChooser = null;
 		try {
@@ -75,12 +74,6 @@ public class FOCUST implements Command {
 			imageFiles = fileChooser.getSelectedFiles();
 		} else {
 			return;
-		}
-		
-	
-		
+		}	
 	}
-	
-	
-	
 }
