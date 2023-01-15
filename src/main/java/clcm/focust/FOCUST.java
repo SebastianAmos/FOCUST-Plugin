@@ -17,7 +17,7 @@ import org.scijava.plugin.Menu;
 import org.scijava.plugin.Plugin;
 
 
-@Plugin(type = Command.class, menuPath = "Plugins>FOCUST>Run")
+@Plugin(type = Command.class, menuPath = "Plugins>FOCUST")
 public class FOCUST implements Command {
 
 
