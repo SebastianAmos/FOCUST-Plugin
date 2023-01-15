@@ -38,9 +38,9 @@ For this mode, datasets must contain a stain that represents the nucleus and a s
 
 ## Help
 For assistance with using FOCUST, please see the manual or YouTube video for a demonstration.
-To lodge a query or ask a question, please use the [forum](https://forum.image.sc/).
+To lodge a query or ask a question, please use the [forum](https://forum.image.sc/). Be sure to search for relevant topics before creating a new one. 
 Alternatively, you can contact me directly via email: sebastian.amos@uwa.edu.au
 
-
+I am alway open to implementing new features and functionality when I can find the time - so if you have an interesting use-case or a cool idea, let me know or contribute!
 
 
