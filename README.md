@@ -7,6 +7,9 @@ Under the hood, FOCUST is dependent on the outstanding [CLIJ2](https://github.co
 
 The ouputs from FOCUST are all in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily graphed or imported directly into data workflows in software such as R-Studio.
 
+## Installation
+To install and use FOCUST in FIJI, please use the update site: Help > Update > Manage Update Sites > __Tick the box next to__ FOCSUT > Close > Apply Changes. Restart ImageJ/FIJI and you will now find FOCUST in the Plugins sub-menu. 
+
 ## Spheroid Analysis
 FOCUST includes a spheroid mode to analyse densely-packed nuclei within a spheroid or organoid. For this mode, datasets must contain a stain for the nucleus and a stain that represents the spheroid/organoid as a whole structure (such as a memebrane or cytoskeletal stain).
 <ins> The spheroid analysis mode will: </ins>
@@ -33,7 +36,10 @@ For this mode, datasets must contain a stain that represents the nucleus and a s
 - Count the number of speckles per nucleus 
 - Quantify the 
 
-
+## Help
+For assistance with using FOCUST, please see the manual or YouTube video for a demonstration.
+To lodge a query or ask a question, please use the [forum](https://forum.image.sc/).
+Alternatively, you can contact me directly via email: sebastian.amos@uwa.edu.au
 
 
 
