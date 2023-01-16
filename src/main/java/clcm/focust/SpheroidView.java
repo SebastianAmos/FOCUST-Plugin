@@ -87,11 +87,6 @@ public class SpheroidView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Segment.Spheroid();
 				
-				
-				
-				
-				
-				
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
@@ -114,6 +109,7 @@ public class SpheroidView extends JFrame {
 				txtInputDir.setText(inputDirSt);
 			}
 		});
+		
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnInputDir.setBounds(193, 28, 96, 29);
 		paneSpheroid.add(btnInputDir);

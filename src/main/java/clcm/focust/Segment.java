@@ -31,14 +31,8 @@ public class Segment {
 		 */
 		
 		
-		String macro = "//@ File (label = \"Input directory\", style = \"directory\") inputDir\r\n"
-				+ "//#@ File (label = \"Output directory\", style = \"directory\") output\r\n"
-				+ "//#@ String (label = \"Channel 2 Stain\", value = \"\") channel2\r\n"
-				+ "//#@ String (label = \"Channel 3 Stain\", value = \"\") channel3\r\n"
-				+ "//#@ String (label = \"Channel 4 Stain\", value = \"\") channel4\r\n"
-				+ "//#@ String (label = \"Grouping?\", value = \"\") groupvalue\r\n"
-				+ "\r\n"
-				+ "/* ==============================\r\n"
+		String macro = 
+				  "/* ==============================\r\n"
 				+ " * START THE TIMER AND BATCH LOOP\r\n"
 				+ " ===============================*/\r\n"
 				+ "\r\n"
@@ -46,7 +40,7 @@ public class Segment {
 				+ "verystart = getTime();\r\n"
 				+ "Sheet = 0;\r\n"
 				+ "\r\n"
-				+ "inputDir=\"C:/Users/21716603/Desktop/Images/Spheroid In/\";\r\n"
+				+ "inputDir='"+iDir+"';\r\n"
 				+"output=inputDir;\r\n"
 				+"channel2=\"Ki67\";\r\n"
 				+"channel3=\"YAP\";\r\n"
