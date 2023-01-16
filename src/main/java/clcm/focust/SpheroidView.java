@@ -34,24 +34,24 @@ public class SpheroidView extends JFrame {
 
 	 private JPanel paneSpheroid;
 	 private JTextField txtInputDir;
-	 private JTextField textField_1;
-	 private JTextField textField_2;
-	 private JTextField textField_3;
-	 private JTextField textField_4;
-	 private JTextField textField_5;
-	 private JTextField textField_6;
-	 private JTextField textField_7;
-	 private JTextField textField_8;
-	 private JTextField textField_9;
-	 private JTextField textField_10;
-	 private JTextField textField_11;
-	 private JTextField textField_12;
-	 private JTextField textField_13;
-	 private JTextField textField_14;
-	 private JTextField textField_15;
-	 private JTextField textField_16;
-	 private JTextField textField_17;
-	 private JTextField textField_21;
+	 private JTextField txtOutputDir;
+	 private JTextField txtSpheroidC2Name;
+	 private JTextField txtSpheroidC3Name;
+	 private JTextField txtSpheroidC4Name;
+	 private JTextField txtSpheroidGroupName;
+	 private JTextField txtPriGBx;
+	 private JTextField txtPriGBy;
+	 private JTextField txtPriGBz;
+	 private JTextField txtBgSubPrimaryVar;
+	 private JTextField txtPriDMx;
+	 private JTextField txtPriDMy;
+	 private JTextField txtPriDMz;
+	 private JTextField txtPriThreshold;
+	 private JTextField txtSecGBx;
+	 private JTextField txtSecGBy;
+	 private JTextField txtSecGBz;
+	 private JTextField txtBgSubSecondaryVar;
+	 private JTextField txtSecThreshold;
 
 	 
 	/**
@@ -83,6 +83,17 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Segment.Spheroid();
+				
+				
+				
+				
+				
+				
+			}
+		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
 		btnRunAnalysis.setBounds(10, 406, 279, 29);
 		paneSpheroid.add(btnRunAnalysis);
@@ -97,10 +108,10 @@ public class SpheroidView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
 				FOCUST.FileFinder();
-				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
 				
-				// update the textbox in spheroid view
-				txtInputDir.setText(FOCUST.storeDir);
+				// update the textbox in spheroid view to selected path
+				String inputDirSt = FOCUST.inputPath.toString(); 
+				txtInputDir.setText(inputDirSt);
 			}
 		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -134,11 +145,11 @@ public class SpheroidView extends JFrame {
 		txtInputDir.setBounds(299, 28, 289, 29);
 		paneSpheroid.add(txtInputDir);
 		
-		textField_1 = new JTextField();
-		textField_1.setEnabled(false);
-		textField_1.setColumns(10);
-		textField_1.setBounds(403, 68, 289, 29);
-		paneSpheroid.add(textField_1);
+		txtOutputDir = new JTextField();
+		txtOutputDir.setEnabled(false);
+		txtOutputDir.setColumns(10);
+		txtOutputDir.setBounds(403, 68, 289, 29);
+		paneSpheroid.add(txtOutputDir);
 		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(169, 169, 169));
@@ -179,40 +190,40 @@ public class SpheroidView extends JFrame {
 		lblNameChannel2.setBounds(10, 154, 116, 29);
 		paneSpheroid.add(lblNameChannel2);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(120, 154, 176, 29);
-		paneSpheroid.add(textField_2);
+		txtSpheroidC2Name = new JTextField();
+		txtSpheroidC2Name.setColumns(10);
+		txtSpheroidC2Name.setBounds(120, 154, 176, 29);
+		paneSpheroid.add(txtSpheroidC2Name);
 		
 		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
 		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblNameChannel3.setBounds(10, 188, 116, 29);
 		paneSpheroid.add(lblNameChannel3);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(120, 188, 176, 29);
-		paneSpheroid.add(textField_3);
+		txtSpheroidC3Name = new JTextField();
+		txtSpheroidC3Name.setColumns(10);
+		txtSpheroidC3Name.setBounds(120, 188, 176, 29);
+		paneSpheroid.add(txtSpheroidC3Name);
 		
 		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
 		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblNameChannel4.setBounds(10, 221, 116, 29);
 		paneSpheroid.add(lblNameChannel4);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(120, 221, 176, 29);
-		paneSpheroid.add(textField_4);
+		txtSpheroidC4Name = new JTextField();
+		txtSpheroidC4Name.setColumns(10);
+		txtSpheroidC4Name.setBounds(120, 221, 176, 29);
+		paneSpheroid.add(txtSpheroidC4Name);
 		
 		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
 		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblGroupingInfo.setBounds(10, 261, 116, 29);
 		paneSpheroid.add(lblGroupingInfo);
 		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(120, 261, 176, 29);
-		paneSpheroid.add(textField_5);
+		txtSpheroidGroupName = new JTextField();
+		txtSpheroidGroupName.setColumns(10);
+		txtSpheroidGroupName.setBounds(120, 261, 176, 29);
+		paneSpheroid.add(txtSpheroidGroupName);
 		
 		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
 		txtpnanyConditionsfactorsSpecific.setText("*Any conditions/factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
@@ -271,11 +282,11 @@ public class SpheroidView extends JFrame {
 		lblRadius.setBounds(98, 21, 48, 29);
 		PrimaryObjectPanel.add(lblRadius);
 		
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBackground(new Color(211, 211, 211));
-		textField_6.setBounds(20, 73, 41, 20);
-		PrimaryObjectPanel.add(textField_6);
+		txtPriGBx = new JTextField();
+		txtPriGBx.setColumns(10);
+		txtPriGBx.setBackground(new Color(211, 211, 211));
+		txtPriGBx.setBounds(20, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBx);
 		
 		JLabel lblX = new JLabel("x");
 		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -287,29 +298,29 @@ public class SpheroidView extends JFrame {
 		lblY.setBounds(65, 69, 21, 29);
 		PrimaryObjectPanel.add(lblY);
 		
-		textField_7 = new JTextField();
-		textField_7.setColumns(10);
-		textField_7.setBackground(new Color(211, 211, 211));
-		textField_7.setBounds(75, 73, 41, 20);
-		PrimaryObjectPanel.add(textField_7);
+		txtPriGBy = new JTextField();
+		txtPriGBy.setColumns(10);
+		txtPriGBy.setBackground(new Color(211, 211, 211));
+		txtPriGBy.setBounds(75, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBy);
 		
 		JLabel lblZ = new JLabel("z");
 		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ.setBounds(120, 69, 21, 29);
 		PrimaryObjectPanel.add(lblZ);
 		
-		textField_8 = new JTextField();
-		textField_8.setColumns(10);
-		textField_8.setBackground(new Color(211, 211, 211));
-		textField_8.setBounds(130, 73, 41, 20);
-		PrimaryObjectPanel.add(textField_8);
+		txtPriGBz = new JTextField();
+		txtPriGBz.setColumns(10);
+		txtPriGBz.setBackground(new Color(211, 211, 211));
+		txtPriGBz.setBounds(130, 73, 41, 20);
+		PrimaryObjectPanel.add(txtPriGBz);
 		
-		textField_9 = new JTextField();
-		textField_9.setEnabled(false);
-		textField_9.setColumns(10);
-		textField_9.setBackground(new Color(211, 211, 211));
-		textField_9.setBounds(145, 25, 31, 20);
-		PrimaryObjectPanel.add(textField_9);
+		txtBgSubPrimaryVar = new JTextField();
+		txtBgSubPrimaryVar.setEnabled(false);
+		txtBgSubPrimaryVar.setColumns(10);
+		txtBgSubPrimaryVar.setBackground(new Color(211, 211, 211));
+		txtBgSubPrimaryVar.setBounds(145, 25, 31, 20);
+		PrimaryObjectPanel.add(txtBgSubPrimaryVar);
 		
 		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -321,44 +332,44 @@ public class SpheroidView extends JFrame {
 		lblX_1.setBounds(10, 117, 21, 29);
 		PrimaryObjectPanel.add(lblX_1);
 		
-		textField_10 = new JTextField();
-		textField_10.setColumns(10);
-		textField_10.setBackground(new Color(211, 211, 211));
-		textField_10.setBounds(20, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_10);
+		txtPriDMx = new JTextField();
+		txtPriDMx.setColumns(10);
+		txtPriDMx.setBackground(new Color(211, 211, 211));
+		txtPriDMx.setBounds(20, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMx);
 		
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(65, 117, 21, 29);
 		PrimaryObjectPanel.add(lblY_1);
 		
-		textField_11 = new JTextField();
-		textField_11.setColumns(10);
-		textField_11.setBackground(new Color(211, 211, 211));
-		textField_11.setBounds(75, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_11);
+		txtPriDMy = new JTextField();
+		txtPriDMy.setColumns(10);
+		txtPriDMy.setBackground(new Color(211, 211, 211));
+		txtPriDMy.setBounds(75, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMy);
 		
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(120, 117, 21, 29);
 		PrimaryObjectPanel.add(lblZ_1);
 		
-		textField_12 = new JTextField();
-		textField_12.setColumns(10);
-		textField_12.setBackground(new Color(211, 211, 211));
-		textField_12.setBounds(130, 121, 41, 20);
-		PrimaryObjectPanel.add(textField_12);
+		txtPriDMz = new JTextField();
+		txtPriDMz.setColumns(10);
+		txtPriDMz.setBackground(new Color(211, 211, 211));
+		txtPriDMz.setBounds(130, 121, 41, 20);
+		PrimaryObjectPanel.add(txtPriDMz);
 		
 		JLabel lblThreshold = new JLabel("Threshold:");
 		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold.setBounds(10, 144, 76, 29);
 		PrimaryObjectPanel.add(lblThreshold);
 		
-		textField_13 = new JTextField();
-		textField_13.setColumns(10);
-		textField_13.setBackground(new Color(211, 211, 211));
-		textField_13.setBounds(76, 148, 55, 20);
-		PrimaryObjectPanel.add(textField_13);
+		txtPriThreshold = new JTextField();
+		txtPriThreshold.setColumns(10);
+		txtPriThreshold.setBackground(new Color(211, 211, 211));
+		txtPriThreshold.setBounds(76, 148, 55, 20);
+		PrimaryObjectPanel.add(txtPriThreshold);
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -410,11 +421,11 @@ public class SpheroidView extends JFrame {
 		lblRadius_1.setBounds(98, 21, 48, 29);
 		SecondaryObjectPanel.add(lblRadius_1);
 		
-		textField_14 = new JTextField();
-		textField_14.setColumns(10);
-		textField_14.setBackground(new Color(211, 211, 211));
-		textField_14.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_14);
+		txtSecGBx = new JTextField();
+		txtSecGBx.setColumns(10);
+		txtSecGBx.setBackground(new Color(211, 211, 211));
+		txtSecGBx.setBounds(20, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBx);
 		
 		JLabel lblX_2 = new JLabel("x");
 		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -426,40 +437,40 @@ public class SpheroidView extends JFrame {
 		lblY_2.setBounds(65, 69, 21, 29);
 		SecondaryObjectPanel.add(lblY_2);
 		
-		textField_15 = new JTextField();
-		textField_15.setColumns(10);
-		textField_15.setBackground(new Color(211, 211, 211));
-		textField_15.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_15);
+		txtSecGBy = new JTextField();
+		txtSecGBy.setColumns(10);
+		txtSecGBy.setBackground(new Color(211, 211, 211));
+		txtSecGBy.setBounds(75, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBy);
 		
 		JLabel lblZ_2 = new JLabel("z");
 		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2.setBounds(120, 69, 21, 29);
 		SecondaryObjectPanel.add(lblZ_2);
 		
-		textField_16 = new JTextField();
-		textField_16.setColumns(10);
-		textField_16.setBackground(new Color(211, 211, 211));
-		textField_16.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel.add(textField_16);
+		txtSecGBz = new JTextField();
+		txtSecGBz.setColumns(10);
+		txtSecGBz.setBackground(new Color(211, 211, 211));
+		txtSecGBz.setBounds(130, 73, 41, 20);
+		SecondaryObjectPanel.add(txtSecGBz);
 		
-		textField_17 = new JTextField();
-		textField_17.setEnabled(false);
-		textField_17.setColumns(10);
-		textField_17.setBackground(new Color(211, 211, 211));
-		textField_17.setBounds(145, 25, 31, 20);
-		SecondaryObjectPanel.add(textField_17);
+		txtBgSubSecondaryVar = new JTextField();
+		txtBgSubSecondaryVar.setEnabled(false);
+		txtBgSubSecondaryVar.setColumns(10);
+		txtBgSubSecondaryVar.setBackground(new Color(211, 211, 211));
+		txtBgSubSecondaryVar.setBounds(145, 25, 31, 20);
+		SecondaryObjectPanel.add(txtBgSubSecondaryVar);
 		
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
 		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1.setBounds(10, 104, 76, 29);
 		SecondaryObjectPanel.add(lblThreshold_1);
 		
-		textField_21 = new JTextField();
-		textField_21.setColumns(10);
-		textField_21.setBackground(new Color(211, 211, 211));
-		textField_21.setBounds(76, 108, 55, 20);
-		SecondaryObjectPanel.add(textField_21);
+		txtSecThreshold = new JTextField();
+		txtSecThreshold.setColumns(10);
+		txtSecThreshold.setBackground(new Color(211, 211, 211));
+		txtSecThreshold.setBounds(76, 108, 55, 20);
+		SecondaryObjectPanel.add(txtSecThreshold);
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));

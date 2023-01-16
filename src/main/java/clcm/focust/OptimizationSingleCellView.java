@@ -52,6 +52,7 @@ public class OptimizationSingleCellView extends JFrame {
 	private JTextField txtSecDMy;
 	private JTextField txtSecDMz;
 	
+	
 
 	/**
 	 * Launch the application.
@@ -102,10 +103,10 @@ public class OptimizationSingleCellView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
 				FOCUST.FileFinder();
-				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
-				
+				FOCUST.inputDir = FOCUST.imageFiles[0].getParent();
+			
 				// update the textbox 
-				txtDir.setText(FOCUST.storeDir);
+				txtDir.setText(FOCUST.inputDir);
 			}
 		});
 		

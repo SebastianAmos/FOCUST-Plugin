@@ -3,6 +3,8 @@ package clcm.focust;
 
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +25,11 @@ public class FOCUST implements Command {
 
 public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);	
 public static File[] imageFiles;
-public static String storeDir = "";
+public static String inputDir = "";
+public static String outputDir = "";
+public static JFileChooser fileChooser = null;
+public static Path inputPath;
+
 
 /**
  * Launch the main gui for FOCUST.	
@@ -55,7 +61,7 @@ public static String storeDir = "";
 
 	public static void FileFinder() {
 		
-		JFileChooser fileChooser = null;
+		//JFileChooser fileChooser = null;
 		try {
 			fileChooser = futureFileChooser.get();
 		} catch (InterruptedException | ExecutionException e1) {
@@ -70,6 +76,9 @@ public static String storeDir = "";
 		int returnValue = fileChooser.showOpenDialog(null);
 		if(returnValue == JFileChooser.APPROVE_OPTION) {
 			imageFiles = fileChooser.getSelectedFiles();
+			String imagePathString = imageFiles[0].getParent();
+			inputPath = Paths.get(imagePathString);
+			
 		} else {
 			return;
 		}	

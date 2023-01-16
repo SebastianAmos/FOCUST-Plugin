@@ -110,10 +110,10 @@ public class SingleCellView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
 				FOCUST.FileFinder();
-				FOCUST.storeDir = FOCUST.imageFiles[0].getParent();
+				FOCUST.inputDir = FOCUST.imageFiles[0].getParent();
 				
 				// update the textbox in spheroid view
-				txtbInputDir.setText(FOCUST.storeDir);
+				txtbInputDir.setText(FOCUST.inputDir);
 			}
 		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
