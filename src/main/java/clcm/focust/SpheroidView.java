@@ -29,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ButtonGroup;
 
 public class SpheroidView extends JFrame {
 
@@ -52,6 +53,9 @@ public class SpheroidView extends JFrame {
 	 private JTextField txtSecGBz;
 	 private JTextField txtBgSubSecondaryVar;
 	 private JTextField txtSecThreshold;
+	 private final ButtonGroup btnGroupOutputDir = new ButtonGroup();
+	 private final ButtonGroup btnGroupBGPrimary = new ButtonGroup();
+	 private final ButtonGroup btnGroupBGSecondary = new ButtonGroup();
 
 	 
 	/**
@@ -120,12 +124,14 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblSeperateOutputDirectory);
 		
 		JRadioButton rbOutputDirNo = new JRadioButton("No");
+		btnGroupOutputDir.add(rbOutputDirNo);
 		rbOutputDirNo.setSelected(true);
 		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirNo.setBounds(193, 71, 48, 23);
 		paneSpheroid.add(rbOutputDirNo);
 		
 		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
+		btnGroupOutputDir.add(rbOutputDirYes);
 		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirYes.setBounds(243, 71, 48, 23);
 		paneSpheroid.add(rbOutputDirYes);
@@ -254,6 +260,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblBgSubPrimary);
 		
 		JRadioButton rbBgSubPrimaryNo = new JRadioButton("No");
+		btnGroupBGPrimary.add(rbBgSubPrimaryNo);
 		rbBgSubPrimaryNo.setSelected(true);
 		rbBgSubPrimaryNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbBgSubPrimaryNo.setBackground(new Color(211, 211, 211));
@@ -261,8 +268,8 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(rbBgSubPrimaryNo);
 		
 		JRadioButton rbBgSubPrimaryYes = new JRadioButton("Yes");
+		btnGroupBGPrimary.add(rbBgSubPrimaryYes);
 		rbBgSubPrimaryYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbBgSubPrimaryYes.setEnabled(false);
 		rbBgSubPrimaryYes.setBackground(new Color(211, 211, 211));
 		rbBgSubPrimaryYes.setBounds(50, 24, 48, 23);
 		PrimaryObjectPanel.add(rbBgSubPrimaryYes);
@@ -393,6 +400,7 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(lblBgSubSecondary);
 		
 		JRadioButton rdbtnNewRadioButton_1_1 = new JRadioButton("No");
+		btnGroupBGSecondary.add(rdbtnNewRadioButton_1_1);
 		rdbtnNewRadioButton_1_1.setSelected(true);
 		rdbtnNewRadioButton_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnNewRadioButton_1_1.setBackground(new Color(211, 211, 211));
@@ -400,8 +408,8 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(rdbtnNewRadioButton_1_1);
 		
 		JRadioButton rdbtnYes_1_1 = new JRadioButton("Yes");
+		btnGroupBGSecondary.add(rdbtnYes_1_1);
 		rdbtnYes_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rdbtnYes_1_1.setEnabled(false);
 		rdbtnYes_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnYes_1_1.setBounds(50, 24, 48, 23);
 		SecondaryObjectPanel.add(rdbtnYes_1_1);

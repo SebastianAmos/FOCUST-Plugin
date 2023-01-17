@@ -95,6 +95,15 @@
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+		 <dependency>
+  			<groupId>net.haesleinhuepf</groupId>
+			<artifactId>clij2_</artifactId>
+			<version>2.5.0.1</version>
+			</dependency>
 		 <dependency>
     		<groupId>org.scijava</groupId>
     		<artifactId>scijava-common</artifactId>
