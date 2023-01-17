@@ -3,9 +3,9 @@
 This plugin allows the user to analyse spheroid, single cell or speckle datasets in ways we hope are useful. 
 FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or image anaylsis more broadly, configure the parameters for segmenting 3D fluorescent datasets. 
 
-Under the hood, FOCUST is dependent on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work. 
+Under the hood, FOCUST is dependent on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work.
 
-The ouputs from FOCUST are all in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily graphed or imported directly into data workflows in software such as R-Studio.
+Data generated in the FOCUST plugin with output in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily filtered, graphed or imported directly into data workflows in software such as R-Studio.
 
 ## Installation
 To install and use FOCUST in FIJI, please use the update site: Help > Update > Manage Update Sites > __Tick the box next to__ FOCSUT > Close > Apply Changes. Restart ImageJ/FIJI and you will now find FOCUST in the Plugins sub-menu. 
@@ -23,8 +23,11 @@ FOCUST includes a spheroid mode to analyse densely-packed nuclei within a sphero
 For this mode, datasets must contain a stain that represents the nucleus and a stain that represents each cell more broadly (such as a membrane or cytoskeletal dye). 
 
 <ins> The single cell analysis mode will: </ins>
-- Segment the nuclei and cell body
-- 
+- Segment the nuclei and cell bodies and generate a cytoplasmic region of interest. 
+- Relate each nucleus object to the cell body object it sits within.
+- Generate morphological measurements on the nuclei, cell and cytoplasm objects.  
+- Quantify the intensity of stains in channels 2, 3 and 4 (if present) within the segmented objects. 
+- Generate intensity ratios of stains in channels 2, 3 and 4 (if present) between the nucleus and the cytoplasm.
 
 
 ## Speckle Analysis
@@ -33,8 +36,10 @@ For this mode, datasets must contain a stain that represents the nucleus and a s
 
 <ins> The speckle analysis mode will: </ins>
 - Segment the nuclei and speckles as defined by the user.
-- Count the number of speckles per nucleus 
-- Quantify the 
+- Count the number of speckles per nucleus.
+- Generate morphological measurements on the nuclei and speckle objects.
+- Generate colocalisation data on two different types of speckles (if present).
+- Generate spatial distribution data on speckle location.
 
 ## Help
 For assistance with using FOCUST, please see the manual or YouTube video for a demonstration.
