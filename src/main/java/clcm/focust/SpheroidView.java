@@ -27,9 +27,14 @@ import javax.swing.JTextPane;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
+
+import ij.IJ;
+
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class SpheroidView extends JFrame {
 
@@ -53,10 +58,21 @@ public class SpheroidView extends JFrame {
 	 private JTextField txtSecGBz;
 	 private JTextField txtBgSubSecondaryVar;
 	 private JTextField txtSecThreshold;
+	 private JButton btnOutputDir = new JButton("Browse");
 	 private final ButtonGroup btnGroupOutputDir = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGPrimary = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGSecondary = new ButtonGroup();
-
+	 
+	 public static String inputDir;
+	 public static Double sigma_x;
+	 public static Double sigma_y;
+	 public static Double sigma_z;
+	 public static Double radius_x;
+	 public static Double radius_y;
+	 public static Double radius_z;
+	 public static String channel2Name;
+	 public static String channel3Name;
+	 public static String channel4Name;
 	 
 	/**
 	 * construct the spheroid gui.
@@ -89,7 +105,17 @@ public class SpheroidView extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Segment.Spheroid();
+				sigma_x = Double.parseDouble(txtPriGBx.getText());
+				sigma_y = Double.parseDouble(txtPriGBy.getText());
+				sigma_z = Double.parseDouble(txtPriGBz.getText());
+				radius_x = Double.parseDouble(txtPriDMx.getText());
+				radius_y = Double.parseDouble(txtPriDMy.getText());
+				radius_z = Double.parseDouble(txtPriDMz.getText());
+				channel2Name = txtSpheroidC2Name.getText();
+				channel2Name = txtSpheroidC3Name.getText();
+				channel3Name = txtSpheroidC4Name.getText();
+				
+				Segment.ProcessSpheroid();
 				
 			}
 		});
@@ -106,11 +132,16 @@ public class SpheroidView extends JFrame {
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
-				FOCUST.FileFinder();
+				inputDir = IJ.getDir("Select an Input Directory:");
+				
+				
+			
+				
+				//FOCUST.FileFinder();
 				
 				// update the textbox in spheroid view to selected path
-				String inputDirSt = FOCUST.inputPath.toString(); 
-				txtInputDir.setText(inputDirSt);
+				//String inputDirSt = FOCUST.inputPath.toString(); 
+				//txtInputDir.setText(inputDirSt);
 			}
 		});
 		
@@ -131,12 +162,29 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(rbOutputDirNo);
 		
 		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
+		rbOutputDirYes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rbOutputDirYes.isSelected()) {
+					btnOutputDir.setEnabled(true);
+					txtOutputDir.setEnabled(true);
+				} else {
+					btnOutputDir.setEnabled(false);
+					txtOutputDir.setEnabled(false);
+				}
+			}
+		});
+		
+		
 		btnGroupOutputDir.add(rbOutputDirYes);
 		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirYes.setBounds(243, 71, 48, 23);
 		paneSpheroid.add(rbOutputDirYes);
 		
-		JButton btnOutputDir = new JButton("Browse");
+	
+		btnOutputDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnOutputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnOutputDir.setEnabled(false);
 		btnOutputDir.setBounds(297, 68, 96, 29);
@@ -180,8 +228,27 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// enable name input for C4 if 4 channels declared
+				if(cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtSpheroidC4Name.setEnabled(true);
+				} else {
+					txtSpheroidC4Name.setEnabled(false);
+				}	
+				
+				// enable name input for C3 if 3 or 4 channels declared. 
+				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
+					txtSpheroidC3Name.setEnabled(true);
+				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtSpheroidC3Name.setEnabled(true);
+				} else {
+					txtSpheroidC3Name.setEnabled(false);
+				}
+			}
+		});
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
-		cbChannelTotal.setSelectedIndex(1);
+		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setBounds(252, 123, 48, 25);
@@ -203,6 +270,7 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblNameChannel3);
 		
 		txtSpheroidC3Name = new JTextField();
+		txtSpheroidC3Name.setEnabled(false);
 		txtSpheroidC3Name.setColumns(10);
 		txtSpheroidC3Name.setBounds(120, 188, 176, 29);
 		paneSpheroid.add(txtSpheroidC3Name);
@@ -213,6 +281,7 @@ public class SpheroidView extends JFrame {
 		paneSpheroid.add(lblNameChannel4);
 		
 		txtSpheroidC4Name = new JTextField();
+		txtSpheroidC4Name.setEnabled(false);
 		txtSpheroidC4Name.setColumns(10);
 		txtSpheroidC4Name.setBounds(120, 221, 176, 29);
 		paneSpheroid.add(txtSpheroidC4Name);
