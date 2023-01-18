@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.ChannelSplitter;
+import net.haesleinhuepf.clij.CLIJ;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
@@ -83,23 +84,23 @@ public class Segment {
 			 * Instead of running the background subtract outside of the GPU
 			 */
 			
-			//clij2.gaussianBlur3D
+			// 3D blur
 			clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
 		
-			// clij2.invert blurred image
+			// invert
 			clij2.invert(blurred, inverted);
 			
-			//clij2.thresholdOtsu(
+			// threshold
 			clij2.thresholdOtsu(blurred, threshold);
 			
-			// maxima 
+			// detect maxima 
 			clij2.detectMaxima3DBox(blurred, detectedMax, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
 			
 			// label
 			clij2.labelSpots(detectedMax, labelledSpots);
 			
 			// marker controlled watershed
-		
+			clijx.morph
 			
 			
 			
