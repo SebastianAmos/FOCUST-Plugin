@@ -59,6 +59,7 @@ public class SpheroidView extends JFrame {
 	 private JTextField txtBgSubSecondaryVar;
 	 private JTextField txtSecThreshold;
 	 private JButton btnOutputDir = new JButton("Browse");
+	 private JComboBox cbChannelPrimary = new JComboBox();
 	 private final ButtonGroup btnGroupOutputDir = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGPrimary = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGSecondary = new ButtonGroup();
@@ -73,6 +74,7 @@ public class SpheroidView extends JFrame {
 	 public static String channel2Name;
 	 public static String channel3Name;
 	 public static String channel4Name;
+	 public static int primaryChannelChoice;
 	 
 	/**
 	 * construct the spheroid gui.
@@ -114,6 +116,8 @@ public class SpheroidView extends JFrame {
 				channel2Name = txtSpheroidC2Name.getText();
 				channel2Name = txtSpheroidC3Name.getText();
 				channel3Name = txtSpheroidC4Name.getText();
+				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
+				
 				
 				Segment.ProcessSpheroid();
 				
@@ -133,7 +137,8 @@ public class SpheroidView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
 				inputDir = IJ.getDir("Select an Input Directory:");
-				
+				String inputDirSt = inputDir.toString();
+				txtInputDir.setText(inputDirSt);
 				
 			
 				
@@ -448,7 +453,7 @@ public class SpheroidView extends JFrame {
 		lblWhichChannel.setBounds(351, 178, 106, 29);
 		paneSpheroid.add(lblWhichChannel);
 		
-		JComboBox cbChannelPrimary = new JComboBox();
+		
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);

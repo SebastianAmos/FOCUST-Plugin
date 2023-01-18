@@ -4,15 +4,17 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.ChannelSplitter;
-import net.haesleinhuepf.clij.CLIJ;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
-import net.haesleinhuepf.clijx.morpholibj.*;
+import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
+
 
 import java.io.File;
 
 public class Segment {
+	
+
 	
 	//private CLIJ2 clij2;
 	//private ImagePlus img; 
@@ -41,23 +43,34 @@ public class Segment {
 		// Grab the file location
 		File f = new File(SpheroidView.inputDir);
 		String[] list = f.list();
+		System.out.println(list[0]);
+		System.out.println(SpheroidView.inputDir+list[0]);
+		IJ.log("Processing:" + list[0]);
+		
+		TypeTester t = new TypeTester();
+		t.printType(SpheroidView.sigma_x);
+		
+		//String sigmaCheck = String.valueOf(SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
+		System.out.println();
 		
 		// Iterate through each image and apply segmentation. 
 		for (int i=0; i<list.length; i++) {
-			if (list[i].endsWith(".tif")||list[i].endsWith(".nd2"));
+			if (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
 			String path = SpheroidView.inputDir+list[i];
+			IJ.log("->Processing Image:" + list[i]);
 			IJ.showProgress(i+1, list.length);
-			ImagePlus img = Opener.openUsingBioFormats(path);
-			channels = ChannelSplitter.split(img);
+			ImagePlus imp = IJ.openImage(path);
+			channels = ChannelSplitter.split(imp);
+			int channelChoice = SpheroidView.primaryChannelChoice;
+			//channels[channelChoice].show();
 			
-			
-			
-			
-			
+			GPUSpheroidPrimaryObject(channelChoice);
+			IJ.log("Processing Complete for:" + list[i]);
+	
 		}
 		}		
 			
-	public ImagePlus GPUSpheroidPrimaryObject() {		
+	public static ImagePlus GPUSpheroidPrimaryObject(int channelChoice) {		
 		
 			// ready clij2
 			CLIJ2 clij2 = CLIJ2.getInstance();
@@ -65,27 +78,24 @@ public class Segment {
 			CLIJx clijx = CLIJx.getInstance();
 			clijx.clear();
 			
-			
-			
-			// CLIJ parameter structure = (input image, ClearCLBuffer output image). 
-			
+			// CLIJ argument structure = (input image, ClearCLBuffer output image). 
 			// Push image
-			ClearCLBuffer input = clij2.push(channels[0]);
-			ClearCLBuffer blurred = null;
-			ClearCLBuffer inverted = null;
-			ClearCLBuffer threshold = null;
-			ClearCLBuffer detectedMax = null;
-			ClearCLBuffer labelledSpots = null;
-			ClearCLBuffer segmentated = null;
+			ClearCLBuffer input = clij2.push(channels[channelChoice]);
+			ClearCLBuffer blurred = clij2.create(input);
+			ClearCLBuffer inverted = clij2.create(input);
+			ClearCLBuffer threshold = clij2.create(input);
+			ClearCLBuffer detectedMax = clij2.create(input);
+			 ClearCLBuffer labelledSpots = clij2.create(input);
+			ClearCLBuffer segmented = clij2.create(input);
 			
 			/*
-			 * Could implement a clij2.filter(GB) with user input values for background subtract radius
+			 * Could implement a clij2.filter(GB) with user input values for background subtract radius.
 			 * Then feed to clij2.subtractImages(input, background, backgroundSubtracted). 
-			 * Instead of running the background subtract outside of the GPU
+			 * Instead of running the background subtract outside of the GPU.
 			 */
 			
 			// 3D blur
-			clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
+			clij2.gaussianBlur3D(input,  blurred, SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
 		
 			// invert
 			clij2.invert(blurred, inverted);
@@ -96,20 +106,37 @@ public class Segment {
 			// detect maxima 
 			clij2.detectMaxima3DBox(blurred, detectedMax, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
 			
-			// label
+			// label spots
 			clij2.labelSpots(detectedMax, labelledSpots);
 			
 			// marker controlled watershed
-			clijx.morph
+			MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
 			
+			ImagePlus primaryObjects = clij2.pull(segmented);
 			
+			primaryObjects.show();
 			
+			input.close();
+			blurred.close();
+			inverted.close();
+			threshold.close();
+			detectedMax.close();
+			labelledSpots.close();
+			segmented.close();
+			
+			return primaryObjects;
 			
 			}
 			
 			
 			
-			
+	//public ImagePlus GPUSpheroidSecondaryObject() {
+		
+		
+		
+		
+		
+	//}
 			
 			
 		
