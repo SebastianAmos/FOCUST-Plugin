@@ -69,27 +69,33 @@ public class Segment{
 	 */
 	
 	public static void ProcessSpheroid() {
-		
-			// Grab the file names.
-			File f = new File(SpheroidView.inputDir);
-			String[] list = f.list();
-	
-			// Iterate through each image and segment the selected channel. 
-			for (int i=0; i<list.length; i++) {
-				String path = SpheroidView.inputDir+list[i];
-				
-				// Try EDT vs without
-				IJ.log("Processing Image:" + list[i]);
-				threadLog("Processing Image" + list[i]);
-				
-				ImagePlus imp = IJ.openImage(path);
-				channels = ChannelSplitter.split(imp);
-				int channelChoice = SpheroidView.primaryChannelChoice;
-				//channels[channelChoice].show();
-				GPUSpheroidPrimaryObject(channelChoice);
-				IJ.log("Processing Complete for:" + list[i]);
-		
-			}
+			Thread t1 = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					
+					// Grab the file names.
+					File f = new File(SpheroidView.inputDir);
+					String[] list = f.list();
+					
+					// Iterate through each image and segment the selected channel. 
+					for (int i=0; i<list.length; i++) {
+						String path = SpheroidView.inputDir+list[i];
+						
+						// Print testing
+						System.out.println("Processing Image: " + list[i]); 
+						IJ.log("Processing Image:" + list[i]);
+						
+						
+						ImagePlus imp = IJ.openImage(path);
+						channels = ChannelSplitter.split(imp);
+						int channelChoice = SpheroidView.primaryChannelChoice;
+						//channels[channelChoice].show();
+						GPUSpheroidPrimaryObject(channelChoice);
+						IJ.log("Processing Complete for:" + list[i]);
+					}
+				}
+			});
+			t1.start();
 		}		
 			
 	
