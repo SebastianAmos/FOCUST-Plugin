@@ -12,14 +12,43 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 import java.io.File;
 
-public class Segment {
+import javax.swing.SwingUtilities;
+
+public class Segment{
 	
 
+	
+	
+	
 	
 	//private CLIJ2 clij2;
 	//private ImagePlus img; 
 	//private ClearCLBuffer 
 	private static ImagePlus[] channels;
+	
+	
+	
+	
+	
+	public static void threadLog(final String log) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				IJ.log(log);
+			}
+		});
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	//if (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
+	//IJ.showProgress(i+1, list.length);
+	
 	
 	
 	
@@ -40,36 +69,34 @@ public class Segment {
 	 */
 	
 	public static void ProcessSpheroid() {
-		// Grab the file location
-		File f = new File(SpheroidView.inputDir);
-		String[] list = f.list();
-		System.out.println(list[0]);
-		System.out.println(SpheroidView.inputDir+list[0]);
-		IJ.log("Processing:" + list[0]);
 		
-		TypeTester t = new TypeTester();
-		t.printType(SpheroidView.sigma_x);
-		
-		//String sigmaCheck = String.valueOf(SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
-		System.out.println();
-		
-		// Iterate through each image and apply segmentation. 
-		for (int i=0; i<list.length; i++) {
-			if (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
-			String path = SpheroidView.inputDir+list[i];
-			IJ.log("->Processing Image:" + list[i]);
-			IJ.showProgress(i+1, list.length);
-			ImagePlus imp = IJ.openImage(path);
-			channels = ChannelSplitter.split(imp);
-			int channelChoice = SpheroidView.primaryChannelChoice;
-			//channels[channelChoice].show();
-			
-			GPUSpheroidPrimaryObject(channelChoice);
-			IJ.log("Processing Complete for:" + list[i]);
+			// Grab the file names.
+			File f = new File(SpheroidView.inputDir);
+			String[] list = f.list();
 	
-		}
+			// Iterate through each image and segment the selected channel. 
+			for (int i=0; i<list.length; i++) {
+				String path = SpheroidView.inputDir+list[i];
+				
+				// Try EDT vs without
+				IJ.log("Processing Image:" + list[i]);
+				threadLog("Processing Image" + list[i]);
+				
+				ImagePlus imp = IJ.openImage(path);
+				channels = ChannelSplitter.split(imp);
+				int channelChoice = SpheroidView.primaryChannelChoice;
+				//channels[channelChoice].show();
+				GPUSpheroidPrimaryObject(channelChoice);
+				IJ.log("Processing Complete for:" + list[i]);
+		
+			}
 		}		
 			
+	
+	
+	
+	
+	
 	public static ImagePlus GPUSpheroidPrimaryObject(int channelChoice) {		
 		
 			// ready clij2
@@ -85,7 +112,7 @@ public class Segment {
 			ClearCLBuffer inverted = clij2.create(input);
 			ClearCLBuffer threshold = clij2.create(input);
 			ClearCLBuffer detectedMax = clij2.create(input);
-			 ClearCLBuffer labelledSpots = clij2.create(input);
+			ClearCLBuffer labelledSpots = clij2.create(input);
 			ClearCLBuffer segmented = clij2.create(input);
 			
 			/*
@@ -125,7 +152,7 @@ public class Segment {
 			segmented.close();
 			
 			return primaryObjects;
-			
+		
 			}
 			
 			
@@ -140,7 +167,10 @@ public class Segment {
 			
 			
 		
-		
+	
+	
+	
+
 		
 		
 		
