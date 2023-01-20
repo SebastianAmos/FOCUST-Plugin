@@ -83,10 +83,14 @@ public class Segment{
 						IJ.log("Processing Image: " + list[i]);
 						ImagePlus imp = IJ.openImage(path);
 						channels = ChannelSplitter.split(imp);
-						int channelChoice = SpheroidView.primaryChannelChoice;
-						
-						GPUSpheroidPrimaryObject(channelChoice);
+						int primaryChannelChoice = SpheroidView.primaryChannelChoice;
+						int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
+						GPUSpheroidPrimaryObject(primaryChannelChoice);
 						IJ.log("Primary Ojbects Completed for:" + list[i]);
+						IJ.log("Commencing Secondary Object...");
+						GPUSpheroidSecondaryObject(secondaryChannelChoice);
+						
+						
 						
 						// save primary and secondary objects?
 						
@@ -103,7 +107,7 @@ public class Segment{
 	
 	
 	
-	public static ImagePlus GPUSpheroidPrimaryObject(int channelChoice) {		
+	public static ImagePlus GPUSpheroidPrimaryObject(int primaryChannelChoice) {		
 		
 			// ready clij2
 			CLIJ2 clij2 = CLIJ2.getInstance();
@@ -113,7 +117,7 @@ public class Segment{
 			
 			// CLIJ argument structure = (input image, ClearCLBuffer output image). 
 			// Push image
-			ClearCLBuffer input = clij2.push(channels[channelChoice]);
+			ClearCLBuffer input = clij2.push(channels[primaryChannelChoice]);
 			ClearCLBuffer blurred = clij2.create(input);
 			ClearCLBuffer inverted = clij2.create(input);
 			ClearCLBuffer threshold = clij2.create(input);
@@ -163,7 +167,8 @@ public class Segment{
 			
 			
 			
-	public ImagePlus GPUSpheroidSecondaryObject(int channelChoice) {
+	public static ImagePlus GPUSpheroidSecondaryObject(int secondaryChannelChoice) {
+		
 			// ready clij2
 			CLIJ2 clij2 = CLIJ2.getInstance();
 			clij2.clear();
@@ -171,26 +176,31 @@ public class Segment{
 			clijx.clear();
 		
 			// create images
-			ClearCLBuffer input = clij2.push(channels[channelChoice]);
+			ClearCLBuffer input = clij2.push(channels[secondaryChannelChoice]);
 			ClearCLBuffer blurred = clij2.create(input);
 			ClearCLBuffer threshold = clij2.create(input);
 			ClearCLBuffer fillHoles = clij2.create(input);
 			
-			//blur
-			
-			
-			//GB
-			
+			// blur
+			clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x2, SpheroidView.sigma_x2, SpheroidView.sigma_z2);
 			
 			//greater constant
-			
-			
+			clij2.greaterConstant(blurred, threshold, SpheroidView.greaterConstant);
+		
 			// fill holes
-			
+			clij2.binaryFillHoles(threshold, fillHoles);
 			
 			//pull
-			
 			ImagePlus secondaryObject = clij2.pull(fillHoles);
+			
+			secondaryObject.show();
+			
+			input.close();
+			blurred.close();
+			threshold.close();
+			fillHoles.close();
+			
+			
 			return secondaryObject;
 	}
 			

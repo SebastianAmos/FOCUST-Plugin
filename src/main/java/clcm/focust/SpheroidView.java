@@ -60,6 +60,7 @@ public class SpheroidView extends JFrame {
 	 private JTextField txtSecThreshold;
 	 private JButton btnOutputDir = new JButton("Browse");
 	 private JComboBox cbChannelPrimary = new JComboBox();
+	 private JComboBox cbChannelSecondary = new JComboBox();
 	 private final ButtonGroup btnGroupOutputDir = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGPrimary = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGSecondary = new ButtonGroup();
@@ -118,21 +119,16 @@ public class SpheroidView extends JFrame {
 				radius_x = Double.parseDouble(txtPriDMx.getText());
 				radius_y = Double.parseDouble(txtPriDMy.getText());
 				radius_z = Double.parseDouble(txtPriDMz.getText());
-				
 				sigma_x2 = Double.parseDouble(txtSecGBx.getText());
 				sigma_y2 = Double.parseDouble(txtSecGBy.getText());
 				sigma_z2 = Double.parseDouble(txtSecGBz.getText());
-				
-				//greaterConstant = Double.parseDouble(txt)
-				
-				
-				
+				greaterConstant = Double.parseDouble(txtSecThreshold.getText());
 				channel2Name = txtSpheroidC2Name.getText();
 				channel2Name = txtSpheroidC3Name.getText();
 				channel3Name = txtSpheroidC4Name.getText();
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
-				
-				
+				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
+			
 				Segment.ProcessSpheroid();
 				
 			}
@@ -569,7 +565,7 @@ public class SpheroidView extends JFrame {
 		lblWhichChannel_1.setBounds(603, 178, 106, 29);
 		paneSpheroid.add(lblWhichChannel_1);
 		
-		JComboBox cbChannelSecondary = new JComboBox();
+		
 		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
