@@ -80,18 +80,18 @@ public class Segment{
 					// Iterate through each image and segment the selected channel. 
 					for (int i=0; i<list.length; i++) {
 						String path = SpheroidView.inputDir+list[i];
-						
-						// Print testing
-						System.out.println("Processing Image: " + list[i]); 
-						IJ.log("Processing Image:" + list[i]);
-						
-						
+						IJ.log("Processing Image: " + list[i]);
 						ImagePlus imp = IJ.openImage(path);
 						channels = ChannelSplitter.split(imp);
 						int channelChoice = SpheroidView.primaryChannelChoice;
-						//channels[channelChoice].show();
+						
 						GPUSpheroidPrimaryObject(channelChoice);
-						IJ.log("Processing Complete for:" + list[i]);
+						IJ.log("Primary Ojbects Completed for:" + list[i]);
+						
+						// save primary and secondary objects?
+						
+						
+						
 					}
 				}
 			});
@@ -163,13 +163,36 @@ public class Segment{
 			
 			
 			
-	//public ImagePlus GPUSpheroidSecondaryObject() {
+	public ImagePlus GPUSpheroidSecondaryObject(int channelChoice) {
+			// ready clij2
+			CLIJ2 clij2 = CLIJ2.getInstance();
+			clij2.clear();
+			CLIJx clijx = CLIJx.getInstance();
+			clijx.clear();
 		
-		
-		
-		
-		
-	//}
+			// create images
+			ClearCLBuffer input = clij2.push(channels[channelChoice]);
+			ClearCLBuffer blurred = clij2.create(input);
+			ClearCLBuffer threshold = clij2.create(input);
+			ClearCLBuffer fillHoles = clij2.create(input);
+			
+			//blur
+			
+			
+			//GB
+			
+			
+			//greater constant
+			
+			
+			// fill holes
+			
+			
+			//pull
+			
+			ImagePlus secondaryObject = clij2.pull(fillHoles);
+			return secondaryObject;
+	}
 			
 			
 		

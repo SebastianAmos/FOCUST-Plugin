@@ -71,10 +71,15 @@ public class SpheroidView extends JFrame {
 	 public static Double radius_x;
 	 public static Double radius_y;
 	 public static Double radius_z;
+	 public static Double sigma_x2;
+	 public static Double sigma_y2;
+	 public static Double sigma_z2;
+	 public static Double greaterConstant;
 	 public static String channel2Name;
 	 public static String channel3Name;
 	 public static String channel4Name;
 	 public static int primaryChannelChoice;
+	 public static int secondaryChannelChoice;
 	 
 	/**
 	 * construct the spheroid gui.
@@ -113,6 +118,15 @@ public class SpheroidView extends JFrame {
 				radius_x = Double.parseDouble(txtPriDMx.getText());
 				radius_y = Double.parseDouble(txtPriDMy.getText());
 				radius_z = Double.parseDouble(txtPriDMz.getText());
+				
+				sigma_x2 = Double.parseDouble(txtSecGBx.getText());
+				sigma_y2 = Double.parseDouble(txtSecGBy.getText());
+				sigma_z2 = Double.parseDouble(txtSecGBz.getText());
+				
+				//greaterConstant = Double.parseDouble(txt)
+				
+				
+				
 				channel2Name = txtSpheroidC2Name.getText();
 				channel2Name = txtSpheroidC3Name.getText();
 				channel3Name = txtSpheroidC4Name.getText();
