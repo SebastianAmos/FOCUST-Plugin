@@ -25,7 +25,8 @@ public class Segment{
 	//private ImagePlus img; 
 	//private ClearCLBuffer 
 	private static ImagePlus[] channels;
-	
+	private static ImagePlus primaryObjects;
+	private static ImagePlus secondaryObjects;
 	
 	
 	
@@ -89,7 +90,8 @@ public class Segment{
 						IJ.log("Primary Ojbects Completed for:" + list[i]);
 						IJ.log("Commencing Secondary Object...");
 						GPUSpheroidSecondaryObject(secondaryChannelChoice);
-						
+						primaryObjects.setTitle("primaryObjects_");
+						IJ.saveAs(primaryObjects, "TIF", path);
 						
 						
 						// save primary and secondary objects?
@@ -149,9 +151,9 @@ public class Segment{
 			// marker controlled watershed
 			MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
 			
-			ImagePlus primaryObjects = clij2.pull(segmented);
+			primaryObjects = clij2.pull(segmented);
 			
-			primaryObjects.show();
+			//primaryObjects.show();
 			
 			input.close();
 			blurred.close();
