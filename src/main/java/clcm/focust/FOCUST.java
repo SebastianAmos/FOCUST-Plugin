@@ -18,8 +18,13 @@ import org.scijava.menu.MenuConstants;
 import org.scijava.plugin.Menu;
 import org.scijava.plugin.Plugin;
 
+//{@Menu(label = MenuConstants.PLUGINS_LABEL, weight = MenuConstants.PLUGINS_WEIGHT, mnemonic = MenuConstants.PLUGINS_MNEMONIC),
+//	@Menu(label = "FOCUST", weight = 1, mnemonic = 'f')
+//}
+//menuPath = "Plugins>FOCUST"
+@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 
-@Plugin(type = Command.class, menuPath = "Plugins>FOCUST")
+
 public class FOCUST implements Command {
 
 

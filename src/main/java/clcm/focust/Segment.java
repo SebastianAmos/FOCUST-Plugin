@@ -107,7 +107,12 @@ public class Segment{
 	
 	
 	
-	
+	/*
+	 * Test if --> all images for processing are opened, split channels, select the primary channel choice 
+	 * for each image, and store in primaryChannelChoiceProcessing[]. 
+	 * Push entire array for ImagePlus objects into the GPU to minimise back and forth and use cache. 
+	 * Process all primary objects at once. 
+	 */
 	
 	public static ImagePlus GPUSpheroidPrimaryObject(int primaryChannelChoice) {		
 		
@@ -154,7 +159,6 @@ public class Segment{
 			primaryObjects = clij2.pull(segmented);
 			
 			//primaryObjects.show();
-			
 			input.close();
 			blurred.close();
 			inverted.close();
@@ -167,7 +171,10 @@ public class Segment{
 		
 			}
 			
-			
+			/*
+			 * Change so that --> same as for primary objects.
+			 * Push all selected secondary objects as ImagePlus array into GPU for processing at once. 
+			 */
 			
 	public static ImagePlus GPUSpheroidSecondaryObject(int secondaryChannelChoice) {
 		
