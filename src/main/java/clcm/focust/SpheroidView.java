@@ -90,7 +90,7 @@ public class SpheroidView extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Spheroid Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 806, 485);
+		setBounds(100, 100, 821, 485);
 		paneSpheroid = new JPanel();
 		paneSpheroid.setBorder(new EmptyBorder(5, 5, 5, 5));
 

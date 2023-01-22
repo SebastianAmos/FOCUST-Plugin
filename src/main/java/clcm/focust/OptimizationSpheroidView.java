@@ -219,7 +219,7 @@ public class OptimizationSpheroidView extends JFrame {
 		rbSubtractPrimaryNo.setSelected(true);
 		rbSubtractPrimaryNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbSubtractPrimaryNo.setBackground(SystemColor.menu);
-		rbSubtractPrimaryNo.setBounds(183, 143, 43, 23);
+		rbSubtractPrimaryNo.setBounds(178, 143, 43, 23);
 		contentPane.add(rbSubtractPrimaryNo);
 		
 		JRadioButton rbSubtractPrimaryYes = new JRadioButton("Yes");
@@ -370,34 +370,34 @@ public class OptimizationSpheroidView extends JFrame {
 		
 		JLabel lblBgSubPrimary_1 = new JLabel("Background subtraction?");
 		lblBgSubPrimary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblBgSubPrimary_1.setBounds(500, 142, 161, 29);
+		lblBgSubPrimary_1.setBounds(500, 140, 161, 29);
 		contentPane.add(lblBgSubPrimary_1);
 		
 		JRadioButton rbBgSubPrimaryNo_1 = new JRadioButton("No");
 		rbBgSubPrimaryNo_1.setSelected(true);
 		rbBgSubPrimaryNo_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbBgSubPrimaryNo_1.setBackground(SystemColor.menu);
-		rbBgSubPrimaryNo_1.setBounds(663, 145, 43, 23);
+		rbBgSubPrimaryNo_1.setBounds(658, 143, 43, 23);
 		contentPane.add(rbBgSubPrimaryNo_1);
 		
 		JRadioButton rbBgSubPrimaryYes_1 = new JRadioButton("Yes");
 		rbBgSubPrimaryYes_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbBgSubPrimaryYes_1.setEnabled(false);
 		rbBgSubPrimaryYes_1.setBackground(SystemColor.menu);
-		rbBgSubPrimaryYes_1.setBounds(703, 145, 48, 23);
+		rbBgSubPrimaryYes_1.setBounds(703, 143, 48, 23);
 		contentPane.add(rbBgSubPrimaryYes_1);
 		
 		JLabel lblRadius_1 = new JLabel("Radius:\r\n");
 		lblRadius_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius_1.setEnabled(false);
-		lblRadius_1.setBounds(751, 142, 48, 29);
+		lblRadius_1.setBounds(751, 140, 48, 29);
 		contentPane.add(lblRadius_1);
 		
 		txtSecSubtractRadius = new JTextField();
 		txtSecSubtractRadius.setEnabled(false);
 		txtSecSubtractRadius.setColumns(10);
 		txtSecSubtractRadius.setBackground(Color.WHITE);
-		txtSecSubtractRadius.setBounds(798, 146, 31, 20);
+		txtSecSubtractRadius.setBounds(798, 144, 31, 20);
 		contentPane.add(txtSecSubtractRadius);
 		
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
@@ -422,7 +422,7 @@ public class OptimizationSpheroidView extends JFrame {
 		txtpnsupportForMultiple.setFont(new Font("Gadugi", Font.PLAIN, 10));
 		txtpnsupportForMultiple.setEditable(false);
 		txtpnsupportForMultiple.setBackground(SystemColor.controlHighlight);
-		txtpnsupportForMultiple.setBounds(658, 231, 106, 67);
+		txtpnsupportForMultiple.setBounds(658, 231, 141, 67);
 		contentPane.add(txtpnsupportForMultiple);
 	}
 }
