@@ -90,7 +90,7 @@ public class SpheroidView extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Spheroid Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 821, 485);
+		setBounds(100, 100, 827, 485);
 		paneSpheroid = new JPanel();
 		paneSpheroid.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -219,12 +219,12 @@ public class SpheroidView extends JFrame {
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(169, 169, 169));
 		separator.setBackground(Color.WHITE);
-		separator.setBounds(12, 108, 768, 2);
+		separator.setBounds(12, 113, 778, -3);
 		paneSpheroid.add(separator);
 		
 		JButton btnHelp = new JButton("Help");
 		btnHelp.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnHelp.setBounds(684, 11, 96, 29);
+		btnHelp.setBounds(694, 16, 96, 29);
 		paneSpheroid.add(btnHelp);
 		
 		JLabel lblYouMustHave = new JLabel("You must have optimized your segmentation parameters.");

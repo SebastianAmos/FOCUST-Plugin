@@ -25,6 +25,8 @@ import java.awt.SystemColor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -76,7 +78,7 @@ public class SpeckleView extends JFrame {
 		setTitle("FOCUST: Speckle Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpeckleView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 973, 497);
+		setBounds(100, 100, 980, 497);
 		paneSpeckle = new JPanel();
 		paneSpeckle.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -166,6 +168,26 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// enable name input for C4 if 4 channels declared
+				if(cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtC4Name.setEnabled(true);
+				} else {
+					txtC4Name.setEnabled(false);
+				}	
+				
+				// enable name input for C3 if 3 or 4 channels declared. 
+				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
+					txtC3Name.setEnabled(true);
+				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtC3Name.setEnabled(true);
+				} else {
+					txtC3Name.setEnabled(false);
+				}
+			}
+		});
+		
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
 		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
@@ -667,11 +689,13 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(txtC2Name);
 		
 		txtC3Name = new JTextField();
+		txtC3Name.setEnabled(false);
 		txtC3Name.setColumns(10);
 		txtC3Name.setBounds(122, 184, 176, 29);
 		paneSpeckle.add(txtC3Name);
 		
 		txtC4Name = new JTextField();
+		txtC4Name.setEnabled(false);
 		txtC4Name.setColumns(10);
 		txtC4Name.setBounds(122, 217, 176, 29);
 		paneSpeckle.add(txtC4Name);

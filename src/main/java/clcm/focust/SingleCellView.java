@@ -28,6 +28,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -83,7 +85,7 @@ public class SingleCellView extends JFrame {
 		setTitle("FOCUST: Single Cell Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 840, 485);
+		setBounds(100, 100, 820, 485);
 		paneSingleCell = new JPanel();
 		paneSingleCell.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -167,6 +169,25 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// enable name input for C4 if 4 channels declared
+				if(cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtSingleCellChannel4Name.setEnabled(true);
+				} else {
+					txtSingleCellChannel4Name.setEnabled(false);
+				}	
+				
+				// enable name input for C3 if 3 or 4 channels declared. 
+				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
+					txtSingleCellChannel3Name.setEnabled(true);
+				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
+					txtSingleCellChannel3Name.setEnabled(true);
+				} else {
+					txtSingleCellChannel3Name.setEnabled(false);
+				}
+			}
+		});
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
 		cbChannelTotal.setMaximumRowCount(3);
@@ -536,11 +557,13 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(txtSingleCellChannel2Name);
 		
 		txtSingleCellChannel3Name = new JTextField();
+		txtSingleCellChannel3Name.setEnabled(false);
 		txtSingleCellChannel3Name.setColumns(10);
 		txtSingleCellChannel3Name.setBounds(120, 184, 176, 29);
 		paneSingleCell.add(txtSingleCellChannel3Name);
 		
 		txtSingleCellChannel4Name = new JTextField();
+		txtSingleCellChannel4Name.setEnabled(false);
 		txtSingleCellChannel4Name.setColumns(10);
 		txtSingleCellChannel4Name.setBounds(120, 217, 176, 29);
 		paneSingleCell.add(txtSingleCellChannel4Name);
