@@ -44,7 +44,7 @@ public class OptimizeModeSelector extends JFrame {
 	public OptimizeModeSelector() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeModeSelector.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Optimization Mode Selector");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 346, 338);
 		paneSelector = new JPanel();
 		paneSelector.setBorder(new EmptyBorder(5, 5, 5, 5));

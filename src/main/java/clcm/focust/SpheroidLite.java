@@ -12,20 +12,20 @@ import ij.IJ;
 
 public class SpheroidLite implements Command {
 	
-	@Parameter(label = "Select Input Directory",style="directory")
-	private File[] inputFiles;
+	@Parameter(label = "Input Directory",style="directory")
+	private File inputFiles;
 	
-	@Parameter(label = "Select Output Directory", style = "directory", required = false)
+	@Parameter(label = "Output Directory", style = "directory", required = false)
 	private File outputSelect;
 	
-	@Parameter(label = "Total Number of Channels/Image?", choices = {"1", "2", "3", "4"})
+	@Parameter(label = "How Many Channels?", choices = {"1", "2", "3", "4"})
 	private String totalChannelNum;
 	
-	@Parameter(label = "Select Primary Object Channel:", min = "1", max = "4")
-	private Integer primaryChannelChoice = 1;
+	@Parameter(label = "Primary Object Channel:", choices = {"1", "2", "3", "4"})
+	private String primaryChannelChoice;
 	
-	@Parameter(label = "Select Secondary Object Channel:", min = "1", max = "4")
-	private Integer secondaryChannelChoice = 4;
+	@Parameter(label = "Secondary Object Channel:", choices = {"1", "2", "3", "4"})
+	private String secondaryChannelChoice;
 	
 	@Parameter(label = "Name Channel 2:", style = "text field", required = false)
 	private String channel2Name;
@@ -39,7 +39,7 @@ public class SpheroidLite implements Command {
 	@Parameter(label = "Grouping Info?", style = "text field", required = false)
 	private String groupName;
 	
-	@Parameter(label = "Select Segmentation Parameter File", style = "directory", required = false)
+	@Parameter(label = "Select Parameter File", style = "directory", required = false)
 	private File segParameterFile;
 	
 	// channel fields here
@@ -54,10 +54,10 @@ public class SpheroidLite implements Command {
 	private final String runMessage = "Click 'OK' when you are ready to run analysis!";
 	
 	
-	// executes when "ok" is pressed on the dialog box.
+	
 	
 	// where channel names and grouping info are null, set variable contents to "C2, C3, C4 and "" - respectively.
-	
+	// executes when "ok" is pressed on the dialog box.
 	@Override
 	public void run() {
 		IJ.log("running");
