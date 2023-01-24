@@ -3,7 +3,7 @@
 This plugin allows the user to analyse spheroid, single cell or speckle datasets in ways we hope are useful. 
 FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or image anaylsis more broadly, configure the parameters for segmenting 3D fluorescent datasets. 
 
-Under the hood, FOCUST is dependent on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work.
+Under the hood, FOCUST depends on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work.
 
 Data generated in the FOCUST plugin with output in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily filtered, graphed or imported directly into data workflows in software such as R-Studio.
 
