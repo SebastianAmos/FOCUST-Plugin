@@ -7,7 +7,7 @@ import org.scijava.widget.Button;
 
 
 // Use callback parameter to link fucntions to button change states
-@Plugin(type = Command.class, label = "Speckle Analysis", menuPath = "Plugins>FOCUST>Lite>Speckle Analysis")
+@Plugin(type = Command.class, label = "Speckle Analysis Lite", menuPath = "Plugins>FOCUST>Lite>Speckle Analysis")
 public class SpeckleLite implements Command {
 	
 	@Parameter(label = "Select Input Directory: ", style ="directory" )

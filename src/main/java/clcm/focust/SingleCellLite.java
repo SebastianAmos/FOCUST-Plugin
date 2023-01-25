@@ -7,7 +7,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 
-@Plugin(type = Command.class, label = "Single Cell Analysis", menuPath = "Plugins>FOCUST>Lite>Single Cell Analysis")
+@Plugin(type = Command.class, label = "Single Cell Analysis Lite", menuPath = "Plugins>FOCUST>Lite>Single Cell Analysis")
 public class SingleCellLite implements Command {
 
 	
