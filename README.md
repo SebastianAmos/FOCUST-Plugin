@@ -5,7 +5,7 @@ FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or i
 
 Under the hood, FOCUST depends on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work.
 
-Data generated in the FOCUST plugin with output in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily filtered, graphed or imported directly into data workflows in software such as R-Studio.
+Data generated in the FOCUST plugin will output in a single .csv file (excel sheet) in tidy format. This means that data can be qickly and easily filtered, graphed or imported directly into data workflows in software such as R-Studio.
 
 ## Installation
 To install and use FOCUST in FIJI, please use the update site: Help > Update > Manage Update Sites > __Tick the box next to__ FOCSUT > Close > Apply Changes. Restart ImageJ/FIJI and you will now find FOCUST in the Plugins sub-menu. 
