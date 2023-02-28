@@ -6,12 +6,7 @@ public class FileReadWriteUtility {
 		
 		When loaded for processing, txt file is called and relavant textboxes in the processing window are populated from that file. 
 		
-	*/	
-	
-	
-	
-	
-	
-	
- 
+	*/
+
+
 }
