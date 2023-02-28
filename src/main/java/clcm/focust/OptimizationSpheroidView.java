@@ -63,7 +63,7 @@ public class OptimizationSpheroidView extends JFrame {
 	 */
 	public OptimizationSpheroidView() {
 		setTitle("FOCUST: Spheroid Optimization");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizationSpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizationSpheroidView.class.getResource("/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 975, 771);
 		contentPane = new JPanel();

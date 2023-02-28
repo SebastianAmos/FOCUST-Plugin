@@ -83,7 +83,7 @@ public class OptimizationSingleCellView extends JFrame {
 		executor.execute(futureFileChooser);
 		
 		setTitle("FOCUST: Single Cell and Speckle Optimization");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizationSingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizationSingleCellView.class.getResource("/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 975, 771);
 		paneSingleCellOptimization = new JPanel();

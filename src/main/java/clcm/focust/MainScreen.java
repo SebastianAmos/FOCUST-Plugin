@@ -8,10 +8,10 @@ import ij.gui.GenericDialog;
 import org.scijava.plugin.Parameter;
 import org.scijava.widget.ChoiceWidget;
 
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,8 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.text.html.ImageView;
 
 
 public class MainScreen extends JFrame{
@@ -42,7 +42,7 @@ public class MainScreen extends JFrame{
 	 */
 	public MainScreen() {
 		setTitle("FOCUST");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 806, 476);
 		mainPane = new JPanel();
@@ -88,12 +88,12 @@ public class MainScreen extends JFrame{
 		mainPane.add(btnSpheroid);
 		
 		JLabel lblSpheroidIcon = new JLabel("");
-		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
+		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/spheroidIcon0.2.png")));
 		lblSpheroidIcon.setBounds(10, 241, 77, 67);
 		mainPane.add(lblSpheroidIcon);
 		
 		JLabel lblSingleCellIcon = new JLabel("");
-		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/singlecellicon.png")));
+		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/singlecellicon.png")));
 		lblSingleCellIcon.setBounds(20, 302, 77, 67);
 		mainPane.add(lblSingleCellIcon);
 		
@@ -115,7 +115,7 @@ public class MainScreen extends JFrame{
 		mainPane.add(btnSingleCell);
 		
 		JLabel lblSpeckleIcon = new JLabel("");
-		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
+		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/speckleIcon.png")));
 		lblSpeckleIcon.setBounds(20, 359, 77, 67);
 		mainPane.add(lblSpeckleIcon);
 		
@@ -160,12 +160,12 @@ public class MainScreen extends JFrame{
 		mainPane.add(lblBatchProcessSpeckle);
 		
 		JLabel lblMasterIcon = new JLabel("");
-		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo3.png")));
+		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/FullLogo3.png")));
 		lblMasterIcon.setBounds(10, 0, 445, 114);
 		mainPane.add(lblMasterIcon);
 		
 		JLabel lblQMarkIcon = new JLabel("");
-		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/iconquestionmark.png")));
+		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/iconquestionmark.png")));
 		lblQMarkIcon.setBounds(30, 161, 43, 67);
 		mainPane.add(lblQMarkIcon);
 
