@@ -9,6 +9,7 @@ import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
+import net.haesleinhuepf.clijx.morpholibj.AbstractMorphoLibJAnalyzeRegions3D;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 
@@ -94,27 +95,25 @@ public class Segment{
 						String imgName = imp.getTitle();
 						GPUSpheroidPrimaryObject(primaryChannelChoice);
 						primaryObjects.setTitle("primaryObjects_");
-						ResultsTable primaryResults = new ResultsTable();
-						//analyze3D.process(primaryObjects);
-						IJ.run("Analyze Regions 3D", "volume surface_area mean_breadth sphericity euler_number bounding_box centroid equivalent_ellipsoid ellipsoid_elongations max._inscribed surface_area_method=[Crofton (13 dirs.)] euler_connectivity=6");
 						
+						// Measure 3D regions with MorphoLibJ
+						ResultsTable primaryResults = analyze3D.process(primaryObjects);
 						String pRName = dir + "Primary_Results.csv";
 						primaryResults.show("primaryObjects_-morpho");
 						try {
-							primaryResults.saveAs(dir);
+							primaryResults.saveAs(pRName);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
-							IJ.log("Unable to save table.");
+							IJ.log("Unable to save primary results table.");
 						}
 						
-						IJ.log("Primary Ojbects Completed for:" + imgName);
+						IJ.log("Primary Ojbects Completed for: " + imgName);
 						
 						IJ.log("Commencing Secondary Object...");
 						GPUSpheroidSecondaryObject(secondaryChannelChoice);
 						// save primary and secondary objects?
 						
-						
+						IJ.log(list.length + " Images Processed");
 						IJ.log("Processing Finished!");
 						
 						Arrays.fill(channels, null);
@@ -188,7 +187,9 @@ public class Segment{
 			threshold.close();
 			detectedMax.close();
 			labelledSpots.close();
-			segmented.close();
+			segmented.close();	
+			
+			
 			
 			return primaryObjects;
 		
@@ -233,12 +234,17 @@ public class Segment{
 			fillHoles.close();
 			
 			
+			
+			
+			
+			
+			
 			return secondaryObject;
 	}
 			
 			
 		
-	
+	//public static ImagePlus GPUAnalyzeRegions3D()
 	
 	
 
