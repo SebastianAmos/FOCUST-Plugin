@@ -3,14 +3,19 @@ package clcm.focust;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
+import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
+import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 
+
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
 
@@ -27,7 +32,7 @@ public class Segment{
 	private static ImagePlus[] channels;
 	private static ImagePlus primaryObjects;
 	private static ImagePlus secondaryObjects;
-	
+	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
 	
 	public static void threadLog(final String log) {
@@ -76,6 +81,7 @@ public class Segment{
 					// Grab the file names.
 					File f = new File(SpheroidView.inputDir);
 					String[] list = f.list();
+					String dir = SpheroidView.inputDir;
 					
 					// Iterate through each image and segment the selected channel. 
 					for (int i=0; i<list.length; i++) {
@@ -85,15 +91,33 @@ public class Segment{
 						channels = ChannelSplitter.split(imp);
 						int primaryChannelChoice = SpheroidView.primaryChannelChoice;
 						int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
+						String imgName = imp.getTitle();
 						GPUSpheroidPrimaryObject(primaryChannelChoice);
-						IJ.log("Primary Ojbects Completed for:" + list[i]);
+						primaryObjects.setTitle("primaryObjects_");
+						ResultsTable primaryResults = new ResultsTable();
+						//analyze3D.process(primaryObjects);
+						IJ.run("Analyze Regions 3D", "volume surface_area mean_breadth sphericity euler_number bounding_box centroid equivalent_ellipsoid ellipsoid_elongations max._inscribed surface_area_method=[Crofton (13 dirs.)] euler_connectivity=6");
+						
+						String pRName = dir + "Primary_Results.csv";
+						primaryResults.show("primaryObjects_-morpho");
+						try {
+							primaryResults.saveAs(dir);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							IJ.log("Unable to save table.");
+						}
+						
+						IJ.log("Primary Ojbects Completed for:" + imgName);
+						
 						IJ.log("Commencing Secondary Object...");
 						GPUSpheroidSecondaryObject(secondaryChannelChoice);
-						primaryObjects.setTitle("primaryObjects_");
-						IJ.saveAs(primaryObjects, "TIF", path);
-						
-						
 						// save primary and secondary objects?
+						
+						
+						IJ.log("Processing Finished!");
+						
+						Arrays.fill(channels, null);
 						
 						
 						
