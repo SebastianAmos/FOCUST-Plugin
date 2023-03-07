@@ -30,7 +30,6 @@ public class Segment{
 	
 	
 	
-	
 	public static void threadLog(final String log) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
