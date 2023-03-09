@@ -89,13 +89,7 @@ public class Segment {
 					}
 					IJ.log("Primary Ojbects Completed for: " + imgName);
 					
-					
-					
-					// Testing intensity measurements!!!!
-					IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
-					IntensityMeasurements.table.show("IntensityData");
-					
-					
+
 					/*
 					 * Secondary object: create and measure
 					 */
@@ -117,8 +111,19 @@ public class Segment {
 					 */
 					//ResultsTable primaryIntensity = intensity3D.run(sRName);
 					
-					ResultsTable primaryC2Intensity = new ResultsTable();
 					
+					// Primary Objects
+
+					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
+					primaryC2Intensity.show("PrimaryC2Intensity");
+					
+					
+					IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
+					IntensityMeasurements.table.show("IntensityData");
+					ResultsTable PriObjIntensityC3 = IntensityMeasurements.table;
+					
+					
+					// Secondary Objects
 					
 					
 					

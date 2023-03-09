@@ -23,9 +23,16 @@ public class IntensityMeasurements {
 		
 		
 		// Currently doesn't work!!!!!! 
-		ResultsTable rtMean = im.getMean(); 
+		ResultsTable rtVolume = im.getVolume();
+		ResultsTable rtMean = im.getMean();
+		rtMean.show("MeanTable");
+		Variable[] labArray = rtMean.getColumnAsVariables("Label");
+		Variable[] volumeArray = rtVolume.getColumnAsVariables("Volume");
 		Variable[] meanIntensityArray = rtMean.getColumnAsVariables("Mean");
+		//IJ.log(Integer.toString(meanIntensityArray.length));
+		table.setColumn("Label", labArray);
 		table.setColumn("IntensityMean", meanIntensityArray);
+		table.setColumn("Volume", volumeArray);
 		
 				
 		
