@@ -20,29 +20,43 @@ public class IntensityMeasurements {
 		
 		// Instance the IntensityMeasures class from MorpholibJ
 		final IntensityMeasures im = new IntensityMeasures(input, label);
-		
-		
-		// Currently doesn't work!!!!!! 
+	 
 		ResultsTable rtVolume = im.getVolume();
 		ResultsTable rtMean = im.getMean();
-		rtMean.show("MeanTable");
+		
+		rtVolume.show("rtVolume");
+		rtMean.show("rtMean");
+		
+		IJ.log("index for label is: " + rtVolume.getColumnIndex("Label"));
+		IJ.log("index for volume is: " + rtVolume.getColumnIndex("Volume"));
+		IJ.log("Index for mean is: " + rtMean.getColumnIndex("Mean"));
+		
+		// calculate Integrated Density
+		double[] vol = rtVolume.getColumnAsDoubles(0);
+		IJ.log("vol array is: " + vol);
+		double[] intMean = rtMean.getColumnAsDoubles(0);
+		IJ.log("mean array is: " + intMean);
+		Variable[] intDen = new Variable[vol.length];
+		
+		for (int i = 0; i < vol.length; i++) {
+			intDen[i] = new Variable(vol[i] * intMean[i]);
+		}
+		
+		
+		
+		
 		Variable[] labArray = rtMean.getColumnAsVariables("Label");
 		Variable[] volumeArray = rtVolume.getColumnAsVariables("Volume");
 		Variable[] meanIntensityArray = rtMean.getColumnAsVariables("Mean");
+		
+		
+		
+		
 		//IJ.log(Integer.toString(meanIntensityArray.length));
 		table.setColumn("Label", labArray);
-		table.setColumn("IntensityMean", meanIntensityArray);
+		table.setColumn("Mean_Intensity", meanIntensityArray);
 		table.setColumn("Volume", volumeArray);
-		
-				
-		
-		/* >> Alternative method is to iterate through each row and build the table up manually. 
-		 * for (int i = 0; i < im.getMean().getCounter(); i++) { table.addRow();
-		 * table.setValue("Mean", i, mean[i]); }
-		 * 
-		 * table.addValue("Mean_Intensity", im.getMean());
-		 */
-	
+		table.setColumn("IntDen", intDen);
 		return table;
 	}
 	

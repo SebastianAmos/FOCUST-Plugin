@@ -2,6 +2,7 @@ package clcm.focust;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
 import inra.ijpb.measure.IntensityMeasures;
@@ -109,24 +110,41 @@ public class Segment {
 					/* 
 					 * Intensity measurements
 					 */
-					//ResultsTable primaryIntensity = intensity3D.run(sRName);
-					
-					
 					// Primary Objects
-
 					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
-					primaryC2Intensity.show("PrimaryC2Intensity");
+					Variable[] primaryLabArray = primaryC2Intensity.getColumnAsVariables("Label");
+					Variable[] primaryC2MeanArray = primaryC2Intensity.getColumnAsVariables("Mean_Intensity");
+					Variable[] primaryC2IntDenArray = primaryC2Intensity.getColumnAsVariables("IntDen");
+					Variable[] primaryVolumeArray = primaryC2Intensity.getColumnAsVariables("Volume");
 					
 					
-					IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
-					IntensityMeasurements.table.show("IntensityData");
-					ResultsTable PriObjIntensityC3 = IntensityMeasurements.table;
+					
+					ResultsTable primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
+					Variable[] primaryC3MeanArray = primaryC3Intensity.getColumnAsVariables("Mean_Intensity");
+					
+					
+					
+					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
+					Variable[] primaryC4MeanArray = primaryC4Intensity.getColumnAsVariables("Mean_Intensity");
+					
 					
 					
 					// Secondary Objects
+					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
+					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
+					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
 					
 					
+					// Build the results table
+					ResultsTable primaryFinalTable = new ResultsTable();
 					
+					primaryFinalTable.setColumn("Label", primaryLabArray);
+					primaryFinalTable.setColumn("C2_Mean_Intensity", primaryC2MeanArray);
+					primaryFinalTable.setColumn("C3_Mean_Intensity", primaryC3MeanArray);
+					primaryFinalTable.setColumn("C4_Mean_Intensity", primaryC4MeanArray);
+					primaryFinalTable.setColumn("Volume", primaryVolumeArray);
+					primaryFinalTable.setColumn("C2_IntDen", primaryC2IntDenArray);
+					primaryFinalTable.show("C2_Results");
 					
 					IJ.log(list.length + " Images Processed");
 					IJ.log("Processing Finished!");
