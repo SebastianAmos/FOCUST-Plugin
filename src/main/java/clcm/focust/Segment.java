@@ -70,6 +70,12 @@ public class Segment {
 					String path = SpheroidView.inputDir + list[i];
 					IJ.log("Processing Image: " + list[i]);
 					ImagePlus imp = IJ.openImage(path);
+					
+					// Set the global calibration so that volume metrics are in calibrated units.
+					// Collecting from each active image should be fine but setting it globally once for a batch is probably more efficient. i.e. while i = 0 setGlobalCalibration(imp.getCalibration());
+					//setGlobalCalibration(imp.getCalibration());
+					
+					
 					channelsSpheroid = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpheroidView.primaryChannelChoice;
 					int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
@@ -150,7 +156,6 @@ public class Segment {
 					IJ.log("Processing Finished!");
 					// Empty the channel array between images
 					Arrays.fill(channelsSpheroid, null);
-
 				}
 			}
 		});
