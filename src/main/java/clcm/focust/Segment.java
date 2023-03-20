@@ -3,6 +3,7 @@ package clcm.focust;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
+import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
 import inra.ijpb.measure.IntensityMeasures;
@@ -19,6 +20,14 @@ import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
 
+/**
+ * @author 21716603
+ *
+ */
+/**
+ * @author 21716603
+ *
+ */
 public class Segment {
 
 	public static ImagePlus[] channelsSpheroid;
@@ -55,6 +64,14 @@ public class Segment {
 	 * as outputTable object. save as .csv
 	 */
 
+	
+
+	
+	/* --------------------------------------------------------------------------------
+	 * This method segments primary and secondary objects based on user selections.
+	 * Objects are then used for region-restricted intensity analysis and volumetric
+	 * measurements. 
+	 --------------------------------------------------------------------------------*/
 	public static void ProcessSpheroid() {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
@@ -70,21 +87,18 @@ public class Segment {
 					String path = SpheroidView.inputDir + list[i];
 					IJ.log("Processing Image: " + list[i]);
 					ImagePlus imp = IJ.openImage(path);
-					
-					// Set the global calibration so that volume metrics are in calibrated units.
-					// Collecting from each active image should be fine but setting it globally once for a batch is probably more efficient. i.e. while i = 0 setGlobalCalibration(imp.getCalibration());
-					//setGlobalCalibration(imp.getCalibration());
-					
-					
+					Calibration cal = imp.getCalibration();
+
 					channelsSpheroid = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpheroidView.primaryChannelChoice;
 					int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
 					String imgName = imp.getTitle();
 					
 					/*
-					 * Primary object: create and measure
+					 * create and measure primary objects
 					 */
 					GPUSpheroidPrimaryObject(primaryChannelChoice);
+					primaryObjectSpheroid.setCalibration(cal);
 					IJ.saveAs(primaryObjectSpheroid, "TIF", dir + "primaryObjects_" + imgName);
 					ResultsTable primaryResults = analyze3D.process(primaryObjectSpheroid);
 					String pRName = dir + "Primary_Results.csv";
@@ -98,13 +112,23 @@ public class Segment {
 					
 
 					/*
-					 * Secondary object: create and measure
+					 * create and measure secondary object
 					 */
+					
+					/* TODO
+					 *  > Take the whole secondary object and transform into core vs periphery regions for intensity analysis.
+					 *  > This was done with image calculation and a fixed number of erosion iterations in the IJ scripts. 
+					 *  --> consider developing a more programmatic approach i.e. shrinking the object by 50 % to its x, y, z centroid?   
+					 */
+					
+					
 					IJ.log("Commencing Secondary Object...");
 					GPUSpheroidSecondaryObject(secondaryChannelChoice);
+					secondaryObjectSpheroid.setCalibration(cal);
 					IJ.saveAs(secondaryObjectSpheroid, "TIF", dir + "SecondaryObjects_" + imgName);
 					ResultsTable secondaryResults = analyze3D.process(secondaryObjectSpheroid);
 					String sRName = dir + "Secondary_Results.csv";
+					
 					try {
 						secondaryResults.saveAs(sRName);
 					} catch (IOException e) {
@@ -117,43 +141,87 @@ public class Segment {
 					 * Intensity measurements
 					 */
 					// Primary Objects
+					ResultsTable primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
 					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
-					Variable[] primaryLabArray = primaryC2Intensity.getColumnAsVariables("Label");
-					Variable[] primaryC2MeanArray = primaryC2Intensity.getColumnAsVariables("Mean_Intensity");
-					Variable[] primaryC2IntDenArray = primaryC2Intensity.getColumnAsVariables("IntDen");
-					Variable[] primaryVolumeArray = primaryC2Intensity.getColumnAsVariables("Volume");
-					
-					
-					
 					ResultsTable primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
-					Variable[] primaryC3MeanArray = primaryC3Intensity.getColumnAsVariables("Mean_Intensity");
-					
-					
-					
 					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
-					Variable[] primaryC4MeanArray = primaryC4Intensity.getColumnAsVariables("Mean_Intensity");
-					
-					
-					
+
 					// Secondary Objects
+					ResultsTable secondaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], secondaryObjectSpheroid);
 					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
 					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
 					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
 					
 					
-					// Build the results table
-					ResultsTable primaryFinalTable = new ResultsTable();
+					/*
+					 * build final results tables
+					 */
 					
-					primaryFinalTable.setColumn("Label", primaryLabArray);
-					primaryFinalTable.setColumn("C2_Mean_Intensity", primaryC2MeanArray);
-					primaryFinalTable.setColumn("C3_Mean_Intensity", primaryC3MeanArray);
-					primaryFinalTable.setColumn("C4_Mean_Intensity", primaryC4MeanArray);
-					primaryFinalTable.setColumn("Volume", primaryVolumeArray);
-					primaryFinalTable.setColumn("C2_IntDen", primaryC2IntDenArray);
-					primaryFinalTable.show("C2_Results");
+					/*
+					 * TODO
+					 * > Write grouping variable into each row as its own column before save. 
+					 * > Write channel names into header for column respectively  
+					 */
+					
+					
+					// Build the  final primary results table
+					ResultsTable primaryFinalTable = new ResultsTable();
+					primaryFinalTable.setColumn("Label", primaryC2Intensity.getColumnAsVariables("Label"));
+					primaryFinalTable.setColumn("Volume", primaryResults.getColumnAsVariables("Volume"));
+					primaryFinalTable.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
+					primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
+					primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
+					primaryFinalTable.setColumn("C1_Mean_Intensity", primaryC1Intensity.getColumnAsVariables("Mean_Intensity"));
+					primaryFinalTable.setColumn("C1_IntDen", primaryC1Intensity.getColumnAsVariables("IntDen"));
+					primaryFinalTable.setColumn("C2_Mean_Intensity", primaryC2Intensity.getColumnAsVariables("Mean_Intensity"));
+					primaryFinalTable.setColumn("C2_IntDen", primaryC2Intensity.getColumnAsVariables("IntDen"));
+					primaryFinalTable.setColumn("C3_Mean_Intensity", primaryC3Intensity.getColumnAsVariables("Mean_Intensity"));
+					primaryFinalTable.setColumn("C3_IntDen", primaryC3Intensity.getColumnAsVariables("IntDen"));
+					primaryFinalTable.setColumn("C4_Mean_Intensity", primaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
+					primaryFinalTable.setColumn("C4_IntDen", primaryC4Intensity.getColumnAsVariables("IntDen"));
+					
+					
+					
+					
+					String pFinalName = dir + "Final_Primary_Object_Results.csv";
+					try {
+						primaryFinalTable.saveAs(pFinalName);
+					} catch (IOException e) {
+						e.printStackTrace();
+						IJ.log("Unable to save final primary results table.");
+					}
+					
+					
+					// Build the final secondary results table
+					
+					ResultsTable secondaryFinalTable = new ResultsTable();
+					secondaryFinalTable.setColumn("Label", secondaryC1Intensity.getColumnAsVariables("Label"));
+					secondaryFinalTable.setColumn("Volume", secondaryResults.getColumnAsVariables("Volume"));
+					secondaryFinalTable.setColumn("intLabelTest", secondaryResults.getColumnAsVariables("Label"));
+					secondaryFinalTable.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
+					secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
+					secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
+					secondaryFinalTable.setColumn("Whole_C1_Mean_Intensity", secondaryC1Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Whole_C1_IntDen", secondaryC1Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Whole_C2_Mean_Intensity", secondaryC2Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Whole_C2_IntDen", secondaryC2Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Whole_C3_Mean_Intensity", secondaryC3Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Whole_C3_IntDen", secondaryC3Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Whole_C4_Mean_Intensity", secondaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Whole_C4_IntDen", secondaryC4Intensity.getColumnAsVariables("IntDen"));
+
+					String sFinalName = dir + "Final_Secondary_Object_Results.csv";
+					try {
+						secondaryFinalTable.saveAs(sFinalName);
+					} catch (IOException e) {
+						e.printStackTrace();
+						IJ.log("Unable to save final primary results table.");
+					}
+					
 					
 					IJ.log(list.length + " Images Processed");
 					IJ.log("Processing Finished!");
+					
 					// Empty the channel array between images
 					Arrays.fill(channelsSpheroid, null);
 				}
@@ -163,13 +231,9 @@ public class Segment {
 	}
 
 	/*
-	 * Test if --> all images for processing are opened, split channels, select the
-	 * primary channel choice for each image, and store in
-	 * primaryChannelChoiceProcessing[]. Push entire array for ImagePlus objects
-	 * into the GPU to minimise back and forth and use cache. Process all primary
-	 * objects at once.
+	 * Take the selected channel and process as the primary object
 	 */
-
+	
 	public static ImagePlus GPUSpheroidPrimaryObject(int primaryChannelChoice) {
 
 		// ready clij2
@@ -230,6 +294,10 @@ public class Segment {
 
 	}
 
+	/*
+	 * Take the selected channel and process as the secondary object
+	 */
+	
 	public static ImagePlus GPUSpheroidSecondaryObject(int secondaryChannelChoice) {
 
 		// ready clij2
