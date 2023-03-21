@@ -11,7 +11,7 @@ public class IntensityMeasurements {
 
 	static ImagePlus input; 
 	static ImagePlus label; 
-	static ResultsTable table = new ResultsTable(); 
+	static ResultsTable table = new ResultsTable();  // move this into Process function otherwise it might not reset between images in batch. 
 	
 	
 	// Parameter for "input" can be passed in using the public "channel" array that contains the original split channels of the active image . 

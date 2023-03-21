@@ -81,6 +81,7 @@ public class SpheroidView extends JFrame {
 	 public static String channel4Name;
 	 public static int primaryChannelChoice;
 	 public static int secondaryChannelChoice;
+	 public static String groupingInfo;
 	 
 	/**
 	 * construct the spheroid gui.
@@ -128,7 +129,8 @@ public class SpheroidView extends JFrame {
 				channel3Name = txtSpheroidC4Name.getText();
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
-			
+				groupingInfo = txtSpheroidGroupName.getText();
+				
 				Segment.ProcessSpheroid();
 				
 			}

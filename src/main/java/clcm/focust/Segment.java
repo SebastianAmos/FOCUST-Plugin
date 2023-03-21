@@ -2,11 +2,9 @@ package clcm.focust;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.macro.Variable;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
-import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import inra.ijpb.plugins.IntensityMeasures3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -21,13 +19,10 @@ import java.util.Arrays;
 import javax.swing.SwingUtilities;
 
 /**
- * @author 21716603
+ * @author SebastianAmos
  *
  */
-/**
- * @author 21716603
- *
- */
+
 public class Segment {
 
 	public static ImagePlus[] channelsSpheroid;
@@ -67,11 +62,11 @@ public class Segment {
 	
 
 	
-	/* --------------------------------------------------------------------------------
-	 * This method segments primary and secondary objects based on user selections.
+	/* ------------------------------------------------------------------------------------
+	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and volumetric
 	 * measurements. 
-	 --------------------------------------------------------------------------------*/
+	 -------------------------------------------------------------------------------------*/
 	public static void ProcessSpheroid() {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
@@ -108,7 +103,7 @@ public class Segment {
 						e.printStackTrace();
 						IJ.log("Unable to save primary results table.");
 					}
-					IJ.log("Primary Ojbects Completed for: " + imgName);
+					
 					
 
 					/*
@@ -138,23 +133,7 @@ public class Segment {
 					
 					
 					/* 
-					 * Intensity measurements
-					 */
-					// Primary Objects
-					ResultsTable primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
-					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
-					ResultsTable primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
-					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
-
-					// Secondary Objects
-					ResultsTable secondaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], secondaryObjectSpheroid);
-					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
-					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
-					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
-					
-					
-					/*
-					 * build final results tables
+					 * Intensity measurements and building results tables 
 					 */
 					
 					/*
@@ -164,9 +143,53 @@ public class Segment {
 					 */
 					
 					
+					// Primary Objects
+					ResultsTable primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
+					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
+					ResultsTable primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
+					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
+					
+					
+					/* 
+					 * Write image name and grouping (where entered) data to a results table.
+					 * This allows whole columns to be extracted as Variable[] to construct the final table.
+					 */
+					
+					// get counter
+					int primaryTableLength = primaryC1Intensity.getColumnAsVariables("Label").length;
+					
+					// new results table type
+					ResultsTable primaryImageData = new ResultsTable();
+					
+					// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
+					if (SpheroidView.groupingInfo.isEmpty()) {
+						
+							for (int o = 0; o < primaryTableLength ; o++) {
+								primaryImageData.addRow();
+								primaryImageData.addValue("ImageID", imgName);
+							}
+							
+					} else {
+						
+						String group = SpheroidView.groupingInfo;
+						
+						for (int o = 0; o < primaryTableLength ; o++) {
+							primaryImageData.addRow();
+							primaryImageData.addValue("ImageID", imgName);
+							primaryImageData.addValue("Group", group);
+						}
+						
+					}
+					
+					
+					
 					// Build the  final primary results table
 					ResultsTable primaryFinalTable = new ResultsTable();
-					primaryFinalTable.setColumn("Label", primaryC2Intensity.getColumnAsVariables("Label"));
+					primaryFinalTable.setColumn("Label", primaryC1Intensity.getColumnAsVariables("Label"));
+					primaryFinalTable.setColumn("ImageID", primaryImageData.getColumnAsVariables("ImageID"));
+					if (!SpheroidView.groupingInfo.isEmpty()) {
+						primaryFinalTable.setColumn("Group", primaryImageData.getColumnAsVariables("Group"));
+					}
 					primaryFinalTable.setColumn("Volume", primaryResults.getColumnAsVariables("Volume"));
 					primaryFinalTable.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
 					primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
@@ -183,21 +206,55 @@ public class Segment {
 					
 					
 					
-					String pFinalName = dir + "Final_Primary_Object_Results.csv";
+					String primaryFinalName = dir + "Final_Primary_Object_Results.csv";
 					try {
-						primaryFinalTable.saveAs(pFinalName);
+						primaryFinalTable.saveAs(primaryFinalName);
 					} catch (IOException e) {
 						e.printStackTrace();
-						IJ.log("Unable to save final primary results table.");
+						IJ.log("Unable to save final primary results table. Check that the objects were created.");
 					}
 					
 					
-					// Build the final secondary results table
+				
 					
+					// Secondary Objects
+					ResultsTable secondaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], secondaryObjectSpheroid);
+					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
+					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
+					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
+					
+					
+					// get counter
+					int secondaryTableLength = secondaryC1Intensity.getColumnAsVariables("Label").length;
+					ResultsTable secondaryImageData = new ResultsTable();
+			
+					// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
+					if (SpheroidView.groupingInfo.isEmpty()) {
+						
+							for (int o = 0; o < secondaryTableLength ; o++) {
+								secondaryImageData.addRow();
+								secondaryImageData.addValue("ImageID", imgName);
+							}
+							
+					} else {
+						
+						String group = SpheroidView.groupingInfo;
+						
+						for (int o = 0; o < secondaryTableLength ; o++) {
+							secondaryImageData.addRow();
+							secondaryImageData.addValue("ImageID", imgName);
+							secondaryImageData.addValue("Group", group);
+						}
+					}
+					
+					// Build the final secondary results table
 					ResultsTable secondaryFinalTable = new ResultsTable();
 					secondaryFinalTable.setColumn("Label", secondaryC1Intensity.getColumnAsVariables("Label"));
+					secondaryFinalTable.setColumn("ImageID", secondaryImageData.getColumnAsVariables("ImageID"));
+					if (!SpheroidView.groupingInfo.isEmpty()) {
+						secondaryFinalTable.setColumn("Group", secondaryImageData.getColumnAsVariables("Group"));
+					}
 					secondaryFinalTable.setColumn("Volume", secondaryResults.getColumnAsVariables("Volume"));
-					secondaryFinalTable.setColumn("intLabelTest", secondaryResults.getColumnAsVariables("Label"));
 					secondaryFinalTable.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
 					secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
 					secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
@@ -210,13 +267,14 @@ public class Segment {
 					secondaryFinalTable.setColumn("Whole_C4_Mean_Intensity", secondaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
 					secondaryFinalTable.setColumn("Whole_C4_IntDen", secondaryC4Intensity.getColumnAsVariables("IntDen"));
 
-					String sFinalName = dir + "Final_Secondary_Object_Results.csv";
+					String secondaryFinalName = dir + "Final_Secondary_Object_Results.csv";
 					try {
-						secondaryFinalTable.saveAs(sFinalName);
+						secondaryFinalTable.saveAs(secondaryFinalName);
 					} catch (IOException e) {
 						e.printStackTrace();
-						IJ.log("Unable to save final primary results table.");
+						IJ.log("Unable to save final primary results table. Check that the objects were created.");
 					}
+					
 					
 					
 					IJ.log(list.length + " Images Processed");
