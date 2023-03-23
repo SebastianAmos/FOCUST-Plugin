@@ -105,7 +105,7 @@ public class Segment {
 					}
 					
 					
-
+					
 					/*
 					 * create and measure secondary object
 					 */
