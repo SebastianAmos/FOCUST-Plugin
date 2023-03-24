@@ -2,6 +2,7 @@ package clcm.focust;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.Variable;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
@@ -11,9 +12,11 @@ import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
+import net.haesleinhuepf.clijx.morpholibj.AbstractMorphoLibJAnalyzeRegions3D;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
@@ -154,7 +157,7 @@ public class Segment {
 					 * Write image name and grouping (where entered) data to a results table.
 					 * This allows whole columns to be extracted as Variable[] to construct the final table.
 					 */
-					
+
 					// get counter
 					int primaryTableLength = primaryC1Intensity.getColumnAsVariables("Label").length;
 					
@@ -183,6 +186,7 @@ public class Segment {
 					
 					
 					
+					
 					// Build the  final primary results table
 					ResultsTable primaryFinalTable = new ResultsTable();
 					primaryFinalTable.setColumn("Label", primaryC1Intensity.getColumnAsVariables("Label"));
@@ -202,6 +206,10 @@ public class Segment {
 					primaryFinalTable.setColumn("C3_IntDen", primaryC3Intensity.getColumnAsVariables("IntDen"));
 					primaryFinalTable.setColumn("C4_Mean_Intensity", primaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
 					primaryFinalTable.setColumn("C4_IntDen", primaryC4Intensity.getColumnAsVariables("IntDen"));
+					
+					//ArrayList<Variable[]> greg = new ArrayList<Variable[]>();
+					//greg.add(primaryResults.getColumnAsVariables("Volume")); // Image 0
+					//greg.add(primaryResults.getColumnAsVariables("Voxel_Count")); // Image 1
 					
 					
 					
@@ -280,8 +288,7 @@ public class Segment {
 					IJ.log(list.length + " Images Processed");
 					IJ.log("Processing Finished!");
 					
-					// Empty the channel array between images
-					Arrays.fill(channelsSpheroid, null);
+					
 				}
 			}
 		});
@@ -333,12 +340,31 @@ public class Segment {
 		// label spots
 		clij2.labelSpots(detectedMax, labelledSpots);
 
-		// marker controlled watershed
-		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots,
-				threshold, segmented);
-
-		primaryObjectSpheroid = clij2.pull(segmented);
-
+		
+		 // marker controlled watershed
+		 MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(
+		 clij2, inverted, labelledSpots, threshold, segmented);
+		 
+		  
+		  /* 
+		 * // _Borrowed_ from AbstractMorphoLibJAnalyzeRegions3D xxx ImagePlus
+		 * labels_imp = clij2.pull(labels);
+		 * 
+		 * ResultsTable table = new AnalyzeRegions3D().process(labels_imp);
+		 * 
+		 * ClearCLBuffer vector = clij2.create(table.getCounter(), 1, 1);
+		 * 
+		 * clij2.pushResultsTableColumn(vector, table, property);
+		 * 
+		 * ClearCLBuffer vector_with_background = clij2.create(table.getCounter() + 1,
+		 * 1, 1); clij2.setColumn(vector_with_background, 0, 0); clij2.paste(vector,
+		 * vector_with_background, 1, 0, 0);
+		 * 
+		 * clij2.replaceIntensities(labels, vector_with_background, parametric_map);
+		 * 
+		 * // clean up vector.close(); vector_with_background.close();
+		 * primaryObjectSpheroid = clij2.pull(segmented);
+		 */
 		// primaryObjects.show();
 		input.close();
 		blurred.close();
