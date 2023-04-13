@@ -6,6 +6,7 @@ import ij.macro.Variable;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
+import ij.plugin.ImageCalculator;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import inra.ijpb.plugins.IntensityMeasures3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -67,9 +68,8 @@ public class Segment {
 	
 	/* ------------------------------------------------------------------------------------
 	 * This method segments primary and secondary objects based on user-defined parameters.
-	 * Objects are then used for region-restricted intensity analysis and volumetric
-	 * measurements. 
-	 -------------------------------------------------------------------------------------*/
+	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
+	 * -----------------------------------------------------------------------------------*/
 	public static void ProcessSpheroid() {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
@@ -79,13 +79,17 @@ public class Segment {
 				File f = new File(SpheroidView.inputDir);
 				String[] list = f.list();
 				String dir = SpheroidView.inputDir;
-
+				int count = 0; 
 				// Iterate through each image in the directory and segment the selected primary and secondary channels.
 				for (int i = 0; i < list.length; i++) {
+					count++;
 					String path = SpheroidView.inputDir + list[i];
-					IJ.log("Processing Image: " + list[i]);
+					IJ.log("Processing image " + count + " of " + list.length);
+					IJ.log("Current image name: " + list[i]);
 					ImagePlus imp = IJ.openImage(path);
 					Calibration cal = imp.getCalibration();
+					
+					
 
 					channelsSpheroid = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpheroidView.primaryChannelChoice;
@@ -123,6 +127,7 @@ public class Segment {
 					IJ.log("Commencing Secondary Object...");
 					GPUSpheroidSecondaryObject(secondaryChannelChoice);
 					secondaryObjectSpheroid.setCalibration(cal);
+					IJ.resetMinAndMax(secondaryObjectSpheroid);
 					IJ.saveAs(secondaryObjectSpheroid, "TIF", dir + "SecondaryObjects_" + imgName);
 					ResultsTable secondaryResults = analyze3D.process(secondaryObjectSpheroid);
 					String sRName = dir + "Secondary_Results.csv";
@@ -133,6 +138,24 @@ public class Segment {
 						e.printStackTrace();
 						IJ.log("Unable to save secondary results table.");
 					}
+					
+					
+					// Create inner ROI
+					// --> Duplicate whole spheroid, erode by fixed iteration 
+					ImagePlus innerROI = secondaryObjectSpheroid.duplicate();
+					IJ.run(innerROI, "Make Binary", "method=Default background=Dark black");
+					IJ.run(innerROI, "Options...", "iterations=70 count=1 black do=Erode stack");
+					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
+					
+					// Create outer ROI
+					// --> duplicate whole spheroid, run 8-bit, 
+					ImagePlus outerROI = ImageCalculator.run(secondaryObjectSpheroid, innerROI, "Subtract create stack");
+					IJ.saveAs(outerROI, "TIF", dir + "Outer_Secondary_" + imgName);
+					
+					
+					
+					
+					
 					
 					
 					/* 
@@ -363,8 +386,9 @@ public class Segment {
 		 * clij2.replaceIntensities(labels, vector_with_background, parametric_map);
 		 * 
 		 * // clean up vector.close(); vector_with_background.close();
-		 * primaryObjectSpheroid = clij2.pull(segmented);
-		 */
+		 */ 
+		 primaryObjectSpheroid = clij2.pull(segmented);
+		 
 		// primaryObjects.show();
 		input.close();
 		blurred.close();
@@ -373,7 +397,7 @@ public class Segment {
 		detectedMax.close();
 		labelledSpots.close();
 		segmented.close();
-
+		
 		return primaryObjectSpheroid;
 
 	}
