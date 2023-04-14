@@ -2,24 +2,17 @@ package clcm.focust;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.macro.Variable;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
 import inra.ijpb.plugins.AnalyzeRegions3D;
-import inra.ijpb.plugins.IntensityMeasures3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
-import net.haesleinhuepf.clijx.morpholibj.AbstractMorphoLibJAnalyzeRegions3D;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javax.swing.SwingUtilities;
 
 /**
@@ -33,8 +26,9 @@ public class Segment {
 	public static ImagePlus primaryObjectSpheroid;
 	public static ImagePlus secondaryObjectSpheroid;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	private static IntensityMeasures3D intensity3D = new IntensityMeasures3D();
-	//private static IntensityMeasures primaryC2Intensity = new IntensityMeasures(primaryObjectSpheroid, channelsSpheroid[2]);
+	static ResultsTable primaryC1Intensity = new ResultsTable();
+	static ResultsTable primaryC3Intensity = new ResultsTable();
+	
 	
 
 	public static void threadLog(final String log) {
@@ -70,7 +64,7 @@ public class Segment {
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
 	 * -----------------------------------------------------------------------------------*/
-	public static void ProcessSpheroid() {
+	public static void ProcessSpheroid(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -90,7 +84,6 @@ public class Segment {
 					Calibration cal = imp.getCalibration();
 					
 					
-
 					channelsSpheroid = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpheroidView.primaryChannelChoice;
 					int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
@@ -99,7 +92,18 @@ public class Segment {
 					/*
 					 * create and measure primary objects
 					 */
-					GPUSpheroidPrimaryObject(primaryChannelChoice);
+					
+					// if box for analysis ticked, 
+					if(!analysisOnly) {
+						GPUSpheroidPrimaryObject(primaryChannelChoice);
+					} else {
+						// TODO: Go find the files.
+						throw new UnsupportedOperationException();
+					}
+					
+					
+					// 
+					
 					primaryObjectSpheroid.setCalibration(cal);
 					IJ.saveAs(primaryObjectSpheroid, "TIF", dir + "primaryObjects_" + imgName);
 					ResultsTable primaryResults = analyze3D.process(primaryObjectSpheroid);
@@ -118,14 +122,19 @@ public class Segment {
 					 */
 					
 					/* TODO
-					 *  > Take the whole secondary object and transform into core vs periphery regions for intensity analysis.
 					 *  > This was done with image calculation and a fixed number of erosion iterations in the IJ scripts. 
 					 *  --> consider developing a more programmatic approach i.e. shrinking the object by 50 % to its x, y, z centroid?   
 					 */
 					
 					
 					IJ.log("Commencing Secondary Object...");
-					GPUSpheroidSecondaryObject(secondaryChannelChoice);
+					// if box for analysis ticked, 
+					if(!analysisOnly) {
+						GPUSpheroidSecondaryObject(secondaryChannelChoice);
+					} else {
+						// TODO: Go find the files...again.
+						throw new UnsupportedOperationException();
+					}
 					secondaryObjectSpheroid.setCalibration(cal);
 					IJ.resetMinAndMax(secondaryObjectSpheroid);
 					IJ.saveAs(secondaryObjectSpheroid, "TIF", dir + "SecondaryObjects_" + imgName);
@@ -148,7 +157,6 @@ public class Segment {
 					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
 					
 					// Create outer ROI
-					// --> duplicate whole spheroid, run 8-bit, 
 					ImagePlus outerROI = ImageCalculator.run(secondaryObjectSpheroid, innerROI, "Subtract create stack");
 					IJ.saveAs(outerROI, "TIF", dir + "Outer_Secondary_" + imgName);
 					
@@ -164,17 +172,48 @@ public class Segment {
 					
 					/*
 					 * TODO
-					 * > Write grouping variable into each row as its own column before save. 
-					 * > Write channel names into header for column respectively  
+					 * > Write channel names into header for columns respectively  
 					 */
 					
 					
 					// Primary Objects
-					ResultsTable primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
+					
+					
+					/*
+					 * 
+					 * ALL primary results tables from IntensityMeasurements.process contain identical data from the final table created.
+					 * 
+					 * 
+					 */
+					
+					
+					primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
+
+					try {
+						primaryC1Intensity.saveAs(dir + "c1IntensityTable.csv");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+						IJ.log("Can't save table.");
+					}
+					
+					
+					
 					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
-					ResultsTable primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
+					primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
 					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
 					
+					try {
+						primaryC2Intensity.saveAs(dir + "c2IntensityTable.csv");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+						IJ.log("Can't save table.");
+					}
+					
+					
+					IJ.saveAs(channelsSpheroid[0], "TIF", dir + "C0_1" + imgName);
+					IJ.saveAs(channelsSpheroid[1], "TIF", dir + "C1_2" + imgName);
+					IJ.saveAs(channelsSpheroid[2], "TIF", dir + "C2_3" + imgName);
+					IJ.saveAs(channelsSpheroid[3], "TIF", dir + "C3_4" + imgName);
 					
 					/* 
 					 * Write image name and grouping (where entered) data to a results table.
@@ -230,10 +269,11 @@ public class Segment {
 					primaryFinalTable.setColumn("C4_Mean_Intensity", primaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
 					primaryFinalTable.setColumn("C4_IntDen", primaryC4Intensity.getColumnAsVariables("IntDen"));
 					
+					
+					
 					//ArrayList<Variable[]> greg = new ArrayList<Variable[]>();
 					//greg.add(primaryResults.getColumnAsVariables("Volume")); // Image 0
 					//greg.add(primaryResults.getColumnAsVariables("Voxel_Count")); // Image 1
-					
 					
 					
 					
@@ -246,9 +286,12 @@ public class Segment {
 					}
 					
 					
-				
 					
 					// Secondary Objects
+					
+					/* TODO
+					 * > Make this conditional: i.e., image might not have all 4 channels - grab array length and just run for each element? 
+					 */
 					ResultsTable secondaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], secondaryObjectSpheroid);
 					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
 					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
@@ -439,11 +482,4 @@ public class Segment {
 
 		return secondaryObjectSpheroid;
 	}
-	
-	
-	
-
-	
-	
-
 }

@@ -130,8 +130,8 @@ public class SpheroidView extends JFrame {
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSpheroidGroupName.getText();
-				
-				Segment.ProcessSpheroid();
+				// Check if new analysisOnly checkbox is checked
+				Segment.ProcessSpheroid(false);
 				
 			}
 		});
