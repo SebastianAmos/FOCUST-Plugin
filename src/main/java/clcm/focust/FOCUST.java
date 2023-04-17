@@ -9,19 +9,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.scijava.command.Command;
-import org.scijava.menu.MenuConstants;
-import org.scijava.plugin.Menu;
 import org.scijava.plugin.Plugin;
 
-//{@Menu(label = MenuConstants.PLUGINS_LABEL, weight = MenuConstants.PLUGINS_WEIGHT, mnemonic = MenuConstants.PLUGINS_MNEMONIC),
-//	@Menu(label = "FOCUST", weight = 1, mnemonic = 'f')
-//}
-//menuPath = "Plugins>FOCUST"
+
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 
 
@@ -66,7 +60,7 @@ public static Path inputPath;
 
 	public static void FileFinder() {
 		
-		//JFileChooser fileChooser = null;
+		
 		try {
 			fileChooser = futureFileChooser.get();
 		} catch (InterruptedException | ExecutionException e1) {

@@ -17,8 +17,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -76,6 +74,7 @@ public class OptimizationSingleCellView extends JFrame {
 	/**
 	 * Make the single cell gui
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public OptimizationSingleCellView() {
 		setAlwaysOnTop(true);
 		

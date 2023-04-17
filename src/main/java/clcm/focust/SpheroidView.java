@@ -6,23 +6,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
 import java.awt.Window;
-
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
@@ -35,7 +28,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import javax.swing.JCheckBox;
 
+@SuppressWarnings("serial")
 public class SpheroidView extends JFrame {
 
 	 private JPanel paneSpheroid;
@@ -64,6 +59,7 @@ public class SpheroidView extends JFrame {
 	 private final ButtonGroup btnGroupOutputDir = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGPrimary = new ButtonGroup();
 	 private final ButtonGroup btnGroupBGSecondary = new ButtonGroup();
+	 private JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
 	 
 	 public static String inputDir;
 	 public static Double sigma_x;
@@ -82,6 +78,7 @@ public class SpheroidView extends JFrame {
 	 public static int primaryChannelChoice;
 	 public static int secondaryChannelChoice;
 	 public static String groupingInfo;
+	 public static boolean analysisMode;
 	 
 	/**
 	 * construct the spheroid gui.
@@ -131,7 +128,9 @@ public class SpheroidView extends JFrame {
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSpheroidGroupName.getText();
 				// Check if new analysisOnly checkbox is checked
-				Segment.ProcessSpheroid(false);
+								
+				
+				Segment.ProcessSpheroid(cbAnalysisMode.isSelected());
 				
 			}
 		});
@@ -324,20 +323,20 @@ public class SpheroidView extends JFrame {
 		JLabel lblPrimaryObjects = new JLabel("Primary Objects\r\n");
 		lblPrimaryObjects.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPrimaryObjects.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblPrimaryObjects.setBounds(336, 153, 187, 29);
+		lblPrimaryObjects.setBounds(336, 183, 187, 29);
 		paneSpheroid.add(lblPrimaryObjects);
 		
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentSecondary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentSecondary.setBounds(590, 153, 187, 29);
+		lblSegmentSecondary.setBounds(590, 183, 187, 29);
 		paneSpheroid.add(lblSegmentSecondary);
 		
 		JPanel PrimaryObjectPanel = new JPanel();
 		PrimaryObjectPanel.setLayout(null);
 		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(336, 211, 187, 182);
+		PrimaryObjectPanel.setBounds(336, 241, 187, 182);
 		paneSpheroid.add(PrimaryObjectPanel);
 		
 		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
@@ -372,6 +371,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblRadius);
 		
 		txtPriGBx = new JTextField();
+		txtPriGBx.setText("1");
 		txtPriGBx.setColumns(10);
 		txtPriGBx.setBackground(new Color(211, 211, 211));
 		txtPriGBx.setBounds(20, 73, 41, 20);
@@ -388,6 +388,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblY);
 		
 		txtPriGBy = new JTextField();
+		txtPriGBy.setText("1");
 		txtPriGBy.setColumns(10);
 		txtPriGBy.setBackground(new Color(211, 211, 211));
 		txtPriGBy.setBounds(75, 73, 41, 20);
@@ -399,6 +400,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblZ);
 		
 		txtPriGBz = new JTextField();
+		txtPriGBz.setText("1");
 		txtPriGBz.setColumns(10);
 		txtPriGBz.setBackground(new Color(211, 211, 211));
 		txtPriGBz.setBounds(130, 73, 41, 20);
@@ -422,6 +424,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblX_1);
 		
 		txtPriDMx = new JTextField();
+		txtPriDMx.setText("1");
 		txtPriDMx.setColumns(10);
 		txtPriDMx.setBackground(new Color(211, 211, 211));
 		txtPriDMx.setBounds(20, 121, 41, 20);
@@ -433,6 +436,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblY_1);
 		
 		txtPriDMy = new JTextField();
+		txtPriDMy.setText("1");
 		txtPriDMy.setColumns(10);
 		txtPriDMy.setBackground(new Color(211, 211, 211));
 		txtPriDMy.setBounds(75, 121, 41, 20);
@@ -444,6 +448,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblZ_1);
 		
 		txtPriDMz = new JTextField();
+		txtPriDMz.setText("1");
 		txtPriDMz.setColumns(10);
 		txtPriDMz.setBackground(new Color(211, 211, 211));
 		txtPriDMz.setBounds(130, 121, 41, 20);
@@ -455,6 +460,7 @@ public class SpheroidView extends JFrame {
 		PrimaryObjectPanel.add(lblThreshold);
 		
 		txtPriThreshold = new JTextField();
+		txtPriThreshold.setText("1");
 		txtPriThreshold.setColumns(10);
 		txtPriThreshold.setBackground(new Color(211, 211, 211));
 		txtPriThreshold.setBounds(76, 148, 55, 20);
@@ -462,7 +468,7 @@ public class SpheroidView extends JFrame {
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel.setBounds(351, 178, 106, 29);
+		lblWhichChannel.setBounds(351, 208, 106, 29);
 		paneSpheroid.add(lblWhichChannel);
 		
 		
@@ -470,14 +476,14 @@ public class SpheroidView extends JFrame {
 		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(464, 180, 48, 25);
+		cbChannelPrimary.setBounds(464, 210, 48, 25);
 		paneSpheroid.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
 		SecondaryObjectPanel.setLayout(null);
 		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
-		SecondaryObjectPanel.setBounds(590, 211, 187, 182);
+		SecondaryObjectPanel.setBounds(590, 241, 187, 182);
 		paneSpheroid.add(SecondaryObjectPanel);
 		
 		JLabel lblBgSubSecondary = new JLabel("Background subtraction?");
@@ -512,6 +518,7 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(lblRadius_1);
 		
 		txtSecGBx = new JTextField();
+		txtSecGBx.setText("1");
 		txtSecGBx.setColumns(10);
 		txtSecGBx.setBackground(new Color(211, 211, 211));
 		txtSecGBx.setBounds(20, 73, 41, 20);
@@ -528,6 +535,7 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(lblY_2);
 		
 		txtSecGBy = new JTextField();
+		txtSecGBy.setText("1");
 		txtSecGBy.setColumns(10);
 		txtSecGBy.setBackground(new Color(211, 211, 211));
 		txtSecGBy.setBounds(75, 73, 41, 20);
@@ -539,6 +547,7 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(lblZ_2);
 		
 		txtSecGBz = new JTextField();
+		txtSecGBz.setText("1");
 		txtSecGBz.setColumns(10);
 		txtSecGBz.setBackground(new Color(211, 211, 211));
 		txtSecGBz.setBounds(130, 73, 41, 20);
@@ -557,6 +566,7 @@ public class SpheroidView extends JFrame {
 		SecondaryObjectPanel.add(lblThreshold_1);
 		
 		txtSecThreshold = new JTextField();
+		txtSecThreshold.setText("1");
 		txtSecThreshold.setColumns(10);
 		txtSecThreshold.setBackground(new Color(211, 211, 211));
 		txtSecThreshold.setBounds(76, 108, 55, 20);
@@ -564,7 +574,7 @@ public class SpheroidView extends JFrame {
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel_1.setBounds(603, 178, 106, 29);
+		lblWhichChannel_1.setBounds(603, 208, 106, 29);
 		paneSpheroid.add(lblWhichChannel_1);
 		
 		
@@ -572,24 +582,30 @@ public class SpheroidView extends JFrame {
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(716, 180, 48, 25);
+		cbChannelSecondary.setBounds(716, 210, 48, 25);
 		paneSpheroid.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(321, 150, 469, 255);
+		panel.setBounds(321, 180, 469, 255);
 		paneSpheroid.add(panel);
 		
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentationParameters.setBounds(447, 118, 216, 29);
+		lblSegmentationParameters.setBounds(447, 148, 216, 29);
 		paneSpheroid.add(lblSegmentationParameters);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnLoadConfigSingleCell.setBounds(141, 373, 148, 29);
 		paneSpheroid.add(btnLoadConfigSingleCell);
+		
+
+		cbAnalysisMode.setSelected(true);
+		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		cbAnalysisMode.setBounds(326, 126, 157, 23);
+		paneSpheroid.add(cbAnalysisMode);
 	}
 }
