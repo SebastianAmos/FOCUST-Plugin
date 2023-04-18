@@ -58,6 +58,7 @@ public class Segment {
 	 * - make erosion of secondary object relative to it's original size, instead of an abitrary number of iterations.
 	 * - implement intensity measurements in core vs periphery
 	 * - make intensity analysis dependent on then number of channels in current image array - not fixed to 4. 
+	 * - add core vs periphery intensity measurements to the secondary results table.
 	 */
 
 
@@ -97,8 +98,10 @@ public class Segment {
 				for (int i = 0; i < list.length; i++) {
 					count++;
 					String path = SpheroidView.inputDir + list[i];
+					IJ.log("---------------------------------------------");
 					IJ.log("Processing image " + count + " of " + list.length);
 					IJ.log("Current image name: " + list[i]);
+					IJ.log("---------------------------------------------");
 					ImagePlus imp = IJ.openImage(path);
 					Calibration cal = imp.getCalibration();
 					channelsSpheroid = ChannelSplitter.split(imp);
@@ -287,6 +290,7 @@ public class Segment {
 					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
 					
 					
+					
 					// get counter
 					int secondaryTableLength = secondaryC1Intensity.getColumnAsVariables("Label").length;
 					ResultsTable secondaryImageData = new ResultsTable();
@@ -305,6 +309,22 @@ public class Segment {
 							secondaryImageData.addValue("Group", group);
 						}
 					}
+					
+					
+					// intensity measurements for core and periphery 
+					ResultsTable coreC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], innerROI);
+					ResultsTable coreC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], innerROI);
+					ResultsTable coreC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], innerROI);
+					ResultsTable coreC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], innerROI);
+					
+					ResultsTable peripheryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], outerROI);
+					ResultsTable peripheryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], outerROI);
+					ResultsTable peripheryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], outerROI);
+					ResultsTable peripheryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], outerROI);
+					
+					
+					
+					
 					
 					// Build the final secondary results table
 					ResultsTable secondaryFinalTable = new ResultsTable();
@@ -325,6 +345,28 @@ public class Segment {
 					secondaryFinalTable.setColumn("Whole_C3_IntDen", secondaryC3Intensity.getColumnAsVariables("IntDen"));
 					secondaryFinalTable.setColumn("Whole_C4_Mean_Intensity", secondaryC4Intensity.getColumnAsVariables("Mean_Intensity"));
 					secondaryFinalTable.setColumn("Whole_C4_IntDen", secondaryC4Intensity.getColumnAsVariables("IntDen"));
+					
+					secondaryFinalTable.setColumn("Core_C1_Mean_Intensity", coreC1Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Core_C1_IntDen", coreC1Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Periphery_C1_Mean_Intensity", peripheryC1Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Periphery_C1_IntDen", peripheryC1Intensity.getColumnAsVariables("IntDen"));
+					
+					secondaryFinalTable.setColumn("Core_C2_Mean_Intensity", coreC2Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Core_C2_IntDen", coreC2Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Periphery_C2_Mean_Intensity", peripheryC2Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Periphery_C2_IntDen", peripheryC2Intensity.getColumnAsVariables("IntDen"));
+					
+					secondaryFinalTable.setColumn("Core_C3_Mean_Intensity", coreC3Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Core_C3_IntDen", coreC3Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Periphery_C3_Mean_Intensity", peripheryC3Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Periphery_C3_IntDen", peripheryC3Intensity.getColumnAsVariables("IntDen"));
+				
+					secondaryFinalTable.setColumn("Core_C4_Mean_Intensity", coreC4Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Core_C4_IntDen", coreC4Intensity.getColumnAsVariables("IntDen"));
+					secondaryFinalTable.setColumn("Periphery_C4_Mean_Intensity", peripheryC4Intensity.getColumnAsVariables("Mean_Intensity"));
+					secondaryFinalTable.setColumn("Periphery_C4_IntDen", peripheryC4Intensity.getColumnAsVariables("IntDen"));
+					
+					
 
 					String secondaryFinalName = dir + "Final_Secondary_Object_Results.csv";
 					try {
@@ -335,10 +377,10 @@ public class Segment {
 					}
 					
 					
-					
+					IJ.log("---------------------------------------------");
 					IJ.log(list.length + " Images Processed");
 					IJ.log("Processing Finished!");
-					
+					IJ.log("---------------------------------------------");
 					
 				}
 			}
@@ -398,7 +440,7 @@ public class Segment {
 		 
 		  
 		  /* 
-		 * // _Borrowed_ from AbstractMorphoLibJAnalyzeRegions3D xxx ImagePlus
+		 * // from AbstractMorphoLibJAnalyzeRegions3D xxx ImagePlus
 		 * labels_imp = clij2.pull(labels);
 		 * 
 		 * ResultsTable table = new AnalyzeRegions3D().process(labels_imp);
