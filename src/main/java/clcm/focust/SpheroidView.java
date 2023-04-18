@@ -29,6 +29,7 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class SpheroidView extends JFrame {
@@ -105,7 +106,7 @@ public class SpheroidView extends JFrame {
 			}
 		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnBackToMenu.setBounds(10, 373, 122, 29);
+		btnBackToMenu.setBounds(10, 373, 133, 29);
 		paneSpheroid.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
@@ -135,12 +136,12 @@ public class SpheroidView extends JFrame {
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
-		btnRunAnalysis.setBounds(10, 406, 279, 29);
+		btnRunAnalysis.setBounds(10, 406, 286, 29);
 		paneSpheroid.add(btnRunAnalysis);
 		
 		JLabel lblSelectAnInput = new JLabel("Select an input directory:");
 		lblSelectAnInput.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblSelectAnInput.setBounds(20, 28, 167, 29);
+		lblSelectAnInput.setBounds(20, 28, 202, 29);
 		paneSpheroid.add(lblSelectAnInput);
 		
 		JButton btnInputDir = new JButton("Browse");
@@ -162,39 +163,14 @@ public class SpheroidView extends JFrame {
 		});
 		
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnInputDir.setBounds(193, 28, 96, 29);
+		btnInputDir.setBounds(214, 28, 96, 29);
 		paneSpheroid.add(btnInputDir);
 		
 		JLabel lblSeperateOutputDirectory = new JLabel("Seperate output directory?");
+		lblSeperateOutputDirectory.setToolTipText("Selecting yes will save output files to the specified directory.");
 		lblSeperateOutputDirectory.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblSeperateOutputDirectory.setBounds(20, 68, 167, 29);
+		lblSeperateOutputDirectory.setBounds(20, 68, 202, 29);
 		paneSpheroid.add(lblSeperateOutputDirectory);
-		
-		JRadioButton rbOutputDirNo = new JRadioButton("No");
-		btnGroupOutputDir.add(rbOutputDirNo);
-		rbOutputDirNo.setSelected(true);
-		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirNo.setBounds(193, 71, 48, 23);
-		paneSpheroid.add(rbOutputDirNo);
-		
-		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
-		rbOutputDirYes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (rbOutputDirYes.isSelected()) {
-					btnOutputDir.setEnabled(true);
-					txtOutputDir.setEnabled(true);
-				} else {
-					btnOutputDir.setEnabled(false);
-					txtOutputDir.setEnabled(false);
-				}
-			}
-		});
-		
-		
-		btnGroupOutputDir.add(rbOutputDirYes);
-		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirYes.setBounds(243, 71, 48, 23);
-		paneSpheroid.add(rbOutputDirYes);
 		
 	
 		btnOutputDir.addActionListener(new ActionListener() {
@@ -203,18 +179,18 @@ public class SpheroidView extends JFrame {
 		});
 		btnOutputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnOutputDir.setEnabled(false);
-		btnOutputDir.setBounds(297, 68, 96, 29);
+		btnOutputDir.setBounds(349, 68, 96, 29);
 		paneSpheroid.add(btnOutputDir);
 		
 		txtInputDir = new JTextField();
 		txtInputDir.setColumns(10);
-		txtInputDir.setBounds(299, 28, 289, 29);
+		txtInputDir.setBounds(322, 28, 289, 29);
 		paneSpheroid.add(txtInputDir);
 		
 		txtOutputDir = new JTextField();
 		txtOutputDir.setEnabled(false);
 		txtOutputDir.setColumns(10);
-		txtOutputDir.setBounds(403, 68, 289, 29);
+		txtOutputDir.setBounds(455, 68, 289, 29);
 		paneSpheroid.add(txtOutputDir);
 		
 		JSeparator separator = new JSeparator();
@@ -240,7 +216,7 @@ public class SpheroidView extends JFrame {
 		
 		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
 		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(20, 121, 237, 29);
+		lblHowManyChannels.setBounds(10, 178, 237, 29);
 		paneSpheroid.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
@@ -267,58 +243,52 @@ public class SpheroidView extends JFrame {
 		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setBounds(252, 123, 48, 25);
+		cbChannelTotal.setBounds(248, 180, 48, 25);
 		paneSpheroid.add(cbChannelTotal);
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
 		lblNameChannel2.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel2.setBounds(10, 154, 116, 29);
+		lblNameChannel2.setBounds(10, 216, 116, 29);
 		paneSpheroid.add(lblNameChannel2);
 		
 		txtSpheroidC2Name = new JTextField();
 		txtSpheroidC2Name.setColumns(10);
-		txtSpheroidC2Name.setBounds(120, 154, 176, 29);
+		txtSpheroidC2Name.setBounds(120, 216, 176, 29);
 		paneSpheroid.add(txtSpheroidC2Name);
 		
 		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
 		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel3.setBounds(10, 188, 116, 29);
+		lblNameChannel3.setBounds(10, 250, 116, 29);
 		paneSpheroid.add(lblNameChannel3);
 		
 		txtSpheroidC3Name = new JTextField();
 		txtSpheroidC3Name.setEnabled(false);
 		txtSpheroidC3Name.setColumns(10);
-		txtSpheroidC3Name.setBounds(120, 188, 176, 29);
+		txtSpheroidC3Name.setBounds(120, 250, 176, 29);
 		paneSpheroid.add(txtSpheroidC3Name);
 		
 		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
 		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel4.setBounds(10, 221, 116, 29);
+		lblNameChannel4.setBounds(10, 283, 116, 29);
 		paneSpheroid.add(lblNameChannel4);
 		
 		txtSpheroidC4Name = new JTextField();
 		txtSpheroidC4Name.setEnabled(false);
 		txtSpheroidC4Name.setColumns(10);
-		txtSpheroidC4Name.setBounds(120, 221, 176, 29);
+		txtSpheroidC4Name.setBounds(120, 283, 176, 29);
 		paneSpheroid.add(txtSpheroidC4Name);
 		
 		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
+		lblGroupingInfo.setToolTipText("Any conditions/factors specific to this dataset that you might wish to group data by. \r\nThis will appear as a seperate column alongside all data run within the same batch. ");
 		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblGroupingInfo.setBounds(10, 261, 116, 29);
+		lblGroupingInfo.setBounds(10, 323, 116, 29);
 		paneSpheroid.add(lblGroupingInfo);
 		
 		txtSpheroidGroupName = new JTextField();
+		txtSpheroidGroupName.setToolTipText("Any conditions/factors specific to this dataset that you might wish to group data by. \r\nThis will appear as a seperate column alongside all data run within the same batch. ");
 		txtSpheroidGroupName.setColumns(10);
-		txtSpheroidGroupName.setBounds(120, 261, 176, 29);
+		txtSpheroidGroupName.setBounds(120, 323, 176, 29);
 		paneSpheroid.add(txtSpheroidGroupName);
-		
-		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
-		txtpnanyConditionsfactorsSpecific.setText("*Any conditions/factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
-		txtpnanyConditionsfactorsSpecific.setFont(new Font("Gadugi", Font.PLAIN, 10));
-		txtpnanyConditionsfactorsSpecific.setEditable(false);
-		txtpnanyConditionsfactorsSpecific.setBackground(SystemColor.controlHighlight);
-		txtpnanyConditionsfactorsSpecific.setBounds(10, 295, 289, 67);
-		paneSpheroid.add(txtpnanyConditionsfactorsSpecific);
 		
 		JLabel lblPrimaryObjects = new JLabel("Primary Objects\r\n");
 		lblPrimaryObjects.setHorizontalAlignment(SwingConstants.CENTER);
@@ -466,17 +436,12 @@ public class SpheroidView extends JFrame {
 		txtPriThreshold.setBounds(76, 148, 55, 20);
 		PrimaryObjectPanel.add(txtPriThreshold);
 		
-		JLabel lblWhichChannel = new JLabel("Which channel? ");
-		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel.setBounds(351, 208, 106, 29);
-		paneSpheroid.add(lblWhichChannel);
-		
 		
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setSelectedIndex(0);
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(464, 210, 48, 25);
+		cbChannelPrimary.setBounds(464, 210, 59, 25);
 		paneSpheroid.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
@@ -574,7 +539,7 @@ public class SpheroidView extends JFrame {
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel_1.setBounds(603, 208, 106, 29);
+		lblWhichChannel_1.setBounds(590, 208, 106, 29);
 		paneSpheroid.add(lblWhichChannel_1);
 		
 		
@@ -582,7 +547,7 @@ public class SpheroidView extends JFrame {
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(716, 210, 48, 25);
+		cbChannelSecondary.setBounds(716, 210, 61, 25);
 		paneSpheroid.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();
@@ -590,6 +555,11 @@ public class SpheroidView extends JFrame {
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel.setBounds(321, 180, 469, 255);
 		paneSpheroid.add(panel);
+		
+		JLabel lblWhichChannel = new JLabel("Which channel? ");
+		lblWhichChannel.setBounds(15, 30, 146, 29);
+		panel.add(lblWhichChannel);
+		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
@@ -599,13 +569,46 @@ public class SpheroidView extends JFrame {
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(141, 373, 148, 29);
+		btnLoadConfigSingleCell.setBounds(148, 373, 148, 29);
 		paneSpheroid.add(btnLoadConfigSingleCell);
+		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		
 
 		cbAnalysisMode.setSelected(true);
 		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		cbAnalysisMode.setBounds(326, 126, 157, 23);
+		cbAnalysisMode.setBounds(20, 104, 157, 23);
 		paneSpheroid.add(cbAnalysisMode);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setForeground(new Color(169, 169, 169));
+		separator_1.setBackground(Color.WHITE);
+		separator_1.setBounds(10, 135, 780, 2);
+		paneSpheroid.add(separator_1);
+		
+		JRadioButton rbOutputDirYes = new JRadioButton("Yes");
+		rbOutputDirYes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rbOutputDirYes.isSelected()) {
+					btnOutputDir.setEnabled(true);
+					txtOutputDir.setEnabled(true);
+				} else {
+					btnOutputDir.setEnabled(false);
+					txtOutputDir.setEnabled(false);
+				}
+			}
+		});
+		
+		
+		btnGroupOutputDir.add(rbOutputDirYes);
+		rbOutputDirYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirYes.setBounds(278, 71, 79, 23);
+		paneSpheroid.add(rbOutputDirYes);
+		
+		JRadioButton rbOutputDirNo = new JRadioButton("No");
+		btnGroupOutputDir.add(rbOutputDirNo);
+		rbOutputDirNo.setSelected(true);
+		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rbOutputDirNo.setBounds(214, 71, 67, 23);
+		paneSpheroid.add(rbOutputDirNo);
 	}
 }

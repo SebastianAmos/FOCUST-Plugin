@@ -1,7 +1,5 @@
 package clcm.focust;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -33,13 +31,12 @@ import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import javax.swing.JCheckBox;
 
-import javax.swing.JInternalFrame;
+
 
 public class SingleCellView extends JFrame {
 
@@ -123,6 +120,7 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(btnInputDir);
 		
 		JLabel lblSeperateOutputDirectory = new JLabel("Seperate output directory?");
+		lblSeperateOutputDirectory.setToolTipText("Selecting yes will save output files to the specified directory.");
 		lblSeperateOutputDirectory.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblSeperateOutputDirectory.setBounds(20, 68, 167, 29);
 		paneSingleCell.add(lblSeperateOutputDirectory);
@@ -160,12 +158,12 @@ public class SingleCellView extends JFrame {
 		JSeparator separator = new JSeparator();
 		separator.setBackground(new Color(255, 255, 255));
 		separator.setForeground(new Color(169, 169, 169));
-		separator.setBounds(12, 108, 768, 2);
+		separator.setBounds(12, 135, 768, 2);
 		paneSingleCell.add(separator);
 		
 		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
 		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(10, 117, 237, 29);
+		lblHowManyChannels.setBounds(10, 179, 237, 29);
 		paneSingleCell.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
@@ -191,25 +189,25 @@ public class SingleCellView extends JFrame {
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
 		cbChannelTotal.setMaximumRowCount(3);
-		cbChannelTotal.setBounds(248, 119, 48, 25);
+		cbChannelTotal.setBounds(248, 181, 48, 25);
 		paneSingleCell.add(cbChannelTotal);
 		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
 		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentPrimary.setBounds(326, 166, 187, 29);
+		lblSegmentPrimary.setBounds(326, 183, 187, 29);
 		paneSingleCell.add(lblSegmentPrimary);
 		
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentSecondary.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentSecondary.setBounds(580, 166, 187, 29);
+		lblSegmentSecondary.setBounds(580, 183, 187, 29);
 		paneSingleCell.add(lblSegmentSecondary);
 		
 		JPanel PrimaryObjectPanel = new JPanel();
 		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(326, 224, 187, 182);
+		PrimaryObjectPanel.setBounds(326, 241, 187, 182);
 		paneSingleCell.add(PrimaryObjectPanel);
 		PrimaryObjectPanel.setLayout(null);
 		
@@ -345,21 +343,21 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel.setBounds(341, 191, 106, 29);
+		lblWhichChannel.setBounds(341, 208, 106, 29);
 		paneSingleCell.add(lblWhichChannel);
 		
 		JComboBox cbChannelPrimary = new JComboBox();
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setMaximumRowCount(4);
 		cbChannelPrimary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelPrimary.setBounds(454, 193, 48, 25);
+		cbChannelPrimary.setBounds(454, 210, 48, 25);
 		paneSingleCell.add(cbChannelPrimary);
 		
 		JPanel SecondaryObjectPanel = new JPanel();
 		SecondaryObjectPanel.setLayout(null);
 		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
-		SecondaryObjectPanel.setBounds(580, 224, 187, 182);
+		SecondaryObjectPanel.setBounds(580, 241, 187, 182);
 		paneSingleCell.add(SecondaryObjectPanel);
 		
 		JLabel lblBgSubSecondary = new JLabel("Background subtraction?");
@@ -485,7 +483,7 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblWhichChannel_1.setBounds(593, 191, 106, 29);
+		lblWhichChannel_1.setBounds(593, 208, 106, 29);
 		paneSingleCell.add(lblWhichChannel_1);
 		
 		JComboBox cbChannelSecondary = new JComboBox();
@@ -493,19 +491,19 @@ public class SingleCellView extends JFrame {
 		cbChannelSecondary.setSelectedIndex(3);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelSecondary.setBounds(706, 193, 48, 25);
+		cbChannelSecondary.setBounds(706, 210, 48, 25);
 		paneSingleCell.add(cbChannelSecondary);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(311, 163, 469, 255);
+		panel.setBounds(311, 180, 469, 255);
 		paneSingleCell.add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentationParameters.setBounds(437, 131, 216, 29);
+		lblSegmentationParameters.setBounds(437, 148, 216, 29);
 		paneSingleCell.add(lblSegmentationParameters);
 		
 		JButton btnHelp = new JButton("Help");
@@ -523,67 +521,66 @@ public class SingleCellView extends JFrame {
 			}
 		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnBackToMenu.setBounds(10, 373, 125, 29);
+		btnBackToMenu.setBounds(10, 373, 133, 29);
 		paneSingleCell.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
-		btnRunAnalysis.setBounds(10, 406, 279, 29);
+		btnRunAnalysis.setBounds(10, 406, 286, 29);
 		paneSingleCell.add(btnRunAnalysis);
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
 		lblNameChannel2.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel2.setBounds(10, 150, 116, 29);
+		lblNameChannel2.setBounds(10, 212, 116, 29);
 		paneSingleCell.add(lblNameChannel2);
 		
 		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
 		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel3.setBounds(10, 184, 116, 29);
+		lblNameChannel3.setBounds(10, 246, 116, 29);
 		paneSingleCell.add(lblNameChannel3);
 		
 		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
 		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel4.setBounds(10, 217, 116, 29);
+		lblNameChannel4.setBounds(10, 279, 116, 29);
 		paneSingleCell.add(lblNameChannel4);
 		
 		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
 		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblGroupingInfo.setBounds(10, 257, 116, 29);
+		lblGroupingInfo.setBounds(10, 319, 116, 29);
 		paneSingleCell.add(lblGroupingInfo);
 		
 		JTextField txtSingleCellChannel2Name = new JTextField();
 		txtSingleCellChannel2Name.setColumns(10);
-		txtSingleCellChannel2Name.setBounds(120, 150, 176, 29);
+		txtSingleCellChannel2Name.setBounds(120, 212, 176, 29);
 		paneSingleCell.add(txtSingleCellChannel2Name);
 		
 		txtSingleCellChannel3Name = new JTextField();
 		txtSingleCellChannel3Name.setEnabled(false);
 		txtSingleCellChannel3Name.setColumns(10);
-		txtSingleCellChannel3Name.setBounds(120, 184, 176, 29);
+		txtSingleCellChannel3Name.setBounds(120, 246, 176, 29);
 		paneSingleCell.add(txtSingleCellChannel3Name);
 		
 		txtSingleCellChannel4Name = new JTextField();
 		txtSingleCellChannel4Name.setEnabled(false);
 		txtSingleCellChannel4Name.setColumns(10);
-		txtSingleCellChannel4Name.setBounds(120, 217, 176, 29);
+		txtSingleCellChannel4Name.setBounds(120, 279, 176, 29);
 		paneSingleCell.add(txtSingleCellChannel4Name);
 		
 		txtSingleCellGrouping = new JTextField();
 		txtSingleCellGrouping.setColumns(10);
-		txtSingleCellGrouping.setBounds(120, 257, 176, 29);
+		txtSingleCellGrouping.setBounds(120, 319, 176, 29);
 		paneSingleCell.add(txtSingleCellGrouping);
-		
-		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
-		txtpnanyConditionsfactorsSpecific.setBackground(UIManager.getColor("CheckBox.light"));
-		txtpnanyConditionsfactorsSpecific.setFont(new Font("Gadugi", Font.PLAIN, 10));
-		txtpnanyConditionsfactorsSpecific.setEditable(false);
-		txtpnanyConditionsfactorsSpecific.setText("*Any conditions/factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
-		txtpnanyConditionsfactorsSpecific.setBounds(10, 291, 289, 67);
-		paneSingleCell.add(txtpnanyConditionsfactorsSpecific);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(148, 373, 141, 29);
+		btnLoadConfigSingleCell.setBounds(155, 373, 141, 29);
 		paneSingleCell.add(btnLoadConfigSingleCell);
+		
+		JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
+		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
+		cbAnalysisMode.setSelected(true);
+		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		cbAnalysisMode.setBounds(20, 104, 157, 23);
+		paneSingleCell.add(cbAnalysisMode);
 	}
 }

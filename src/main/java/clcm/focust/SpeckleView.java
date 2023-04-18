@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
 
 public class SpeckleView extends JFrame {
 
@@ -107,6 +108,7 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(btnInputDir);
 		
 		JLabel lblSeperateOutputDirectory = new JLabel("Seperate output directory?");
+		lblSeperateOutputDirectory.setToolTipText("Selecting yes will save output files to the specified directory.");
 		lblSeperateOutputDirectory.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblSeperateOutputDirectory.setBounds(18, 68, 167, 29);
 		paneSpeckle.add(lblSeperateOutputDirectory);
@@ -144,7 +146,7 @@ public class SpeckleView extends JFrame {
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(169, 169, 169));
 		separator.setBackground(Color.WHITE);
-		separator.setBounds(10, 108, 938, 2);
+		separator.setBounds(10, 134, 938, 2);
 		paneSpeckle.add(separator);
 		
 		JButton btnHelp = new JButton("Help");
@@ -164,7 +166,7 @@ public class SpeckleView extends JFrame {
 		
 		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
 		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(12, 117, 237, 29);
+		lblHowManyChannels.setBounds(13, 187, 237, 29);
 		paneSpeckle.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
@@ -192,7 +194,7 @@ public class SpeckleView extends JFrame {
 		cbChannelTotal.setSelectedIndex(0);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setBounds(250, 119, 48, 25);
+		cbChannelTotal.setBounds(251, 189, 48, 25);
 		paneSpeckle.add(cbChannelTotal);
 		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
@@ -655,93 +657,85 @@ public class SpeckleView extends JFrame {
 			}
 		});
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnBackToMenu.setBounds(18, 382, 125, 29);
+		btnBackToMenu.setBounds(13, 382, 133, 29);
 		paneSpeckle.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
-		btnRunAnalysis.setBounds(18, 415, 279, 29);
+		btnRunAnalysis.setBounds(13, 415, 286, 29);
 		paneSpeckle.add(btnRunAnalysis);
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
 		lblNameChannel2.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel2.setBounds(12, 150, 116, 29);
+		lblNameChannel2.setBounds(13, 225, 116, 29);
 		paneSpeckle.add(lblNameChannel2);
 		
 		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
 		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel3.setBounds(12, 184, 116, 29);
+		lblNameChannel3.setBounds(13, 259, 116, 29);
 		paneSpeckle.add(lblNameChannel3);
 		
 		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
 		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel4.setBounds(12, 217, 116, 29);
+		lblNameChannel4.setBounds(13, 292, 116, 29);
 		paneSpeckle.add(lblNameChannel4);
 		
 		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
 		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblGroupingInfo.setBounds(12, 257, 116, 29);
+		lblGroupingInfo.setBounds(13, 332, 116, 29);
 		paneSpeckle.add(lblGroupingInfo);
 		
 		txtC2Name = new JTextField();
 		txtC2Name.setColumns(10);
-		txtC2Name.setBounds(122, 150, 176, 29);
+		txtC2Name.setBounds(123, 225, 176, 29);
 		paneSpeckle.add(txtC2Name);
 		
 		txtC3Name = new JTextField();
 		txtC3Name.setEnabled(false);
 		txtC3Name.setColumns(10);
-		txtC3Name.setBounds(122, 184, 176, 29);
+		txtC3Name.setBounds(123, 259, 176, 29);
 		paneSpeckle.add(txtC3Name);
 		
 		txtC4Name = new JTextField();
 		txtC4Name.setEnabled(false);
 		txtC4Name.setColumns(10);
-		txtC4Name.setBounds(122, 217, 176, 29);
+		txtC4Name.setBounds(123, 292, 176, 29);
 		paneSpeckle.add(txtC4Name);
 		
 		txtGroupingName = new JTextField();
 		txtGroupingName.setColumns(10);
-		txtGroupingName.setBounds(122, 257, 176, 29);
+		txtGroupingName.setBounds(123, 332, 176, 29);
 		paneSpeckle.add(txtGroupingName);
-		
-		JTextPane txtpnanyConditionsfactorsSpecific = new JTextPane();
-		txtpnanyConditionsfactorsSpecific.setText("*Any factors specific to this dataset that you might wish to group data by. For example, control or experimental variables. This will appear as a seperate column alongside all data run within the same batch. ");
-		txtpnanyConditionsfactorsSpecific.setFont(new Font("Gadugi", Font.PLAIN, 10));
-		txtpnanyConditionsfactorsSpecific.setEditable(false);
-		txtpnanyConditionsfactorsSpecific.setBackground(SystemColor.controlHighlight);
-		txtpnanyConditionsfactorsSpecific.setBounds(12, 291, 289, 67);
-		paneSpeckle.add(txtpnanyConditionsfactorsSpecific);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		btnLoadConfigSingleCell.setBounds(150, 382, 147, 29);
+		btnLoadConfigSingleCell.setBounds(152, 382, 147, 29);
 		paneSpeckle.add(btnLoadConfigSingleCell);
 		
 		JLabel lblPerformColocalizationAnalysis = new JLabel("Perform colocalization analysis*?");
+		lblPerformColocalizationAnalysis.setToolTipText("There must be secondary and tertiary objects to perform colocalization.");
 		lblPerformColocalizationAnalysis.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblPerformColocalizationAnalysis.setBounds(305, 117, 206, 29);
+		lblPerformColocalizationAnalysis.setBounds(10, 147, 206, 29);
 		paneSpeckle.add(lblPerformColocalizationAnalysis);
 		
 		JRadioButton rbOutputDirNo_1 = new JRadioButton("No");
 		buttonGroup.add(rbOutputDirNo_1);
 		rbOutputDirNo_1.setSelected(true);
 		rbOutputDirNo_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirNo_1.setBounds(505, 120, 48, 23);
+		rbOutputDirNo_1.setBounds(210, 150, 48, 23);
 		paneSpeckle.add(rbOutputDirNo_1);
 		
 		JRadioButton rbOutputDirYes_1 = new JRadioButton("Yes");
 		buttonGroup.add(rbOutputDirYes_1);
 		rbOutputDirYes_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirYes_1.setBounds(555, 120, 48, 23);
+		rbOutputDirYes_1.setBounds(260, 150, 48, 23);
 		paneSpeckle.add(rbOutputDirYes_1);
 		
-		JTextPane txtpnthereMustBe = new JTextPane();
-		txtpnthereMustBe.setText("*There must be secondary and tertiary objects to perform colocalization.");
-		txtpnthereMustBe.setFont(new Font("Gadugi", Font.PLAIN, 10));
-		txtpnthereMustBe.setEditable(false);
-		txtpnthereMustBe.setBackground(SystemColor.controlHighlight);
-		txtpnthereMustBe.setBounds(609, 120, 339, 23);
-		paneSpeckle.add(txtpnthereMustBe);
+		JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
+		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
+		cbAnalysisMode.setSelected(true);
+		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		cbAnalysisMode.setBounds(18, 104, 157, 23);
+		paneSpeckle.add(cbAnalysisMode);
 	}
 }
