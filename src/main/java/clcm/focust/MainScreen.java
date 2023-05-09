@@ -5,28 +5,40 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import ij.gui.GenericDialog;
-import org.scijava.plugin.Parameter;
-import org.scijava.widget.ChoiceWidget;
+
 
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+
 
 import java.awt.Font;
 import javax.swing.JButton;
 
+import java.awt.GridLayout;
+import javax.swing.BoxLayout;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.Box;
+
+
 
 public class MainScreen extends JFrame{
 	private JPanel mainPane;
+	
 
 	/** Button to open the optimization window. */
 	private JButton btnOptimize;
@@ -44,20 +56,62 @@ public class MainScreen extends JFrame{
 		setTitle("FOCUST");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 806, 476);
+		setBounds(100, 100, 899, 476);
 		mainPane = new JPanel();
 		mainPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(mainPane);
-		mainPane.setLayout(null);
+		mainPane.setLayout(new BorderLayout(10, 10));
 		
-		JLabel lbMode = new JLabel("Select a mode to begin:");
-		lbMode.setFont(new Font("Gadugi", Font.BOLD, 16));
-		lbMode.setVerticalAlignment(SwingConstants.TOP);
-		lbMode.setBounds(20, 134, 192, 35);
-		mainPane.add(lbMode);
+		JPanel pnlModeText = new JPanel();
+		mainPane.add(pnlModeText, BorderLayout.EAST);
+		pnlModeText.setLayout(new GridLayout(4, 0, 0, 0));
+		
+		JPanel pnlFooter = new JPanel(); 
+		mainPane.add(pnlFooter, BorderLayout.SOUTH);
+		
+		JPanel pnlHeader = new JPanel();
+		mainPane.add(pnlHeader, BorderLayout.NORTH);
+		
+		JLabel lblDetermineTheParameters = new JLabel("Determine the parameters for segmenting a new dataset.");
+		lblDetermineTheParameters.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		pnlModeText.add(lblDetermineTheParameters);
+		
+		JLabel lblBatchProcessSpheroid = new JLabel("Batch process a dataset containing spheroids or organoids.");
+		lblBatchProcessSpheroid.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		pnlModeText.add(lblBatchProcessSpheroid);
+		
+		JLabel lblBatchProcessSingleCell = new JLabel("Batch process a dataset that contains primary objects and secondary objects.");
+		lblBatchProcessSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		pnlModeText.add(lblBatchProcessSingleCell);
+		
+		JLabel lblBatchProcessSpeckle = new JLabel("Batch process a dataset that contains multiple secondary objects per primary object. ");
+		lblBatchProcessSpeckle.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		pnlModeText.add(lblBatchProcessSpeckle, BorderLayout.EAST);
+				pnlHeader.setLayout(new MigLayout("", "[580px][100px][100][150,right]", "[114px]"));
+				
+				JLabel lblMasterIcon = new JLabel("");
+				lblMasterIcon.setHorizontalAlignment(SwingConstants.LEFT);
+				lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo3.png")));
+				pnlHeader.add(lblMasterIcon, "cell 0 0,alignx left,growy");
+				
+				JLabel label = new JLabel("");
+				pnlHeader.add(label, "cell 0 0,grow");
+				
+				JButton btnHelp = new JButton("Help");
+				pnlHeader.add(btnHelp, "cell 3 0,growx,aligny top");
+				btnHelp.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					}
+				});
+				btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
+		
+		JPanel pnlModeSelect = new JPanel();
+		mainPane.add(pnlModeSelect, BorderLayout.CENTER);
+		pnlModeSelect.setLayout(new GridLayout(0, 1, 0, 10));
 		
 		btnOptimize = new JButton("Optimize");
+		pnlModeSelect.add(btnOptimize);
 		btnOptimize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			SwingUtilities.invokeLater(() -> {
@@ -69,11 +123,10 @@ public class MainScreen extends JFrame{
 			}
 		});
 		btnOptimize.setFont(new Font("Gadugi", Font.BOLD, 13));
-		btnOptimize.setBounds(87, 169, 154, 51);
-		mainPane.add(btnOptimize);
 		
-		JButton btnSpheroid = new JButton("Spheroid Analysis");
-		btnSpheroid.addActionListener(new ActionListener() {
+		JButton btnSpheroid_1 = new JButton("Spheroid Analysis");
+		pnlModeSelect.add(btnSpheroid_1);
+		btnSpheroid_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					SpheroidView SpheroidGui = new SpheroidView();
@@ -83,22 +136,11 @@ public class MainScreen extends JFrame{
 				});
 			}
 		});
-		btnSpheroid.setFont(new Font("Gadugi", Font.BOLD, 13));
-		btnSpheroid.setBounds(87, 247, 154, 51);
-		mainPane.add(btnSpheroid);
+		btnSpheroid_1.setFont(new Font("Gadugi", Font.BOLD, 13));
 		
-		JLabel lblSpheroidIcon = new JLabel("");
-		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
-		lblSpheroidIcon.setBounds(10, 241, 77, 67);
-		mainPane.add(lblSpheroidIcon);
-		
-		JLabel lblSingleCellIcon = new JLabel("");
-		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/singlecellicon.png")));
-		lblSingleCellIcon.setBounds(20, 302, 77, 67);
-		mainPane.add(lblSingleCellIcon);
-		
-		JButton btnSingleCell = new JButton("Single Cell Analysis");
-		btnSingleCell.addActionListener(new ActionListener() {
+		JButton btnSingleCell_1 = new JButton("Single Cell Analysis");
+		pnlModeSelect.add(btnSingleCell_1);
+		btnSingleCell_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					SingleCellView SingleCellGui = new SingleCellView();
@@ -110,17 +152,11 @@ public class MainScreen extends JFrame{
 				
 			}
 		});
-		btnSingleCell.setFont(new Font("Gadugi", Font.BOLD, 13));
-		btnSingleCell.setBounds(87, 309, 154, 51);
-		mainPane.add(btnSingleCell);
+		btnSingleCell_1.setFont(new Font("Gadugi", Font.BOLD, 13));
 		
-		JLabel lblSpeckleIcon = new JLabel("");
-		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
-		lblSpeckleIcon.setBounds(20, 359, 77, 67);
-		mainPane.add(lblSpeckleIcon);
-		
-		JButton btnSpeckle = new JButton("Speckle Analysis");
-		btnSpeckle.addActionListener(new ActionListener() {
+		JButton btnSpeckle_1 = new JButton("Speckle Analysis");
+		pnlModeSelect.add(btnSpeckle_1);
+		btnSpeckle_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					SpeckleView SpeckleGui = new SpeckleView();
@@ -130,45 +166,35 @@ public class MainScreen extends JFrame{
 				});
 			}
 		});
-		btnSpeckle.setFont(new Font("Gadugi", Font.BOLD, 13));
-		btnSpeckle.setBounds(87, 371, 154, 51);
-		mainPane.add(btnSpeckle);
+		btnSpeckle_1.setFont(new Font("Gadugi", Font.BOLD, 13));
 		
-		JButton btnHelp = new JButton("Help");
-		btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
-		btnHelp.setBounds(690, 11, 90, 35);
-		mainPane.add(btnHelp);
-		
-		JLabel lblDetermineTheParameters = new JLabel("Determine the parameters for segmenting a new dataset.");
-		lblDetermineTheParameters.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblDetermineTheParameters.setBounds(251, 176, 360, 35);
-		mainPane.add(lblDetermineTheParameters);
-		
-		JLabel lblBatchProcessSpheroid = new JLabel("Batch process a dataset containing spheroids or organoids.");
-		lblBatchProcessSpheroid.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblBatchProcessSpheroid.setBounds(251, 254, 388, 35);
-		mainPane.add(lblBatchProcessSpheroid);
-		
-		JLabel lblBatchProcessSingleCell = new JLabel("Batch process a dataset that contains primary objects and secondary objects.");
-		lblBatchProcessSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblBatchProcessSingleCell.setBounds(251, 316, 489, 35);
-		mainPane.add(lblBatchProcessSingleCell);
-		
-		JLabel lblBatchProcessSpeckle = new JLabel("Batch process a dataset that contains multiple secondary objects per primary object. ");
-		lblBatchProcessSpeckle.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblBatchProcessSpeckle.setBounds(251, 378, 522, 35);
-		mainPane.add(lblBatchProcessSpeckle);
-		
-		JLabel lblMasterIcon = new JLabel("");
-		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo3.png")));
-		lblMasterIcon.setBounds(10, 0, 445, 114);
-		mainPane.add(lblMasterIcon);
+		JPanel pnlIconHolder = new JPanel();
+		//mainPane.add(pnlIconHolder);
+		mainPane.add(pnlIconHolder, BorderLayout.WEST);
+		pnlIconHolder.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JLabel lblQMarkIcon = new JLabel("");
+		lblQMarkIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlIconHolder.add(lblQMarkIcon);
 		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/iconquestionmark.png")));
-		lblQMarkIcon.setBounds(30, 161, 43, 67);
-		mainPane.add(lblQMarkIcon);
-
+		
+		JLabel lblSpheroidIcon = new JLabel("");
+		lblSpheroidIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlIconHolder.add(lblSpheroidIcon);
+		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
+		
+		JLabel lblSingleCellIcon = new JLabel("");
+		lblSingleCellIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlIconHolder.add(lblSingleCellIcon);
+		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/singlecellicon.png")));
+		
+		JLabel lblSpeckleIcon = new JLabel("");
+		lblSpeckleIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		pnlIconHolder.add(lblSpeckleIcon);
+		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
+		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
+		
+		
 	}
 
 
@@ -179,6 +205,4 @@ public class MainScreen extends JFrame{
 		gd.showDialog();
 		
 	}
-	
-	
 }
