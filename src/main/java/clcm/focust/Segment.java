@@ -139,7 +139,8 @@ public class Segment {
 					} catch (IOException e) {
 						e.printStackTrace();
 						IJ.log("Unable to save primary results table.");
-					}*/
+					}
+					*/
 					
 					
 					
