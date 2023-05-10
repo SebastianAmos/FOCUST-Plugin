@@ -117,7 +117,7 @@ public class MainScreen extends JFrame{
 			SwingUtilities.invokeLater(() -> {
 				OptimizeModeSelector optimizeSelect = new OptimizeModeSelector();
 					optimizeSelect.setVisible(true);
-					Window win = SwingUtilities.getWindowAncestor(btnOptimize);
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
 			}
@@ -131,7 +131,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					SpheroidView SpheroidGui = new SpheroidView();
 					SpheroidGui.setVisible(true);
-					Window win = SwingUtilities.getWindowAncestor(btnSpheroid);
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
 			}
@@ -145,7 +145,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					SingleCellView SingleCellGui = new SingleCellView();
 					SingleCellGui.setVisible(true);
-					Window win = SwingUtilities.getWindowAncestor(btnSingleCell);
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 					
 				});
@@ -161,7 +161,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					SpeckleView SpeckleGui = new SpeckleView();
 					SpeckleGui.setVisible(true);
-					Window win = SwingUtilities.getWindowAncestor(btnSpeckle);
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
 			}
