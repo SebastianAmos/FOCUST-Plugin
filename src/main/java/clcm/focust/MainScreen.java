@@ -3,36 +3,21 @@ package clcm.focust;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import ij.gui.GenericDialog;
-
-
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-
-
 import java.awt.Font;
 import javax.swing.JButton;
-
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.Box;
 
 
 
