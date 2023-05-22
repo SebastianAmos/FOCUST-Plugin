@@ -19,6 +19,9 @@ import javax.swing.UIManager;
 import java.awt.Color;
 
 import javax.swing.border.MatteBorder;
+
+import ij.IJ;
+
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -41,7 +44,7 @@ import javax.swing.JCheckBox;
 public class SingleCellView extends JFrame {
 
 	private JPanel paneSingleCell;
-	private JTextField txtbInputDir;
+	private JTextField txtInputDir;
 	private JTextField txtPriGBx;
 	private JTextField txtPriGBy;
 	private JTextField txtPriGBz;
@@ -62,11 +65,34 @@ public class SingleCellView extends JFrame {
 	private final ButtonGroup OutputDir = new ButtonGroup();
 	private final ButtonGroup PrimaryBgSub = new ButtonGroup();
 	private final ButtonGroup SecondaryBgSub = new ButtonGroup();
-	private JTextField txtSingleCellChannel3Name;
-	private JTextField txtSingleCellChannel4Name;
-	private JTextField txtSingleCellGrouping;
-
-	FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
+	private JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
+	private JTextField txtSingleCellC2Name;
+	private JTextField txtSingleCellC3Name;
+	private JTextField txtSingleCellC4Name;
+	private JTextField txtSingleCellGroupName;
+	public static String inputDir;
+	public static Double sigma_x;
+	public static Double sigma_y;
+	public static Double sigma_z;
+	public static Double sigma_x2;
+	public static Double sigma_y2;
+	public static Double sigma_z2;
+	public static Double radius_x;
+	public static Double radius_y;
+	public static Double radius_z;
+	public static Double radius_x2;
+	public static Double radius_y2;
+	public static Double radius_z2;
+	public static Double greaterConstantPrimary;
+	public static Double greaterConstantSecondary;
+	public static String channel2Name;
+	public static String channel3Name;
+	public static String channel4Name;
+	public static int primaryChannelChoice;
+	public static int secondaryChannelChoice;
+	public static String groupingInfo;
+	public static boolean analysisMode;
+	
 	
 	
 	/**
@@ -74,10 +100,7 @@ public class SingleCellView extends JFrame {
 	 */
 	public SingleCellView() {
 		
-		// init the filechooser to avoid delay
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.execute(futureFileChooser);
-		
+
 		// Construct the gui
 		setTitle("FOCUST: Single Cell Analysis");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SingleCellView.class.getResource("/clcm/focust/resources/icon2.png")));
@@ -108,11 +131,9 @@ public class SingleCellView extends JFrame {
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
-				FOCUST.FileFinder();
-				FOCUST.inputDir = FOCUST.imageFiles[0].getParent();
-				
-				// update the textbox in spheroid view
-				txtbInputDir.setText(FOCUST.inputDir);
+				inputDir = IJ.getDir("Select an Input Directory");
+				String inputDirSt = inputDir.toString();
+				txtInputDir.setText(inputDirSt);
 			}
 		});
 		btnInputDir.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -144,10 +165,10 @@ public class SingleCellView extends JFrame {
 		btnOutputDir.setBounds(297, 68, 96, 29);
 		paneSingleCell.add(btnOutputDir);
 		
-		txtbInputDir = new JTextField();
-		txtbInputDir.setBounds(299, 28, 289, 29);
-		paneSingleCell.add(txtbInputDir);
-		txtbInputDir.setColumns(10);
+		txtInputDir = new JTextField();
+		txtInputDir.setBounds(299, 28, 289, 29);
+		paneSingleCell.add(txtInputDir);
+		txtInputDir.setColumns(10);
 		
 		txtOutputDir = new JTextField();
 		txtOutputDir.setEnabled(false);
@@ -171,18 +192,18 @@ public class SingleCellView extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				// enable name input for C4 if 4 channels declared
 				if(cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtSingleCellChannel4Name.setEnabled(true);
+					txtSingleCellC4Name.setEnabled(true);
 				} else {
-					txtSingleCellChannel4Name.setEnabled(false);
+					txtSingleCellC4Name.setEnabled(false);
 				}	
 				
 				// enable name input for C3 if 3 or 4 channels declared. 
 				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
-					txtSingleCellChannel3Name.setEnabled(true);
+					txtSingleCellC3Name.setEnabled(true);
 				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtSingleCellChannel3Name.setEnabled(true);
+					txtSingleCellC3Name.setEnabled(true);
 				} else {
-					txtSingleCellChannel3Name.setEnabled(false);
+					txtSingleCellC3Name.setEnabled(false);
 				}
 			}
 		});
@@ -520,11 +541,39 @@ public class SingleCellView extends JFrame {
 				win.dispose();
 			}
 		});
+		
 		btnBackToMenu.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnBackToMenu.setBounds(10, 373, 133, 29);
 		paneSingleCell.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sigma_x = Double.parseDouble(txtPriGBx.getText());
+				sigma_y = Double.parseDouble(txtPriGBy.getText());
+				sigma_z = Double.parseDouble(txtPriGBz.getText());
+				radius_x = Double.parseDouble(txtPriDMx.getText());
+				radius_y = Double.parseDouble(txtPriDMy.getText());
+				radius_z = Double.parseDouble(txtPriDMz.getText());
+				sigma_x2 = Double.parseDouble(txtSecGBx.getText());
+				sigma_y2 = Double.parseDouble(txtSecGBy.getText());
+				sigma_z2 = Double.parseDouble(txtSecGBz.getText());
+				radius_x2 = Double.parseDouble(txtSecDMx.getText());
+				radius_y2 = Double.parseDouble(txtSecDMy.getText());
+				radius_z2 = Double.parseDouble(txtSecDMz.getText());
+				greaterConstantPrimary = Double.parseDouble(txtPriThreshold.getText());
+				greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
+				channel2Name = txtSingleCellC2Name.getText();
+				channel3Name = txtSingleCellC3Name.getText();
+				channel4Name = txtSingleCellC4Name.getText();
+				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
+				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
+				groupingInfo = txtSingleCellGroupName.getText();
+				
+				Segment.ProcessSingleCells(cbAnalysisMode.isSelected());
+				
+			}
+		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
 		btnRunAnalysis.setBounds(10, 406, 286, 29);
 		paneSingleCell.add(btnRunAnalysis);
@@ -549,34 +598,33 @@ public class SingleCellView extends JFrame {
 		lblGroupingInfo.setBounds(10, 319, 116, 29);
 		paneSingleCell.add(lblGroupingInfo);
 		
-		JTextField txtSingleCellChannel2Name = new JTextField();
-		txtSingleCellChannel2Name.setColumns(10);
-		txtSingleCellChannel2Name.setBounds(120, 212, 176, 29);
-		paneSingleCell.add(txtSingleCellChannel2Name);
+		txtSingleCellC2Name = new JTextField();
+		txtSingleCellC2Name.setColumns(10);
+		txtSingleCellC2Name.setBounds(120, 212, 176, 29);
+		paneSingleCell.add(txtSingleCellC2Name);
 		
-		txtSingleCellChannel3Name = new JTextField();
-		txtSingleCellChannel3Name.setEnabled(false);
-		txtSingleCellChannel3Name.setColumns(10);
-		txtSingleCellChannel3Name.setBounds(120, 246, 176, 29);
-		paneSingleCell.add(txtSingleCellChannel3Name);
+		txtSingleCellC3Name = new JTextField();
+		txtSingleCellC3Name.setEnabled(false);
+		txtSingleCellC3Name.setColumns(10);
+		txtSingleCellC3Name.setBounds(120, 246, 176, 29);
+		paneSingleCell.add(txtSingleCellC3Name);
 		
-		txtSingleCellChannel4Name = new JTextField();
-		txtSingleCellChannel4Name.setEnabled(false);
-		txtSingleCellChannel4Name.setColumns(10);
-		txtSingleCellChannel4Name.setBounds(120, 279, 176, 29);
-		paneSingleCell.add(txtSingleCellChannel4Name);
+		txtSingleCellC4Name = new JTextField();
+		txtSingleCellC4Name.setEnabled(false);
+		txtSingleCellC4Name.setColumns(10);
+		txtSingleCellC4Name.setBounds(120, 279, 176, 29);
+		paneSingleCell.add(txtSingleCellC4Name);
 		
-		txtSingleCellGrouping = new JTextField();
-		txtSingleCellGrouping.setColumns(10);
-		txtSingleCellGrouping.setBounds(120, 319, 176, 29);
-		paneSingleCell.add(txtSingleCellGrouping);
+		txtSingleCellGroupName = new JTextField();
+		txtSingleCellGroupName.setColumns(10);
+		txtSingleCellGroupName.setBounds(120, 319, 176, 29);
+		paneSingleCell.add(txtSingleCellGroupName);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnLoadConfigSingleCell.setBounds(155, 373, 141, 29);
 		paneSingleCell.add(btnLoadConfigSingleCell);
 		
-		JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
 		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		cbAnalysisMode.setSelected(true);
 		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
