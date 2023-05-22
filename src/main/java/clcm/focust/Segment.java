@@ -26,8 +26,12 @@ import javax.swing.SwingUtilities;
 public class Segment {
 
 	public static ImagePlus[] channelsSpheroid;
+	public static ImagePlus[] channelsSingleCell;
 	public static ImagePlus primaryObjectSpheroid;
 	public static ImagePlus secondaryObjectSpheroid;
+	private static ImagePlus cellObjects;
+	private static ImagePlus primaryObjectsCells;
+	private static ImagePlus secondaryObjectsCells;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	static ResultsTable primaryC1Intensity = new ResultsTable();
 	static ResultsTable primaryC3Intensity = new ResultsTable();
@@ -64,7 +68,97 @@ public class Segment {
 	 */
 
 
+// This method segments primary and secondary objects from single cell datasets based on user-defined parameters
+	
+	public static void ProcessSingleCells(boolean analysisOnly) {
+		Thread t1 = new Thread(new Runnable() {
+			@Override
+			public void run() {
 
+				// grab the file names
+				File f = new File(SingleCellView.inputDir);
+				String[] list = f.list();
+				String dir = SingleCellView.inputDir;
+				int count = 0;
+					
+
+				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the objects.
+					if(analysisOnly) {
+						ArrayList<String> tempList = new ArrayList<>();
+						for (String imgName : list) {
+							if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix) && !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix)) {
+								tempList.add(imgName);
+							}
+						}
+							list = new String[tempList.size()];
+							list = tempList.toArray(list);
+					}
+					
+					// iterate through each image in the list
+					for (int i = 0; i < list.length; i++) {
+						count++;
+						String path = SingleCellView.inputDir + list[i];
+						IJ.log("---------------------------------------------");
+						IJ.log("Processing image " + count + " of " + list.length);
+						IJ.log("Current image name: " + list[i]);
+						IJ.log("---------------------------------------------");
+						ImagePlus imp = IJ.openImage(path);
+						Calibration cal = imp.getCalibration();
+						channelsSingleCell = ChannelSplitter.split(imp);
+						int primaryChannelChoice = SingleCellView.primaryChannelChoice;
+						int secondaryChannelChoice = SingleCellView.secondaryChannelChoice;
+						String imgName = imp.getTitle();
+					
+						// if analysisMode is T, find the correct primary object file for the current image
+						if(analysisOnly) {
+							String fileName = list[i].replace(".nd2", ".tif");
+							primaryObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+						} else {
+							// if analysis mode is F, segment primary channel from user inputs
+							IJ.log("Primary object segmention:");
+							primaryObjectsCells = GPUSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+						}
+						
+						IJ.log("Processing primary object...");
+						IJ.resetMinAndMax(primaryObjectsCells);
+						primaryObjectsCells.setCalibration(cal);
+						
+						// if analysis is F, save the segmented output
+						if(!analysisOnly) {
+							IJ.saveAs(primaryObjectsCells, "TIF", dir + "Primary_Objects_" + imgName);
+						}
+						
+						// Measure primary objects
+						ResultsTable primaryResults = analyze3D.process(primaryObjectSpheroid);
+						
+						
+						// create and measure secondary object
+						IJ.log("Processing Secondary Object...");
+						
+						// If analysis-only-mode, find the right secondary object file for the current image.   
+						if(analysisOnly) {
+							String fileName = list[i].replace(".nd2", ".tif");
+							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
+						} else {
+							GPUSpheroidSecondaryObject(secondaryChannelChoice);
+						}
+						
+						
+					
+					} // end of single image loop
+					
+					
+			}
+		});
+	t1.start();
+	}
+	
+	
+	
+	
+	
+	
+	
 	/* ------------------------------------------------------------------------------------
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
@@ -121,10 +215,11 @@ public class Segment {
 						String fileName = list[i].replace(".nd2", ".tif");
 						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
 					} else {
+						IJ.log("Primary object segmention:");
 						GPUSpheroidPrimaryObject(primaryChannelChoice);
 					}
 					
-					IJ.log("Processing Primary Object...");
+					IJ.log("Processing primary object...");
 					IJ.resetMinAndMax(primaryObjectSpheroid);
 					primaryObjectSpheroid.setCalibration(cal);
 					if(!analysisOnly) {
@@ -369,7 +464,6 @@ public class Segment {
 					secondaryFinalTable.setColumn("Periphery_C4_Mean_Intensity", peripheryC4Intensity.getColumnAsVariables("Mean_Intensity"));
 					secondaryFinalTable.setColumn("Periphery_C4_IntDen", peripheryC4Intensity.getColumnAsVariables("IntDen"));
 					
-					
 
 					String secondaryFinalName = dir + "Final_Secondary_Object_Results.csv";
 					try {
@@ -512,4 +606,51 @@ public class Segment {
 
 		return secondaryObjectSpheroid;
 	}
+	
+	
+	/*
+	 * Take the selected channel and process for single cells
+	 */
+
+	public static ImagePlus GPUSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
+		// ready clij2
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		CLIJx clijx = CLIJx.getInstance();
+		clijx.clear();
+		
+		ClearCLBuffer input = clij2.push(channelsSingleCell[channelChoice]);
+		ClearCLBuffer blurred = clij2.create(input);
+		ClearCLBuffer inverted = clij2.create(input);
+		ClearCLBuffer threshold = clij2.create(input);
+		ClearCLBuffer detectedMax = clij2.create(input);
+		ClearCLBuffer labelledSpots = clij2.create(input);
+		ClearCLBuffer segmented = clij2.create(input);
+		
+		// 3D blur
+		clij2.gaussianBlur3D(input, blurred, sigma_x, sigma_y, sigma_z);
+		
+		// invert
+		clij2.invert(blurred, inverted);
+		
+		// threshold - greater constant
+		clij2.greaterConstant(blurred, threshold, constant);
+		
+		// detect maxima
+		clij2.detectMaxima3DBox(blurred, detectedMax, detect_x, detect_y, detect_z);
+		
+		// label spots
+		clij2.labelSpots(detectedMax, labelledSpots);
+		
+		// marker controlled watershed
+		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
+		
+		cellObjects = clij2.pull(segmented);
+		
+		return cellObjects;
+	}
+
+	
 }
+
+
