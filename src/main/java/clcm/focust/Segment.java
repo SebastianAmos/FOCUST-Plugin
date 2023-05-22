@@ -64,11 +64,20 @@ public class Segment {
 	 * - make erosion of secondary object relative to it's original size, instead of an abitrary number of iterations.
 	 * - implement intensity measurements in core vs periphery
 	 * - make intensity analysis dependent on then number of channels in current image array - not fixed to 4. 
-	 * - add core vs periphery intensity measurements to the secondary results table.
+	 * - Make it batch process friendly! End of single image loops marked at the end of the "Process.." methods
 	 */
 
 
 // This method segments primary and secondary objects from single cell datasets based on user-defined parameters
+	
+	
+	/*
+	 * TODO:
+	 * - implement kill borders function for secondary and primary objects (mask primary by secondary for instances where secondary objects are removed, so that child objects are as well).
+	 * - find matching labels for primary, secondary and tertiary objects (label matching) then build a results table based on this. 
+	 * - 
+	 */
+	
 	
 	public static void ProcessSingleCells(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
@@ -82,7 +91,7 @@ public class Segment {
 				int count = 0;
 					
 
-				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the objects.
+				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
 					if(analysisOnly) {
 						ArrayList<String> tempList = new ArrayList<>();
 						for (String imgName : list) {
@@ -103,6 +112,8 @@ public class Segment {
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("---------------------------------------------");
 						ImagePlus imp = IJ.openImage(path);
+						int numberOfChannels = imp.getNChannels();
+						IJ.run(imp, "8-bit", "");
 						Calibration cal = imp.getCalibration();
 						channelsSingleCell = ChannelSplitter.split(imp);
 						int primaryChannelChoice = SingleCellView.primaryChannelChoice;
@@ -140,12 +151,99 @@ public class Segment {
 							String fileName = list[i].replace(".nd2", ".tif");
 							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
 						} else {
-							GPUSpheroidSecondaryObject(secondaryChannelChoice);
+							secondaryObjectsCells = GPUSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+						}
+						
+						secondaryObjectsCells.setCalibration(cal);
+						IJ.resetMinAndMax(secondaryObjectsCells);
+						if(!analysisOnly) {
+							IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Objects_" + imgName);
+						}
+						
+						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsCells);
+						
+						
+						
+						// Give primary objects the same label ID as the secondary objects 
+						// Convert to binary, get max range value (maxLUT), divide label IDs by maxLUT so ID = 1. 
+						ImagePlus primaryLabelMatch = primaryObjectsCells.duplicate();
+						IJ.run(primaryLabelMatch, "Make Binary", "method=Huang background=Dark black");
+						IJ.run(primaryLabelMatch, "Divide...", "value=255 stack"); // if binary should be 255 max. could use getDisplayRangeMax();
+						
+						// Assign secondary labels to primary objects 
+						ImagePlus primaryLabelled = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
+						
+						// Generate cytoplasmic ROI (subtract primary from secondary objects)
+						ImagePlus tertiaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelled, "Subtract create stack");
+						
+						// set calibration and save the ROI if the - assuming analysis only mode provide primary and secondary objects only!
+						tertiaryObjectsCells.setCalibration(cal);
+						IJ.resetMinAndMax(tertiaryObjectsCells);
+						IJ.saveAs(tertiaryObjectsCells, "TIF", dir + "Tertiary_Objects_" + imgName);
+						
+						
+						
+						// measure tertiary objects
+						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsCells);
+						
+						
+						//TODO: Make the intensity analysis dependent on the number of channels in the image
+						// Measure the channel intensities SCC1 = single cell channel 1
+						ResultsTable primarySCC1Intensity = IntensityMeasurements.Process(channelsSingleCell[0], primaryObjectsCells);
+						if (numberOfChannels >=2) {
+						ResultsTable primarySCC2Intensity = IntensityMeasurements.Process(channelsSingleCell[1], primaryObjectsCells);
+						}
+						if (numberOfChannels >= 3) {
+						ResultsTable primarySCC3Intensity = IntensityMeasurements.Process(channelsSingleCell[2], primaryObjectsCells);
+						}
+						if (numberOfChannels >= 4) {
+						ResultsTable primarySCC4Intensity = IntensityMeasurements.Process(channelsSingleCell[3], primaryObjectsCells);
+						}
+						
+						
+						// store results table length
+						int primarySCTableLength = primarySCC1Intensity.getColumnAsVariables("Label").length;
+						
+						
+						// new results table - SC = single cell
+						ResultsTable primaryImageDataSC = new ResultsTable();
+						
+						// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
+						if (SingleCellView.groupingInfo.isEmpty()) {
+							
+								for (int o = 0; o < primarySCTableLength ; o++) {
+									primaryImageDataSC.addRow();
+									primaryImageDataSC.addValue("ImageID", imgName);
+								}
+								
+						} else {
+							
+							String group = SingleCellView.groupingInfo;
+							
+							for (int o = 0; o < primarySCTableLength ; o++) {
+								primaryImageDataSC.addRow();
+								primaryImageDataSC.addValue("ImageID", imgName);
+								primaryImageDataSC.addValue("Group", group);
+							}
 						}
 						
 						
 					
-					} // end of single image loop
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+					} // end of single image loop!!
 					
 					
 			}
@@ -479,7 +577,7 @@ public class Segment {
 					IJ.log("Processing Finished!");
 					IJ.log("---------------------------------------------");
 					
-				}
+				} // end of single image loop!! 
 			}
 		});
 		t1.start();
