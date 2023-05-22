@@ -31,6 +31,8 @@ public class Segment {
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	static ResultsTable primaryC1Intensity = new ResultsTable();
 	static ResultsTable primaryC3Intensity = new ResultsTable();
+	
+	// Could make these user-input strings to provide greater flexibility 
 	private static String primaryPrefix = new String("Primary_Objects_");
 	private static String secondaryPrefix = new String("Secondary_Objects_");
 	private static String corePrefix = new String("Inner_Secondary_");
