@@ -209,6 +209,7 @@ public class SingleCellView extends JFrame {
 		});
 		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
+		cbChannelTotal.setSelectedIndex(1);
 		cbChannelTotal.setMaximumRowCount(3);
 		cbChannelTotal.setBounds(248, 181, 48, 25);
 		paneSingleCell.add(cbChannelTotal);
@@ -509,7 +510,7 @@ public class SingleCellView extends JFrame {
 		
 		JComboBox cbChannelSecondary = new JComboBox();
 		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
-		cbChannelSecondary.setSelectedIndex(3);
+		cbChannelSecondary.setSelectedIndex(2);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelSecondary.setBounds(706, 210, 48, 25);
@@ -626,7 +627,6 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(btnLoadConfigSingleCell);
 		
 		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
-		cbAnalysisMode.setSelected(true);
 		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		cbAnalysisMode.setBounds(20, 104, 157, 23);
 		paneSingleCell.add(cbAnalysisMode);
