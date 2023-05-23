@@ -131,7 +131,7 @@ public class SpheroidView extends JFrame {
 				// Check if new analysisOnly checkbox is checked
 								
 				
-				Segment.ProcessSpheroid(cbAnalysisMode.isSelected());
+				Segment.processSpheroid(cbAnalysisMode.isSelected());
 				
 			}
 		});
