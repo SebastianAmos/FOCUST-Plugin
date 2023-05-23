@@ -32,7 +32,7 @@ public class Segment {
 	public static ImagePlus primaryObjectSpheroid;
 	public static ImagePlus secondaryObjectSpheroid;
 	private static ImagePlus cellObjects;
-	private static ImagePlus primaryObjectsCells;
+	private static ImagePlus primaryOriginalObjectsCells;
 	private static ImagePlus secondaryObjectsCells;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	static ResultsTable primaryC1Intensity = new ResultsTable();
@@ -125,24 +125,22 @@ public class Segment {
 						// if analysisMode is T, find the correct primary object file for the current image
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
-							primaryObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+							primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
 						} else {
 							// if analysis mode is F, segment primary channel from user inputs
 							IJ.log("Primary object segmention:");
-							primaryObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryOriginalObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
 						}
 						
-						IJ.log("Processing primary object...");
-						IJ.resetMinAndMax(primaryObjectsCells);
-						primaryObjectsCells.setCalibration(cal);
+						IJ.log("Processing Primary Object...");
+						IJ.resetMinAndMax(primaryOriginalObjectsCells);
+						primaryOriginalObjectsCells.setCalibration(cal);
 						
-						// if analysis is F, save the segmented output
-						if(!analysisOnly) {
-							IJ.saveAs(primaryObjectsCells, "TIF", dir + "Primary_Objects_" + imgName);
-						}
 						
-						// Measure primary objects
-						ResultsTable primaryResults = analyze3D.process(primaryObjectsCells);
+						// TESTING!!
+						IJ.saveAs(primaryOriginalObjectsCells, "TIF", dir + "Primary_Original_Objects_" + imgName);
+						
+						////
 						
 						
 						// create and measure secondary object
@@ -156,42 +154,50 @@ public class Segment {
 							secondaryObjectsCells = gpuSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
 						}
 						
-						secondaryObjectsCells.setCalibration(cal);
 						IJ.resetMinAndMax(secondaryObjectsCells);
-						if(!analysisOnly) {
-							IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Objects_" + imgName);
-						}
-						
-						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsCells);
+						secondaryObjectsCells.setCalibration(cal);
 						
 						
 						
 						// Give primary objects the same label ID as the secondary objects 
 						// Convert to binary, get max range value (maxLUT), divide label IDs by maxLUT so ID = 1. 
-						ImagePlus primaryLabelMatch = primaryObjectsCells.duplicate();
+						ImagePlus primaryLabelMatch = primaryOriginalObjectsCells.duplicate();
 						IJ.run(primaryLabelMatch, "Make Binary", "method=Huang background=Dark black");
-						IJ.run(primaryLabelMatch, "Divide...", "value=255 stack"); // if binary should be 255 max. could use getDisplayRangeMax();
+						IJ.run(primaryLabelMatch, "Divide...", "value=255 stack"); // if binary, max should be 255. could use getDisplayRangeMax()? *****
 						
 						// Assign secondary labels to primary objects 
-						ImagePlus primaryLabelled = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
+						ImagePlus primaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
 						
-						// Generate cytoplasmic ROI (subtract primary from secondary objects)
-						ImagePlus tertiaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelled, "Subtract create stack");
+						// Generate a tertiary (cytoplasmic) ROI (subtract primary from secondary objects)
+						IJ.log("Processing Tertiary Object...");
+						ImagePlus tertiaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryObjectsCells, "Subtract create stack");
 						
 						// set calibration and save the ROI if the - assuming analysis only mode provide primary and secondary objects only!
 						tertiaryObjectsCells.setCalibration(cal);
 						IJ.resetMinAndMax(tertiaryObjectsCells);
+						
+						
+						// If analysis mode is false, save the segmented outputs for the primary and secondary object channels, then the tertiary object output.
+						if(!analysisOnly) {
+							IJ.saveAs(primaryObjectsCells, "TIF", dir + "Primary_Objects_" + imgName);
+							IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Objects_" + imgName);
+						}
 						IJ.saveAs(tertiaryObjectsCells, "TIF", dir + "Tertiary_Objects_" + imgName);
 						
 						
-						
-						// measure tertiary objects
+					// Measure all of the segmented outputs and save results to separate tables. 
+						ResultsTable primaryResults = analyze3D.process(primaryObjectsCells);
+						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsCells);
 						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsCells);
 						
 						
-						//TODO: Make the intensity analysis dependent on the number of channels in the image
-						// Measure the channel intensities. SCC1 = single cell channel 1
-					
+						
+					/*
+					 * Build and save the final table for primary objects. 
+					*/
+						
+						// Measure the channel intensities. SCC1 = single cell channel 1.
+						// Intensity analysis is dependent on the total number of channels in the image.
 						ResultsTable primarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], primaryObjectsCells);
 						ResultsTable primarySCC2Intensity = null;
 						ResultsTable primarySCC3Intensity = null;
@@ -213,16 +219,12 @@ public class Segment {
 						
 						// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
 						if (SingleCellView.groupingInfo.isEmpty()) {
-							
 								for (int o = 0; o < primarySCC1Intensity.size() ; o++) {
 									primaryImageDataSC.addRow();
 									primaryImageDataSC.addValue("ImageID", imgName);
 								}
-								
 						} else {
-							
 							String group = SingleCellView.groupingInfo;
-							
 							for (int o = 0; o < primarySCC1Intensity.size() ; o++) {
 								primaryImageDataSC.addRow();
 								primaryImageDataSC.addValue("ImageID", imgName);
@@ -230,10 +232,6 @@ public class Segment {
 							}
 						}
 						
-						
-					/*
-					 * Build and save the final table for primary objects. 
-					 */
 						
 						ResultsTable primaryFinalTable = new ResultsTable();
 						primaryFinalTable.setColumn("Label", primarySCC1Intensity.getColumnAsVariables("Label"));
@@ -247,20 +245,17 @@ public class Segment {
 						primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
 						primaryFinalTable.setColumn("C1_Mean_Intensity", primarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
 						primaryFinalTable.setColumn("C1_IntDen", primarySCC1Intensity.getColumnAsVariables("IntDen"));
-						
 						if (numberOfChannels >=2) {
-						primaryFinalTable.setColumn("C2_Mean_Intensity", primarySCC2Intensity.getColumnAsVariables("Mean_Intensity"));
-						primaryFinalTable.setColumn("C2_IntDen", primarySCC2Intensity.getColumnAsVariables("IntDen"));
+							primaryFinalTable.setColumn("C2_Mean_Intensity", primarySCC2Intensity.getColumnAsVariables("Mean_Intensity"));
+							primaryFinalTable.setColumn("C2_IntDen", primarySCC2Intensity.getColumnAsVariables("IntDen"));
 						}
-						
 						if (numberOfChannels >=3) {
-						primaryFinalTable.setColumn("C3_Mean_Intensity", primarySCC3Intensity.getColumnAsVariables("Mean_Intensity"));
-						primaryFinalTable.setColumn("C3_IntDen", primarySCC3Intensity.getColumnAsVariables("IntDen"));
+							primaryFinalTable.setColumn("C3_Mean_Intensity", primarySCC3Intensity.getColumnAsVariables("Mean_Intensity"));
+							primaryFinalTable.setColumn("C3_IntDen", primarySCC3Intensity.getColumnAsVariables("IntDen"));
 						}
-						
 						if (numberOfChannels >=4) {
-						primaryFinalTable.setColumn("C4_Mean_Intensity", primarySCC4Intensity.getColumnAsVariables("Mean_Intensity"));
-						primaryFinalTable.setColumn("C4_IntDen", primarySCC4Intensity.getColumnAsVariables("IntDen"));
+							primaryFinalTable.setColumn("C4_Mean_Intensity", primarySCC4Intensity.getColumnAsVariables("Mean_Intensity"));
+							primaryFinalTable.setColumn("C4_IntDen", primarySCC4Intensity.getColumnAsVariables("IntDen"));
 						}
 						
 						
@@ -270,7 +265,7 @@ public class Segment {
 							primaryFinalTable.saveAs(primaryResultsName);
 						} catch (IOException e) {
 							e.printStackTrace();
-							IJ.log("Cannot save primary results table. Check the objects were created.");
+							IJ.log("Cannot save primary results table. Check that the objects were created.");
 						}
 						
 						
@@ -355,7 +350,7 @@ public class Segment {
 							secondaryFinalTable.saveAs(secondaryResultsName);
 						} catch (IOException e) {
 							e.printStackTrace();
-							IJ.log("Cannot save secondary results table. Check the objects were created.");
+							IJ.log("Cannot save secondary results table. Check that the objects were created.");
 						}
 						
 						
@@ -440,7 +435,7 @@ public class Segment {
 								tertiaryFinalTable.saveAs(tertiaryResultsName);
 							} catch (IOException e) {
 								e.printStackTrace();
-								IJ.log("Cannot save tertiary results table. Check the objects were created.");
+								IJ.log("Cannot save tertiary results table. Check that the objects were created.");
 							}
 							
 						
@@ -497,12 +492,16 @@ public class Segment {
 								for (int secondaryRowIndex : secondaryRowIndices) {
 									for (int tertiaryRowIndex : tertiaryRowIndices) {
 										
-										// add a new row and populate with columns
-										// index value for primary = j, index values from sec and tert are +RowIndex respectively
+										// Add a new row and populate with columns
+										// Index value for primary = j, index values from sec and tert are +RowIndex respectively
 										combinedResults.addRow();
-										combinedResults.addValue("Label", label + "_" + duplicateCount);
+										// duplicate label counts
+										//combinedResults.addValue("Label", label + "_" + duplicateCount);
+										combinedResults.addValue("Label", label);
 										combinedResults.addValue("ImageID", primaryFinalTable.getValue("ImageID", j));
-										combinedResults.addValue("Group", primaryFinalTable.getValue("Group", j));
+										if (!SingleCellView.groupingInfo.isEmpty()) {
+											combinedResults.addValue("Group", primaryFinalTable.getValue("Group", j));
+										}
 										combinedResults.addValue("Primary_Volume", primaryFinalTable.getValue("Volume", j));
 										combinedResults.addValue("Primary_Voxel_Count", primaryFinalTable.getValue("Voxel_Count", j));
 										combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
@@ -560,43 +559,34 @@ public class Segment {
 										
 										// create a volume ratio between the primary and tertiary objects
 										combinedResults.addValue("Primary/Tertiary_Volume_Ratio", primaryFinalTable.getValue("Volume", j)/tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
-										
-										
-										// create some ratio columns for volume and C1-4 intensities where objects share a label; then write to the combined table.
-										
-										
-										
-										
-										
-										
-										
-										
-										
+
 										
 										
 										
 									}
 								}
-								
 							}
-								
 						}
 						
+						IJ.log("trying to display combined table");
+						
+						combinedResults.show("Combined Results");
+						
+						IJ.log("combined table displayed");
+						
+						// Save the combined results table 
+						String combinedResultsName = dir + "Combined_Results.csv";
+						try {
+							combinedResults.saveAs(combinedResultsName);
+						} catch (IOException e) {
+							e.printStackTrace();
+							IJ.log("Cannot save combined results table. Check that the objects were created.");
+						}
+						
+						IJ.log("Finished processing");
+						
+						
  							
-							
-							
-							
-							
-						
-						
-						
-						
-						
-						
-						
-						
-						
-					
 						
 					} // end of single image loop!!
 					
