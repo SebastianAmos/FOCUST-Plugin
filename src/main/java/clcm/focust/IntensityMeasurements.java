@@ -11,7 +11,7 @@ public class IntensityMeasurements {
 	// Parameter for "input" can be passed in using the public "channel" array that contains the original split channels of the active image . 
 	// Parameter for "label" can be passed in using the ImagePlus object that corresponds to the segmented output. i.e. secondaryObjectSpheroid. 
 	
-	public static ResultsTable Process(ImagePlus input, ImagePlus label) {
+	public static ResultsTable process(ImagePlus input, ImagePlus label) {
 		
 		// Instance the IntensityMeasures class from MorpholibJ
 		final IntensityMeasures im = new IntensityMeasures(input, label);
