@@ -188,6 +188,11 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(lblHowManyChannels);
 		
 		JComboBox cbChannelTotal = new JComboBox();
+		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
+		cbChannelTotal.setSelectedIndex(2);
+		cbChannelTotal.setMaximumRowCount(3);
+		cbChannelTotal.setBounds(248, 181, 48, 25);
 		cbChannelTotal.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				// enable name input for C4 if 4 channels declared
@@ -207,11 +212,6 @@ public class SingleCellView extends JFrame {
 				}
 			}
 		});
-		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
-		cbChannelTotal.setSelectedIndex(1);
-		cbChannelTotal.setMaximumRowCount(3);
-		cbChannelTotal.setBounds(248, 181, 48, 25);
 		paneSingleCell.add(cbChannelTotal);
 		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
@@ -571,7 +571,7 @@ public class SingleCellView extends JFrame {
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSingleCellGroupName.getText();
 				
-				Segment.ProcessSingleCells(cbAnalysisMode.isSelected());
+				Segment.processSingleCells(cbAnalysisMode.isSelected());
 				
 			}
 		});
@@ -605,13 +605,11 @@ public class SingleCellView extends JFrame {
 		paneSingleCell.add(txtSingleCellC2Name);
 		
 		txtSingleCellC3Name = new JTextField();
-		txtSingleCellC3Name.setEnabled(false);
 		txtSingleCellC3Name.setColumns(10);
 		txtSingleCellC3Name.setBounds(120, 246, 176, 29);
 		paneSingleCell.add(txtSingleCellC3Name);
 		
 		txtSingleCellC4Name = new JTextField();
-		txtSingleCellC4Name.setEnabled(false);
 		txtSingleCellC4Name.setColumns(10);
 		txtSingleCellC4Name.setBounds(120, 279, 176, 29);
 		paneSingleCell.add(txtSingleCellC4Name);
