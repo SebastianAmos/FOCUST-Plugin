@@ -14,7 +14,9 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -229,8 +231,6 @@ public class Segment {
 						}
 						
 						
-					
-						
 					/*
 					 * Build and save the final table for primary objects. 
 					 */
@@ -379,7 +379,6 @@ public class Segment {
 								tertiarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], tertiaryObjectsCells);
 							}
 							
-
 							
 							// new results table - SC = single cell
 							ResultsTable tertiaryImageDataSC = new ResultsTable();
@@ -446,15 +445,148 @@ public class Segment {
 							
 						
 						
-						
-						
 					/*
-					 * Find cases where the primary, secondary and tertiary label IDs match, grab all relevant metrics for the corresponding rows.
-					 * Then write all collected data to a new table where each row = all related primary, secondary and tertiary objects.
+					 * Find cases where the primary, secondary and tertiary label IDs match - tracking repeated label IDs.
+					 * Where labels match, write data to a combined results table. Calculate some ratios and add to new columns.
+					 * In the combined results table each row = all related primary, secondary and tertiary object data.
+					 * 
+					 * In context, multi-nucleated cells are not uncommon so supporting multiple primary objects per secondary object is important functionality.
 					 */
+							
+					// TODO: add user-input channel names to the combined results table if the user input text, otherwise leave as "Cx".
+						
+						// Create the combined table
+						ResultsTable combinedResults = new ResultsTable();
+						
+						// A map to store counts of label instances in the primary results table. This will support multiple primary objects per secondary object. 
+						Map<Integer, Integer> labelCounts = new HashMap<>();
 						
 						
+						// for each primary label, check if exists in the secondary and tertiary tables 
+						for (int j = 0; j < primaryFinalTable.size() ; j++) {
+							
+							int label = (int) primaryFinalTable.getValue("Label", j);
+							
+							// Lists to track row indices that contain matching labels
+							List<Integer> secondaryRowIndices = new ArrayList<>();
+							List<Integer> tertiaryRowIndices = new ArrayList<>();
+							
+							// Check the secondary objects table
+							for (int k = 0; k < secondaryFinalTable.size() ; k++) { 
+								if((int) secondaryFinalTable.getValue("Label", k) == label) {
+									secondaryRowIndices.add(k);
+								}
+							}
+							
+							// Check the tertiary objects table
+							for (int l = 0; l < tertiaryFinalTable.size() ; l++) {
+								if((int) tertiaryFinalTable.getValue("Label", l) == label) {
+									tertiaryRowIndices.add(l);
+								}
+							}
+							
+							// Check if matching labels were found in secondary and tertiary tables
+							if (!secondaryRowIndices.isEmpty() && !tertiaryRowIndices.isEmpty()) {
+								
+								// Get the count for the current label to handle any cases of multiple primary objects
+								int duplicateCount = labelCounts.getOrDefault(label, 0) + 1 ;
+								labelCounts.put(label, duplicateCount);
+								
+								// Iterate over the rows where the labels match and add the appropriate columns to the combined results table
+								
+								for (int secondaryRowIndex : secondaryRowIndices) {
+									for (int tertiaryRowIndex : tertiaryRowIndices) {
+										
+										// add a new row and populate with columns
+										// index value for primary = j, index values from sec and tert are +RowIndex respectively
+										combinedResults.addRow();
+										combinedResults.addValue("Label", label + "_" + duplicateCount);
+										combinedResults.addValue("ImageID", primaryFinalTable.getValue("ImageID", j));
+										combinedResults.addValue("Group", primaryFinalTable.getValue("Group", j));
+										combinedResults.addValue("Primary_Volume", primaryFinalTable.getValue("Volume", j));
+										combinedResults.addValue("Primary_Voxel_Count", primaryFinalTable.getValue("Voxel_Count", j));
+										combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
+										combinedResults.addValue("Primary_Elongation", primaryFinalTable.getValue("Elongation", j));
+										combinedResults.addValue("Primary_C1_Mean_Intensity", primaryFinalTable.getValue("C1_Mean_Intensity", j));
+										combinedResults.addValue("Primary_C1_IntDen", primaryFinalTable.getValue("C1_IntDen", j));
+										if (numberOfChannels >=2) {
+											combinedResults.addValue("Primary_C2_Mean_Intensity", primaryFinalTable.getValue("C2_Mean_Intensity", j));
+											combinedResults.addValue("Primary_C2_IntDen", primaryFinalTable.getValue("C2_IntDen", j));
+											}
+										if (numberOfChannels >=3) {
+											combinedResults.addValue("Primary_C3_Mean_Intensity", primaryFinalTable.getValue("C3_Mean_Intensity", j));
+											combinedResults.addValue("Primary_C3_IntDen", primaryFinalTable.getValue("C3_IntDen", j));
+											}
+										if (numberOfChannels >=4) {
+											combinedResults.addValue("Primary_C4_Mean_Intensity", primaryFinalTable.getValue("C4_Mean_Intensity", j));
+											combinedResults.addValue("Primary_C4_IntDen", primaryFinalTable.getValue("C4_IntDen", j));
+											}
+										combinedResults.addValue("Secondary_Volume", secondaryFinalTable.getValue("Volume", secondaryRowIndex));
+										combinedResults.addValue("Secondary_Voxel_Count", secondaryFinalTable.getValue("Voxel_Count", secondaryRowIndex));
+										combinedResults.addValue("Secondary_Sphericity", secondaryFinalTable.getValue("Sphericity", secondaryRowIndex));
+										combinedResults.addValue("Secondary_Elongation", secondaryFinalTable.getValue("Elongation", secondaryRowIndex));
+										combinedResults.addValue("Secondary_C1_Mean_Intensity", secondaryFinalTable.getValue("C1_Mean_Intensity", secondaryRowIndex));
+										combinedResults.addValue("Secondary_C1_IntDen", secondaryFinalTable.getValue("C1_IntDen", secondaryRowIndex));
+										if (numberOfChannels >=2) {
+											combinedResults.addValue("Secondary_C2_Mean_Intensity", secondaryFinalTable.getValue("C2_Mean_Intensity", secondaryRowIndex));
+											combinedResults.addValue("Secondary_C2_IntDen", secondaryFinalTable.getValue("C2_IntDen", secondaryRowIndex));
+											}
+										if (numberOfChannels >=3) {
+											combinedResults.addValue("Secondary_C3_Mean_Intensity", secondaryFinalTable.getValue("C3_Mean_Intensity", secondaryRowIndex));
+											combinedResults.addValue("Secondary_C3_IntDen", secondaryFinalTable.getValue("C3_IntDen", secondaryRowIndex));
+											}
+										if (numberOfChannels >=4) {
+											combinedResults.addValue("Secondary_C4_Mean_Intensity", secondaryFinalTable.getValue("C4_Mean_Intensity", secondaryRowIndex));
+											combinedResults.addValue("Secondary_C4_IntDen", secondaryFinalTable.getValue("C4_IntDen", secondaryRowIndex));
+											}
+										combinedResults.addValue("Tertiary_Volume", tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_Voxel_Count", tertiaryFinalTable.getValue("Voxel_Count", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_Sphericity", tertiaryFinalTable.getValue("Sphericity", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_Elongation", tertiaryFinalTable.getValue("Elongation", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_C1_Mean_Intensity", tertiaryFinalTable.getValue("C1_Mean_Intensity", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_C1_IntDen", tertiaryFinalTable.getValue("C1_IntDen", tertiaryRowIndex));
+										if (numberOfChannels >=2) {
+											combinedResults.addValue("Tertiary_C2_Mean_Intensity", tertiaryFinalTable.getValue("C2_Mean_Intensity", tertiaryRowIndex));
+											combinedResults.addValue("Tertiary_C2_IntDen", tertiaryFinalTable.getValue("C2_IntDen", tertiaryRowIndex));
+											}
+										if (numberOfChannels >=3) {
+											combinedResults.addValue("Tertiary_C3_Mean_Intensity", tertiaryFinalTable.getValue("C3_Mean_Intensity", tertiaryRowIndex));
+											combinedResults.addValue("Tertiary_C3_IntDen", tertiaryFinalTable.getValue("C3_IntDen", tertiaryRowIndex));
+											}
+										if (numberOfChannels >=4) {
+											combinedResults.addValue("Tertiary_C4_Mean_Intensity", tertiaryFinalTable.getValue("C4_Mean_Intensity", tertiaryRowIndex));
+											combinedResults.addValue("Tertiary_C4_IntDen", tertiaryFinalTable.getValue("C4_IntDen", tertiaryRowIndex));
+											}
+										
+										// create a volume ratio between the primary and tertiary objects
+										combinedResults.addValue("Primary/Tertiary_Volume_Ratio", primaryFinalTable.getValue("Volume", j)/tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
+										
+										
+										// create some ratio columns for volume and C1-4 intensities where objects share a label; then write to the combined table.
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+										
+									}
+								}
+								
+							}
+								
+						}
 						
+ 							
+							
+							
+							
+							
 						
 						
 						
