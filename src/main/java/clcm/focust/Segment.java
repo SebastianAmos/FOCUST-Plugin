@@ -79,7 +79,7 @@ public class Segment {
 	 */
 	
 	
-	public static void ProcessSingleCells(boolean analysisOnly) {
+	public static void processSingleCells(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -127,7 +127,7 @@ public class Segment {
 						} else {
 							// if analysis mode is F, segment primary channel from user inputs
 							IJ.log("Primary object segmention:");
-							primaryObjectsCells = GPUSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
 						}
 						
 						IJ.log("Processing primary object...");
@@ -140,7 +140,7 @@ public class Segment {
 						}
 						
 						// Measure primary objects
-						ResultsTable primaryResults = analyze3D.process(primaryObjectSpheroid);
+						ResultsTable primaryResults = analyze3D.process(primaryObjectsCells);
 						
 						
 						// create and measure secondary object
@@ -151,7 +151,7 @@ public class Segment {
 							String fileName = list[i].replace(".nd2", ".tif");
 							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
 						} else {
-							secondaryObjectsCells = GPUSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+							secondaryObjectsCells = gpuSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
 						}
 						
 						secondaryObjectsCells.setCalibration(cal);
@@ -188,21 +188,22 @@ public class Segment {
 						
 						
 						//TODO: Make the intensity analysis dependent on the number of channels in the image
-						// Measure the channel intensities SCC1 = single cell channel 1
-						ResultsTable primarySCC1Intensity = IntensityMeasurements.Process(channelsSingleCell[0], primaryObjectsCells);
+						// Measure the channel intensities. SCC1 = single cell channel 1
+					
+						ResultsTable primarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], primaryObjectsCells);
+						ResultsTable primarySCC2Intensity = null;
+						ResultsTable primarySCC3Intensity = null;
+						ResultsTable primarySCC4Intensity = null;
+						
 						if (numberOfChannels >=2) {
-						ResultsTable primarySCC2Intensity = IntensityMeasurements.Process(channelsSingleCell[1], primaryObjectsCells);
+						primarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 3) {
-						ResultsTable primarySCC3Intensity = IntensityMeasurements.Process(channelsSingleCell[2], primaryObjectsCells);
+						primarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 4) {
-						ResultsTable primarySCC4Intensity = IntensityMeasurements.Process(channelsSingleCell[3], primaryObjectsCells);
+						primarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], primaryObjectsCells);
 						}
-						
-						
-						// store results table length
-						int primarySCTableLength = primarySCC1Intensity.getColumnAsVariables("Label").length;
 						
 						
 						// new results table - SC = single cell
@@ -211,7 +212,7 @@ public class Segment {
 						// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
 						if (SingleCellView.groupingInfo.isEmpty()) {
 							
-								for (int o = 0; o < primarySCTableLength ; o++) {
+								for (int o = 0; o < primarySCC1Intensity.size() ; o++) {
 									primaryImageDataSC.addRow();
 									primaryImageDataSC.addValue("ImageID", imgName);
 								}
@@ -220,7 +221,7 @@ public class Segment {
 							
 							String group = SingleCellView.groupingInfo;
 							
-							for (int o = 0; o < primarySCTableLength ; o++) {
+							for (int o = 0; o < primarySCC1Intensity.size() ; o++) {
 								primaryImageDataSC.addRow();
 								primaryImageDataSC.addValue("ImageID", imgName);
 								primaryImageDataSC.addValue("Group", group);
@@ -230,6 +231,227 @@ public class Segment {
 						
 					
 						
+					/*
+					 * Build and save the final table for primary objects. 
+					 */
+						
+						ResultsTable primaryFinalTable = new ResultsTable();
+						primaryFinalTable.setColumn("Label", primarySCC1Intensity.getColumnAsVariables("Label"));
+						primaryFinalTable.setColumn("ImageID", primaryImageDataSC.getColumnAsVariables("ImageID"));
+						if (!SingleCellView.groupingInfo.isEmpty()) {
+							primaryFinalTable.setColumn("Group", primaryImageDataSC.getColumnAsVariables("Group"));
+						}
+						primaryFinalTable.setColumn("Volume", primaryResults.getColumnAsVariables("Volume"));
+						primaryFinalTable.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
+						primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
+						primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
+						primaryFinalTable.setColumn("C1_Mean_Intensity", primarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
+						primaryFinalTable.setColumn("C1_IntDen", primarySCC1Intensity.getColumnAsVariables("IntDen"));
+						
+						if (numberOfChannels >=2) {
+						primaryFinalTable.setColumn("C2_Mean_Intensity", primarySCC2Intensity.getColumnAsVariables("Mean_Intensity"));
+						primaryFinalTable.setColumn("C2_IntDen", primarySCC2Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						if (numberOfChannels >=3) {
+						primaryFinalTable.setColumn("C3_Mean_Intensity", primarySCC3Intensity.getColumnAsVariables("Mean_Intensity"));
+						primaryFinalTable.setColumn("C3_IntDen", primarySCC3Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						if (numberOfChannels >=4) {
+						primaryFinalTable.setColumn("C4_Mean_Intensity", primarySCC4Intensity.getColumnAsVariables("Mean_Intensity"));
+						primaryFinalTable.setColumn("C4_IntDen", primarySCC4Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						
+						// Save the primary results table 
+						String primaryResultsName = dir + "Primary_Object_Results.csv";
+						try {
+							primaryFinalTable.saveAs(primaryResultsName);
+						} catch (IOException e) {
+							e.printStackTrace();
+							IJ.log("Cannot save primary results table. Check the objects were created.");
+						}
+						
+						
+					/*
+					 * Build and save the final table for secondary objects.
+					 */
+						
+						ResultsTable secondarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], secondaryObjectsCells);
+						ResultsTable secondarySCC2Intensity = null;
+						ResultsTable secondarySCC3Intensity = null;
+						ResultsTable secondarySCC4Intensity = null;
+						
+						if (numberOfChannels >=2) {
+						secondarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], secondaryObjectsCells);
+						}
+						if (numberOfChannels >= 3) {
+						secondarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], secondaryObjectsCells);
+						}
+						if (numberOfChannels >= 4) {
+						secondarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], secondaryObjectsCells);
+						}
+						
+
+						
+						// new results table - SC = single cell
+						ResultsTable secondaryImageDataSC = new ResultsTable();
+						
+						// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
+						if (SingleCellView.groupingInfo.isEmpty()) {
+							
+								for (int o = 0; o < secondarySCC1Intensity.size() ; o++) {
+									secondaryImageDataSC.addRow();
+									secondaryImageDataSC.addValue("ImageID", imgName);
+								}
+								
+						} else {
+							
+							String group = SingleCellView.groupingInfo;
+							
+							for (int o = 0; o < secondarySCC1Intensity.size() ; o++) {
+								secondaryImageDataSC.addRow();
+								secondaryImageDataSC.addValue("ImageID", imgName);
+								secondaryImageDataSC.addValue("Group", group);
+							}
+						}
+						
+						
+						// build the final secondary table 
+						ResultsTable secondaryFinalTable = new ResultsTable(); 
+						
+						secondaryFinalTable.setColumn("Label", secondarySCC1Intensity.getColumnAsVariables("Label"));
+						secondaryFinalTable.setColumn("ImageID", secondaryImageDataSC.getColumnAsVariables("ImageID"));
+						if (!SingleCellView.groupingInfo.isEmpty()) {
+							secondaryFinalTable.setColumn("Group", secondaryImageDataSC.getColumnAsVariables("Group"));
+						}
+						secondaryFinalTable.setColumn("Volume", secondaryResults.getColumnAsVariables("Volume"));
+						secondaryFinalTable.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
+						secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
+						secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
+						secondaryFinalTable.setColumn("C1_Mean_Intensity", secondarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
+						secondaryFinalTable.setColumn("C1_IntDen", secondarySCC1Intensity.getColumnAsVariables("IntDen"));
+						
+						if (numberOfChannels >=2) {
+							secondaryFinalTable.setColumn("C2_Mean_Intensity", secondarySCC2Intensity.getColumnAsVariables("Mean_Intensity"));
+							secondaryFinalTable.setColumn("C2_IntDen", secondarySCC2Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						if (numberOfChannels >=3) {
+							secondaryFinalTable.setColumn("C3_Mean_Intensity", secondarySCC3Intensity.getColumnAsVariables("Mean_Intensity"));
+							secondaryFinalTable.setColumn("C3_IntDen", secondarySCC3Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						if (numberOfChannels >=4) {
+							secondaryFinalTable.setColumn("C4_Mean_Intensity", secondarySCC4Intensity.getColumnAsVariables("Mean_Intensity"));
+							secondaryFinalTable.setColumn("C4_IntDen", secondarySCC4Intensity.getColumnAsVariables("IntDen"));
+						}
+						
+						
+						// Save the secondary results table 
+						String secondaryResultsName = dir + "Secondary_Object_Results.csv";
+						try {
+							secondaryFinalTable.saveAs(secondaryResultsName);
+						} catch (IOException e) {
+							e.printStackTrace();
+							IJ.log("Cannot save secondary results table. Check the objects were created.");
+						}
+						
+						
+						
+						/*
+						 * Build and save the final table for tertiary objects.
+						 */
+							
+							ResultsTable tertiarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], tertiaryObjectsCells);
+							ResultsTable tertiarySCC2Intensity = null;
+							ResultsTable tertiarySCC3Intensity = null;
+							ResultsTable tertiarySCC4Intensity = null;
+							
+							if (numberOfChannels >=2) {
+								tertiarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], tertiaryObjectsCells);
+							}
+							if (numberOfChannels >= 3) {
+								tertiarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], tertiaryObjectsCells);
+							}
+							if (numberOfChannels >= 4) {
+								tertiarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], tertiaryObjectsCells);
+							}
+							
+
+							
+							// new results table - SC = single cell
+							ResultsTable tertiaryImageDataSC = new ResultsTable();
+							
+							// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
+							if (SingleCellView.groupingInfo.isEmpty()) {
+								
+									for (int o = 0; o < tertiarySCC1Intensity.size() ; o++) {
+										tertiaryImageDataSC.addRow();
+										tertiaryImageDataSC.addValue("ImageID", imgName);
+									}
+									
+							} else {
+								
+								String group = SingleCellView.groupingInfo;
+								
+								for (int o = 0; o < tertiarySCC1Intensity.size() ; o++) {
+									tertiaryImageDataSC.addRow();
+									tertiaryImageDataSC.addValue("ImageID", imgName);
+									tertiaryImageDataSC.addValue("Group", group);
+								}
+							}
+							
+							
+							// build the final tertiary table 
+							ResultsTable tertiaryFinalTable = new ResultsTable(); 
+							
+							tertiaryFinalTable.setColumn("Label", tertiarySCC1Intensity.getColumnAsVariables("Label"));
+							tertiaryFinalTable.setColumn("ImageID", tertiaryImageDataSC.getColumnAsVariables("ImageID"));
+							if (!SingleCellView.groupingInfo.isEmpty()) {
+								tertiaryFinalTable.setColumn("Group", tertiaryImageDataSC.getColumnAsVariables("Group"));
+							}
+							tertiaryFinalTable.setColumn("Volume", tertiaryResults.getColumnAsVariables("Volume"));
+							tertiaryFinalTable.setColumn("Voxel_Count", tertiaryResults.getColumnAsVariables("VoxelCount"));
+							tertiaryFinalTable.setColumn("Sphericity", tertiaryResults.getColumnAsVariables("Sphericity"));
+							tertiaryFinalTable.setColumn("Elongation", tertiaryResults.getColumnAsVariables("Elli.R1/R3"));
+							tertiaryFinalTable.setColumn("C1_Mean_Intensity", tertiarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
+							tertiaryFinalTable.setColumn("C1_IntDen", tertiarySCC1Intensity.getColumnAsVariables("IntDen"));
+							
+							if (numberOfChannels >=2) {
+								tertiaryFinalTable.setColumn("C2_Mean_Intensity", tertiarySCC2Intensity.getColumnAsVariables("Mean_Intensity"));
+								tertiaryFinalTable.setColumn("C2_IntDen", tertiarySCC2Intensity.getColumnAsVariables("IntDen"));
+							}
+							
+							if (numberOfChannels >=3) {
+								tertiaryFinalTable.setColumn("C3_Mean_Intensity", tertiarySCC3Intensity.getColumnAsVariables("Mean_Intensity"));
+								tertiaryFinalTable.setColumn("C3_IntDen", tertiarySCC3Intensity.getColumnAsVariables("IntDen"));
+							}
+							
+							if (numberOfChannels >=4) {
+								tertiaryFinalTable.setColumn("C4_Mean_Intensity", tertiarySCC4Intensity.getColumnAsVariables("Mean_Intensity"));
+								tertiaryFinalTable.setColumn("C4_IntDen", tertiarySCC4Intensity.getColumnAsVariables("IntDen"));
+							}
+							
+							
+							// Save the tertiary results table 
+							String tertiaryResultsName = dir + "Tertiary_Object_Results.csv";
+							try {
+								tertiaryFinalTable.saveAs(tertiaryResultsName);
+							} catch (IOException e) {
+								e.printStackTrace();
+								IJ.log("Cannot save tertiary results table. Check the objects were created.");
+							}
+							
+						
+						
+						
+						
+					/*
+					 * Find cases where the primary, secondary and tertiary label IDs match, grab all relevant metrics for the corresponding rows.
+					 * Then write all collected data to a new table where each row = all related primary, secondary and tertiary objects.
+					 */
 						
 						
 						
@@ -242,10 +464,11 @@ public class Segment {
 						
 						
 						
+					
 						
 					} // end of single image loop!!
 					
-					
+					IJ.log("Finished processing");
 			}
 		});
 	t1.start();
@@ -261,7 +484,7 @@ public class Segment {
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
 	 * -----------------------------------------------------------------------------------*/
-	public static void ProcessSpheroid(boolean analysisOnly) {
+	public static void processSpheroid(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -314,7 +537,7 @@ public class Segment {
 						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
-						GPUSpheroidPrimaryObject(primaryChannelChoice);
+						gpuSpheroidPrimaryObject(primaryChannelChoice);
 					}
 					
 					IJ.log("Processing primary object...");
@@ -351,7 +574,7 @@ public class Segment {
 						String fileName = list[i].replace(".nd2", ".tif");
 						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
 					} else {
-						GPUSpheroidSecondaryObject(secondaryChannelChoice);
+						gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}
 					
 					
@@ -378,6 +601,7 @@ public class Segment {
 					/* Create inner ROI
 					* --> Duplicate whole spheroid, erode by fixed iteration count
 					* TODO: Implement a more programmatic approach for erosion. i.e. to 50 % of original secondary object volume, rather than a fixed number of iterations.
+					* - binary search for number of iterations to erode to approx 50 %. the results table secondaryResults contains the total volume of the whole spheroid. 
 					*/
 					
 					ImagePlus innerROI = secondaryObjectSpheroid.duplicate();
@@ -399,18 +623,16 @@ public class Segment {
 
 					// TODO: change c1 and c3 back from static. Unless best practice? That was just part of testing.
 					
-					primaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], primaryObjectSpheroid);
-					ResultsTable primaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], primaryObjectSpheroid);
-					primaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], primaryObjectSpheroid);
-					ResultsTable primaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], primaryObjectSpheroid);
+					primaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], primaryObjectSpheroid);
+					ResultsTable primaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], primaryObjectSpheroid);
+					primaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], primaryObjectSpheroid);
+					ResultsTable primaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], primaryObjectSpheroid);
 					
 					/* 
 					 * Write image name and grouping (where entered) data to a results table.
 					 * This allows whole columns to be extracted as Variable[] to construct the final table.
 					 */
 
-					// get counter
-					int primaryTableLength = primaryC1Intensity.getColumnAsVariables("Label").length;
 					
 					// new results table type
 					ResultsTable primaryImageData = new ResultsTable();
@@ -418,7 +640,7 @@ public class Segment {
 					// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
 					if (SpheroidView.groupingInfo.isEmpty()) {
 						
-							for (int o = 0; o < primaryTableLength ; o++) {
+							for (int o = 0; o < primaryC1Intensity.size() ; o++) {
 								primaryImageData.addRow();
 								primaryImageData.addValue("ImageID", imgName);
 							}
@@ -427,7 +649,7 @@ public class Segment {
 						
 						String group = SpheroidView.groupingInfo;
 						
-						for (int o = 0; o < primaryTableLength ; o++) {
+						for (int o = 0; o < primaryC1Intensity.size() ; o++) {
 							primaryImageData.addRow();
 							primaryImageData.addValue("ImageID", imgName);
 							primaryImageData.addValue("Group", group);
@@ -480,26 +702,25 @@ public class Segment {
 					/* TODO
 					 * > Make this conditional: Not all images will contain 4 channels to analyse the intensities of - grab channel array and just run for each element creating a new resultstable each time? 
 					 */
-					ResultsTable secondaryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], secondaryObjectSpheroid);
-					ResultsTable secondaryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], secondaryObjectSpheroid);
-					ResultsTable secondaryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], secondaryObjectSpheroid);
-					ResultsTable secondaryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], secondaryObjectSpheroid);
+					ResultsTable secondaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], secondaryObjectSpheroid);
+					ResultsTable secondaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], secondaryObjectSpheroid);
+					ResultsTable secondaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], secondaryObjectSpheroid);
+					ResultsTable secondaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], secondaryObjectSpheroid);
 					
 					
 					
-					// get counter
-					int secondaryTableLength = secondaryC1Intensity.getColumnAsVariables("Label").length;
+					// new temp results table
 					ResultsTable secondaryImageData = new ResultsTable();
 			
 					// check to see if grouping info has been entered, if yes, then populate the imageData table, if not, ignore. 
 					if (SpheroidView.groupingInfo.isEmpty()) {
-							for (int o = 0; o < secondaryTableLength ; o++) {
+							for (int o = 0; o < secondaryC1Intensity.size() ; o++) {
 								secondaryImageData.addRow();
 								secondaryImageData.addValue("ImageID", imgName);
 							}
 					} else {
 						String group = SpheroidView.groupingInfo;
-						for (int o = 0; o < secondaryTableLength ; o++) {
+						for (int o = 0; o < secondaryC1Intensity.size() ; o++) {
 							secondaryImageData.addRow();
 							secondaryImageData.addValue("ImageID", imgName);
 							secondaryImageData.addValue("Group", group);
@@ -508,15 +729,15 @@ public class Segment {
 					
 					
 					// intensity measurements for core and periphery 
-					ResultsTable coreC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], innerROI);
-					ResultsTable coreC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], innerROI);
-					ResultsTable coreC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], innerROI);
-					ResultsTable coreC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], innerROI);
+					ResultsTable coreC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], innerROI);
+					ResultsTable coreC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], innerROI);
+					ResultsTable coreC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], innerROI);
+					ResultsTable coreC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], innerROI);
 					
-					ResultsTable peripheryC1Intensity = IntensityMeasurements.Process(channelsSpheroid[0], outerROI);
-					ResultsTable peripheryC2Intensity = IntensityMeasurements.Process(channelsSpheroid[1], outerROI);
-					ResultsTable peripheryC3Intensity = IntensityMeasurements.Process(channelsSpheroid[2], outerROI);
-					ResultsTable peripheryC4Intensity = IntensityMeasurements.Process(channelsSpheroid[3], outerROI);
+					ResultsTable peripheryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], outerROI);
+					ResultsTable peripheryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], outerROI);
+					ResultsTable peripheryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], outerROI);
+					ResultsTable peripheryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], outerROI);
 					
 					
 					
@@ -587,7 +808,7 @@ public class Segment {
 	 * Take the selected channel and process as the primary object
 	 */
 	
-	public static ImagePlus GPUSpheroidPrimaryObject(int primaryChannelChoice) {
+	public static ImagePlus gpuSpheroidPrimaryObject(int primaryChannelChoice) {
 
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -671,7 +892,7 @@ public class Segment {
 	 * Take the selected channel and process as the secondary object
 	 */
 	
-	public static ImagePlus GPUSpheroidSecondaryObject(int secondaryChannelChoice) {
+	public static ImagePlus gpuSpheroidSecondaryObject(int secondaryChannelChoice) {
 
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -710,7 +931,7 @@ public class Segment {
 	 * Take the selected channel and process for single cells
 	 */
 
-	public static ImagePlus GPUSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
+	public static ImagePlus gpuSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
