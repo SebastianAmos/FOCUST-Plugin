@@ -6,6 +6,7 @@ import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
+import ij.plugin.filter.Binary;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -122,24 +123,23 @@ public class Segment {
 						int secondaryChannelChoice = SingleCellView.secondaryChannelChoice;
 						String imgName = imp.getTitle();
 					
+						IJ.log("Processing Primary Object...");
 						// if analysisMode is T, find the correct primary object file for the current image
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
 							primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
 						} else {
-							// if analysis mode is F, segment primary channel from user inputs
-							IJ.log("Primary object segmention:");
+							// if analysis mode is F, segment primary channel based on user inputs
 							primaryOriginalObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
 						}
 						
-						IJ.log("Processing Primary Object...");
 						IJ.resetMinAndMax(primaryOriginalObjectsCells);
 						primaryOriginalObjectsCells.setCalibration(cal);
 						
 						
 						// TESTING!!
 						IJ.saveAs(primaryOriginalObjectsCells, "TIF", dir + "Primary_Original_Objects_" + imgName);
-						
+						// for some reason saving as a binary output, not a connected component label map.
 						////
 						
 						
@@ -157,6 +157,11 @@ public class Segment {
 						IJ.resetMinAndMax(secondaryObjectsCells);
 						secondaryObjectsCells.setCalibration(cal);
 						
+						// TESTING!!
+						IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Original_Objects_" + imgName);
+						
+						////
+						
 						
 						
 						// Give primary objects the same label ID as the secondary objects 
@@ -165,7 +170,7 @@ public class Segment {
 						IJ.run(primaryLabelMatch, "Make Binary", "method=Huang background=Dark black");
 						IJ.run(primaryLabelMatch, "Divide...", "value=255 stack"); // if binary, max should be 255. could use getDisplayRangeMax()? *****
 						
-						// Assign secondary labels to primary objects 
+						// Assign secondary labels to primary objects
 						ImagePlus primaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
 						
 						// Generate a tertiary (cytoplasmic) ROI (subtract primary from secondary objects)
@@ -175,6 +180,24 @@ public class Segment {
 						// set calibration and save the ROI if the - assuming analysis only mode provide primary and secondary objects only!
 						tertiaryObjectsCells.setCalibration(cal);
 						IJ.resetMinAndMax(tertiaryObjectsCells);
+						
+						
+						/*
+						 * REMAP THE LABELS for the primary objects!!!!!!
+						 * - Where two objects share a label, but were previously uniquely identified, append an index to the shared label value to induvidualise them again.
+						 */
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						
 						
 						// If analysis mode is false, save the segmented outputs for the primary and secondary object channels, then the tertiary object output.
@@ -1054,7 +1077,7 @@ public class Segment {
 	 */
 
 	public static ImagePlus gpuSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
-		// ready clij2
+		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 		CLIJx clijx = CLIJx.getInstance();
@@ -1067,6 +1090,7 @@ public class Segment {
 		ClearCLBuffer detectedMax = clij2.create(input);
 		ClearCLBuffer labelledSpots = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
+		ClearCLBuffer connected = clij2.create(input);
 		
 		// 3D blur
 		clij2.gaussianBlur3D(input, blurred, sigma_x, sigma_y, sigma_z);
@@ -1086,8 +1110,10 @@ public class Segment {
 		// marker controlled watershed
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
 		
-		cellObjects = clij2.pull(segmented);
+		clij2.connectedComponentsLabelingBox(segmented, connected);
 		
+		cellObjects = clij2.pull(connected);
+		clijx.clear();
 		return cellObjects;
 	}
 
