@@ -10,12 +10,10 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
-import javax.swing.JFileChooser;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.UIManager;
 import java.awt.Color;
 
 import javax.swing.border.MatteBorder;
@@ -27,19 +25,19 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import javax.swing.border.EtchedBorder;
-import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 import javax.swing.JCheckBox;
 
-
+/**
+ * 
+ * @author SebastianAmos
+ *
+ */
 
 public class SingleCellView extends JFrame {
 
