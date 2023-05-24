@@ -182,21 +182,59 @@ public class Segment {
 						IJ.resetMinAndMax(tertiaryObjectsCells);
 						
 						
+						// TESTING
+						// ***********************************************************************************************
+						
 						/*
 						 * REMAP THE LABELS for the primary objects!!!!!!
-						 * - Where two objects share a label, but were previously uniquely identified, append an index to the shared label value to induvidualise them again.
+						 * - Where two primary objects share a label acquired from a secondary object, but were previously uniquely identified, append an index to the shared label values to induvidualise them again.
 						 */
 						
+						/* - findAndRename returns a rewritten original relative to matched**
+						*  - manageDuplicates returns a rewritten matched relative to original **
+						*
+						*  - primaryObjectsCell contains the labelling from the secondary objects. Some primary objects may share the same label.
+						*  - primaryOriginalObjectsCells contains the original labels that uniquely identify each primary object.
+						*/
+						
+						IJ.log("TESTING LABEL EDITOR FUNCTIONS:");
+						// pixel scanning approach - matched vs original (relative to matched)
+						ImagePlus relabelled = LabelEditor.findAndRename(primaryObjectsCells, primaryOriginalObjectsCells);
+						IJ.saveAs(relabelled, "TIF", dir + "Relabelled_matched_original" + imgName);
+						
+						IJ.log("First test passed");
+						// matched vs matched
+						ImagePlus relablledsame = LabelEditor.findAndRename(primaryObjectsCells, primaryObjectsCells);
+						IJ.saveAs(relablledsame, "TIF", dir + "Relabelled_ matched_matched" + imgName);
+						
+						IJ.log("Second test passed");
+						// matched vs original with assessment order swapped (relative to original)
+						ImagePlus duplicates = LabelEditor.manageDuplicates(primaryObjectsCells, primaryOriginalObjectsCells);
+						IJ.saveAs(duplicates, "TIF", dir + "Duplicates_matched_original" + imgName);
+						IJ.log("Third test passed");
+						
+						// matched vs matched with assessment order swapped (relative to original)
+						ImagePlus duplicatessame = LabelEditor.manageDuplicates(primaryObjectsCells, primaryObjectsCells);
+						IJ.saveAs(duplicatessame, "TIF", dir + "Duplicates_matched_mathed" + imgName);
+						IJ.log("Forth test passed");
+						
+						// clij2 approach
+						ImagePlus gpuRelablled = LabelEditor.gpuRenameLabels(primaryObjectsCells, primaryOriginalObjectsCells);
+						IJ.saveAs(gpuRelablled, "TIF", dir + "GPU_Relabelled_matched_original" + imgName);
+						IJ.log("Fifth (GPU) test passed");
+						
+						ImagePlus gpuRelablledsame = LabelEditor.gpuRenameLabels(primaryObjectsCells, primaryOriginalObjectsCells);
+						IJ.saveAs(gpuRelablledsame, "TIF", dir + "GPU_Relabelled_matched_matched" + imgName);
+						IJ.log("Sixth (GPU) test passed");
 						
 						
 						
+						IJ.log("-----------------------------------");
+						IJ.log("All label editor tests executed.");
+						IJ.log("-----------------------------------");
 						
-						
-						
-						
-						
-						
-						
+						//*************************************************************************************************
+					
 						
 						
 						
@@ -468,7 +506,8 @@ public class Segment {
 					 * Where labels match, write data to a combined results table. Calculate some ratios and add to new columns.
 					 * In the combined results table each row = all related primary, secondary and tertiary object data.
 					 * 
-					 * In context, multi-nucleated cells are not uncommon so supporting multiple primary objects per secondary object is important functionality.
+					 * In context, multi-nucleated cells are no unheard of, so supporting multiple primary objects per secondary object is important functionality.
+					 * This functionality my also prove useful if
 					 */
 							
 					// TODO: add user-input channel names to the combined results table if the user input text, otherwise leave as "Cx".
