@@ -6,7 +6,6 @@ import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
-import ij.plugin.filter.Binary;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -22,6 +21,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 /**
+ * 
  * @author SebastianAmos
  *
  */
@@ -74,7 +74,7 @@ public class Segment {
 // This method segments primary and secondary objects from single cell datasets based on user-defined parameters
 	
 	
-	/*
+	/**
 	 * TODO:
 	 * - implement kill borders function for secondary and primary objects (mask primary by secondary for instances where secondary objects are removed, so that child objects are as well).
 	 * - find matching labels for primary, secondary and tertiary objects (label matching) then build a results table based on this. 
@@ -87,11 +87,13 @@ public class Segment {
 			@Override
 			public void run() {
 
-				// grab the file names
+				// grab the file names and start a timer
+				long startTime = System.currentTimeMillis();
 				File f = new File(SingleCellView.inputDir);
 				String[] list = f.list();
 				String dir = SingleCellView.inputDir;
 				int count = 0;
+				
 					
 
 				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
@@ -146,7 +148,7 @@ public class Segment {
 						// create and measure secondary object
 						IJ.log("Processing Secondary Object...");
 						
-						// If analysis-only-mode, find the right secondary object file for the current image.   
+						// If analysis-only-mode, find the right secondary object file for the current image.
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
 							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
@@ -160,18 +162,27 @@ public class Segment {
 						// TESTING!!
 						IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Original_Objects_" + imgName);
 						
-						////
+						//***************************************
 						
 						
 						
 						// Give primary objects the same label ID as the secondary objects 
 						// Convert to binary, get max range value (maxLUT), divide label IDs by maxLUT so ID = 1. 
-						ImagePlus primaryLabelMatch = primaryOriginalObjectsCells.duplicate();
-						IJ.run(primaryLabelMatch, "Make Binary", "method=Huang background=Dark black");
-						IJ.run(primaryLabelMatch, "Divide...", "value=255 stack"); // if binary, max should be 255. could use getDisplayRangeMax()? *****
+						
+						//ImagePlus primaryLabelMatch = primaryOriginalObjectsCells.duplicate();
+						//IJ.run(primaryLabelMatch, "Make Binary", "method=Huang background=Dark black");
+						
+						IJ.log("Converting primary labels to binary");
+						ImagePlus primaryLabelMatch = LabelEditor.makeBinary(primaryOriginalObjectsCells);
+						IJ.log("the display max is: " + primaryLabelMatch.getDisplayRangeMax());
+						IJ.run(primaryLabelMatch, "Divide...", "value=" + primaryLabelMatch.getDisplayRangeMax() + " stack");
+						IJ.saveAs(primaryLabelMatch, "TIF", dir + "objectvaluesshouldbe1_" + imgName);
+						
 						
 						// Assign secondary labels to primary objects
 						ImagePlus primaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
+						IJ.saveAs(primaryObjectsCells, "TIF", dir + "objectvaluesshouldbesecondary!_" + imgName);
+						
 						
 						// Generate a tertiary (cytoplasmic) ROI (subtract primary from secondary objects)
 						IJ.log("Processing Tertiary Object...");
@@ -198,43 +209,43 @@ public class Segment {
 						*/
 						
 						IJ.log("TESTING LABEL EDITOR FUNCTIONS:");
-						// pixel scanning approach - matched vs original (relative to matched)
-						ImagePlus relabelled = LabelEditor.findAndRename(primaryObjectsCells, primaryOriginalObjectsCells);
-						IJ.saveAs(relabelled, "TIF", dir + "Relabelled_matched_original" + imgName);
+						// pixel scanning approach - matched vs matched (relative to matched)
+						// THE OUTPUT IS ALL BINARY (ALL LABELS = 255).
+						ImagePlus matchedLabs = primaryObjectsCells.duplicate();
+						ImagePlus relabelled = LabelEditor.findAndRename(matchedLabs, matchedLabs);
+						IJ.saveAs(relabelled, "TIF", dir + "FAR_" + imgName);
 						
-						IJ.log("First test passed");
-						// matched vs matched
-						ImagePlus relablledsame = LabelEditor.findAndRename(primaryObjectsCells, primaryObjectsCells);
-						IJ.saveAs(relablledsame, "TIF", dir + "Relabelled_ matched_matched" + imgName);
-						
-						IJ.log("Second test passed");
-						// matched vs original with assessment order swapped (relative to original)
-						ImagePlus duplicates = LabelEditor.manageDuplicates(primaryObjectsCells, primaryOriginalObjectsCells);
-						IJ.saveAs(duplicates, "TIF", dir + "Duplicates_matched_original" + imgName);
-						IJ.log("Third test passed");
-						
-						// matched vs matched with assessment order swapped (relative to original)
-						ImagePlus duplicatessame = LabelEditor.manageDuplicates(primaryObjectsCells, primaryObjectsCells);
-						IJ.saveAs(duplicatessame, "TIF", dir + "Duplicates_matched_mathed" + imgName);
-						IJ.log("Forth test passed");
-						
-						// clij2 approach
-						ImagePlus gpuRelablled = LabelEditor.gpuRenameLabels(primaryObjectsCells, primaryOriginalObjectsCells);
-						IJ.saveAs(gpuRelablled, "TIF", dir + "GPU_Relabelled_matched_original" + imgName);
-						IJ.log("Fifth (GPU) test passed");
-						
-						ImagePlus gpuRelablledsame = LabelEditor.gpuRenameLabels(primaryObjectsCells, primaryOriginalObjectsCells);
-						IJ.saveAs(gpuRelablledsame, "TIF", dir + "GPU_Relabelled_matched_matched" + imgName);
-						IJ.log("Sixth (GPU) test passed");
+						// THE OUTPUT IS MOSTLY BINARY BUT ALL HIGH-Z-VALUE SMALL SPECKS ARE MULTI-LABELLED!
+						ImagePlus originalLabs = primaryOriginalObjectsCells.duplicate();
+						ImagePlus matchedLabs1 = primaryObjectsCells.duplicate();
+						ImagePlus relabelled1 = LabelEditor.manageDuplicates(matchedLabs1, originalLabs);
+						IJ.saveAs(relabelled1, "TIF", dir + "MD_" + imgName);
 						
 						
+					/*
+					 * IJ.log("First test passed"); // matched vs matched ImagePlus relablledsame =
+					 * LabelEditor.findAndRename(primaryObjectsCells, primaryObjectsCells);
+					 * IJ.saveAs(relablledsame, "TIF", dir + "Relabelled_ matched_matched" +
+					 * imgName);
+					 * 
+					 * IJ.log("Second test passed"); // matched vs original with assessment order
+					 * swapped (relative to original) ImagePlus duplicates =
+					 * LabelEditor.manageDuplicates(primaryObjectsCells,
+					 * primaryOriginalObjectsCells); IJ.saveAs(duplicates, "TIF", dir +
+					 * "Duplicates_matched_original" + imgName); IJ.log("Third test passed");
+					 * 
+					 * // matched vs matched with assessment order swapped (relative to original)
+					 * ImagePlus duplicatessame = LabelEditor.manageDuplicates(primaryObjectsCells,
+					 * primaryObjectsCells); IJ.saveAs(duplicatessame, "TIF", dir +
+					 * "Duplicates_matched_mathed" + imgName); IJ.log("Forth test passed");
+					 */
 						
 						IJ.log("-----------------------------------");
 						IJ.log("All label editor tests executed.");
 						IJ.log("-----------------------------------");
 						
-						//*************************************************************************************************
-					
+						
+						
 						
 						
 						
@@ -418,6 +429,7 @@ public class Segment {
 						
 						/*
 						 * Build and save the final table for tertiary objects.
+						 * 
 						 */
 							
 							ResultsTable tertiarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], tertiaryObjectsCells);
@@ -500,14 +512,10 @@ public class Segment {
 							}
 							
 						
-						
+					
 					/*
-					 * Find cases where the primary, secondary and tertiary label IDs match - tracking repeated label IDs.
-					 * Where labels match, write data to a combined results table. Calculate some ratios and add to new columns.
-					 * In the combined results table each row = all related primary, secondary and tertiary object data.
-					 * 
-					 * In context, multi-nucleated cells are no unheard of, so supporting multiple primary objects per secondary object is important functionality.
-					 * This functionality my also prove useful if
+					 * Build the final results table. 
+					 * Match labels between primary, secondary and tertiary results tables so that row label[x] = all data on x 		
 					 */
 							
 					// TODO: add user-input channel names to the combined results table if the user input text, otherwise leave as "Cx".
@@ -651,8 +659,10 @@ public class Segment {
  							
 						
 					} // end of single image loop!!
-					
-					IJ.log("Finished processing");
+					long endTime = System.currentTimeMillis();
+					double timeSec = (endTime - startTime) / 1000; 
+					IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
+					IJ.log("Analysis complete.");
 			}
 		});
 	t1.start();
