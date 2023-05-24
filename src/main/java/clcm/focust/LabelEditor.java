@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.measure.ResultsTable;
-import ij.plugin.filter.Binary;
+import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import inra.ijpb.label.LabelImages;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -19,12 +19,20 @@ public class LabelEditor {
 	public static ImagePlus renamedImage;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
-	/* This method takes a primary image that has been label-matched with a secondary image (matched) and the originally-labeled image.
-	* This method detects duplicate labels in the matched image, where two objects were uniquely identified in the original image. 
-	* This may occur in biological datasets where a cell has multiple nuclei, for example. 
-	* the renamedImage is returned with any grouped labels appended with indices so they may be treated individually. 
-	*/ 
 	
+	/**
+	 * This method assesses labels matched with a secondary image for duplicates. 
+	 * Where identified, duplicate label values are indexed to preserve identity.
+	 * 
+	 * @param matched An image that has been label-matched to overlying labels from original image.
+	 * @param original An image containing the original label values.
+	 * 
+	 * @return an adjusted image with duplicate label value corrections.
+	 *
+	 * @TODO
+	 * - Test label duplicates compared to the same image > could just pass one image to de-duplicate? 
+	 * 
+	 */
 	
 	public static ImagePlus findAndRename(ImagePlus matched, ImagePlus original) {
 		
@@ -48,7 +56,7 @@ public class LabelEditor {
 							// shared value found, append an index to individualize the label 
 							int newIndex = labelMaps.get(lblMatched) + 1 ;
 							labelMaps.put(lblMatched, newIndex);
-							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "." + newIndex));
+							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "00" + newIndex));
 							
 						} else {
 							// new label found, add to the map
@@ -59,10 +67,19 @@ public class LabelEditor {
 				}
 			}
 		}
-		
-		return original;
-	} // end of findAndRename method
+		ImagePlus output = original;
+		return output;
+	} 
 	
+	
+	
+	/**
+	 * A modified implementation of findAndRename(); 
+	 * 
+	 * @param matched
+	 * @param original
+	 * @return output The relabelled image where duplicate labels have been indexed. 
+	 */
 	
 	public static ImagePlus manageDuplicates(ImagePlus matched, ImagePlus original) {
 		
@@ -90,7 +107,7 @@ public class LabelEditor {
 							int newIndex = labelMaps.get(lblOriginal) + 1;
 						
 							labelMaps.put(lblOriginal, newIndex);
-							ipMatched.putPixelValue(x, y, Double.parseDouble(lblMatched + "." + newIndex));
+							ipMatched.putPixelValue(x, y, Double.parseDouble(lblMatched + "00" + newIndex));
 						
 						} else {
 							// Initialise new label keys with an index value of 0, so if found again, indexing for repeats can start at 1. 
@@ -101,9 +118,32 @@ public class LabelEditor {
 				}
 			}
 		}
-		return matched;
-	} // end of manageDuplicates method
+		ImagePlus output = matched;
+		return output;
+	}
 	
+	
+	
+	/**
+	 * Converts all labels within an image to binary equivalents.
+	 * 
+	 * @param input A labelled image.
+	 * 
+	 * @return binaryImage Binary equivalent of the input.
+	 *  
+	 */
+	public static ImagePlus makeBinary(ImagePlus input) {
+	    ImageStack stk = input.getStack();
+		ImageStack bstk = new ImageStack(stk.getWidth(), stk.getHeight(), stk.getSize());
+		for (int z = 1; z <= stk.getSize(); z++) {
+			ImageProcessor ip = stk.getProcessor(z);
+			ByteProcessor bp = ip.convertToByteProcessor();
+			bp.threshold(0);
+			bstk.setProcessor(bp, z);
+		}
+		ImagePlus output = new ImagePlus("",bstk);
+		return output;
+	}
 	
 	
 	
