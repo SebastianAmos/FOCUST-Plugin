@@ -661,6 +661,10 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(btnBackToMenu);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
 		btnRunAnalysis.setBounds(13, 415, 286, 29);
 		paneSpeckle.add(btnRunAnalysis);
