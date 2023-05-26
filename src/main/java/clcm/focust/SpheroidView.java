@@ -82,8 +82,12 @@ public class SpheroidView extends JFrame {
 	 public static boolean analysisMode;
 	 
 	/**
-	 * construct the spheroid gui.
+	 * A class that defines and builds the gui for the spheroid analysis mode.
+	 * 
+	 * @author SebastianAmos
 	 */
+	 
+	 
 	public SpheroidView() {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
@@ -112,27 +116,25 @@ public class SpheroidView extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				sigma_x = Double.parseDouble(txtPriGBx.getText());
-				sigma_y = Double.parseDouble(txtPriGBy.getText());
-				sigma_z = Double.parseDouble(txtPriGBz.getText());
-				radius_x = Double.parseDouble(txtPriDMx.getText());
-				radius_y = Double.parseDouble(txtPriDMy.getText());
-				radius_z = Double.parseDouble(txtPriDMz.getText());
-				sigma_x2 = Double.parseDouble(txtSecGBx.getText());
-				sigma_y2 = Double.parseDouble(txtSecGBy.getText());
-				sigma_z2 = Double.parseDouble(txtSecGBz.getText());
-				greaterConstant = Double.parseDouble(txtSecThreshold.getText());
+				if(!cbAnalysisMode.isSelected()) {
+					sigma_x = Double.parseDouble(txtPriGBx.getText());
+					sigma_y = Double.parseDouble(txtPriGBy.getText());
+					sigma_z = Double.parseDouble(txtPriGBz.getText());
+					radius_x = Double.parseDouble(txtPriDMx.getText());
+					radius_y = Double.parseDouble(txtPriDMy.getText());
+					radius_z = Double.parseDouble(txtPriDMz.getText());
+					sigma_x2 = Double.parseDouble(txtSecGBx.getText());
+					sigma_y2 = Double.parseDouble(txtSecGBy.getText());
+					sigma_z2 = Double.parseDouble(txtSecGBz.getText());
+					greaterConstant = Double.parseDouble(txtSecThreshold.getText());
+				}
 				channel2Name = txtSpheroidC2Name.getText();
 				channel2Name = txtSpheroidC3Name.getText();
 				channel3Name = txtSpheroidC4Name.getText();
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSpheroidGroupName.getText();
-				// Check if new analysisOnly checkbox is checked
-								
-				
 				Segment.processSpheroid(cbAnalysisMode.isSelected());
-				
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
