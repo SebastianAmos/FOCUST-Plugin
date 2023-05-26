@@ -548,6 +548,7 @@ public class SingleCellView extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(!cbAnalysisMode.isSelected()) {
 				sigma_x = Double.parseDouble(txtPriGBx.getText());
 				sigma_y = Double.parseDouble(txtPriGBy.getText());
 				sigma_z = Double.parseDouble(txtPriGBz.getText());
@@ -562,6 +563,7 @@ public class SingleCellView extends JFrame {
 				radius_z2 = Double.parseDouble(txtSecDMz.getText());
 				greaterConstantPrimary = Double.parseDouble(txtPriThreshold.getText());
 				greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
+				}
 				channel2Name = txtSingleCellC2Name.getText();
 				channel3Name = txtSingleCellC3Name.getText();
 				channel4Name = txtSingleCellC4Name.getText();
@@ -569,7 +571,8 @@ public class SingleCellView extends JFrame {
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSingleCellGroupName.getText();
 				
-				Segment.processSingleCells(cbAnalysisMode.isSelected());
+				Segment segment = new Segment();
+				segment.processSingleCells(cbAnalysisMode.isSelected());
 				
 			}
 		});
