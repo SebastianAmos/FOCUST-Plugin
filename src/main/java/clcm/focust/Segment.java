@@ -21,7 +21,8 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 /**
- * 
+ * A class for segmenting fluorescent datasets based on user-defined parameters. 
+ * Three segmentation workflows currently available (processSpheroids, processSingleCells and processSpeckles.
  * @author SebastianAmos
  *
  */
@@ -64,14 +65,12 @@ public class Segment {
 	
 	/*TODO: 
 	 * - implement a file extension filter - could be a good way to then distinguish between original vs pre-segmented images later on too...
-	 * - make erosion of secondary object relative to it's original size, instead of an abitrary number of iterations.
+	 * - make erosion of secondary object relative to it's original size, instead of an arbitrary number of iterations.
 	 * - implement intensity measurements in core vs periphery
 	 * - make intensity analysis dependent on then number of channels in current image array - not fixed to 4. 
 	 * - Make it batch process friendly! End of single image loops marked at the end of the "Process.." methods
 	 */
 
-
-// This method segments primary and secondary objects from single cell datasets based on user-defined parameters
 	
 	
 	/**
@@ -82,7 +81,16 @@ public class Segment {
 	 */
 	
 	
-	public static void processSingleCells(boolean analysisOnly) {
+	/**
+	 * This method segments primary and secondary objects from "single cell" datasets based on user-defined parameters.
+	 * Primary (nuclei) and secondary (cells) objects are used to create tertiary (cytoplasmic) labels. 
+	 * Primary, secondary and tertiary metrics are then related so each row in the final results table all pertain to the same biological entity. 
+	 * Support for multiple primary objects per secondary object coming...
+	 * 
+	 * @param analysisOnly Boolean from gui checkbox to determine if segmentation has already been done. 
+	 */
+	
+	public void processSingleCells(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -94,6 +102,8 @@ public class Segment {
 				String dir = SingleCellView.inputDir;
 				int count = 0;
 				
+				// Create the combined table outside of the image loop
+				ResultsTable combinedResults = new ResultsTable();
 					
 
 				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
@@ -199,6 +209,7 @@ public class Segment {
 						/*
 						 * REMAP THE LABELS for the primary objects!!!!!!
 						 * - Where two primary objects share a label acquired from a secondary object, but were previously uniquely identified, append an index to the shared label values to induvidualise them again.
+						 * - Make this an option (maybe another check box?) 
 						 */
 						
 						/* - findAndRename returns a rewritten original relative to matched**
@@ -206,7 +217,7 @@ public class Segment {
 						*
 						*  - primaryObjectsCell contains the labelling from the secondary objects. Some primary objects may share the same label.
 						*  - primaryOriginalObjectsCells contains the original labels that uniquely identify each primary object.
-						*/
+						
 						
 						IJ.log("TESTING LABEL EDITOR FUNCTIONS:");
 						// pixel scanning approach - matched vs matched (relative to matched)
@@ -220,7 +231,7 @@ public class Segment {
 						ImagePlus matchedLabs1 = primaryObjectsCells.duplicate();
 						ImagePlus relabelled1 = LabelEditor.manageDuplicates(matchedLabs1, originalLabs);
 						IJ.saveAs(relabelled1, "TIF", dir + "MD_" + imgName);
-						
+						*/
 						
 					/*
 					 * IJ.log("First test passed"); // matched vs matched ImagePlus relablledsame =
@@ -238,13 +249,13 @@ public class Segment {
 					 * ImagePlus duplicatessame = LabelEditor.manageDuplicates(primaryObjectsCells,
 					 * primaryObjectsCells); IJ.saveAs(duplicatessame, "TIF", dir +
 					 * "Duplicates_matched_mathed" + imgName); IJ.log("Forth test passed");
+					 *
+					 *	
+					 *	IJ.log("-----------------------------------");
+					 *	IJ.log("All label editor tests executed.");
+					 *	IJ.log("-----------------------------------");
+					 *
 					 */
-						
-						IJ.log("-----------------------------------");
-						IJ.log("All label editor tests executed.");
-						IJ.log("-----------------------------------");
-						
-						
 						
 						
 						
@@ -261,7 +272,6 @@ public class Segment {
 						ResultsTable primaryResults = analyze3D.process(primaryObjectsCells);
 						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsCells);
 						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsCells);
-						
 						
 						
 					/*
@@ -519,148 +529,106 @@ public class Segment {
 					 */
 							
 					// TODO: add user-input channel names to the combined results table if the user input text, otherwise leave as "Cx".
-						
-						// Create the combined table
-						ResultsTable combinedResults = new ResultsTable();
-						
-						// A map to store counts of label instances in the primary results table. This will support multiple primary objects per secondary object. 
-						Map<Integer, Integer> labelCounts = new HashMap<>();
-						
-						
-						// for each primary label, check if exists in the secondary and tertiary tables 
-						for (int j = 0; j < primaryFinalTable.size() ; j++) {
 							
-							int label = (int) primaryFinalTable.getValue("Label", j);
-							
-							// Lists to track row indices that contain matching labels
-							List<Integer> secondaryRowIndices = new ArrayList<>();
-							List<Integer> tertiaryRowIndices = new ArrayList<>();
-							
-							// Check the secondary objects table
-							for (int k = 0; k < secondaryFinalTable.size() ; k++) { 
-								if((int) secondaryFinalTable.getValue("Label", k) == label) {
-									secondaryRowIndices.add(k);
-								}
-							}
-							
-							// Check the tertiary objects table
-							for (int l = 0; l < tertiaryFinalTable.size() ; l++) {
-								if((int) tertiaryFinalTable.getValue("Label", l) == label) {
-									tertiaryRowIndices.add(l);
-								}
-							}
-							
-							// Check if matching labels were found in secondary and tertiary tables
-							if (!secondaryRowIndices.isEmpty() && !tertiaryRowIndices.isEmpty()) {
+							for (int j = 0; j < primaryFinalTable.size() ; j++) {
 								
-								// Get the count for the current label to handle any cases of multiple primary objects
-								int duplicateCount = labelCounts.getOrDefault(label, 0) + 1 ;
-								labelCounts.put(label, duplicateCount);
+								int primaryLabel = Integer.parseInt(primaryFinalTable.getStringValue("Label", j));
 								
-								// Iterate over the rows where the labels match and add the appropriate columns to the combined results table
+								// find matching rows
+								int secondaryRowIndex = findMatchingRow(secondaryFinalTable, "Label", primaryLabel);
+								int tertiaryRowIndex = findMatchingRow(tertiaryFinalTable, "Label", primaryLabel);
 								
-								for (int secondaryRowIndex : secondaryRowIndices) {
-									for (int tertiaryRowIndex : tertiaryRowIndices) {
-										
-										// Add a new row and populate with columns
-										// Index value for primary = j, index values from sec and tert are +RowIndex respectively
-										combinedResults.addRow();
-										// duplicate label counts
-										//combinedResults.addValue("Label", label + "_" + duplicateCount);
-										combinedResults.addValue("Label", label);
-										combinedResults.addValue("ImageID", primaryFinalTable.getValue("ImageID", j));
-										if (!SingleCellView.groupingInfo.isEmpty()) {
-											combinedResults.addValue("Group", primaryFinalTable.getValue("Group", j));
-										}
-										combinedResults.addValue("Primary_Volume", primaryFinalTable.getValue("Volume", j));
-										combinedResults.addValue("Primary_Voxel_Count", primaryFinalTable.getValue("Voxel_Count", j));
-										combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
-										combinedResults.addValue("Primary_Elongation", primaryFinalTable.getValue("Elongation", j));
-										combinedResults.addValue("Primary_C1_Mean_Intensity", primaryFinalTable.getValue("C1_Mean_Intensity", j));
-										combinedResults.addValue("Primary_C1_IntDen", primaryFinalTable.getValue("C1_IntDen", j));
-										if (numberOfChannels >=2) {
-											combinedResults.addValue("Primary_C2_Mean_Intensity", primaryFinalTable.getValue("C2_Mean_Intensity", j));
-											combinedResults.addValue("Primary_C2_IntDen", primaryFinalTable.getValue("C2_IntDen", j));
-											}
-										if (numberOfChannels >=3) {
-											combinedResults.addValue("Primary_C3_Mean_Intensity", primaryFinalTable.getValue("C3_Mean_Intensity", j));
-											combinedResults.addValue("Primary_C3_IntDen", primaryFinalTable.getValue("C3_IntDen", j));
-											}
-										if (numberOfChannels >=4) {
-											combinedResults.addValue("Primary_C4_Mean_Intensity", primaryFinalTable.getValue("C4_Mean_Intensity", j));
-											combinedResults.addValue("Primary_C4_IntDen", primaryFinalTable.getValue("C4_IntDen", j));
-											}
-										combinedResults.addValue("Secondary_Volume", secondaryFinalTable.getValue("Volume", secondaryRowIndex));
-										combinedResults.addValue("Secondary_Voxel_Count", secondaryFinalTable.getValue("Voxel_Count", secondaryRowIndex));
-										combinedResults.addValue("Secondary_Sphericity", secondaryFinalTable.getValue("Sphericity", secondaryRowIndex));
-										combinedResults.addValue("Secondary_Elongation", secondaryFinalTable.getValue("Elongation", secondaryRowIndex));
-										combinedResults.addValue("Secondary_C1_Mean_Intensity", secondaryFinalTable.getValue("C1_Mean_Intensity", secondaryRowIndex));
-										combinedResults.addValue("Secondary_C1_IntDen", secondaryFinalTable.getValue("C1_IntDen", secondaryRowIndex));
-										if (numberOfChannels >=2) {
-											combinedResults.addValue("Secondary_C2_Mean_Intensity", secondaryFinalTable.getValue("C2_Mean_Intensity", secondaryRowIndex));
-											combinedResults.addValue("Secondary_C2_IntDen", secondaryFinalTable.getValue("C2_IntDen", secondaryRowIndex));
-											}
-										if (numberOfChannels >=3) {
-											combinedResults.addValue("Secondary_C3_Mean_Intensity", secondaryFinalTable.getValue("C3_Mean_Intensity", secondaryRowIndex));
-											combinedResults.addValue("Secondary_C3_IntDen", secondaryFinalTable.getValue("C3_IntDen", secondaryRowIndex));
-											}
-										if (numberOfChannels >=4) {
-											combinedResults.addValue("Secondary_C4_Mean_Intensity", secondaryFinalTable.getValue("C4_Mean_Intensity", secondaryRowIndex));
-											combinedResults.addValue("Secondary_C4_IntDen", secondaryFinalTable.getValue("C4_IntDen", secondaryRowIndex));
-											}
-										combinedResults.addValue("Tertiary_Volume", tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
-										combinedResults.addValue("Tertiary_Voxel_Count", tertiaryFinalTable.getValue("Voxel_Count", tertiaryRowIndex));
-										combinedResults.addValue("Tertiary_Sphericity", tertiaryFinalTable.getValue("Sphericity", tertiaryRowIndex));
-										combinedResults.addValue("Tertiary_Elongation", tertiaryFinalTable.getValue("Elongation", tertiaryRowIndex));
-										combinedResults.addValue("Tertiary_C1_Mean_Intensity", tertiaryFinalTable.getValue("C1_Mean_Intensity", tertiaryRowIndex));
-										combinedResults.addValue("Tertiary_C1_IntDen", tertiaryFinalTable.getValue("C1_IntDen", tertiaryRowIndex));
-										if (numberOfChannels >=2) {
-											combinedResults.addValue("Tertiary_C2_Mean_Intensity", tertiaryFinalTable.getValue("C2_Mean_Intensity", tertiaryRowIndex));
-											combinedResults.addValue("Tertiary_C2_IntDen", tertiaryFinalTable.getValue("C2_IntDen", tertiaryRowIndex));
-											}
-										if (numberOfChannels >=3) {
-											combinedResults.addValue("Tertiary_C3_Mean_Intensity", tertiaryFinalTable.getValue("C3_Mean_Intensity", tertiaryRowIndex));
-											combinedResults.addValue("Tertiary_C3_IntDen", tertiaryFinalTable.getValue("C3_IntDen", tertiaryRowIndex));
-											}
-										if (numberOfChannels >=4) {
-											combinedResults.addValue("Tertiary_C4_Mean_Intensity", tertiaryFinalTable.getValue("C4_Mean_Intensity", tertiaryRowIndex));
-											combinedResults.addValue("Tertiary_C4_IntDen", tertiaryFinalTable.getValue("C4_IntDen", tertiaryRowIndex));
-											}
-										
-										// create a volume ratio between the primary and tertiary objects
-										combinedResults.addValue("Primary/Tertiary_Volume_Ratio", primaryFinalTable.getValue("Volume", j)/tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
-
-										
-										
-										
+								// where row labels match between all three tables, add a row to the combined results table
+								if (secondaryRowIndex >=0 && tertiaryRowIndex >= 0) {
+									combinedResults.addRow();
+									combinedResults.addValue("Label", primaryLabel);
+									combinedResults.addValue("ImageID", primaryFinalTable.getStringValue("ImageID", j));
+									if(!SingleCellView.groupingInfo.isEmpty()) {
+										combinedResults.addValue("Group", primaryFinalTable.getStringValue("Group", j));
 									}
+									combinedResults.addValue("Primary_Volume", primaryFinalTable.getValue("Volume", j));
+									combinedResults.addValue("Primary_Voxel_Count", primaryFinalTable.getValue("Voxel_Count", j));
+									combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
+									combinedResults.addValue("Primary_Elongation", primaryFinalTable.getValue("Elongation", j));
+									combinedResults.addValue("Primary_C1_Mean_Intensity", primaryFinalTable.getValue("C1_Mean_Intensity", j));
+									combinedResults.addValue("Primary_C1_IntDen", primaryFinalTable.getValue("C1_IntDen", j));
+									if (numberOfChannels >=2) {
+										combinedResults.addValue("Primary_C2_Mean_Intensity", primaryFinalTable.getValue("C2_Mean_Intensity", j));
+										combinedResults.addValue("Primary_C2_IntDen", primaryFinalTable.getValue("C2_IntDen", j));
+										}
+									if (numberOfChannels >=3) {
+										combinedResults.addValue("Primary_C3_Mean_Intensity", primaryFinalTable.getValue("C3_Mean_Intensity", j));
+										combinedResults.addValue("Primary_C3_IntDen", primaryFinalTable.getValue("C3_IntDen", j));
+										}
+									if (numberOfChannels >=4) {
+										combinedResults.addValue("Primary_C4_Mean_Intensity", primaryFinalTable.getValue("C4_Mean_Intensity", j));
+										combinedResults.addValue("Primary_C4_IntDen", primaryFinalTable.getValue("C4_IntDen", j));
+										}
+									
+									combinedResults.addValue("Secondary_Volume", secondaryFinalTable.getValue("Volume", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Voxel_Count", secondaryFinalTable.getValue("Voxel_Count", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Sphericity", secondaryFinalTable.getValue("Sphericity", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Elongation", secondaryFinalTable.getValue("Elongation", secondaryRowIndex));
+									combinedResults.addValue("Secondary_C1_Mean_Intensity", secondaryFinalTable.getValue("C1_Mean_Intensity", secondaryRowIndex));
+									combinedResults.addValue("Secondary_C1_IntDen", secondaryFinalTable.getValue("C1_IntDen", secondaryRowIndex));
+									if (numberOfChannels >=2) {
+										combinedResults.addValue("Secondary_C2_Mean_Intensity", secondaryFinalTable.getValue("C2_Mean_Intensity", secondaryRowIndex));
+										combinedResults.addValue("Secondary_C2_IntDen", secondaryFinalTable.getValue("C2_IntDen", secondaryRowIndex));
+										}
+									if (numberOfChannels >=3) {
+										combinedResults.addValue("Secondary_C3_Mean_Intensity", secondaryFinalTable.getValue("C3_Mean_Intensity", secondaryRowIndex));
+										combinedResults.addValue("Secondary_C3_IntDen", secondaryFinalTable.getValue("C3_IntDen", secondaryRowIndex));
+										}
+									if (numberOfChannels >=4) {
+										combinedResults.addValue("Secondary_C4_Mean_Intensity", secondaryFinalTable.getValue("C4_Mean_Intensity", secondaryRowIndex));
+										combinedResults.addValue("Secondary_C4_IntDen", secondaryFinalTable.getValue("C4_IntDen", secondaryRowIndex));
+										}
+									combinedResults.addValue("Tertiary_Volume", tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Voxel_Count", tertiaryFinalTable.getValue("Voxel_Count", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Sphericity", tertiaryFinalTable.getValue("Sphericity", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Elongation", tertiaryFinalTable.getValue("Elongation", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_C1_Mean_Intensity", tertiaryFinalTable.getValue("C1_Mean_Intensity", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_C1_IntDen", tertiaryFinalTable.getValue("C1_IntDen", tertiaryRowIndex));
+									if (numberOfChannels >=2) {
+										combinedResults.addValue("Tertiary_C2_Mean_Intensity", tertiaryFinalTable.getValue("C2_Mean_Intensity", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_C2_IntDen", tertiaryFinalTable.getValue("C2_IntDen", tertiaryRowIndex));
+										}
+									if (numberOfChannels >=3) {
+										combinedResults.addValue("Tertiary_C3_Mean_Intensity", tertiaryFinalTable.getValue("C3_Mean_Intensity", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_C3_IntDen", tertiaryFinalTable.getValue("C3_IntDen", tertiaryRowIndex));
+										}
+									if (numberOfChannels >=4) {
+										combinedResults.addValue("Tertiary_C4_Mean_Intensity", tertiaryFinalTable.getValue("C4_Mean_Intensity", tertiaryRowIndex));
+										combinedResults.addValue("Tertiary_C4_IntDen", tertiaryFinalTable.getValue("C4_IntDen", tertiaryRowIndex));
+										}
+									
+									// create some ratios -> MAKE THIS CONDITIONAL ON USER INPUT!!! Modular in some way? 
+									combinedResults.addValue("Primary/Tertiary_Volume_Ratio", primaryFinalTable.getValue("Volume", j) / tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
+									
+									
+									
+									
 								}
-							}
-						}
-						
-						IJ.log("trying to display combined table");
-						
-						combinedResults.show("Combined Results");
-						
-						IJ.log("combined table displayed");
-						
-						// Save the combined results table 
-						String combinedResultsName = dir + "Combined_Results.csv";
-						try {
-							combinedResults.saveAs(combinedResultsName);
-						} catch (IOException e) {
-							e.printStackTrace();
-							IJ.log("Cannot save combined results table. Check that the objects were created.");
-						}
-						
-						IJ.log("Finished processing");
-						
-						
- 							
-						
+							}	
 					} // end of single image loop!!
+					
+					
+					IJ.log("trying to display combined table");
+					
+					combinedResults.show("Combined Results");
+					
+					IJ.log("combined table displayed");
+					
+					// Save the combined results table 
+					String combinedResultsName = dir + "Combined_Results.csv";
+					try {
+						combinedResults.saveAs(combinedResultsName);
+					} catch (IOException e) {
+						e.printStackTrace();
+						IJ.log("Cannot save combined results table. Check that the objects were created.");
+					}
 					long endTime = System.currentTimeMillis();
-					double timeSec = (endTime - startTime) / 1000; 
+					double timeSec = (endTime - startTime) / 1000;
 					IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
 					IJ.log("Analysis complete.");
 			}
@@ -669,11 +637,30 @@ public class Segment {
 	}
 	
 	
+	/**
+	 * A helper method for matching labels between results tables in processSingleCells().
+	 * 
+	 * @param table Results table to compare to primary table
+	 * @param columnName The column header to search
+	 * @param value The row index from the primary table
+	 * @return index The row in table that contains the same object label
+	 */
+
+	private int findMatchingRow(ResultsTable table, String columnName, int value) {
+		int index = -1;
+		for (int i = 0; i < table.size(); i++) {
+			int label = Integer.parseInt(table.getStringValue(columnName, i));
+			if (label == value) {
+				index = i; 
+				break;
+			}
+		}
+		return index;
+	}
 	
 	
 	
-	
-	
+	// parameterise this!!! processSpheoroid(boolean analysisOnly, String inputDir, String outputDir, int primaryChannelChoie, int secondaryChannelChoice etc.)
 	/* ------------------------------------------------------------------------------------
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
