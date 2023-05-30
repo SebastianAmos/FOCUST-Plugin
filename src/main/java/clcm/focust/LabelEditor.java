@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
@@ -14,6 +15,11 @@ import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
 
+/**
+ * A class that contains helper methods for processing labels.
+ * @author SebastianAmos
+ *
+ */
 public class LabelEditor {
 
 	public static ImagePlus renamedImage;
@@ -54,9 +60,9 @@ public class LabelEditor {
 						if (labelMaps.containsKey(lblMatched)) {
 							
 							// shared value found, append an index to individualize the label 
-							int newIndex = labelMaps.get(lblMatched) + 1 ;
+							int newIndex = labelMaps.get(lblMatched) + 1;
 							labelMaps.put(lblMatched, newIndex);
-							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "00" + newIndex));
+							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "0" + newIndex));
 							
 						} else {
 							// new label found, add to the map
@@ -70,6 +76,28 @@ public class LabelEditor {
 		ImagePlus output = original;
 		return output;
 	} 
+	
+	
+	
+	public static ImagePlus reLabel(ImagePlus img) {
+		IJ.run(img, "16-bit", "");
+		for (int z = 1; z <= img.getStackSize(); z++) {
+			ImageProcessor ipImg = img.getStack().getProcessor(z);
+			for (int y = 0; y < ipImg.getHeight(); y++) {
+				for (int x = 0; x < ipImg.getWidth(); x++) {
+					int lbl = (int) ipImg.getPixelValue(x, y);
+					
+					if (lbl > 0) {
+						double newLbl = Double.parseDouble(lbl + "0" + 1);
+						ipImg.putPixelValue(x, y, newLbl);
+					}
+				}
+			}
+			
+		}
+		ImagePlus output = img;
+		return output;
+	}
 	
 	
 	
@@ -124,6 +152,9 @@ public class LabelEditor {
 	
 	
 	
+	
+	
+	
 	/**
 	 * Converts all labels within an image to binary equivalents.
 	 * 
@@ -145,7 +176,28 @@ public class LabelEditor {
 		return output;
 	}
 	
-	
+	public static ImagePlus labelIndexAppender(ImagePlus input) {
+		
+		Map<Integer, Integer> labelCountMap = new HashMap<>();
+		
+		for (int z = 1; z <= input.getStackSize(); z++) {
+			ImageProcessor ip = input.getStack().getProcessor(z);
+			for (int y = 0; y < input.getHeight(); y++) {
+				for (int x = 0; x < input.getWidth(); x++) {
+					int pixVal = ip.getPixel(x, y);
+					if (pixVal > 0 ) {
+						int count = labelCountMap.getOrDefault(pixVal, 0) + 1;
+						labelCountMap.put(pixVal, count);
+						String newLab = pixVal + "0" + count;
+						ip.putPixel(x, y, Integer.parseInt(newLab));
+					}
+							
+				}
+			}
+		}
+		ImagePlus output = input;
+		return output;
+	}
 	
 	
 	
