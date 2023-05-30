@@ -37,8 +37,7 @@ public class Segment {
 	private static ImagePlus primaryOriginalObjectsCells;
 	private static ImagePlus secondaryObjectsCells;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	static ResultsTable primaryC1Intensity = new ResultsTable();
-	static ResultsTable primaryC3Intensity = new ResultsTable();
+	
 	
 	// Could make these user-input strings to provide greater flexibility 
 	private static String primaryPrefix = new String("Primary_Objects_");
@@ -140,6 +139,9 @@ public class Segment {
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
 							primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+							/*if (primaryOriginalObjectsCells.getStackSize() != imp.getStackSize()) {
+								IJ.error("Error", "The raw image and primary object stack sizes do not match.");
+							}*/
 						} else {
 							// if analysis mode is F, segment primary channel based on user inputs
 							primaryOriginalObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
@@ -150,7 +152,7 @@ public class Segment {
 						
 						
 						// TESTING!!
-						IJ.saveAs(primaryOriginalObjectsCells, "TIF", dir + "Primary_Original_Objects_" + imgName);
+						//IJ.saveAs(primaryOriginalObjectsCells, "TIF", dir + "Primary_Original_Objects_" + imgName);
 						// for some reason saving as a binary output, not a connected component label map.
 						////
 						
@@ -162,6 +164,9 @@ public class Segment {
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
 							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
+							/*if (secondaryObjectsCells.getStackSize() != imp.getStackSize()) {
+								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
+							}*/
 						} else {
 							secondaryObjectsCells = gpuSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
 						}
@@ -169,10 +174,10 @@ public class Segment {
 						IJ.resetMinAndMax(secondaryObjectsCells);
 						secondaryObjectsCells.setCalibration(cal);
 						
-						// TESTING!!
-						IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Original_Objects_" + imgName);
 						
-						//***************************************
+						
+						// TESTING!!
+						//IJ.saveAs(secondaryObjectsCells, "TIF", dir + "Secondary_Original_Objects_" + imgName);
 						
 						
 						
@@ -186,12 +191,12 @@ public class Segment {
 						ImagePlus primaryLabelMatch = LabelEditor.makeBinary(primaryOriginalObjectsCells);
 						IJ.log("the display max is: " + primaryLabelMatch.getDisplayRangeMax());
 						IJ.run(primaryLabelMatch, "Divide...", "value=" + primaryLabelMatch.getDisplayRangeMax() + " stack");
-						IJ.saveAs(primaryLabelMatch, "TIF", dir + "objectvaluesshouldbe1_" + imgName);
+						//IJ.saveAs(primaryLabelMatch, "TIF", dir + "objectvaluesshouldbe1_" + imgName);
 						
 						
 						// Assign secondary labels to primary objects
 						ImagePlus primaryObjectsCells = ImageCalculator.run(secondaryObjectsCells, primaryLabelMatch, "Multiply create stack");
-						IJ.saveAs(primaryObjectsCells, "TIF", dir + "objectvaluesshouldbesecondary!_" + imgName);
+						//IJ.saveAs(primaryObjectsCells, "TIF", dir + "objectvaluesshouldbesecondary!_" + imgName);
 						
 						
 						// Generate a tertiary (cytoplasmic) ROI (subtract primary from secondary objects)
@@ -218,14 +223,23 @@ public class Segment {
 						*  - primaryObjectsCell contains the labelling from the secondary objects. Some primary objects may share the same label.
 						*  - primaryOriginalObjectsCells contains the original labels that uniquely identify each primary object.
 						
+						*/
 						
-						IJ.log("TESTING LABEL EDITOR FUNCTIONS:");
+						IJ.log("TESTING LABEL EDITOR FUNCTIONS");
 						// pixel scanning approach - matched vs matched (relative to matched)
 						// THE OUTPUT IS ALL BINARY (ALL LABELS = 255).
 						ImagePlus matchedLabs = primaryObjectsCells.duplicate();
-						ImagePlus relabelled = LabelEditor.findAndRename(matchedLabs, matchedLabs);
-						IJ.saveAs(relabelled, "TIF", dir + "FAR_" + imgName);
+						ImagePlus originalLabs = primaryOriginalObjectsCells.duplicate();
+						ImagePlus matched = primaryObjectsCells.duplicate();
+						ImagePlus findAndRenameOutput = LabelEditor.findAndRename(matched, originalLabs);
+						ImagePlus relabelled = LabelEditor.reLabel(matchedLabs);
+						IJ.saveAs(relabelled, "TIF", dir + "Relablled_" + imgName);
+						IJ.saveAs(findAndRenameOutput, "TIF", dir + "findAndRename_" + imgName);
+						ImagePlus labs = primaryObjectsCells.duplicate();
+						ImagePlus newLabs = LabelEditor.labelIndexAppender(labs);
+						IJ.saveAs(newLabs, "TIF", dir + "appended_" + imgName);
 						
+						/*
 						// THE OUTPUT IS MOSTLY BINARY BUT ALL HIGH-Z-VALUE SMALL SPECKS ARE MULTI-LABELLED!
 						ImagePlus originalLabs = primaryOriginalObjectsCells.duplicate();
 						ImagePlus matchedLabs1 = primaryObjectsCells.duplicate();
@@ -325,6 +339,10 @@ public class Segment {
 						primaryFinalTable.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
 						primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
 						primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
+						primaryFinalTable.setColumn("Mean_Breadth", primaryResults.getColumnAsVariables("MeanBreadth"));
+						primaryFinalTable.setColumn("Centroid_X", primaryResults.getColumnAsVariables("Centroid.X"));
+						primaryFinalTable.setColumn("Centroid_Y", primaryResults.getColumnAsVariables("Centroid.Y"));
+						primaryFinalTable.setColumn("Centroid_Z", primaryResults.getColumnAsVariables("Centroid.Z"));
 						primaryFinalTable.setColumn("C1_Mean_Intensity", primarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
 						primaryFinalTable.setColumn("C1_IntDen", primarySCC1Intensity.getColumnAsVariables("IntDen"));
 						if (numberOfChannels >=2) {
@@ -340,6 +358,7 @@ public class Segment {
 							primaryFinalTable.setColumn("C4_IntDen", primarySCC4Intensity.getColumnAsVariables("IntDen"));
 						}
 						
+					
 						
 						// Save the primary results table 
 						String primaryResultsName = dir + "Primary_Object_Results.csv";
@@ -407,6 +426,10 @@ public class Segment {
 						secondaryFinalTable.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
 						secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
 						secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
+						secondaryFinalTable.setColumn("Mean_Breadth", secondaryResults.getColumnAsVariables("MeanBreadth"));
+						secondaryFinalTable.setColumn("Centroid_X", secondaryResults.getColumnAsVariables("Centroid.X"));
+						secondaryFinalTable.setColumn("Centroid_Y", secondaryResults.getColumnAsVariables("Centroid.Y"));
+						secondaryFinalTable.setColumn("Centroid_Z", secondaryResults.getColumnAsVariables("Centroid.Z"));
 						secondaryFinalTable.setColumn("C1_Mean_Intensity", secondarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
 						secondaryFinalTable.setColumn("C1_IntDen", secondarySCC1Intensity.getColumnAsVariables("IntDen"));
 						
@@ -493,6 +516,10 @@ public class Segment {
 							tertiaryFinalTable.setColumn("Voxel_Count", tertiaryResults.getColumnAsVariables("VoxelCount"));
 							tertiaryFinalTable.setColumn("Sphericity", tertiaryResults.getColumnAsVariables("Sphericity"));
 							tertiaryFinalTable.setColumn("Elongation", tertiaryResults.getColumnAsVariables("Elli.R1/R3"));
+							tertiaryFinalTable.setColumn("Mean_Breadth", tertiaryResults.getColumnAsVariables("MeanBreadth"));
+							tertiaryFinalTable.setColumn("Centroid_X", tertiaryResults.getColumnAsVariables("Centroid.X"));
+							tertiaryFinalTable.setColumn("Centroid_Y", tertiaryResults.getColumnAsVariables("Centroid.Y"));
+							tertiaryFinalTable.setColumn("Centroid_Z", tertiaryResults.getColumnAsVariables("Centroid.Z"));
 							tertiaryFinalTable.setColumn("C1_Mean_Intensity", tertiarySCC1Intensity.getColumnAsVariables("Mean_Intensity"));
 							tertiaryFinalTable.setColumn("C1_IntDen", tertiarySCC1Intensity.getColumnAsVariables("IntDen"));
 							
@@ -550,6 +577,10 @@ public class Segment {
 									combinedResults.addValue("Primary_Voxel_Count", primaryFinalTable.getValue("Voxel_Count", j));
 									combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
 									combinedResults.addValue("Primary_Elongation", primaryFinalTable.getValue("Elongation", j));
+									combinedResults.addValue("Primary_Mean_Breadth", primaryFinalTable.getValue("Mean_Breadth", j));
+									combinedResults.addValue("Primary_Centroid_X", primaryFinalTable.getValue("Centroid_X", j));
+									combinedResults.addValue("Primary_Centroid_Y", primaryFinalTable.getValue("Centroid_Y", j));
+									combinedResults.addValue("Primary_Centroid_Z", primaryFinalTable.getValue("Centroid_Z", j));
 									combinedResults.addValue("Primary_C1_Mean_Intensity", primaryFinalTable.getValue("C1_Mean_Intensity", j));
 									combinedResults.addValue("Primary_C1_IntDen", primaryFinalTable.getValue("C1_IntDen", j));
 									if (numberOfChannels >=2) {
@@ -569,6 +600,10 @@ public class Segment {
 									combinedResults.addValue("Secondary_Voxel_Count", secondaryFinalTable.getValue("Voxel_Count", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Sphericity", secondaryFinalTable.getValue("Sphericity", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Elongation", secondaryFinalTable.getValue("Elongation", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Mean_Breadth", secondaryFinalTable.getValue("Mean_Breadth", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Centroid_X", secondaryFinalTable.getValue("Centroid_X", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Centroid_Y", secondaryFinalTable.getValue("Centroid_Y", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Centroid_Z", secondaryFinalTable.getValue("Centroid_Z", secondaryRowIndex));
 									combinedResults.addValue("Secondary_C1_Mean_Intensity", secondaryFinalTable.getValue("C1_Mean_Intensity", secondaryRowIndex));
 									combinedResults.addValue("Secondary_C1_IntDen", secondaryFinalTable.getValue("C1_IntDen", secondaryRowIndex));
 									if (numberOfChannels >=2) {
@@ -587,6 +622,10 @@ public class Segment {
 									combinedResults.addValue("Tertiary_Voxel_Count", tertiaryFinalTable.getValue("Voxel_Count", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Sphericity", tertiaryFinalTable.getValue("Sphericity", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Elongation", tertiaryFinalTable.getValue("Elongation", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Mean_Breadth", tertiaryFinalTable.getValue("Mean_Breadth", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Centroid_X", tertiaryFinalTable.getValue("Centroid_X", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Centroid_Y", tertiaryFinalTable.getValue("Centroid_Y", tertiaryRowIndex));
+									combinedResults.addValue("Tertiary_Centroid_Z", tertiaryFinalTable.getValue("Centroid_Z", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_C1_Mean_Intensity", tertiaryFinalTable.getValue("C1_Mean_Intensity", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_C1_IntDen", tertiaryFinalTable.getValue("C1_IntDen", tertiaryRowIndex));
 									if (numberOfChannels >=2) {
@@ -602,9 +641,42 @@ public class Segment {
 										combinedResults.addValue("Tertiary_C4_IntDen", tertiaryFinalTable.getValue("C4_IntDen", tertiaryRowIndex));
 										}
 									
-									// create some ratios -> MAKE THIS CONDITIONAL ON USER INPUT!!! Modular in some way? 
+									// create some ratios -> MAKE THIS CONDITIONAL ON USER INPUT!!! Modular in some way?
 									combinedResults.addValue("Primary/Tertiary_Volume_Ratio", primaryFinalTable.getValue("Volume", j) / tertiaryFinalTable.getValue("Volume", tertiaryRowIndex));
+									if(numberOfChannels >=2) {
+										combinedResults.addValue("Primary/Tertiary_C2_IntDen_Ratio", primaryFinalTable.getValue("C2_IntDen", j) / tertiaryFinalTable.getValue("C2_IntDen", tertiaryRowIndex));
+									}
+									if(numberOfChannels >=3) {
+										combinedResults.addValue("Primary/Tertiary_C3_IntDen_Ratio", primaryFinalTable.getValue("C3_IntDen", j) / tertiaryFinalTable.getValue("C3_IntDen", tertiaryRowIndex));
+									}
+									if(numberOfChannels >=4) {
+										combinedResults.addValue("Primary/Teritary_C4_IntDen_Ratio", primaryFinalTable.getValue("C4_IntDen", j) / tertiaryFinalTable.getValue("C4_IntDen", tertiaryRowIndex));
+									}
 									
+									/* // loop through each 
+									for (int x = 1; x <= numberOfChannels; x++) {
+										String table = "Primary";
+										String meanName = table + "_C" + Integer.toString(x) + "_Mean_Intensity";
+										String meanTable = "C" + Integer.toString(x) + "_Mean_Intensity";
+										String intdenName = table + "_C" + Integer.toString(x) + "_IntDen";
+										String intdenTable = "C" + Integer.toString(x) + "_IntDen";
+										IJ.log(meanName + " and " + meanTable + " and " + intdenName + " and " + intdenTable);
+										
+										combinedResults.addValue(meanName, primaryFinalTable.getValue(meanTable, j));
+										combinedResults.addValue(intdenName, primaryFinalTable.getValue(intdenTable, j));
+									}
+									
+									for (int y = 1; y <= numberOfChannels; y++) {
+										String table = "Tertiary";
+										String meanName = table + "_C" + Integer.toString(y) + "_Mean_Intensity";
+										String meanTable = "C" + Integer.toString(y) + "_Mean_Intensity";
+										String intdenName = table + "_C" + Integer.toString(y) + "_IntDen";
+										String intdenTable = "C" + Integer.toString(y) + "_IntDen";
+										
+										combinedResults.addValue(meanName, tertiaryFinalTable.getValue(meanTable, tertiaryRowIndex));
+										combinedResults.addValue(intdenName, tertiaryFinalTable.getValue(intdenTable, tertiaryRowIndex));
+									}
+									*/
 									
 									
 									
@@ -612,12 +684,7 @@ public class Segment {
 							}	
 					} // end of single image loop!!
 					
-					
-					IJ.log("trying to display combined table");
-					
 					combinedResults.show("Combined Results");
-					
-					IJ.log("combined table displayed");
 					
 					// Save the combined results table 
 					String combinedResultsName = dir + "Combined_Results.csv";
@@ -706,6 +773,7 @@ public class Segment {
 					int primaryChannelChoice = SpheroidView.primaryChannelChoice;
 					int secondaryChannelChoice = SpheroidView.secondaryChannelChoice;
 					String imgName = imp.getTitle();
+					int numberOfChannels = imp.getNChannels();
 					
 					/*
 					 * create and measure primary objects
@@ -804,10 +872,21 @@ public class Segment {
 
 					// TODO: change c1 and c3 back from static. Unless best practice? That was just part of testing.
 					
-					primaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], primaryObjectSpheroid);
-					ResultsTable primaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], primaryObjectSpheroid);
-					primaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], primaryObjectSpheroid);
-					ResultsTable primaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], primaryObjectSpheroid);
+					ResultsTable primaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], primaryObjectSpheroid);
+					ResultsTable primaryC2Intensity = null;
+					ResultsTable primaryC3Intensity = null;
+					ResultsTable primaryC4Intensity = null;
+					
+					
+					if (numberOfChannels >=2) {
+						primaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], primaryObjectSpheroid);
+					}
+					if (numberOfChannels >=3) {
+						primaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], primaryObjectSpheroid);
+					}
+					if (numberOfChannels >=4) {
+						primaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], primaryObjectSpheroid);
+					}
 					
 					/* 
 					 * Write image name and grouping (where entered) data to a results table.
@@ -851,6 +930,10 @@ public class Segment {
 					primaryFinalTable.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
 					primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
 					primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
+					primaryFinalTable.setColumn("Mean_Breadth", primaryResults.getColumnAsVariables("MeanBreadth"));
+					primaryFinalTable.setColumn("Centroid_X", primaryResults.getColumnAsVariables("Centroid.X"));
+					primaryFinalTable.setColumn("Centroid_Y", primaryResults.getColumnAsVariables("Centroid.Y"));
+					primaryFinalTable.setColumn("Centroid_Z", primaryResults.getColumnAsVariables("Centroid.Z"));
 					primaryFinalTable.setColumn("C1_Mean_Intensity", primaryC1Intensity.getColumnAsVariables("Mean_Intensity"));
 					primaryFinalTable.setColumn("C1_IntDen", primaryC1Intensity.getColumnAsVariables("IntDen"));
 					primaryFinalTable.setColumn("C2_Mean_Intensity", primaryC2Intensity.getColumnAsVariables("Mean_Intensity"));
@@ -884,10 +967,19 @@ public class Segment {
 					 * > Make this conditional: Not all images will contain 4 channels to analyse the intensities of - grab channel array and just run for each element creating a new resultstable each time? 
 					 */
 					ResultsTable secondaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], secondaryObjectSpheroid);
-					ResultsTable secondaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], secondaryObjectSpheroid);
-					ResultsTable secondaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], secondaryObjectSpheroid);
-					ResultsTable secondaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], secondaryObjectSpheroid);
+					ResultsTable secondaryC2Intensity = null;
+					ResultsTable secondaryC3Intensity = null;
+					ResultsTable secondaryC4Intensity = null;
 					
+					if (numberOfChannels >=2) {
+						secondaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], secondaryObjectSpheroid);
+					}
+					if (numberOfChannels >=3) {
+						secondaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], secondaryObjectSpheroid);
+					}
+					if (numberOfChannels >=4) {
+						secondaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], secondaryObjectSpheroid);
+					}
 					
 					
 					// new temp results table
@@ -935,6 +1027,10 @@ public class Segment {
 					secondaryFinalTable.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
 					secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
 					secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
+					secondaryFinalTable.setColumn("Mean_Breadth", secondaryResults.getColumnAsVariables("MeanBreadth"));
+					secondaryFinalTable.setColumn("Centroid_X", secondaryResults.getColumnAsVariables("Centroid.X"));
+					secondaryFinalTable.setColumn("Centroid_Y", secondaryResults.getColumnAsVariables("Centroid.Y"));
+					secondaryFinalTable.setColumn("Centroid_Z", secondaryResults.getColumnAsVariables("Centroid.Z"));
 					secondaryFinalTable.setColumn("Whole_C1_Mean_Intensity", secondaryC1Intensity.getColumnAsVariables("Mean_Intensity"));
 					secondaryFinalTable.setColumn("Whole_C1_IntDen", secondaryC1Intensity.getColumnAsVariables("IntDen"));
 					secondaryFinalTable.setColumn("Whole_C2_Mean_Intensity", secondaryC2Intensity.getColumnAsVariables("Mean_Intensity"));
@@ -990,15 +1086,11 @@ public class Segment {
 	 */
 	
 	public static ImagePlus gpuSpheroidPrimaryObject(int primaryChannelChoice) {
-
-		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 		CLIJx clijx = CLIJx.getInstance();
 		clijx.clear();
 
-		// CLIJ argument structure = (input image, ClearCLBuffer output image).
-		// Push image
 		ClearCLBuffer input = clij2.push(channelsSpheroid[primaryChannelChoice]);
 		ClearCLBuffer blurred = clij2.create(input);
 		ClearCLBuffer inverted = clij2.create(input);
@@ -1007,56 +1099,20 @@ public class Segment {
 		ClearCLBuffer labelledSpots = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
 
-		/*
-		 * Could implement a clij2.filter(GB) with user input values for background
-		 * subtract radius. Then feed to clij2.subtractImages(input, background,
-		 * backgroundSubtracted). Instead of running the background subtract outside of
-		 * the GPU.
-		 */
-
-		// 3D blur
 		clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
 
-		// invert
 		clij2.invert(blurred, inverted);
 
-		// threshold
 		clij2.thresholdOtsu(blurred, threshold);
 
-		// detect maxima
-		clij2.detectMaxima3DBox(blurred, detectedMax, SpheroidView.radius_x, SpheroidView.radius_y,
-				SpheroidView.radius_z);
+		clij2.detectMaxima3DBox(blurred, detectedMax, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
 
-		// label spots
 		clij2.labelSpots(detectedMax, labelledSpots);
 
+		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
+		 
+		primaryObjectSpheroid = clij2.pull(segmented);
 		
-		 // marker controlled watershed
-		 MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(
-		 clij2, inverted, labelledSpots, threshold, segmented);
-		 
-		  
-		  /* 
-		 * // from AbstractMorphoLibJAnalyzeRegions3D xxx ImagePlus
-		 * labels_imp = clij2.pull(labels);
-		 * 
-		 * ResultsTable table = new AnalyzeRegions3D().process(labels_imp);
-		 * 
-		 * ClearCLBuffer vector = clij2.create(table.getCounter(), 1, 1);
-		 * 
-		 * clij2.pushResultsTableColumn(vector, table, property);
-		 * 
-		 * ClearCLBuffer vector_with_background = clij2.create(table.getCounter() + 1,
-		 * 1, 1); clij2.setColumn(vector_with_background, 0, 0); clij2.paste(vector,
-		 * vector_with_background, 1, 0, 0);
-		 * 
-		 * clij2.replaceIntensities(labels, vector_with_background, parametric_map);
-		 * 
-		 * // clean up vector.close(); vector_with_background.close();
-		 */ 
-		 primaryObjectSpheroid = clij2.pull(segmented);
-		 
-		// primaryObjects.show();
 		input.close();
 		blurred.close();
 		inverted.close();
@@ -1075,28 +1131,22 @@ public class Segment {
 	
 	public static ImagePlus gpuSpheroidSecondaryObject(int secondaryChannelChoice) {
 
-		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 		CLIJx clijx = CLIJx.getInstance();
 		clijx.clear();
 
-		// create images
 		ClearCLBuffer input = clij2.push(channelsSpheroid[secondaryChannelChoice]);
 		ClearCLBuffer blurred = clij2.create(input);
 		ClearCLBuffer threshold = clij2.create(input);
 		ClearCLBuffer fillHoles = clij2.create(input);
 
-		// blur
 		clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x2, SpheroidView.sigma_x2, SpheroidView.sigma_z2);
 
-		// greater constant
 		clij2.greaterConstant(blurred, threshold, SpheroidView.greaterConstant);
 
-		// fill holes
 		clij2.binaryFillHoles(threshold, fillHoles);
 
-		// pull
 		secondaryObjectSpheroid = clij2.pull(fillHoles);
 
 		input.close();
@@ -1128,22 +1178,16 @@ public class Segment {
 		ClearCLBuffer segmented = clij2.create(input);
 		ClearCLBuffer connected = clij2.create(input);
 		
-		// 3D blur
 		clij2.gaussianBlur3D(input, blurred, sigma_x, sigma_y, sigma_z);
 		
-		// invert
 		clij2.invert(blurred, inverted);
-		
-		// threshold - greater constant
+	
 		clij2.greaterConstant(blurred, threshold, constant);
 		
-		// detect maxima
 		clij2.detectMaxima3DBox(blurred, detectedMax, detect_x, detect_y, detect_z);
 		
-		// label spots
 		clij2.labelSpots(detectedMax, labelledSpots);
-		
-		// marker controlled watershed
+
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
 		
 		clij2.connectedComponentsLabelingBox(segmented, connected);
