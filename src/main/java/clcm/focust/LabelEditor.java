@@ -177,7 +177,7 @@ public class LabelEditor {
 	}
 	
 	public static ImagePlus labelIndexAppender(ImagePlus input) {
-		
+		IJ.run(input, "16-bit", "");
 		Map<Integer, Integer> labelCountMap = new HashMap<>();
 		
 		for (int z = 1; z <= input.getStackSize(); z++) {
