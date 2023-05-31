@@ -857,6 +857,10 @@ public class Segment {
 					IJ.run(innerROI, "Make Binary", "method=Default background=Dark black");
 					IJ.run(innerROI, "Options...", "iterations=70 count=1 black do=Erode stack");
 					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
+					IJ.log("Running Inner Spheroid Algo");
+					ImagePlus inner2 = secondaryObjectSpheroid.duplicate();
+					ImagePlus innerNew = LabelEditor.createSpheroidCore(inner2);
+					IJ.saveAs(innerNew, "TIF", dir + "NEW_CORE_" + imgName);
 					
 					// Create outer ROI
 					ImagePlus outerROI = ImageCalculator.run(secondaryObjectSpheroid, innerROI, "Subtract create stack");
