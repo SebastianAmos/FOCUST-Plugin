@@ -8,6 +8,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
+import ij.plugin.filter.Binary;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -23,7 +24,7 @@ import net.haesleinhuepf.clijx.CLIJx;
 public class LabelEditor {
 
 	public static ImagePlus renamedImage;
-	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+	//private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
 	
 	/**
@@ -176,6 +177,16 @@ public class LabelEditor {
 		return output;
 	}
 	
+	
+	
+	/**
+	 * (STILL IN DEVELOPMENT!)
+	 * A method to re-index label values where they are duplicated between spatially indenpdent objects.
+	 * 
+	 * @param input The labelled image to be re-indexed where labels are duplicated between objects.
+	 * @return output A re-labelled image where repeated values are indexed per instance. 
+	 */
+	
 	public static ImagePlus labelIndexAppender(ImagePlus input) {
 		IJ.run(input, "16-bit", "");
 		Map<Integer, Integer> labelCountMap = new HashMap<>();
@@ -198,6 +209,43 @@ public class LabelEditor {
 		ImagePlus output = input;
 		return output;
 	}
+	
+	
+	
+	/**
+	 * This method will determine the number of iterations required to get to approximately 50% of the initial ROI volume and then runs the erosion.
+	 * This generated a core ROI for spatial intensity analysis. 
+	 * 
+	 * @param input The whole spheroid.
+	 * @return output An image containing a label that is 50 % of the volume of input (the core of the spheroid).
+	 */
+	public static ImagePlus createSpheroidCore(ImagePlus input) {
+		ImagePlus img = LabelEditor.makeBinary(input);
+		
+		AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+		ResultsTable results = analyze3D.process(img);
+		results.show("Whole Spheroid Results Table");
+		int totalVoxNum = (int) results.getValue("VoxelCount", 0);
+		int targetVoxNum = (int) (0.5 * totalVoxNum);
+		int kernel = 3*3*3;
+		int iterations = (int) Math.ceil(targetVoxNum/ kernel);
+		System.out.println("Total voxels: " + totalVoxNum);
+		System.out.println("Target voxels: " + targetVoxNum);
+		System.out.println("Number of iterations: " + iterations);
+		
+		IJ.run(img, "Options...", "iterations=" + iterations + " count=1 black do=Erode stack");
+		
+		ResultsTable newResults = analyze3D.process(img);
+		newResults.show("Eroded Spheroid Reuslts");
+		int newVoxNum = (int) newResults.getValue("VoxelCount", 0);
+		
+		
+		System.out.println("Final voxels: " + newVoxNum);
+		
+		ImagePlus output = img;
+		return output;
+	}
+	
 	
 	
 	
@@ -233,83 +281,6 @@ public class LabelEditor {
 		renamedImage = original;
 		return renamedImage;
 	} // end of relativeRename method
-	
-	
-	
-	
-	
-	
-	
-	// clij2 approach to find labels in matched that have the same 
-	public static ImagePlus gpuRenameLabels(ImagePlus matched, ImagePlus original) {
-		ResultsTable rtMatched = analyze3D.process(matched);
-		ResultsTable rtOriginal = analyze3D.process(original);
-		
-		double[] lblsMatched = rtMatched.getColumnAsDoubles(0);
-		double[] lblsOriginal = rtOriginal.getColumnAsDoubles(0);
-		
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		clij2.clear();
-		CLIJx clijx = CLIJx.getInstance();
-		clijx.clear();
-		
-		
-		// Covert double arrays to float buffers
-		FloatBuffer fb1 = FloatBuffer.allocate(lblsMatched.length);
-		for (double label : lblsMatched) {
-			fb1.put((float)label);
-		}
-		fb1.flip();
-		
-		
-		FloatBuffer fb2 = FloatBuffer.allocate(lblsOriginal.length);
-		for (double label : lblsOriginal) {
-			fb2.put((float) label);
-		}
-		fb2.flip();
-		
-		
-		// read CCLbufers from float buffers
-		ClearCLBuffer bufMatched = clij2.create(lblsMatched.length, 1);
-		bufMatched.readFrom(fb1, true);
-		
-		ClearCLBuffer bufOriginal = clij2.create(lblsOriginal.length, 1);
-		bufOriginal.readFrom(fb2, true);
-		
-		clij2.push(bufMatched);
-		clij2.push(bufOriginal);
-		
-		double maxLabelMatched = clij2.maximumOfAllPixels(bufMatched);
-		
-		ClearCLBuffer uniqueLabels = clij2.create(bufMatched);
-		clij2.set(uniqueLabels, 0);
-		
-		
-		// unique labels to objects
-		for(int i = 0; i < lblsMatched.length; i++) {
-			double label = lblsMatched[i];
-			double uniqueLabel = label + maxLabelMatched *(i+1);
-			clij2.addImageAndScalar(uniqueLabels, uniqueLabels, uniqueLabel);
-			clij2.greaterConstant(uniqueLabels, uniqueLabels, label);
-		}
-		
-		double maxLabelOriginal = clij2.maximumOfAllPixels(bufOriginal);
-		
-		ClearCLBuffer updateLabels = clij2.create(bufOriginal);
-		clij2.set(updateLabels, 0);
-		
-		clij2.addImageAndScalar(bufOriginal, updateLabels, maxLabelMatched + 1);
-		clij2.greaterConstant(updateLabels, updateLabels, maxLabelMatched + 1);
-		clij2.mask(updateLabels, updateLabels, uniqueLabels);
-		clij2.addImageAndScalar(updateLabels, updateLabels, maxLabelOriginal);
-		
-		
-		renamedImage = clij2.pull(updateLabels);
-		
-		
-		return renamedImage;
-	}
-	
 	
 	
 	
