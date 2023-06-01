@@ -128,5 +128,15 @@
     		<groupId>org.scijava</groupId>
     		<artifactId>scijava-common</artifactId>
   		</dependency>
+  		<dependency>
+   			 <groupId>sc.fiji</groupId>
+   			 <artifactId>VIB-lib</artifactId>
+   			 <version>2.2.0</version>
+		</dependency>
+		<dependency>
+    		<groupId>sc.fiji</groupId>
+    		<artifactId>VIB_</artifactId>
+    		<version>3.0.3</version>
+		</dependency>
 	</dependencies>
 </project>
