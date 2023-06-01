@@ -707,10 +707,14 @@ public class Segment {
 	/**
 	 * A helper method for matching labels between results tables in processSingleCells().
 	 * 
-	 * @param table Results table to compare to primary table
-	 * @param columnName The column header to search
-	 * @param value The row index from the primary table
-	 * @return index The row in table that contains the same object label
+	 * @param table 
+	 * 			Results table to compare to primary table.
+	 * @param columnName 
+	 * 			The column header to search.
+	 * @param value 
+	 * 			The row index from the primary table.
+	 * 
+	 * @return The row in table that contains the same object label.
 	 */
 
 	private int findMatchingRow(ResultsTable table, String columnName, int value) {
@@ -857,10 +861,12 @@ public class Segment {
 					IJ.run(innerROI, "Make Binary", "method=Default background=Dark black");
 					IJ.run(innerROI, "Options...", "iterations=70 count=1 black do=Erode stack");
 					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
+					
 					IJ.log("Running Inner Spheroid Algo");
-					ImagePlus inner2 = secondaryObjectSpheroid.duplicate();
-					ImagePlus innerNew = LabelEditor.createSpheroidCore(inner2);
+					ImagePlus innerNew = BinarySearch.createSpheroidCore(secondaryObjectSpheroid.duplicate());
 					IJ.saveAs(innerNew, "TIF", dir + "NEW_CORE_" + imgName);
+					
+					
 					
 					// Create outer ROI
 					ImagePlus outerROI = ImageCalculator.run(secondaryObjectSpheroid, innerROI, "Subtract create stack");
