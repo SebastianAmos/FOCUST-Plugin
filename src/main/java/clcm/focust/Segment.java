@@ -854,7 +854,7 @@ public class Segment {
 					/* Create inner ROI
 					* --> Duplicate whole spheroid, erode by fixed iteration count
 					* TODO: Implement a more programmatic approach for erosion. i.e. to 50 % of original secondary object volume, rather than a fixed number of iterations.
-					* - binary search for number of iterations to erode to approx 50 %. the results table secondaryResults contains the total volume of the whole spheroid. 
+					* - binary search for number of iterations to erode to approx 50 %. The results table "secondaryResults" contains the total volume of the whole spheroid. 
 					*/
 					
 					ImagePlus innerROI = secondaryObjectSpheroid.duplicate();
@@ -862,7 +862,7 @@ public class Segment {
 					IJ.run(innerROI, "Options...", "iterations=70 count=1 black do=Erode stack");
 					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
 					
-					IJ.log("Running Inner Spheroid Algo");
+					IJ.log("Generating a Core...");
 					ImagePlus innerNew = BinarySearch.createSpheroidCore(secondaryObjectSpheroid.duplicate());
 					IJ.saveAs(innerNew, "TIF", dir + "NEW_CORE_" + imgName);
 					
