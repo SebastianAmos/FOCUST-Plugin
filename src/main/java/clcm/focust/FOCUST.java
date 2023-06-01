@@ -34,7 +34,7 @@ public static Path inputPath;
  * Launch the main gui for FOCUST.	
  */
  
-// main for testing in IDE.
+// main for testing.
 	public static void main(String[] args) {
 
 		SwingUtilities.invokeLater(() -> {
