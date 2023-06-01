@@ -161,19 +161,19 @@ public class LabelEditor {
 	 * 
 	 * @param input A labelled image.
 	 * 
-	 * @return binaryImage Binary equivalent of the input.
+	 * @return output Binary equivalent of the input.
 	 *  
 	 */
 	public static ImagePlus makeBinary(ImagePlus input) {
-	    ImageStack stk = input.getStack();
-		ImageStack bstk = new ImageStack(stk.getWidth(), stk.getHeight(), stk.getSize());
-		for (int z = 1; z <= stk.getSize(); z++) {
-			ImageProcessor ip = stk.getProcessor(z);
+	    ImageStack stack = input.getStack();
+		ImageStack binaryStack = new ImageStack(stack.getWidth(), stack.getHeight(), stack.getSize());
+		for (int z = 1; z <= stack.getSize(); z++) {
+			ImageProcessor ip = stack.getProcessor(z);
 			ByteProcessor bp = ip.convertToByteProcessor();
 			bp.threshold(0);
-			bstk.setProcessor(bp, z);
+			binaryStack.setProcessor(bp, z);
 		}
-		ImagePlus output = new ImagePlus("",bstk);
+		ImagePlus output = new ImagePlus("",binaryStack);
 		return output;
 	}
 	
