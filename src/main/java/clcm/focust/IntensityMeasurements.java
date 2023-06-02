@@ -1,5 +1,8 @@
 package clcm.focust;
 
+import java.io.IOException;
+
+import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
 import ij.measure.ResultsTable;
@@ -14,8 +17,10 @@ public class IntensityMeasurements {
  * This method calculates the intensity of the input image for each object in the label image.
  * IntensityMeasures instanced from MorphoLibJ.	
  * 
- * @param input A raw image containing intensity data. Can be passed from the current image's channels[]. 
- * @param label A labelled (segmented) image.
+ * @param input 
+ * 			A raw image containing intensity data. Can be passed from the current image's channels[]. 
+ * @param label 
+ * 			A labelled (segmented) image.
  * 
  * @return A results table containing label, mean_intensity, volume and IntDen columns.
  */
@@ -48,4 +53,14 @@ public class IntensityMeasurements {
 		table.setColumn("IntDen", intDen);
 		return table;
 	}
+	
+	public static void saveTable(ResultsTable table, String dir, String name) {
+		try { 
+			table.saveAs(dir + name);
+		} catch (IOException e) {
+			e.printStackTrace();
+			IJ.log("Cannot save results table" + dir + name);
+		}
+	}
+	
 }
