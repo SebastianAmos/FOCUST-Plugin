@@ -31,19 +31,23 @@ public class Segment {
 
 	public static ImagePlus[] channelsSpheroid;
 	public static ImagePlus[] channelsSingleCell;
+	public static ImagePlus[] channelsSpeckle;
 	public static ImagePlus primaryObjectSpheroid;
 	public static ImagePlus secondaryObjectSpheroid;
-	private static ImagePlus cellObjects;
 	private static ImagePlus primaryOriginalObjectsCells;
 	private static ImagePlus secondaryObjectsCells;
+	private static ImagePlus primaryObjectsSpeckles;
+	private static ImagePlus secondaryObjectsSpeckles;
+	private static ImagePlus tertiaryObjectsSpeckles;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
 	
 	// Could make these user-input strings to provide greater flexibility 
-	private static String primaryPrefix = new String("Primary_Objects_");
-	private static String secondaryPrefix = new String("Secondary_Objects_");
-	private static String corePrefix = new String("Inner_Secondary_");
-	private static String outerPrefix = new String("Outer_Secondary_");
+	private static String primaryPrefix = "Primary_Objects_";
+	private static String secondaryPrefix = "Secondary_Objects_";
+	private static String tertiaryPrefix = "Tertiary_Objects";
+	private static String corePrefix = "Inner_Secondary_";
+	private static String outerPrefix = "Outer_Secondary_";
 	
 
 	public static void threadLog(final String log) {
@@ -55,27 +59,212 @@ public class Segment {
 	}
 
 	 
-	/*
+	
+	/*TODO OVERALL: 
+	 * - implement a file extension filter - could be a good way to then distinguish between original vs pre-segmented images later on too...
+	 * - make erosion of secondary object relative to it's original size, instead of an arbitrary number of iterations.
+	 * - implement intensity measurements in core vs periphery
+	 * - make intensity analysis dependent on then number of channels in current image array - not fixed to 4. 
+	 * - Make it batch process friendly! End of single image loops marked at the end of the "Process.." methods
+	 *
+	 *
 	 * Implementing a file extension filter may be useful.  
 	 */
 	// (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
 	// IJ.showProgress(i+1, list.length);
 
 	
-	/*TODO: 
-	 * - implement a file extension filter - could be a good way to then distinguish between original vs pre-segmented images later on too...
-	 * - make erosion of secondary object relative to it's original size, instead of an arbitrary number of iterations.
-	 * - implement intensity measurements in core vs periphery
-	 * - make intensity analysis dependent on then number of channels in current image array - not fixed to 4. 
-	 * - Make it batch process friendly! End of single image loops marked at the end of the "Process.." methods
-	 */
+	
+	
+	
+	
+	public void processSpeckles(boolean analysisOnly) {
+		Thread t1 = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
 
+				// grab the file names and start a timer
+				long startTime = System.currentTimeMillis();
+				File f = new File(SpeckleView.inputDir);
+				String[] list = f.list();
+				String dir = SpeckleView.inputDir;
+				int count = 0;
+				
+
+				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
+					if(analysisOnly) {
+						ArrayList<String> tempList = new ArrayList<>();
+						for (String imgName : list) {
+							if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix) && !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix) && !imgName.startsWith(tertiaryPrefix)) {
+								tempList.add(imgName);
+							}
+						}
+							list = new String[tempList.size()];
+							list = tempList.toArray(list);
+					}
+					
+					// iterate through each image in the list
+					for (int i = 0; i < list.length; i++) {
+						count++;
+						String path = SpeckleView.inputDir + list[i];
+						IJ.log("-------------------------------------------------");
+						IJ.log("----------FOCUST: Speckle Protocol-----------");
+						IJ.log("Processing image " + count + " of " + list.length);
+						IJ.log("Current image name: " + list[i]);
+						IJ.log("-------------------------------------------------");
+						ImagePlus imp = IJ.openImage(path);
+						int numberOfChannels = imp.getNChannels();
+						
+						// TEST WITHOUT CONVERTING TO 8-BIT!
+						IJ.run(imp, "8-bit", "");
+						
+						Calibration cal = imp.getCalibration();
+						channelsSpeckle = ChannelSplitter.split(imp);
+						int primaryChannelChoice = SpeckleView.primaryChannelChoice;
+						int secondaryChannelChoice = SpeckleView.secondaryChannelChoice;
+						int tertiaryChannelChoice = SpeckleView.tertiaryChannelChoice;
+						
+						String imgName = imp.getTitle();
+						
+						
+						// if analysisMode is T, find the correct primary object file for the current image
+						if(analysisOnly) {
+							IJ.log("Analysis Only Mode Active: Finding Images...");
+							String fileName = list[i].replace(".nd2", ".tif");
+							primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
+							secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
+							tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
+							
+						} else {
+							// if analysis mode is F, segment objects based on channel preferences
+							IJ.log("Analysis Only Mode Not Active: Running Segmentation");
+							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x, SpeckleView.radius_y, SpeckleView.radius_z);
+							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , SpeckleView.sigma_x2, SpeckleView.sigma_y2, SpeckleView.sigma_z2, SpeckleView.greaterConstantSecondary, SpeckleView.radius_x2, SpeckleView.radius_y2, SpeckleView.radius_z2);
+							// make tertiary processing conditional
+							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], SpeckleView.sigma_x3, SpeckleView.sigma_y3, SpeckleView.sigma_z3, SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3, SpeckleView.radius_z3);
+						}
+						
+						// Calibrate segmented outputs
+						IJ.resetMinAndMax(primaryObjectsSpeckles);
+						primaryObjectsSpeckles.setCalibration(cal);
+						
+						IJ.resetMinAndMax(secondaryObjectsSpeckles);
+						secondaryObjectsSpeckles.setCalibration(cal);
+						
+						IJ.resetMinAndMax(tertiaryObjectsSpeckles);
+						tertiaryObjectsSpeckles.setCalibration(cal);
+					
+					
+						if (!analysisOnly) {
+							IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "Primary_Objects_" + imgName);
+							IJ.saveAs(secondaryObjectsSpeckles, "TIF", dir + "Secondary_Objects_" + imgName);
+							IJ.saveAs(tertiaryObjectsSpeckles, "TIF", dir + "tertiary_Objects_" + imgName);
+						}
+						
+						// make tertiary conditional as not all images will require 3 channel processing
+						ResultsTable primaryResults = analyze3D.process(primaryObjectsSpeckles);
+						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsSpeckles);
+						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsSpeckles);
+						
+						
+						
+						
+						// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY EXIST! maybe an arraylist?
+						ImagePlus[] objectImages = {primaryObjectsSpeckles, secondaryObjectsSpeckles, tertiaryObjectsSpeckles}; 
+						
+						
+						// a map to store the intensity results for each segmented image
+						Map<ImagePlus, ResultsTable> tables = new HashMap<>();
+						
+						// Measure the intensity of each channel, within each segmented object.
+						for (int j = 0; j < objectImages.length; j++) {
+							
+							ResultsTable result = new ResultsTable();
+							
+							for (int k = 0; k < channelsSpeckle.length; k++) {
+								
+								ResultsTable temp = IntensityMeasurements.process(channelsSpeckle[k], objectImages[j]);
+								result.setColumn("Label", temp.getColumnAsVariables("Label"));
+								result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(), temp.getColumnAsVariables("Mean_Intensity"));
+								result.setColumn(("C" + (k + 1) + "_IntDen").toString(), temp.getColumnAsVariables("IntDen"));
+								
+							}
+							
+							tables.put(objectImages[j], result);
+							
+						}
+						
+						// append imageID and grouping info
+						String group = SpeckleView.groupingInfo;
+						
+						for (ResultsTable rt : tables.values()) {
+							
+							if (SpeckleView.groupingInfo.isEmpty()) {
+								
+								for (int j = 0; j < rt.size(); j++) {
+									rt.addRow();
+									rt.addValue("ImageID", imgName);
+								}
+								
+							} else {
+								
+								for (int j = 0; j < rt.size(); j++) {
+									rt.addRow();
+									rt.addValue("ImageID", imgName);
+									rt.addValue("Group", group);
+								}
+								
+							}
+						}
+						
+						
+						for (Map.Entry<ImagePlus, ResultsTable> entry : tables.entrySet()) {
+							
+							ImagePlus key = entry.getKey();
+							ResultsTable val = entry.getValue();
+							
+							if (key == primaryObjectsSpeckles) {
+								IntensityMeasurements.saveTable(val, dir, "Primary_Objects_Ints.csv");
+							} 
+							
+							if (key == secondaryObjectsSpeckles) {
+								IntensityMeasurements.saveTable(val, dir, "Secondary_Objects_Ints.csv");
+							}
+							
+							if (key == tertiaryObjectsSpeckles) {
+								IntensityMeasurements.saveTable(val, dir, "Tertiary_Objects_Ints.csv");
+							}
+						}
+						
+						
+						
+						
+					} // end of single image loop!!
+					
+					
+					
+					long endTime = System.currentTimeMillis();
+					double timeSec = (endTime - startTime) / 1000;
+					IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
+					IJ.log("Speckle Batch Protocol Complete!");
+				
+			}
+		});
+	t1.start();
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	/**
 	 * TODO:
 	 * - implement kill borders function for secondary and primary objects (mask primary by secondary for instances where secondary objects are removed, so that child objects are as well).
-	 * - find matching labels for primary, secondary and tertiary objects (label matching) then build a results table based on this. 
+	 * - Multiple primary object support per secondary object.
 	 * - 
 	 */
 	
@@ -122,12 +311,16 @@ public class Segment {
 						count++;
 						String path = SingleCellView.inputDir + list[i];
 						IJ.log("---------------------------------------------");
+						IJ.log("--------FOCUST: Single Cell Protocol---------");
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("---------------------------------------------");
 						ImagePlus imp = IJ.openImage(path);
 						int numberOfChannels = imp.getNChannels();
+						
+						// TEST WITHOUT CONVERTING TO 8-BIT!!
 						IJ.run(imp, "8-bit", "");
+						
 						Calibration cal = imp.getCalibration();
 						channelsSingleCell = ChannelSplitter.split(imp);
 						int primaryChannelChoice = SingleCellView.primaryChannelChoice;
@@ -144,7 +337,7 @@ public class Segment {
 							}*/
 						} else {
 							// if analysis mode is F, segment primary channel based on user inputs
-							primaryOriginalObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
 						}
 						
 						IJ.resetMinAndMax(primaryOriginalObjectsCells);
@@ -168,7 +361,7 @@ public class Segment {
 								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
 							}*/
 						} else {
-							secondaryObjectsCells = gpuSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
 						}
 						
 						IJ.resetMinAndMax(secondaryObjectsCells);
@@ -697,7 +890,7 @@ public class Segment {
 					long endTime = System.currentTimeMillis();
 					double timeSec = (endTime - startTime) / 1000;
 					IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
-					IJ.log("Analysis complete.");
+					IJ.log("Single Cell Batch Protocol Complete!");
 			}
 		});
 	t1.start();
@@ -768,6 +961,7 @@ public class Segment {
 					count++;
 					String path = SpheroidView.inputDir + list[i];
 					IJ.log("---------------------------------------------");
+					IJ.log("----------FOCUST: Spheroid Protocol----------");
 					IJ.log("Processing image " + count + " of " + list.length);
 					IJ.log("Current image name: " + list[i]);
 					IJ.log("---------------------------------------------");
@@ -790,7 +984,7 @@ public class Segment {
 						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
-						gpuSpheroidPrimaryObject(primaryChannelChoice);
+						primaryObjectSpheroid = gpuSegmentOtsu(channelsSpheroid[primaryChannelChoice], SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
 					}
 					
 					IJ.log("Processing primary object...");
@@ -827,7 +1021,7 @@ public class Segment {
 						String fileName = list[i].replace(".nd2", ".tif");
 						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
 					} else {
-						gpuSpheroidSecondaryObject(secondaryChannelChoice);
+						secondaryObjectSpheroid = gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}
 					
 					
@@ -840,33 +1034,20 @@ public class Segment {
 					ResultsTable secondaryResults = analyze3D.process(secondaryObjectSpheroid);
 					
 					
-					/*
-					// saving this just for testing (checking for row mis-match in the final table)
-					String sRName = dir + "Secondary_Results.csv";
-					try {
-						secondaryResults.saveAs(sRName);
-					} catch (IOException e) {
-						e.printStackTrace();
-						IJ.log("Unable to save secondary results table.");
-					} */
-					
-					
-					/* Create inner ROI
-					* --> Duplicate whole spheroid, erode by fixed iteration count
-					* TODO: Implement a more programmatic approach for erosion. i.e. to 50 % of original secondary object volume, rather than a fixed number of iterations.
-					* - binary search for number of iterations to erode to approx 50 %. The results table "secondaryResults" contains the total volume of the whole spheroid. 
+					/* Create Spheroid ROIs
+					* - Binary search for the optimal number of 3D erosions that yeild the closest final volume target for the core (innerNew)
 					*/
 					
+					// fixed
 					ImagePlus innerROI = secondaryObjectSpheroid.duplicate();
 					IJ.run(innerROI, "Make Binary", "method=Default background=Dark black");
 					IJ.run(innerROI, "Options...", "iterations=70 count=1 black do=Erode stack");
 					IJ.saveAs(innerROI, "TIF", dir + "Inner_Secondary_" + imgName);
 					
+					// iterative
 					IJ.log("Generating a Core...");
-					ImagePlus innerNew = BinarySearch.createSpheroidCore(secondaryObjectSpheroid.duplicate());
+					ImagePlus innerNew = BinarySearch.createSpheroidCore(secondaryObjectSpheroid.duplicate(), 0.5);
 					IJ.saveAs(innerNew, "TIF", dir + "NEW_CORE_" + imgName);
-					
-					
 					
 					// Create outer ROI
 					ImagePlus outerROI = ImageCalculator.run(secondaryObjectSpheroid, innerROI, "Subtract create stack");
@@ -1091,17 +1272,37 @@ public class Segment {
 		t1.start();
 	}
 
-	/*
-	 * Take the selected channel and process as the primary object
-	 */
 	
-	public static ImagePlus gpuSpheroidPrimaryObject(int primaryChannelChoice) {
+	
+	
+	/**
+	 * Segment on the GPU via CLIJ2 with Otsu thresholding. 
+	 * 
+	 * @param channel
+	 * 			ImagePlus of the channel to process
+	 * @param sigma_x
+	 * 			The x sigma for Gaussian blur 3D
+	 * @param sigma_y
+	 * 			The y sigma for Gaussian blur 3D
+	 * @param sigma_z
+	 * 			The z sigma for Gaussian blur 3D
+	 * @param detect_x
+	 * 			The x radius of spot detection
+	 * @param detect_y
+	 * 			The y radius of spot detection
+	 * @param detect_z
+	 * 			The z radius of spot detection
+	 * 
+	 * @return A segmented ImagePlus.
+	 */
+	public static ImagePlus gpuSegmentOtsu(ImagePlus channel, double sigma_x, double sigma_y, double sigma_z, double detect_x, double detect_y, double detect_z) {
+		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 		CLIJx clijx = CLIJx.getInstance();
 		clijx.clear();
 
-		ClearCLBuffer input = clij2.push(channelsSpheroid[primaryChannelChoice]);
+		ClearCLBuffer input = clij2.push(channel);
 		ClearCLBuffer blurred = clij2.create(input);
 		ClearCLBuffer inverted = clij2.create(input);
 		ClearCLBuffer threshold = clij2.create(input);
@@ -1109,19 +1310,19 @@ public class Segment {
 		ClearCLBuffer labelledSpots = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
 
-		clij2.gaussianBlur3D(input, blurred, SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z);
+		clij2.gaussianBlur3D(input, blurred, sigma_x, sigma_y, sigma_z);
 
 		clij2.invert(blurred, inverted);
 
 		clij2.thresholdOtsu(blurred, threshold);
 
-		clij2.detectMaxima3DBox(blurred, detectedMax, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
+		clij2.detectMaxima3DBox(blurred, detectedMax, detect_x, detect_y, detect_z);
 
 		clij2.labelSpots(detectedMax, labelledSpots);
 
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelledSpots, threshold, segmented);
 		 
-		primaryObjectSpheroid = clij2.pull(segmented);
+		ImagePlus output = clij2.pull(segmented);
 		
 		input.close();
 		blurred.close();
@@ -1131,14 +1332,21 @@ public class Segment {
 		labelledSpots.close();
 		segmented.close();
 		
-		return primaryObjectSpheroid;
+		clij2.clear();
+		clijx.clear();
+		
+		return output;
 
 	}
 
-	/*
-	 * Take the selected channel and process as the secondary object
-	 */
 	
+	/**
+	 * Spheroid secondary object (whole spheroid without segmentation) 
+	 * One spheroid per image only. 
+	 * 
+	 * @param secondaryChannelChoice
+	 * @return ImagePlus of the thresholded spheroid.
+	 */
 	public static ImagePlus gpuSpheroidSecondaryObject(int secondaryChannelChoice) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -1168,18 +1376,37 @@ public class Segment {
 	}
 	
 	
-	/*
-	 * Take the selected channel and process for single cells
+	
+	/**
+	 * Segment on the GPU via CLIJ2 with greater constant (manual) thresholding. 
+	 * 
+	 * @param channel
+	 * 			ImagePlus of the channel to process
+	 * @param sigma_x
+	 * 			The x sigma for Gaussian blur 3D
+	 * @param sigma_y
+	 * 			The y sigma for Gaussian blur 3D
+	 * @param sigma_z
+	 * 			The z sigma for Gaussian blur 3D
+	 * @param constant
+	 * 			The threshold constant value
+	 * @param detect_x
+	 * 			The x radius of spot detection
+	 * @param detect_y
+	 * 			The y radius of spot detection
+	 * @param detect_z
+	 * 			The z radius of spot detection
+	 * 
+	 * @return A segmented ImagePlus.
 	 */
-
-	public static ImagePlus gpuSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
+	public static ImagePlus gpuSegmentGreaterConstant(ImagePlus channel, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 		CLIJx clijx = CLIJx.getInstance();
 		clijx.clear();
 		
-		ClearCLBuffer input = clij2.push(channelsSingleCell[channelChoice]);
+		ClearCLBuffer input = clij2.push(channel);
 		ClearCLBuffer blurred = clij2.create(input);
 		ClearCLBuffer inverted = clij2.create(input);
 		ClearCLBuffer threshold = clij2.create(input);
@@ -1202,9 +1429,13 @@ public class Segment {
 		
 		clij2.connectedComponentsLabelingBox(segmented, connected);
 		
-		cellObjects = clij2.pull(connected);
+		ImagePlus output = clij2.pull(connected);
+		
+		clij2.clear();
 		clijx.clear();
-		return cellObjects;
+		
+		
+		return output;
 	}
 
 	
