@@ -109,11 +109,11 @@ public class Segment {
 					for (int i = 0; i < list.length; i++) {
 						count++;
 						String path = SpeckleView.inputDir + list[i];
-						IJ.log("-------------------------------------------------");
+						IJ.log("-------------------------------------------------------");
 						IJ.log("----------FOCUST: Speckle Protocol-----------");
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
-						IJ.log("-------------------------------------------------");
+						IJ.log("-------------------------------------------------------");
 						ImagePlus imp = IJ.openImage(path);
 						int numberOfChannels = imp.getNChannels();
 						
@@ -134,6 +134,7 @@ public class Segment {
 						// NOT ALL DATA WILL BE .nd2 or .dv
 						if(analysisOnly) {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
+							IJ.log("-------------------------------------------------------");
 							String fileName = list[i].replace(".dv", ".tif");
 							primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
 							secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
@@ -141,7 +142,8 @@ public class Segment {
 							
 						} else {
 							// if analysis mode is F, segment objects based on channel preferences
-							IJ.log("Analysis Only Mode Not Active: Running Segmentation");
+							IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
+							IJ.log("-------------------------------------------------------");
 							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x, SpeckleView.radius_y, SpeckleView.radius_z);
 							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , SpeckleView.sigma_x2, SpeckleView.sigma_y2, SpeckleView.sigma_z2, SpeckleView.greaterConstantSecondary, SpeckleView.radius_x2, SpeckleView.radius_y2, SpeckleView.radius_z2);
 							// make tertiary processing conditional
@@ -166,6 +168,7 @@ public class Segment {
 						}
 						
 						IJ.log("Running Volumetric Analysis...");
+						IJ.log("-------------------------------------------------------");
 						
 						// make tertiary conditional as not all images will require 3 channel processing
 						ResultsTable primaryResults = analyze3D.process(primaryObjectsSpeckles);
@@ -173,7 +176,7 @@ public class Segment {
 						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsSpeckles);
 						
 						IJ.log("Running Intensity Analysis...");
-						
+						IJ.log("-------------------------------------------------------");
 						
 						// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY EXIST! maybe an arraylist?
 						ImagePlus[] objectImages = {primaryObjectsSpeckles, secondaryObjectsSpeckles, tertiaryObjectsSpeckles}; 
@@ -200,6 +203,9 @@ public class Segment {
 							
 						}
 						
+						IJ.log("Appending ID Info to Intensity Tables");
+						IJ.log("-------------------------------------------------------");
+						
 						// append imageID and grouping info
 						String group = SpeckleView.groupingInfo;
 						
@@ -223,6 +229,8 @@ public class Segment {
 							}
 						}
 						
+						IJ.log("Attempting to Write Intensitiy Tables...");
+						IJ.log("-------------------------------------------------------");
 						
 						for (Map.Entry<ImagePlus, ResultsTable> entry : tables.entrySet()) {
 							
