@@ -46,7 +46,7 @@ public class Segment {
 	// Could make these user-input strings to provide greater flexibility 
 	private static String primaryPrefix = "Primary_Objects_";
 	private static String secondaryPrefix = "Secondary_Objects_";
-	private static String tertiaryPrefix = "Tertiary_Objects";
+	private static String tertiaryPrefix = "Tertiary_Objects_";
 	private static String corePrefix = "Inner_Secondary_";
 	private static String outerPrefix = "Outer_Secondary_";
 	
@@ -203,31 +203,55 @@ public class Segment {
 							
 						}
 						
+						ResultsTable hi = tables.get(primaryObjectsSpeckles);
+						hi.show("Results for Primary Object");
+						
+						
 						IJ.log("Appending ID Info to Intensity Tables");
 						IJ.log("-------------------------------------------------------");
 						
 						// append imageID and grouping info
 						String group = SpeckleView.groupingInfo;
 						
+				
+						
+						// pull results table from map
+						ResultsTable tyvm = tables.get(primaryObjectsSpeckles);
+						int len = tyvm.size();
+						// iterate through, adding a row, becasue apparently those are the rules for adding a new value every time
+						for (int j = 0; j < len; j++) {
+							tyvm.addRow();
+							tyvm.addValue("ImageID", imgName);
+						}
+						
+						// save it 
+						IntensityMeasurements.saveTable(tyvm, dir, "Results.csv");
+						
+						
+						
+						
+						
+						
+						
 						for (ResultsTable rt : tables.values()) {
-							
+							int length = rt.size();
 							if (SpeckleView.groupingInfo.isEmpty()) {
 								
-								for (int j = 0; j < rt.size(); j++) {
-									rt.addRow();
+								for (int j = 0; j < length; j++) {
+									//rt.addRow();
 									rt.addValue("ImageID", imgName);
 								}
 								
 							} else {
-								
-								for (int j = 0; j < rt.size(); j++) {
-									rt.addRow();
+								for (int j = 0; j < length; j++) {
+									//rt.addRow();
 									rt.addValue("ImageID", imgName);
 									rt.addValue("Group", group);
 								}
 								
 							}
 						}
+						
 						
 						IJ.log("Attempting to Write Intensitiy Tables...");
 						IJ.log("-------------------------------------------------------");
