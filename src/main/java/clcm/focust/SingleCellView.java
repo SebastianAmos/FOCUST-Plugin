@@ -549,20 +549,20 @@ public class SingleCellView extends JFrame {
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(!cbAnalysisMode.isSelected()) {
-				sigma_x = Double.parseDouble(txtPriGBx.getText());
-				sigma_y = Double.parseDouble(txtPriGBy.getText());
-				sigma_z = Double.parseDouble(txtPriGBz.getText());
-				radius_x = Double.parseDouble(txtPriDMx.getText());
-				radius_y = Double.parseDouble(txtPriDMy.getText());
-				radius_z = Double.parseDouble(txtPriDMz.getText());
-				sigma_x2 = Double.parseDouble(txtSecGBx.getText());
-				sigma_y2 = Double.parseDouble(txtSecGBy.getText());
-				sigma_z2 = Double.parseDouble(txtSecGBz.getText());
-				radius_x2 = Double.parseDouble(txtSecDMx.getText());
-				radius_y2 = Double.parseDouble(txtSecDMy.getText());
-				radius_z2 = Double.parseDouble(txtSecDMz.getText());
-				greaterConstantPrimary = Double.parseDouble(txtPriThreshold.getText());
-				greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
+					sigma_x = Double.parseDouble(txtPriGBx.getText());
+					sigma_y = Double.parseDouble(txtPriGBy.getText());
+					sigma_z = Double.parseDouble(txtPriGBz.getText());
+					radius_x = Double.parseDouble(txtPriDMx.getText());
+					radius_y = Double.parseDouble(txtPriDMy.getText());
+					radius_z = Double.parseDouble(txtPriDMz.getText());
+					sigma_x2 = Double.parseDouble(txtSecGBx.getText());
+					sigma_y2 = Double.parseDouble(txtSecGBy.getText());
+					sigma_z2 = Double.parseDouble(txtSecGBz.getText());
+					radius_x2 = Double.parseDouble(txtSecDMx.getText());
+					radius_y2 = Double.parseDouble(txtSecDMy.getText());
+					radius_z2 = Double.parseDouble(txtSecDMz.getText());
+					greaterConstantPrimary = Double.parseDouble(txtPriThreshold.getText());
+					greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
 				}
 				channel2Name = txtSingleCellC2Name.getText();
 				channel3Name = txtSingleCellC3Name.getText();
@@ -570,10 +570,10 @@ public class SingleCellView extends JFrame {
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSingleCellGroupName.getText();
-				
+
 				Segment segment = new Segment();
 				segment.processSingleCells(cbAnalysisMode.isSelected());
-				
+
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
