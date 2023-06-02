@@ -2,6 +2,7 @@ package clcm.focust;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
@@ -129,9 +130,11 @@ public class Segment {
 						
 						
 						// if analysisMode is T, find the correct primary object file for the current image
+						// MAKE THIS WORK BY DETECTING THE IMAGE EXTENSION!!!! 
+						// NOT ALL DATA WILL BE .nd2 or .dv
 						if(analysisOnly) {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
-							String fileName = list[i].replace(".nd2", ".tif");
+							String fileName = list[i].replace(".dv", ".tif");
 							primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
 							secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
 							tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
@@ -159,15 +162,17 @@ public class Segment {
 						if (!analysisOnly) {
 							IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "Primary_Objects_" + imgName);
 							IJ.saveAs(secondaryObjectsSpeckles, "TIF", dir + "Secondary_Objects_" + imgName);
-							IJ.saveAs(tertiaryObjectsSpeckles, "TIF", dir + "tertiary_Objects_" + imgName);
+							IJ.saveAs(tertiaryObjectsSpeckles, "TIF", dir + "Tertiary_Objects_" + imgName);
 						}
+						
+						IJ.log("Running Volumetric Analysis...");
 						
 						// make tertiary conditional as not all images will require 3 channel processing
 						ResultsTable primaryResults = analyze3D.process(primaryObjectsSpeckles);
 						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsSpeckles);
 						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsSpeckles);
 						
-						
+						IJ.log("Running Intensity Analysis...");
 						
 						
 						// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY EXIST! maybe an arraylist?
@@ -224,15 +229,15 @@ public class Segment {
 							ImagePlus key = entry.getKey();
 							ResultsTable val = entry.getValue();
 							
-							if (key == primaryObjectsSpeckles) {
+							if (key.equals(primaryObjectsSpeckles)) {
 								IntensityMeasurements.saveTable(val, dir, "Primary_Objects_Ints.csv");
 							} 
 							
-							if (key == secondaryObjectsSpeckles) {
+							if (key.equals(secondaryObjectsSpeckles)) {
 								IntensityMeasurements.saveTable(val, dir, "Secondary_Objects_Ints.csv");
 							}
 							
-							if (key == tertiaryObjectsSpeckles) {
+							if (key.equals(tertiaryObjectsSpeckles)) {
 								IntensityMeasurements.saveTable(val, dir, "Tertiary_Objects_Ints.csv");
 							}
 						}
@@ -248,6 +253,8 @@ public class Segment {
 					double timeSec = (endTime - startTime) / 1000;
 					IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
 					IJ.log("Speckle Batch Protocol Complete!");
+					IJ.getLog();
+					IJ.saveString(IJ.getLog(), dir + "Log.txt");
 				
 			}
 		});
