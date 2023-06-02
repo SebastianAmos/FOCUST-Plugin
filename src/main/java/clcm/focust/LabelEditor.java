@@ -1,26 +1,23 @@
 package clcm.focust;
 
-import java.nio.FloatBuffer;
+
 import java.util.HashMap;
 import java.util.Map;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
-import ij.plugin.filter.Binary;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
-import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
-import net.haesleinhuepf.clij2.CLIJ2;
-import net.haesleinhuepf.clijx.CLIJx;
+
 
 /**
  * A class that contains helper methods for processing labels.
  * @author SebastianAmos
  *
  */
+
 public class LabelEditor {
 
 	public static ImagePlus renamedImage;
