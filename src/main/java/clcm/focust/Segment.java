@@ -215,23 +215,21 @@ public class Segment {
 						
 				
 						
+						//int size = primaryResults.size();
 						// pull results table from map
-						ResultsTable tyvm = tables.get(primaryObjectsSpeckles);
-						int len = tyvm.size();
-						// iterate through, adding a row, becasue apparently those are the rules for adding a new value every time
+						ResultsTable testTable = tables.get(primaryObjectsSpeckles);
+						int len = testTable.size();
+						// iterate through, adding a row, because apparently those are the rules for adding a new value every time
 						for (int j = 0; j < len; j++) {
-							tyvm.addRow();
-							tyvm.addValue("ImageID", imgName);
+							//testTable.addRow();
+							//testTable.addValue("ImageID", imgName);
+							testTable.setValue("ImageID", j, imgName);
 						}
 						
 						// save it 
-						IntensityMeasurements.saveTable(tyvm, dir, "Results.csv");
+						IntensityMeasurements.saveTable(testTable, dir, "Results.csv");
 						
-						
-						
-						
-						
-						
+					
 						
 						for (ResultsTable rt : tables.values()) {
 							int length = rt.size();
@@ -239,14 +237,14 @@ public class Segment {
 								
 								for (int j = 0; j < length; j++) {
 									//rt.addRow();
-									rt.addValue("ImageID", imgName);
+									rt.setValue("ImageID", j, imgName);
 								}
 								
 							} else {
 								for (int j = 0; j < length; j++) {
 									//rt.addRow();
-									rt.addValue("ImageID", imgName);
-									rt.addValue("Group", group);
+									rt.setValue("ImageID", j, imgName);
+									rt.setValue("Group", j, group);
 								}
 								
 							}
