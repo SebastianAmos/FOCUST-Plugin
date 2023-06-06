@@ -130,8 +130,10 @@ public class Segment {
 						
 						
 						// if analysisMode is T, find the correct primary object file for the current image
+						
 						// MAKE THIS WORK BY DETECTING THE IMAGE EXTENSION!!!! 
 						// NOT ALL DATA WILL BE .nd2 or .dv
+						
 						if(analysisOnly) {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
 							IJ.log("-------------------------------------------------------");
@@ -197,7 +199,7 @@ public class Segment {
 							
 							for (int k = 0; k < channelsSpeckle.length; k++) {
 								
-								ResultsTable temp = TableUtils.processIntensity(channelsSpeckle[k], objectImages[j]);
+								ResultsTable temp = TableUtility.processIntensity(channelsSpeckle[k], objectImages[j]);
 								result.setColumn("Label", temp.getColumnAsVariables("Label"));
 								result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(), temp.getColumnAsVariables("Mean_Intensity"));
 								result.setColumn(("C" + (k + 1) + "_IntDen").toString(), temp.getColumnAsVariables("IntDen"));
@@ -228,8 +230,8 @@ public class Segment {
 						ResultsTable c3Count = countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
 						// calculate parent (pri) for each sec and tery object
-						ResultsTable c2Parent = TableUtils.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
-						ResultsTable c3Parent = TableUtils.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
+						ResultsTable c2Parent = TableUtility.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
+						ResultsTable c3Parent = TableUtility.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
 						
 						
@@ -257,13 +259,12 @@ public class Segment {
 						}
 						
 						
-	
+						
 						
 						/*
 						 * Build the final tables - first extract the intensity tables from the map
 						 */
 						
-						// variable scope
 						ResultsTable primaryIntensity = null;
 						ResultsTable secondaryIntensity = null;
 						ResultsTable tertiaryIntensity = null;
@@ -375,9 +376,9 @@ public class Segment {
 						IJ.log("Saving Results Tables...");
 						IJ.log("-------------------------------------------------------");
 						
-						TableUtils.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
-						TableUtils.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
-						TableUtils.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
+						TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
+						TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
+						TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
 						
 						
 					} // end of single image loop!!
@@ -629,19 +630,19 @@ public class Segment {
 						
 						// Measure the channel intensities. SCC1 = single cell channel 1.
 						// Intensity analysis is dependent on the total number of channels in the image.
-						ResultsTable primarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], primaryObjectsCells);
+						ResultsTable primarySCC1Intensity = TableUtility.processIntensity(channelsSingleCell[0], primaryObjectsCells);
 						ResultsTable primarySCC2Intensity = null;
 						ResultsTable primarySCC3Intensity = null;
 						ResultsTable primarySCC4Intensity = null;
 						
 						if (numberOfChannels >=2) {
-						primarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], primaryObjectsCells);
+						primarySCC2Intensity = TableUtility.processIntensity(channelsSingleCell[1], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 3) {
-						primarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], primaryObjectsCells);
+						primarySCC3Intensity = TableUtility.processIntensity(channelsSingleCell[2], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 4) {
-						primarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], primaryObjectsCells);
+						primarySCC4Intensity = TableUtility.processIntensity(channelsSingleCell[3], primaryObjectsCells);
 						}
 						
 						
@@ -710,19 +711,19 @@ public class Segment {
 					 * Build and save the final table for secondary objects.
 					 */
 						
-						ResultsTable secondarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], secondaryObjectsCells);
+						ResultsTable secondarySCC1Intensity = TableUtility.processIntensity(channelsSingleCell[0], secondaryObjectsCells);
 						ResultsTable secondarySCC2Intensity = null;
 						ResultsTable secondarySCC3Intensity = null;
 						ResultsTable secondarySCC4Intensity = null;
 						
 						if (numberOfChannels >=2) {
-						secondarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], secondaryObjectsCells);
+						secondarySCC2Intensity = TableUtility.processIntensity(channelsSingleCell[1], secondaryObjectsCells);
 						}
 						if (numberOfChannels >= 3) {
-						secondarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], secondaryObjectsCells);
+						secondarySCC3Intensity = TableUtility.processIntensity(channelsSingleCell[2], secondaryObjectsCells);
 						}
 						if (numberOfChannels >= 4) {
-						secondarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], secondaryObjectsCells);
+						secondarySCC4Intensity = TableUtility.processIntensity(channelsSingleCell[3], secondaryObjectsCells);
 						}
 						
 
@@ -802,19 +803,19 @@ public class Segment {
 						 * 
 						 */
 							
-							ResultsTable tertiarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], tertiaryObjectsCells);
+							ResultsTable tertiarySCC1Intensity = TableUtility.processIntensity(channelsSingleCell[0], tertiaryObjectsCells);
 							ResultsTable tertiarySCC2Intensity = null;
 							ResultsTable tertiarySCC3Intensity = null;
 							ResultsTable tertiarySCC4Intensity = null;
 							
 							if (numberOfChannels >=2) {
-								tertiarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], tertiaryObjectsCells);
+								tertiarySCC2Intensity = TableUtility.processIntensity(channelsSingleCell[1], tertiaryObjectsCells);
 							}
 							if (numberOfChannels >= 3) {
-								tertiarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], tertiaryObjectsCells);
+								tertiarySCC3Intensity = TableUtility.processIntensity(channelsSingleCell[2], tertiaryObjectsCells);
 							}
 							if (numberOfChannels >= 4) {
-								tertiarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], tertiaryObjectsCells);
+								tertiarySCC4Intensity = TableUtility.processIntensity(channelsSingleCell[3], tertiaryObjectsCells);
 							}
 							
 							
@@ -1211,20 +1212,20 @@ public class Segment {
 
 					// TODO: change c1 and c3 back from static. Unless best practice? That was just part of testing.
 					
-					ResultsTable primaryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], primaryObjectSpheroid);
+					ResultsTable primaryC1Intensity = TableUtility.processIntensity(channelsSpheroid[0], primaryObjectSpheroid);
 					ResultsTable primaryC2Intensity = null;
 					ResultsTable primaryC3Intensity = null;
 					ResultsTable primaryC4Intensity = null;
 					
 					
 					if (numberOfChannels >=2) {
-						primaryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], primaryObjectSpheroid);
+						primaryC2Intensity = TableUtility.processIntensity(channelsSpheroid[1], primaryObjectSpheroid);
 					}
 					if (numberOfChannels >=3) {
-						primaryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], primaryObjectSpheroid);
+						primaryC3Intensity = TableUtility.processIntensity(channelsSpheroid[2], primaryObjectSpheroid);
 					}
 					if (numberOfChannels >=4) {
-						primaryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], primaryObjectSpheroid);
+						primaryC4Intensity = TableUtility.processIntensity(channelsSpheroid[3], primaryObjectSpheroid);
 					}
 					
 					/* 
@@ -1305,19 +1306,19 @@ public class Segment {
 					/* TODO
 					 * > Make this conditional: Not all images will contain 4 channels to analyse the intensities of - grab channel array and just run for each element creating a new resultstable each time? 
 					 */
-					ResultsTable secondaryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], secondaryObjectSpheroid);
+					ResultsTable secondaryC1Intensity = TableUtility.processIntensity(channelsSpheroid[0], secondaryObjectSpheroid);
 					ResultsTable secondaryC2Intensity = null;
 					ResultsTable secondaryC3Intensity = null;
 					ResultsTable secondaryC4Intensity = null;
 					
 					if (numberOfChannels >=2) {
-						secondaryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], secondaryObjectSpheroid);
+						secondaryC2Intensity = TableUtility.processIntensity(channelsSpheroid[1], secondaryObjectSpheroid);
 					}
 					if (numberOfChannels >=3) {
-						secondaryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], secondaryObjectSpheroid);
+						secondaryC3Intensity = TableUtility.processIntensity(channelsSpheroid[2], secondaryObjectSpheroid);
 					}
 					if (numberOfChannels >=4) {
-						secondaryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], secondaryObjectSpheroid);
+						secondaryC4Intensity = TableUtility.processIntensity(channelsSpheroid[3], secondaryObjectSpheroid);
 					}
 					
 					
@@ -1341,15 +1342,15 @@ public class Segment {
 					
 					
 					// intensity measurements for core and periphery 
-					ResultsTable coreC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], innerROI);
-					ResultsTable coreC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], innerROI);
-					ResultsTable coreC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], innerROI);
-					ResultsTable coreC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], innerROI);
+					ResultsTable coreC1Intensity = TableUtility.processIntensity(channelsSpheroid[0], innerROI);
+					ResultsTable coreC2Intensity = TableUtility.processIntensity(channelsSpheroid[1], innerROI);
+					ResultsTable coreC3Intensity = TableUtility.processIntensity(channelsSpheroid[2], innerROI);
+					ResultsTable coreC4Intensity = TableUtility.processIntensity(channelsSpheroid[3], innerROI);
 					
-					ResultsTable peripheryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], outerROI);
-					ResultsTable peripheryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], outerROI);
-					ResultsTable peripheryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], outerROI);
-					ResultsTable peripheryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], outerROI);
+					ResultsTable peripheryC1Intensity = TableUtility.processIntensity(channelsSpheroid[0], outerROI);
+					ResultsTable peripheryC2Intensity = TableUtility.processIntensity(channelsSpheroid[1], outerROI);
+					ResultsTable peripheryC3Intensity = TableUtility.processIntensity(channelsSpheroid[2], outerROI);
+					ResultsTable peripheryC4Intensity = TableUtility.processIntensity(channelsSpheroid[3], outerROI);
 					
 					
 					
@@ -1604,7 +1605,7 @@ public class Segment {
 		clij2.labelOverlapCountMap(larger, smaller, countMap);
 		ImagePlus impCountMap = clij2.pull(countMap);
 		clij2.clear();
-		ResultsTable labelCounts = TableUtils.processIntensity(impCountMap, mask);
+		ResultsTable labelCounts = TableUtility.processIntensity(impCountMap, mask);
 		return labelCounts;
 	}
 	
