@@ -170,6 +170,13 @@ public class Segment {
 						IJ.log("Running Volumetric Analysis...");
 						IJ.log("-------------------------------------------------------");
 						
+						
+
+						// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY EXIST! maybe an arraylist?
+						ImagePlus[] objectImages = {primaryObjectsSpeckles, secondaryObjectsSpeckles, tertiaryObjectsSpeckles}; 
+						
+						
+						
 						// make tertiary conditional as not all images will require 3 channel processing
 						ResultsTable primaryResults = analyze3D.process(primaryObjectsSpeckles);
 						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsSpeckles);
@@ -178,12 +185,10 @@ public class Segment {
 						IJ.log("Running Intensity Analysis...");
 						IJ.log("-------------------------------------------------------");
 						
-						// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY EXIST! maybe an arraylist?
-						ImagePlus[] objectImages = {primaryObjectsSpeckles, secondaryObjectsSpeckles, tertiaryObjectsSpeckles}; 
 						
 						
 						// a map to store the intensity results for each segmented image
-						Map<ImagePlus, ResultsTable> tables = new HashMap<>();
+						Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
 						
 						// Measure the intensity of each channel, within each segmented object.
 						for (int j = 0; j < objectImages.length; j++) {
@@ -192,46 +197,47 @@ public class Segment {
 							
 							for (int k = 0; k < channelsSpeckle.length; k++) {
 								
-								ResultsTable temp = IntensityMeasurements.process(channelsSpeckle[k], objectImages[j]);
+								ResultsTable temp = TableUtils.processIntensity(channelsSpeckle[k], objectImages[j]);
 								result.setColumn("Label", temp.getColumnAsVariables("Label"));
 								result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(), temp.getColumnAsVariables("Mean_Intensity"));
 								result.setColumn(("C" + (k + 1) + "_IntDen").toString(), temp.getColumnAsVariables("IntDen"));
 								
 							}
 							
-							tables.put(objectImages[j], result);
+							intensityTables.put(objectImages[j], result);
 							
 						}
 						
-						ResultsTable hi = tables.get(primaryObjectsSpeckles);
-						hi.show("Results for Primary Object");
 						
+						/*
+						 * Count overlapping labels
+						 * 
+						 * - Count the number of secondary and tertiary objects for each primary object
+						 * - Calculate parent for each secondary and tertiary object.
+						 * 
+						 * 
+						 * - make conditional on whether tertiary objects exist!!
+						 */
 						
-						IJ.log("Appending ID Info to Intensity Tables");
+
+						IJ.log("Generating Results Tables...");
 						IJ.log("-------------------------------------------------------");
 						
-						// append imageID and grouping info
-						String group = SpeckleView.groupingInfo;
+						// count secondary and tertiary objects per primary object
+						ResultsTable c2Count = countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
+						ResultsTable c3Count = countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
-				
+						// calculate parent (pri) for each sec and tery object
+						ResultsTable c2Parent = TableUtils.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
+						ResultsTable c3Parent = TableUtils.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
-						//int size = primaryResults.size();
-						// pull results table from map
-						ResultsTable testTable = tables.get(primaryObjectsSpeckles);
-						int len = testTable.size();
-						// iterate through, adding a row, because apparently those are the rules for adding a new value every time
-						for (int j = 0; j < len; j++) {
-							//testTable.addRow();
-							//testTable.addValue("ImageID", imgName);
-							testTable.setValue("ImageID", j, imgName);
-						}
 						
-						// save it 
-						IntensityMeasurements.saveTable(testTable, dir, "Results.csv");
 						
 					
+						// add imageID and grouping info to intensity tables.
+						String group = SpeckleView.groupingInfo;
 						
-						for (ResultsTable rt : tables.values()) {
+						for (ResultsTable rt : intensityTables.values()) {
 							int length = rt.size();
 							if (SpeckleView.groupingInfo.isEmpty()) {
 								
@@ -251,28 +257,127 @@ public class Segment {
 						}
 						
 						
-						IJ.log("Attempting to Write Intensitiy Tables...");
-						IJ.log("-------------------------------------------------------");
+	
 						
-						for (Map.Entry<ImagePlus, ResultsTable> entry : tables.entrySet()) {
+						/*
+						 * Build the final tables - first extract the intensity tables from the map
+						 */
+						
+						// variable scope
+						ResultsTable primaryIntensity = null;
+						ResultsTable secondaryIntensity = null;
+						ResultsTable tertiaryIntensity = null;
+						
+						for (Map.Entry<ImagePlus, ResultsTable> entry : intensityTables.entrySet()) {
 							
 							ImagePlus key = entry.getKey();
 							ResultsTable val = entry.getValue();
 							
 							if (key.equals(primaryObjectsSpeckles)) {
-								IntensityMeasurements.saveTable(val, dir, "Primary_Objects_Ints.csv");
+								primaryIntensity = val;
 							} 
 							
 							if (key.equals(secondaryObjectsSpeckles)) {
-								IntensityMeasurements.saveTable(val, dir, "Secondary_Objects_Ints.csv");
+								secondaryIntensity = val;
 							}
 							
 							if (key.equals(tertiaryObjectsSpeckles)) {
-								IntensityMeasurements.saveTable(val, dir, "Tertiary_Objects_Ints.csv");
+								tertiaryIntensity = val;
 							}
 						}
 						
 						
+						// Primary table
+						ResultsTable primaryFinalResults = new ResultsTable();
+						primaryFinalResults.setColumn("Label", primaryIntensity.getColumnAsVariables("Label"));
+						primaryFinalResults.setColumn("ImageID", primaryIntensity.getColumnAsVariables("ImageID"));
+						if (!SpeckleView.groupingInfo.isEmpty()) {
+							primaryFinalResults.setColumn("Group", primaryIntensity.getColumnAsVariables("Group"));
+						}
+						primaryFinalResults.setColumn("C2_Object_Count", c2Count.getColumnAsVariables("Max"));
+						primaryFinalResults.setColumn("C3_Object_Count", c3Count.getColumnAsVariables("Max"));
+						primaryFinalResults.setColumn("Volume", primaryResults.getColumnAsVariables("Volume"));
+						primaryFinalResults.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
+						primaryFinalResults.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
+						primaryFinalResults.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
+						primaryFinalResults.setColumn("Mean_Breadth", primaryResults.getColumnAsVariables("MeanBreadth"));
+						primaryFinalResults.setColumn("Surface_Area", primaryResults.getColumnAsVariables("SurfaceArea"));
+						primaryFinalResults.setColumn("Centroid_X", primaryResults.getColumnAsVariables("Centroid.X"));
+						primaryFinalResults.setColumn("Centroid_Y", primaryResults.getColumnAsVariables("Centroid.Y"));
+						primaryFinalResults.setColumn("Centroid_Z", primaryResults.getColumnAsVariables("Centroid.Z"));
+						
+						// This needs to be conditional on channel number as Cx may not exist for every dataset.
+						primaryFinalResults.setColumn("C1_Mean_Intensity", primaryIntensity.getColumnAsVariables("C1_Mean_Intensity"));
+						primaryFinalResults.setColumn("C1_IntDen", primaryIntensity.getColumnAsVariables("C1_IntDen"));
+						primaryFinalResults.setColumn("C2_Mean_Intensity", primaryIntensity.getColumnAsVariables("C2_Mean_Intensity"));
+						primaryFinalResults.setColumn("C2_IntDen", primaryIntensity.getColumnAsVariables("C2_IntDen"));
+						primaryFinalResults.setColumn("C3_Mean_Intensity", primaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
+						primaryFinalResults.setColumn("C3_IntDen", primaryIntensity.getColumnAsVariables("C3_IntDen"));
+						
+						
+						// Secondary table
+						ResultsTable secondaryFinalResults = new ResultsTable();
+						
+						secondaryFinalResults.setColumn("Label", secondaryIntensity.getColumnAsVariables("Label"));
+						secondaryFinalResults.setColumn("ImageID", secondaryIntensity.getColumnAsVariables("ImageID"));
+						if (!SpeckleView.groupingInfo.isEmpty()) {
+							secondaryFinalResults.setColumn("Group", secondaryIntensity.getColumnAsVariables("Group"));
+						}
+						secondaryFinalResults.setColumn("Parent_Label", c2Parent.getColumnAsVariables("Max"));
+						secondaryFinalResults.setColumn("Volume", secondaryResults.getColumnAsVariables("Volume"));
+						secondaryFinalResults.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
+						secondaryFinalResults.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
+						secondaryFinalResults.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
+						secondaryFinalResults.setColumn("Mean_Breadth", secondaryResults.getColumnAsVariables("MeanBreadth"));
+						secondaryFinalResults.setColumn("Surface_Area", secondaryResults.getColumnAsVariables("SurfaceArea"));
+						secondaryFinalResults.setColumn("Centroid_X", secondaryResults.getColumnAsVariables("Centroid.X"));
+						secondaryFinalResults.setColumn("Centroid_Y", secondaryResults.getColumnAsVariables("Centroid.Y"));
+						secondaryFinalResults.setColumn("Centroid_Z", secondaryResults.getColumnAsVariables("Centroid.Z"));
+						
+						// This needs to be conditional on channel number as Cx may not exist for every dataset.
+						secondaryFinalResults.setColumn("C1_Mean_Intensity", secondaryIntensity.getColumnAsVariables("C1_Mean_Intensity"));
+						secondaryFinalResults.setColumn("C1_IntDen", secondaryIntensity.getColumnAsVariables("C1_IntDen"));
+						secondaryFinalResults.setColumn("C2_Mean_Intensity", secondaryIntensity.getColumnAsVariables("C2_Mean_Intensity"));
+						secondaryFinalResults.setColumn("C2_IntDen", secondaryIntensity.getColumnAsVariables("C2_IntDen"));
+						secondaryFinalResults.setColumn("C3_Mean_Intensity", secondaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
+						secondaryFinalResults.setColumn("C3_IntDen", secondaryIntensity.getColumnAsVariables("C3_IntDen"));
+						
+						
+						// Tertiary table
+						ResultsTable tertiaryFinalResults = new ResultsTable();
+						
+						tertiaryFinalResults.setColumn("Label", tertiaryIntensity.getColumnAsVariables("Label"));
+						tertiaryFinalResults.setColumn("ImageID", tertiaryIntensity.getColumnAsVariables("ImageID"));
+						if (!SpeckleView.groupingInfo.isEmpty()) {
+							tertiaryFinalResults.setColumn("Group", tertiaryIntensity.getColumnAsVariables("Group"));
+						}
+						tertiaryFinalResults.setColumn("Parent_Label", c3Parent.getColumnAsVariables("Max"));
+						tertiaryFinalResults.setColumn("Volume", tertiaryResults.getColumnAsVariables("Volume"));
+						tertiaryFinalResults.setColumn("Voxel_Count", tertiaryResults.getColumnAsVariables("VoxelCount"));
+						tertiaryFinalResults.setColumn("Sphericity", tertiaryResults.getColumnAsVariables("Sphericity"));
+						tertiaryFinalResults.setColumn("Elongation", tertiaryResults.getColumnAsVariables("Elli.R1/R3"));
+						tertiaryFinalResults.setColumn("Mean_Breadth", tertiaryResults.getColumnAsVariables("MeanBreadth"));
+						tertiaryFinalResults.setColumn("Surface_Area", tertiaryResults.getColumnAsVariables("SurfaceArea"));
+						tertiaryFinalResults.setColumn("Centroid_X", tertiaryResults.getColumnAsVariables("Centroid.X"));
+						tertiaryFinalResults.setColumn("Centroid_Y", tertiaryResults.getColumnAsVariables("Centroid.Y"));
+						tertiaryFinalResults.setColumn("Centroid_Z", tertiaryResults.getColumnAsVariables("Centroid.Z"));
+						
+						// This needs to be conditional on channel number as Cx may not exist for every dataset.
+						tertiaryFinalResults.setColumn("C1_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C1_Mean_Intensity"));
+						tertiaryFinalResults.setColumn("C1_IntDen", tertiaryIntensity.getColumnAsVariables("C1_IntDen"));
+						tertiaryFinalResults.setColumn("C2_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C2_Mean_Intensity"));
+						tertiaryFinalResults.setColumn("C2_IntDen", tertiaryIntensity.getColumnAsVariables("C2_IntDen"));
+						tertiaryFinalResults.setColumn("C3_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
+						tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
+						
+						
+						
+						IJ.log("Saving Results Tables...");
+						IJ.log("-------------------------------------------------------");
+						
+						TableUtils.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
+						TableUtils.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
+						TableUtils.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
 						
 						
 					} // end of single image loop!!
@@ -524,19 +629,19 @@ public class Segment {
 						
 						// Measure the channel intensities. SCC1 = single cell channel 1.
 						// Intensity analysis is dependent on the total number of channels in the image.
-						ResultsTable primarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], primaryObjectsCells);
+						ResultsTable primarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], primaryObjectsCells);
 						ResultsTable primarySCC2Intensity = null;
 						ResultsTable primarySCC3Intensity = null;
 						ResultsTable primarySCC4Intensity = null;
 						
 						if (numberOfChannels >=2) {
-						primarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], primaryObjectsCells);
+						primarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 3) {
-						primarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], primaryObjectsCells);
+						primarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], primaryObjectsCells);
 						}
 						if (numberOfChannels >= 4) {
-						primarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], primaryObjectsCells);
+						primarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], primaryObjectsCells);
 						}
 						
 						
@@ -570,6 +675,7 @@ public class Segment {
 						primaryFinalTable.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
 						primaryFinalTable.setColumn("Elongation", primaryResults.getColumnAsVariables("Elli.R1/R3"));
 						primaryFinalTable.setColumn("Mean_Breadth", primaryResults.getColumnAsVariables("MeanBreadth"));
+						primaryFinalTable.setColumn("Surface_Area", primaryResults.getColumnAsVariables("SurfaceArea"));
 						primaryFinalTable.setColumn("Centroid_X", primaryResults.getColumnAsVariables("Centroid.X"));
 						primaryFinalTable.setColumn("Centroid_Y", primaryResults.getColumnAsVariables("Centroid.Y"));
 						primaryFinalTable.setColumn("Centroid_Z", primaryResults.getColumnAsVariables("Centroid.Z"));
@@ -604,19 +710,19 @@ public class Segment {
 					 * Build and save the final table for secondary objects.
 					 */
 						
-						ResultsTable secondarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], secondaryObjectsCells);
+						ResultsTable secondarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], secondaryObjectsCells);
 						ResultsTable secondarySCC2Intensity = null;
 						ResultsTable secondarySCC3Intensity = null;
 						ResultsTable secondarySCC4Intensity = null;
 						
 						if (numberOfChannels >=2) {
-						secondarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], secondaryObjectsCells);
+						secondarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], secondaryObjectsCells);
 						}
 						if (numberOfChannels >= 3) {
-						secondarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], secondaryObjectsCells);
+						secondarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], secondaryObjectsCells);
 						}
 						if (numberOfChannels >= 4) {
-						secondarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], secondaryObjectsCells);
+						secondarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], secondaryObjectsCells);
 						}
 						
 
@@ -657,6 +763,7 @@ public class Segment {
 						secondaryFinalTable.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
 						secondaryFinalTable.setColumn("Elongation", secondaryResults.getColumnAsVariables("Elli.R1/R3"));
 						secondaryFinalTable.setColumn("Mean_Breadth", secondaryResults.getColumnAsVariables("MeanBreadth"));
+						secondaryFinalTable.setColumn("Surface_Area", secondaryResults.getColumnAsVariables("SurfaceArea"));
 						secondaryFinalTable.setColumn("Centroid_X", secondaryResults.getColumnAsVariables("Centroid.X"));
 						secondaryFinalTable.setColumn("Centroid_Y", secondaryResults.getColumnAsVariables("Centroid.Y"));
 						secondaryFinalTable.setColumn("Centroid_Z", secondaryResults.getColumnAsVariables("Centroid.Z"));
@@ -695,19 +802,19 @@ public class Segment {
 						 * 
 						 */
 							
-							ResultsTable tertiarySCC1Intensity = IntensityMeasurements.process(channelsSingleCell[0], tertiaryObjectsCells);
+							ResultsTable tertiarySCC1Intensity = TableUtils.processIntensity(channelsSingleCell[0], tertiaryObjectsCells);
 							ResultsTable tertiarySCC2Intensity = null;
 							ResultsTable tertiarySCC3Intensity = null;
 							ResultsTable tertiarySCC4Intensity = null;
 							
 							if (numberOfChannels >=2) {
-								tertiarySCC2Intensity = IntensityMeasurements.process(channelsSingleCell[1], tertiaryObjectsCells);
+								tertiarySCC2Intensity = TableUtils.processIntensity(channelsSingleCell[1], tertiaryObjectsCells);
 							}
 							if (numberOfChannels >= 3) {
-								tertiarySCC3Intensity = IntensityMeasurements.process(channelsSingleCell[2], tertiaryObjectsCells);
+								tertiarySCC3Intensity = TableUtils.processIntensity(channelsSingleCell[2], tertiaryObjectsCells);
 							}
 							if (numberOfChannels >= 4) {
-								tertiarySCC4Intensity = IntensityMeasurements.process(channelsSingleCell[3], tertiaryObjectsCells);
+								tertiarySCC4Intensity = TableUtils.processIntensity(channelsSingleCell[3], tertiaryObjectsCells);
 							}
 							
 							
@@ -747,6 +854,7 @@ public class Segment {
 							tertiaryFinalTable.setColumn("Sphericity", tertiaryResults.getColumnAsVariables("Sphericity"));
 							tertiaryFinalTable.setColumn("Elongation", tertiaryResults.getColumnAsVariables("Elli.R1/R3"));
 							tertiaryFinalTable.setColumn("Mean_Breadth", tertiaryResults.getColumnAsVariables("MeanBreadth"));
+							tertiaryFinalTable.setColumn("Surface_Area", tertiaryResults.getColumnAsVariables("SurfaceArea"));
 							tertiaryFinalTable.setColumn("Centroid_X", tertiaryResults.getColumnAsVariables("Centroid.X"));
 							tertiaryFinalTable.setColumn("Centroid_Y", tertiaryResults.getColumnAsVariables("Centroid.Y"));
 							tertiaryFinalTable.setColumn("Centroid_Z", tertiaryResults.getColumnAsVariables("Centroid.Z"));
@@ -808,6 +916,7 @@ public class Segment {
 									combinedResults.addValue("Primary_Sphericity", primaryFinalTable.getValue("Sphericity", j));
 									combinedResults.addValue("Primary_Elongation", primaryFinalTable.getValue("Elongation", j));
 									combinedResults.addValue("Primary_Mean_Breadth", primaryFinalTable.getValue("Mean_Breadth", j));
+									combinedResults.addValue("Primary_Surface_Area", primaryFinalTable.getValue("Surface_Area", j));
 									combinedResults.addValue("Primary_Centroid_X", primaryFinalTable.getValue("Centroid_X", j));
 									combinedResults.addValue("Primary_Centroid_Y", primaryFinalTable.getValue("Centroid_Y", j));
 									combinedResults.addValue("Primary_Centroid_Z", primaryFinalTable.getValue("Centroid_Z", j));
@@ -831,6 +940,7 @@ public class Segment {
 									combinedResults.addValue("Secondary_Sphericity", secondaryFinalTable.getValue("Sphericity", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Elongation", secondaryFinalTable.getValue("Elongation", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Mean_Breadth", secondaryFinalTable.getValue("Mean_Breadth", secondaryRowIndex));
+									combinedResults.addValue("Secondary_Surface_Area", secondaryFinalTable.getValue("Surface_Area", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Centroid_X", secondaryFinalTable.getValue("Centroid_X", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Centroid_Y", secondaryFinalTable.getValue("Centroid_Y", secondaryRowIndex));
 									combinedResults.addValue("Secondary_Centroid_Z", secondaryFinalTable.getValue("Centroid_Z", secondaryRowIndex));
@@ -853,6 +963,7 @@ public class Segment {
 									combinedResults.addValue("Tertiary_Sphericity", tertiaryFinalTable.getValue("Sphericity", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Elongation", tertiaryFinalTable.getValue("Elongation", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Mean_Breadth", tertiaryFinalTable.getValue("Mean_Breadth", tertiaryRowIndex));
+									combinedResults.addValue("Surface_Area", tertiaryFinalTable.getValue("Surface_Area", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Centroid_X", tertiaryFinalTable.getValue("Centroid_X", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Centroid_Y", tertiaryFinalTable.getValue("Centroid_Y", tertiaryRowIndex));
 									combinedResults.addValue("Tertiary_Centroid_Z", tertiaryFinalTable.getValue("Centroid_Z", tertiaryRowIndex));
@@ -1100,20 +1211,20 @@ public class Segment {
 
 					// TODO: change c1 and c3 back from static. Unless best practice? That was just part of testing.
 					
-					ResultsTable primaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], primaryObjectSpheroid);
+					ResultsTable primaryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], primaryObjectSpheroid);
 					ResultsTable primaryC2Intensity = null;
 					ResultsTable primaryC3Intensity = null;
 					ResultsTable primaryC4Intensity = null;
 					
 					
 					if (numberOfChannels >=2) {
-						primaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], primaryObjectSpheroid);
+						primaryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], primaryObjectSpheroid);
 					}
 					if (numberOfChannels >=3) {
-						primaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], primaryObjectSpheroid);
+						primaryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], primaryObjectSpheroid);
 					}
 					if (numberOfChannels >=4) {
-						primaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], primaryObjectSpheroid);
+						primaryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], primaryObjectSpheroid);
 					}
 					
 					/* 
@@ -1194,19 +1305,19 @@ public class Segment {
 					/* TODO
 					 * > Make this conditional: Not all images will contain 4 channels to analyse the intensities of - grab channel array and just run for each element creating a new resultstable each time? 
 					 */
-					ResultsTable secondaryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], secondaryObjectSpheroid);
+					ResultsTable secondaryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], secondaryObjectSpheroid);
 					ResultsTable secondaryC2Intensity = null;
 					ResultsTable secondaryC3Intensity = null;
 					ResultsTable secondaryC4Intensity = null;
 					
 					if (numberOfChannels >=2) {
-						secondaryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], secondaryObjectSpheroid);
+						secondaryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], secondaryObjectSpheroid);
 					}
 					if (numberOfChannels >=3) {
-						secondaryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], secondaryObjectSpheroid);
+						secondaryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], secondaryObjectSpheroid);
 					}
 					if (numberOfChannels >=4) {
-						secondaryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], secondaryObjectSpheroid);
+						secondaryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], secondaryObjectSpheroid);
 					}
 					
 					
@@ -1230,15 +1341,15 @@ public class Segment {
 					
 					
 					// intensity measurements for core and periphery 
-					ResultsTable coreC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], innerROI);
-					ResultsTable coreC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], innerROI);
-					ResultsTable coreC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], innerROI);
-					ResultsTable coreC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], innerROI);
+					ResultsTable coreC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], innerROI);
+					ResultsTable coreC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], innerROI);
+					ResultsTable coreC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], innerROI);
+					ResultsTable coreC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], innerROI);
 					
-					ResultsTable peripheryC1Intensity = IntensityMeasurements.process(channelsSpheroid[0], outerROI);
-					ResultsTable peripheryC2Intensity = IntensityMeasurements.process(channelsSpheroid[1], outerROI);
-					ResultsTable peripheryC3Intensity = IntensityMeasurements.process(channelsSpheroid[2], outerROI);
-					ResultsTable peripheryC4Intensity = IntensityMeasurements.process(channelsSpheroid[3], outerROI);
+					ResultsTable peripheryC1Intensity = TableUtils.processIntensity(channelsSpheroid[0], outerROI);
+					ResultsTable peripheryC2Intensity = TableUtils.processIntensity(channelsSpheroid[1], outerROI);
+					ResultsTable peripheryC3Intensity = TableUtils.processIntensity(channelsSpheroid[2], outerROI);
+					ResultsTable peripheryC4Intensity = TableUtils.processIntensity(channelsSpheroid[3], outerROI);
 					
 					
 					
@@ -1475,6 +1586,30 @@ public class Segment {
 		return output;
 	}
 
+	
+	
+	/**
+	 * Count how many labels from labelToCount overlap with mask. 
+	 * 
+	 * @param mask
+	 * @param labelToCount
+	 * @return ResultsTable
+	 */
+	public static ResultsTable countOverlappingLabels(ImagePlus mask, ImagePlus labelToCount) {
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		ClearCLBuffer larger = clij2.push(mask);
+		ClearCLBuffer smaller = clij2.push(labelToCount);
+		ClearCLBuffer countMap = clij2.create(larger);
+		clij2.labelOverlapCountMap(larger, smaller, countMap);
+		ImagePlus impCountMap = clij2.pull(countMap);
+		clij2.clear();
+		ResultsTable labelCounts = TableUtils.processIntensity(impCountMap, mask);
+		return labelCounts;
+	}
+	
+	
+	
 	
 }
 
