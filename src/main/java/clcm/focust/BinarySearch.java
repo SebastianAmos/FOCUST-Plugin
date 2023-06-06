@@ -157,5 +157,4 @@ public class BinarySearch {
 		}
 		return imp;
 	}
-	
 }
