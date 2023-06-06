@@ -180,38 +180,6 @@ public class SingleCellView extends JFrame {
 		separator.setBounds(12, 135, 768, 2);
 		paneSingleCell.add(separator);
 		
-		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
-		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(10, 179, 237, 29);
-		paneSingleCell.add(lblHowManyChannels);
-		
-		JComboBox cbChannelTotal = new JComboBox();
-		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4"}));
-		cbChannelTotal.setSelectedIndex(2);
-		cbChannelTotal.setMaximumRowCount(3);
-		cbChannelTotal.setBounds(248, 181, 48, 25);
-		cbChannelTotal.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				// enable name input for C4 if 4 channels declared
-				if(cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtSingleCellC4Name.setEnabled(true);
-				} else {
-					txtSingleCellC4Name.setEnabled(false);
-				}	
-				
-				// enable name input for C3 if 3 or 4 channels declared. 
-				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
-					txtSingleCellC3Name.setEnabled(true);
-				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtSingleCellC3Name.setEnabled(true);
-				} else {
-					txtSingleCellC3Name.setEnabled(false);
-				}
-			}
-		});
-		paneSingleCell.add(cbChannelTotal);
-		
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
 		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
@@ -582,42 +550,42 @@ public class SingleCellView extends JFrame {
 		
 		JLabel lblNameChannel2 = new JLabel("Name Channel 2:");
 		lblNameChannel2.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel2.setBounds(10, 212, 116, 29);
+		lblNameChannel2.setBounds(10, 184, 116, 29);
 		paneSingleCell.add(lblNameChannel2);
 		
 		JLabel lblNameChannel3 = new JLabel("Name Channel 3:");
 		lblNameChannel3.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel3.setBounds(10, 246, 116, 29);
+		lblNameChannel3.setBounds(10, 218, 116, 29);
 		paneSingleCell.add(lblNameChannel3);
 		
 		JLabel lblNameChannel4 = new JLabel("Name Channel 4:");
 		lblNameChannel4.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblNameChannel4.setBounds(10, 279, 116, 29);
+		lblNameChannel4.setBounds(10, 251, 116, 29);
 		paneSingleCell.add(lblNameChannel4);
 		
 		JLabel lblGroupingInfo = new JLabel("Grouping* Info?");
 		lblGroupingInfo.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblGroupingInfo.setBounds(10, 319, 116, 29);
+		lblGroupingInfo.setBounds(10, 291, 116, 29);
 		paneSingleCell.add(lblGroupingInfo);
 		
 		txtSingleCellC2Name = new JTextField();
 		txtSingleCellC2Name.setColumns(10);
-		txtSingleCellC2Name.setBounds(120, 212, 176, 29);
+		txtSingleCellC2Name.setBounds(120, 184, 176, 29);
 		paneSingleCell.add(txtSingleCellC2Name);
 		
 		txtSingleCellC3Name = new JTextField();
 		txtSingleCellC3Name.setColumns(10);
-		txtSingleCellC3Name.setBounds(120, 246, 176, 29);
+		txtSingleCellC3Name.setBounds(120, 218, 176, 29);
 		paneSingleCell.add(txtSingleCellC3Name);
 		
 		txtSingleCellC4Name = new JTextField();
 		txtSingleCellC4Name.setColumns(10);
-		txtSingleCellC4Name.setBounds(120, 279, 176, 29);
+		txtSingleCellC4Name.setBounds(120, 251, 176, 29);
 		paneSingleCell.add(txtSingleCellC4Name);
 		
 		txtSingleCellGroupName = new JTextField();
 		txtSingleCellGroupName.setColumns(10);
-		txtSingleCellGroupName.setBounds(120, 319, 176, 29);
+		txtSingleCellGroupName.setBounds(120, 291, 176, 29);
 		paneSingleCell.add(txtSingleCellGroupName);
 		
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
@@ -627,7 +595,7 @@ public class SingleCellView extends JFrame {
 		
 		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		cbAnalysisMode.setBounds(20, 104, 157, 23);
+		cbAnalysisMode.setBounds(10, 104, 157, 23);
 		paneSingleCell.add(cbAnalysisMode);
 	}
 }
