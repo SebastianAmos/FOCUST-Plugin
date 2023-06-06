@@ -11,7 +11,7 @@ import inra.ijpb.measure.IntensityMeasures;
 /**
  * This helper class contains a method (process) for calculating intensity values.
  */
-public class IntensityMeasurements {
+public class TableUtils {
 
 /**
  * This method calculates the intensity of the input image for each object in the label image.
@@ -25,19 +25,22 @@ public class IntensityMeasurements {
  * @return A results table containing label, mean_intensity, volume and IntDen columns.
  */
 	
-	public static ResultsTable process(ImagePlus input, ImagePlus label) {
+	public static ResultsTable processIntensity(ImagePlus input, ImagePlus label) {
 		
 		final IntensityMeasures im = new IntensityMeasures(input, label);
 		ResultsTable table = new ResultsTable();
 		ResultsTable rtVolume = new ResultsTable();
 		ResultsTable rtMean = new ResultsTable();
+		ResultsTable rtMax = new ResultsTable();
 		
 		rtVolume = im.getVolume();
 		rtMean = im.getMean();
+		rtMax = im.getMax();
 
 		// calculate Integrated Density
 		double[] vol = rtVolume.getColumnAsDoubles(0);
 		double[] intMean = rtMean.getColumnAsDoubles(0);
+		double[] max = rtMax.getColumnAsDoubles(0);
 		Variable[] intDen = new Variable[vol.length];
 		
 		for (int i = 0; i < vol.length; i++) {
@@ -46,9 +49,11 @@ public class IntensityMeasurements {
 		Variable[] labArray = rtMean.getColumnAsVariables("Label");
 		Variable[] volumeArray = rtVolume.getColumnAsVariables("Volume");
 		Variable[] meanIntensityArray = rtMean.getColumnAsVariables("Mean");
+		Variable[] maxArray = rtMax.getColumnAsVariables("Max");
 	
 		table.setColumn("Label", labArray);
 		table.setColumn("Mean_Intensity", meanIntensityArray);
+		table.setColumn("Max", maxArray);
 		table.setColumn("Volume", volumeArray);
 		table.setColumn("IntDen", intDen);
 		return table;
