@@ -16,20 +16,16 @@ import javax.swing.JTextField;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import javax.swing.JComboBox;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
-
 import ij.IJ;
-
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
-import javax.swing.UIManager;
+
 
 @SuppressWarnings("serial")
 public class SpheroidView extends JFrame {
