@@ -436,7 +436,7 @@ public class Segment {
 							primary1.addValue("ImageID", element.getString());
 						}
 					}
-					for (Variable[] array : priVolume) {
+					/* for (Variable[] array : priVolume) {
 						for (Variable element : array) {
 							for (int i = 0; i < primary.size(); i++) {
 								primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
@@ -444,11 +444,12 @@ public class Segment {
 							primary2.addRow();
 							primary2.addValue("Volume", element.getString());
 						}
-					}
+					} */
 					
 					ResultsTable rt = new ResultsTable();
-					rt.setColumn("Label", primary1.getColumnAsVariables("ImageID"));
-					rt.setColumn("Volume", primary2.getColumnAsVariables("Volume"));
+					rt.setColumn("Label", primary1.getColumnAsVariables("Label"));
+					rt.setColumn("ImageID", primary1.getColumnAsVariables("ImageID"));
+					//rt.setColumn("Volume", primary2.getColumnAsVariables("Volume"));
 					
 					
 					
