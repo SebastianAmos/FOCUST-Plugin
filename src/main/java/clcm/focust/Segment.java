@@ -3,6 +3,7 @@ package clcm.focust;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.macro.Variable;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.ChannelSplitter;
@@ -92,7 +93,11 @@ public class Segment {
 				String dir = SpeckleView.inputDir;
 				int count = 0;
 				
+				
+				// could combine results tables for each image and pull them later to create final results tables.
+				Map<ImagePlus, ArrayList<ResultsTable>> results = new HashMap<>();
 
+				
 				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
 					if(analysisOnly) {
 						ArrayList<String> tempList = new ArrayList<>();
@@ -105,12 +110,24 @@ public class Segment {
 							list = tempList.toArray(list);
 					}
 					
+					// --> COULD USE AN ARRAYMAP to link the array lists of variable[] to the strings primary, secondary and tertiary.
+					// Testing for batch processing!
+					ArrayList<Variable[]> priLabel = new ArrayList<Variable[]>();
+					ArrayList<Variable[]> priVolume = new ArrayList<Variable[]>();
+					ArrayList<Variable[]> priImgID = new ArrayList<Variable[]>();
+					
+					ResultsTable primaryFinalResults = null;
+					ResultsTable secondaryFinalResults = null;
+					ResultsTable tertiaryFinalResults = null;
+					
+					IJ.log("-------------------------------------------------------");
+					IJ.log("----------FOCUST: Speckle Protocol-----------");
+					
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
 						count++;
 						String path = SpeckleView.inputDir + list[i];
-						IJ.log("-------------------------------------------------------");
-						IJ.log("----------FOCUST: Speckle Protocol-----------");
+					
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("-------------------------------------------------------");
@@ -189,7 +206,7 @@ public class Segment {
 						
 						
 						
-						// a map to store the intensity results for each segmented image
+						// A map to store the intensity results for each segmented image.
 						Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
 						
 						// Measure the intensity of each channel, within each segmented object.
@@ -221,40 +238,35 @@ public class Segment {
 						 * - make conditional on whether tertiary objects exist!!
 						 */
 						
-
+						
 						IJ.log("Generating Results Tables...");
 						IJ.log("-------------------------------------------------------");
 						
-						// count secondary and tertiary objects per primary object
+						// Count secondary and tertiary objects per primary object.
 						ResultsTable c2Count = countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 						ResultsTable c3Count = countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
-						// calculate parent (pri) for each sec and tery object
+						// Calculate parent (primary) for each secondary and tertiary object.
 						ResultsTable c2Parent = TableUtility.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 						ResultsTable c3Parent = TableUtility.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
 						
 						
 					
-						// add imageID and grouping info to intensity tables.
+						// Add imageID and grouping info to intensity tables.
 						String group = SpeckleView.groupingInfo;
 						
 						for (ResultsTable rt : intensityTables.values()) {
 							int length = rt.size();
 							if (SpeckleView.groupingInfo.isEmpty()) {
-								
 								for (int j = 0; j < length; j++) {
-									//rt.addRow();
 									rt.setValue("ImageID", j, imgName);
 								}
-								
 							} else {
 								for (int j = 0; j < length; j++) {
-									//rt.addRow();
 									rt.setValue("ImageID", j, imgName);
 									rt.setValue("Group", j, group);
 								}
-								
 							}
 						}
 						
@@ -288,8 +300,14 @@ public class Segment {
 						}
 						
 						
+						
+						priLabel.add(primaryIntensity.getColumnAsVariables("Label"));
+						priVolume.add(primaryResults.getColumnAsVariables("Volume"));
+						priImgID.add(primaryIntensity.getColumnAsVariables("ImageID"));
+						
+						
 						// Primary table
-						ResultsTable primaryFinalResults = new ResultsTable();
+						primaryFinalResults = new ResultsTable();
 						primaryFinalResults.setColumn("Label", primaryIntensity.getColumnAsVariables("Label"));
 						primaryFinalResults.setColumn("ImageID", primaryIntensity.getColumnAsVariables("ImageID"));
 						if (!SpeckleView.groupingInfo.isEmpty()) {
@@ -317,7 +335,7 @@ public class Segment {
 						
 						
 						// Secondary table
-						ResultsTable secondaryFinalResults = new ResultsTable();
+						secondaryFinalResults = new ResultsTable();
 						
 						secondaryFinalResults.setColumn("Label", secondaryIntensity.getColumnAsVariables("Label"));
 						secondaryFinalResults.setColumn("ImageID", secondaryIntensity.getColumnAsVariables("ImageID"));
@@ -345,7 +363,7 @@ public class Segment {
 						
 						
 						// Tertiary table
-						ResultsTable tertiaryFinalResults = new ResultsTable();
+						tertiaryFinalResults = new ResultsTable();
 						
 						tertiaryFinalResults.setColumn("Label", tertiaryIntensity.getColumnAsVariables("Label"));
 						tertiaryFinalResults.setColumn("ImageID", tertiaryIntensity.getColumnAsVariables("ImageID"));
@@ -371,18 +389,80 @@ public class Segment {
 						tertiaryFinalResults.setColumn("C3_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 						tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 						
-						
-						
-						IJ.log("Saving Results Tables...");
-						IJ.log("-------------------------------------------------------");
-						
-						TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
-						TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
-						TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
+					
 						
 						
 					} // end of single image loop!!
 					
+					
+					ResultsTable primary = new ResultsTable();
+					int c = priLabel.size();
+					for (int i = 0; i < c; i++) {
+						// if it's the first element to be written to the table
+						if (primary.size() == 0 ) {
+							primary.setColumn("Label", priLabel.get(i));
+							primary.setColumn("ImageID", priImgID.get(i));
+							primary.setColumn("Volume", priVolume.get(i));
+						} else {
+					
+							Variable[] lab = priLabel.get(i);
+							Variable[] imgID = priImgID.get(i);
+							Variable[] vol = priVolume.get(i);
+							
+							
+						
+							
+							for (int j = 0; j < lab.length; j++) {
+								primary.addValue("Label", lab[j].getString());
+							}
+						}
+					}
+					
+					ResultsTable primaryFinal = new ResultsTable();
+					ResultsTable primary1 = new ResultsTable();
+					ResultsTable primary2 = new ResultsTable(); 
+					for (Variable[] array : priLabel) {
+						for (Variable element : array) {
+							primaryFinal.addRow();
+							primaryFinal.addValue("Label", element.getString());
+						}
+					}
+					for (Variable[] array : priImgID) {
+						for (Variable element : array) {
+							for (int i = 0; i < primary.size(); i++) {
+								primaryFinal.setValue("ImageID", i, element.getString());
+							}
+							primary1.addRow();
+							primary1.addValue("ImageID", element.getString());
+						}
+					}
+					for (Variable[] array : priVolume) {
+						for (Variable element : array) {
+							for (int i = 0; i < primary.size(); i++) {
+								primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
+							}
+							primary2.addRow();
+							primary2.addValue("Volume", element.getString());
+						}
+					}
+					
+					ResultsTable rt = new ResultsTable();
+					rt.setColumn("Label", primary1.getColumnAsVariables("ImageID"));
+					rt.setColumn("Volume", primary2.getColumnAsVariables("Volume"));
+					
+					
+					
+					
+
+					IJ.log("Saving Results Tables...");
+					IJ.log("-------------------------------------------------------");
+					
+					TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
+					TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
+					TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
+					TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
+					TableUtility.saveTable(rt, dir, "RT.csv");
+					TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
 					
 					
 					long endTime = System.currentTimeMillis();
@@ -449,12 +529,13 @@ public class Segment {
 							list = tempList.toArray(list);
 					}
 					
+					IJ.log("---------------------------------------------");
+					IJ.log("--------FOCUST: Single Cell Protocol---------");
+					
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
 						count++;
 						String path = SingleCellView.inputDir + list[i];
-						IJ.log("---------------------------------------------");
-						IJ.log("--------FOCUST: Single Cell Protocol---------");
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("---------------------------------------------");
@@ -1103,14 +1184,13 @@ public class Segment {
 							list = tempList.toArray(list);
 					}
 					
-					
+					IJ.log("---------------------------------------------");
+					IJ.log("----------FOCUST: Spheroid Protocol----------");
 					
 				// Iterate through each image in the directory and segment the selected primary and secondary channels.
 				for (int i = 0; i < list.length; i++) {
 					count++;
 					String path = SpheroidView.inputDir + list[i];
-					IJ.log("---------------------------------------------");
-					IJ.log("----------FOCUST: Spheroid Protocol----------");
 					IJ.log("Processing image " + count + " of " + list.length);
 					IJ.log("Current image name: " + list[i]);
 					IJ.log("---------------------------------------------");
