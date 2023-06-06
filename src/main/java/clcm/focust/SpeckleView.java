@@ -17,18 +17,13 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
-
 import ij.IJ;
-
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
-import javax.swing.JToggleButton;
 
 public class SpeckleView extends JFrame {
 
