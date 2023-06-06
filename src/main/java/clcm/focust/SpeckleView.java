@@ -28,6 +28,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
+import javax.swing.JToggleButton;
 
 public class SpeckleView extends JFrame {
 
@@ -188,39 +189,6 @@ public class SpeckleView extends JFrame {
 		lblYouMustHave.setBounds(136, 0, 401, 29);
 		paneSpeckle.add(lblYouMustHave);
 
-		JLabel lblHowManyChannels = new JLabel("Total number of channels per image?");
-		lblHowManyChannels.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblHowManyChannels.setBounds(13, 187, 237, 29);
-		paneSpeckle.add(lblHowManyChannels);
-
-		JComboBox cbChannelTotal = new JComboBox();
-		cbChannelTotal.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				// enable name input for C4 if 4 channels declared
-				if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtC4Name.setEnabled(true);
-				} else {
-					txtC4Name.setEnabled(false);
-				}
-
-				// enable name input for C3 if 3 or 4 channels declared.
-				if (cbChannelTotal.getSelectedItem().toString().equals("3")) {
-					txtC3Name.setEnabled(true);
-				} else if (cbChannelTotal.getSelectedItem().toString().equals("4")) {
-					txtC3Name.setEnabled(true);
-				} else {
-					txtC3Name.setEnabled(false);
-				}
-			}
-		});
-
-		cbChannelTotal.setModel(new DefaultComboBoxModel(new String[] { "2", "3", "4" }));
-		cbChannelTotal.setSelectedIndex(0);
-		cbChannelTotal.setMaximumRowCount(3);
-		cbChannelTotal.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		cbChannelTotal.setBounds(251, 189, 48, 25);
-		paneSpeckle.add(cbChannelTotal);
-
 		JLabel lblSegmentPrimary = new JLabel("Primary Object\r\n");
 		lblSegmentPrimary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentPrimary.setFont(new Font("Gadugi", Font.BOLD, 14));
@@ -366,163 +334,154 @@ public class SpeckleView extends JFrame {
 		cbChannelPrimary.setBounds(452, 219, 48, 25);
 		paneSpeckle.add(cbChannelPrimary);
 
-		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(309, 189, 639, 255);
-		paneSpeckle.add(panel);
+		JPanel pnlSegmentation = new JPanel();
+		pnlSegmentation.setLayout(null);
+		pnlSegmentation.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		pnlSegmentation.setBounds(309, 189, 639, 255);
+		paneSpeckle.add(pnlSegmentation);
 
-		JPanel SecondaryObjectPanel_1 = new JPanel();
-		SecondaryObjectPanel_1.setLayout(null);
-		SecondaryObjectPanel_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		SecondaryObjectPanel_1.setBackground(new Color(211, 211, 211));
-		SecondaryObjectPanel_1.setBounds(435, 61, 187, 182);
-		panel.add(SecondaryObjectPanel_1);
+		JPanel TertiaryObjectPanel = new JPanel();
+		TertiaryObjectPanel.setLayout(null);
+		TertiaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		TertiaryObjectPanel.setBackground(new Color(211, 211, 211));
+		TertiaryObjectPanel.setBounds(435, 61, 187, 182);
+		pnlSegmentation.add(TertiaryObjectPanel);
 
 		JLabel lblBgSubSecondary_1 = new JLabel("Background subtraction?");
 		lblBgSubSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblBgSubSecondary_1.setBounds(10, 0, 161, 29);
-		SecondaryObjectPanel_1.add(lblBgSubSecondary_1);
+		TertiaryObjectPanel.add(lblBgSubSecondary_1);
 
 		JRadioButton rdbtnNewRadioButton_1_1_1 = new JRadioButton("No");
 		rdbtnNewRadioButton_1_1_1.setSelected(true);
 		rdbtnNewRadioButton_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnNewRadioButton_1_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnNewRadioButton_1_1_1.setBounds(10, 24, 43, 23);
-		SecondaryObjectPanel_1.add(rdbtnNewRadioButton_1_1_1);
+		TertiaryObjectPanel.add(rdbtnNewRadioButton_1_1_1);
 
 		JRadioButton rdbtnYes_1_1_1 = new JRadioButton("Yes");
 		rdbtnYes_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnYes_1_1_1.setEnabled(false);
 		rdbtnYes_1_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnYes_1_1_1.setBounds(50, 24, 48, 23);
-		SecondaryObjectPanel_1.add(rdbtnYes_1_1_1);
+		TertiaryObjectPanel.add(rdbtnYes_1_1_1);
 
 		JLabel lblGaussianBlurSecondary_1 = new JLabel("3D Gaussian blur:");
 		lblGaussianBlurSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblGaussianBlurSecondary_1.setBounds(10, 47, 161, 29);
-		SecondaryObjectPanel_1.add(lblGaussianBlurSecondary_1);
+		TertiaryObjectPanel.add(lblGaussianBlurSecondary_1);
 
 		JLabel lblRadius_1_1 = new JLabel("Radius:\r\n");
 		lblRadius_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius_1_1.setEnabled(false);
 		lblRadius_1_1.setBounds(98, 21, 48, 29);
-		SecondaryObjectPanel_1.add(lblRadius_1_1);
+		TertiaryObjectPanel.add(lblRadius_1_1);
 
 		txtTertGBx = new JTextField();
 		txtTertGBx.setColumns(10);
 		txtTertGBx.setBackground(new Color(211, 211, 211));
 		txtTertGBx.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertGBx);
+		TertiaryObjectPanel.add(txtTertGBx);
 
 		JLabel lblX_2_1 = new JLabel("x");
 		lblX_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_2_1.setBounds(10, 69, 21, 29);
-		SecondaryObjectPanel_1.add(lblX_2_1);
+		TertiaryObjectPanel.add(lblX_2_1);
 
 		JLabel lblY_2_1 = new JLabel("y");
 		lblY_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_2_1.setBounds(65, 69, 21, 29);
-		SecondaryObjectPanel_1.add(lblY_2_1);
+		TertiaryObjectPanel.add(lblY_2_1);
 
 		txtTertGBy = new JTextField();
 		txtTertGBy.setColumns(10);
 		txtTertGBy.setBackground(new Color(211, 211, 211));
 		txtTertGBy.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertGBy);
+		TertiaryObjectPanel.add(txtTertGBy);
 
 		JLabel lblZ_2_1 = new JLabel("z");
 		lblZ_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2_1.setBounds(120, 69, 21, 29);
-		SecondaryObjectPanel_1.add(lblZ_2_1);
+		TertiaryObjectPanel.add(lblZ_2_1);
 
 		txtTertGBz = new JTextField();
 		txtTertGBz.setColumns(10);
 		txtTertGBz.setBackground(new Color(211, 211, 211));
 		txtTertGBz.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertGBz);
+		TertiaryObjectPanel.add(txtTertGBz);
 
 		txtSpeckleTertiaryBG = new JTextField();
 		txtSpeckleTertiaryBG.setEnabled(false);
 		txtSpeckleTertiaryBG.setColumns(10);
 		txtSpeckleTertiaryBG.setBackground(new Color(211, 211, 211));
 		txtSpeckleTertiaryBG.setBounds(145, 25, 31, 20);
-		SecondaryObjectPanel_1.add(txtSpeckleTertiaryBG);
+		TertiaryObjectPanel.add(txtSpeckleTertiaryBG);
 
 		JLabel lblDetectMaximaSecondary_1 = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblDetectMaximaSecondary_1.setBounds(10, 96, 161, 29);
-		SecondaryObjectPanel_1.add(lblDetectMaximaSecondary_1);
+		TertiaryObjectPanel.add(lblDetectMaximaSecondary_1);
 
 		JLabel lblX_1_1_1 = new JLabel("x");
 		lblX_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_1_1_1.setBounds(10, 117, 21, 29);
-		SecondaryObjectPanel_1.add(lblX_1_1_1);
+		TertiaryObjectPanel.add(lblX_1_1_1);
 
 		txtTertDMx = new JTextField();
 		txtTertDMx.setColumns(10);
 		txtTertDMx.setBackground(new Color(211, 211, 211));
 		txtTertDMx.setBounds(20, 121, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertDMx);
+		TertiaryObjectPanel.add(txtTertDMx);
 
 		JLabel lblY_1_1_1 = new JLabel("y");
 		lblY_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1_1.setBounds(65, 117, 21, 29);
-		SecondaryObjectPanel_1.add(lblY_1_1_1);
+		TertiaryObjectPanel.add(lblY_1_1_1);
 
 		txtTertDMy = new JTextField();
 		txtTertDMy.setColumns(10);
 		txtTertDMy.setBackground(new Color(211, 211, 211));
 		txtTertDMy.setBounds(75, 121, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertDMy);
+		TertiaryObjectPanel.add(txtTertDMy);
 
 		JLabel lblZ_1_1_1 = new JLabel("z");
 		lblZ_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1_1.setBounds(120, 117, 21, 29);
-		SecondaryObjectPanel_1.add(lblZ_1_1_1);
+		TertiaryObjectPanel.add(lblZ_1_1_1);
 
 		txtTertDMz = new JTextField();
 		txtTertDMz.setColumns(10);
 		txtTertDMz.setBackground(new Color(211, 211, 211));
 		txtTertDMz.setBounds(130, 121, 41, 20);
-		SecondaryObjectPanel_1.add(txtTertDMz);
+		TertiaryObjectPanel.add(txtTertDMz);
 
 		JLabel lblThreshold_1_1 = new JLabel("Threshold:");
 		lblThreshold_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1_1.setBounds(10, 144, 76, 29);
-		SecondaryObjectPanel_1.add(lblThreshold_1_1);
+		TertiaryObjectPanel.add(lblThreshold_1_1);
 
 		txtTertThreshold = new JTextField();
 		txtTertThreshold.setColumns(10);
 		txtTertThreshold.setBackground(new Color(211, 211, 211));
 		txtTertThreshold.setBounds(76, 148, 55, 20);
-		SecondaryObjectPanel_1.add(txtTertThreshold);
+		TertiaryObjectPanel.add(txtTertThreshold);
 
 		JLabel lblWhichChannel_1_1 = new JLabel("Which channel? ");
-		lblWhichChannel_1_1.setEnabled(false);
 		lblWhichChannel_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblWhichChannel_1_1.setBounds(448, 28, 106, 29);
-		panel.add(lblWhichChannel_1_1);
+		pnlSegmentation.add(lblWhichChannel_1_1);
 
 		JComboBox cbChannelTertiary = new JComboBox();
-		cbChannelTertiary.setEnabled(false);
 		cbChannelTertiary.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
 		cbChannelTertiary.setSelectedIndex(2);
 		cbChannelTertiary.setMaximumRowCount(4);
 		cbChannelTertiary.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		cbChannelTertiary.setBounds(561, 30, 48, 25);
-		panel.add(cbChannelTertiary);
-
-		JLabel lblSegmentSecondary_1 = new JLabel("Tertiary Object");
-		lblSegmentSecondary_1.setEnabled(false);
-		lblSegmentSecondary_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSegmentSecondary_1.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentSecondary_1.setBounds(435, 3, 187, 29);
-		panel.add(lblSegmentSecondary_1);
+		pnlSegmentation.add(cbChannelTertiary);
 
 		JPanel SecondaryObjectPanel = new JPanel();
 		SecondaryObjectPanel.setBounds(223, 61, 187, 182);
-		panel.add(SecondaryObjectPanel);
+		pnlSegmentation.add(SecondaryObjectPanel);
 		SecondaryObjectPanel.setLayout(null);
 		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
@@ -648,28 +607,41 @@ public class SpeckleView extends JFrame {
 
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setBounds(223, 3, 187, 29);
-		panel.add(lblSegmentSecondary);
+		pnlSegmentation.add(lblSegmentSecondary);
 		lblSegmentSecondary.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentSecondary.setFont(new Font("Gadugi", Font.BOLD, 14));
 
 		JLabel lblWhichChannel_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1.setBounds(236, 28, 106, 29);
-		panel.add(lblWhichChannel_1);
+		pnlSegmentation.add(lblWhichChannel_1);
 		lblWhichChannel_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 
 		JComboBox cbChannelSecondary = new JComboBox();
 		cbChannelSecondary.setBounds(349, 30, 48, 25);
-		panel.add(cbChannelSecondary);
+		pnlSegmentation.add(cbChannelSecondary);
 		cbChannelSecondary.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
 		cbChannelSecondary.setSelectedIndex(1);
 		cbChannelSecondary.setMaximumRowCount(4);
 		cbChannelSecondary.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		
+		JCheckBox cbTertiaryObject = new JCheckBox("Tertiary Object");
+		cbTertiaryObject.setSelected(true);
+		cbTertiaryObject.setBounds(435, 6, 187, 23);
+		pnlSegmentation.add(cbTertiaryObject);
+		cbTertiaryObject.setHorizontalAlignment(SwingConstants.CENTER);
+		cbTertiaryObject.setToolTipText("Toggle the processing of an additional speckle channel on/off.");
+		cbTertiaryObject.setFont(new Font("Gadugi", Font.BOLD, 14));
+		
+		JPanel pnlSegmentationHeader = new JPanel();
+		pnlSegmentationHeader.setBounds(546, 157, 216, 29);
+		paneSpeckle.add(pnlSegmentationHeader);
+		pnlSegmentationHeader.setLayout(null);
 
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
+		lblSegmentationParameters.setBounds(0, 0, 216, 29);
+		pnlSegmentationHeader.add(lblSegmentationParameters);
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
-		lblSegmentationParameters.setBounds(546, 157, 216, 29);
-		paneSpeckle.add(lblSegmentationParameters);
 
 		JButton btnBackToMenu = new JButton("Back to Menu");
 		btnBackToMenu.addActionListener(new ActionListener() {
@@ -759,13 +731,11 @@ public class SpeckleView extends JFrame {
 		paneSpeckle.add(txtC2Name);
 
 		txtC3Name = new JTextField();
-		txtC3Name.setEnabled(false);
 		txtC3Name.setColumns(10);
 		txtC3Name.setBounds(123, 259, 176, 29);
 		paneSpeckle.add(txtC3Name);
 
 		txtC4Name = new JTextField();
-		txtC4Name.setEnabled(false);
 		txtC4Name.setColumns(10);
 		txtC4Name.setBounds(123, 292, 176, 29);
 		paneSpeckle.add(txtC4Name);
@@ -779,26 +749,6 @@ public class SpeckleView extends JFrame {
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnLoadConfigSingleCell.setBounds(152, 382, 147, 29);
 		paneSpeckle.add(btnLoadConfigSingleCell);
-
-		JLabel lblPerformColocalizationAnalysis = new JLabel("Perform colocalization analysis*?");
-		lblPerformColocalizationAnalysis
-				.setToolTipText("There must be secondary and tertiary objects to perform colocalization.");
-		lblPerformColocalizationAnalysis.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblPerformColocalizationAnalysis.setBounds(10, 147, 206, 29);
-		paneSpeckle.add(lblPerformColocalizationAnalysis);
-
-		JRadioButton rbOutputDirNo_1 = new JRadioButton("No");
-		buttonGroup.add(rbOutputDirNo_1);
-		rbOutputDirNo_1.setSelected(true);
-		rbOutputDirNo_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirNo_1.setBounds(210, 150, 48, 23);
-		paneSpeckle.add(rbOutputDirNo_1);
-
-		JRadioButton rbOutputDirYes_1 = new JRadioButton("Yes");
-		buttonGroup.add(rbOutputDirYes_1);
-		rbOutputDirYes_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbOutputDirYes_1.setBounds(260, 150, 48, 23);
-		paneSpeckle.add(rbOutputDirYes_1);
 
 		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		cbAnalysisMode.setSelected(true);
