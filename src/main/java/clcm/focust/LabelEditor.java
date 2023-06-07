@@ -13,7 +13,7 @@ import inra.ijpb.plugins.AnalyzeRegions3D;
 
 
 /**
- * A class that contains helper methods for processing labels.
+ * A class that contains helper methods for processing labels and stacks.
  * @author SebastianAmos
  *
  */
@@ -22,6 +22,36 @@ public class LabelEditor {
 
 	public static ImagePlus renamedImage;
 	//private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+	
+	
+	
+	/**
+	 * Adds an empty black slice as the first and last slice of an image stack.
+	 * 
+	 * @param ImagePlus input
+	 */
+	public static void padTopAndBottom(ImagePlus input) {
+		
+		ImageProcessor emptySlice = input.getProcessor().createProcessor(input.getWidth(), input.getHeight());
+		
+		emptySlice.setColor(0);
+		emptySlice.fill();
+		
+		// set to first slice, add empty, then repeat on last slice.
+		input.setSlice(0);
+		input.getStack().addSlice(emptySlice);
+		input.setSlice(input.getNSlices()+1);
+		input.getStack().addSlice(emptySlice);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/**
