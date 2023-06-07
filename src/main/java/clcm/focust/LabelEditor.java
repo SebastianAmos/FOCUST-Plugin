@@ -43,6 +43,8 @@ public class LabelEditor {
 		input.setSlice(input.getNSlices()+1);
 		input.getStack().addSlice(emptySlice);
 		
+		
+		
 	}
 	
 	
