@@ -21,6 +21,8 @@ import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
@@ -80,6 +82,7 @@ public class SpeckleView extends JFrame {
 	public static Double radius_y3;
 	public static Double radius_z3;
 
+	public static String killBordersText;
 	public static Double greaterConstantPrimary;
 	public static Double greaterConstantSecondary;
 	public static Double greaterConstantTertiary;
@@ -92,6 +95,7 @@ public class SpeckleView extends JFrame {
 	public static int tertiaryChannelChoice;
 	public static String groupingInfo;
 	public static boolean analysisMode;
+	private final ButtonGroup btngrpKillBorders = new ButtonGroup();
 
 	/**
 	 * Construct the speckle gui.
@@ -680,6 +684,8 @@ public class SpeckleView extends JFrame {
 					greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
 					greaterConstantTertiary = Double.parseDouble(txtTertThreshold.getText());
 				}
+				
+				killBordersText = GuiHelper.getSelectedButton(btngrpKillBorders);
 				channel2Name = txtC2Name.getText();
 				channel3Name = txtC3Name.getText();
 				channel4Name = txtC4Name.getText();
@@ -750,5 +756,27 @@ public class SpeckleView extends JFrame {
 		cbAnalysisMode.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		cbAnalysisMode.setBounds(18, 104, 157, 23);
 		paneSpeckle.add(cbAnalysisMode);
+		
+		JLabel lblKillBorders = new JLabel("Kill Borders? ");
+		lblKillBorders.setToolTipText("Selecting yes will save output files to the specified directory.");
+		lblKillBorders.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblKillBorders.setBounds(13, 192, 96, 29);
+		paneSpeckle.add(lblKillBorders);
+		
+		JRadioButton rbKillBordersNO = new JRadioButton("No");
+		rbKillBordersNO.setSelected(true);
+		btngrpKillBorders.add(rbKillBordersNO);
+		rbKillBordersNO.setBounds(97, 195, 54, 23);
+		paneSpeckle.add(rbKillBordersNO);
+		
+		JRadioButton rdKillBordersXY = new JRadioButton("X + Y");
+		btngrpKillBorders.add(rdKillBordersXY);
+		rdKillBordersXY.setBounds(147, 195, 54, 23);
+		paneSpeckle.add(rdKillBordersXY);
+		
+		JRadioButton rbKillBordersXYZ = new JRadioButton("X + Y + Z");
+		btngrpKillBorders.add(rbKillBordersXYZ);
+		rbKillBordersXYZ.setBounds(213, 195, 84, 23);
+		paneSpeckle.add(rbKillBordersXYZ);
 	}
 }
