@@ -40,7 +40,7 @@ public class Segment {
 	private static ImagePlus secondaryObjectsSpeckles;
 	private static ImagePlus tertiaryObjectsSpeckles;
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	
+	private CLIJ2 clij2 = CLIJ2.getInstance();
 	
 	// Could make these user-input strings to provide greater flexibility 
 	private static String primaryPrefix = "Primary_Objects_";
@@ -110,9 +110,46 @@ public class Segment {
 					
 					// --> COULD USE AN ARRAYMAP to link the array lists of variable[] to the strings primary, secondary and tertiary.
 					// Testing for batch processing!
-					ArrayList<Variable[]> priLabel = new ArrayList<Variable[]>();
-					ArrayList<Variable[]> priVolume = new ArrayList<Variable[]>();
-					ArrayList<Variable[]> priImgID = new ArrayList<Variable[]>();
+					ArrayList<Variable> priLabel = new ArrayList<Variable>();
+					ArrayList<Variable> priImgID = new ArrayList<Variable>();
+					ArrayList<Variable> priC2Count = new ArrayList<Variable>();
+					ArrayList<Variable> priC3Count = new ArrayList<Variable>();
+					ArrayList<Variable> priVolume = new ArrayList<Variable>();
+					ArrayList<Variable> priVoxels = new ArrayList<Variable>();
+					ArrayList<Variable> priSphericity = new ArrayList<Variable>();
+					ArrayList<Variable> priElongation = new ArrayList<Variable>();
+					ArrayList<Variable> priBreadth = new ArrayList<Variable>();
+					ArrayList<Variable> priSurfaceA = new ArrayList<Variable>();
+					ArrayList<Variable> priCentroidX = new ArrayList<Variable>();
+					ArrayList<Variable> priCentroidY = new ArrayList<Variable>();
+					ArrayList<Variable> priCentroidZ = new ArrayList<Variable>();
+					ArrayList<Variable> priC1Mean = new ArrayList<Variable>();
+					ArrayList<Variable> priC1IntDen = new ArrayList<Variable>();
+					ArrayList<Variable> priC2Mean = new ArrayList<Variable>();
+					ArrayList<Variable> priC2IntDen = new ArrayList<Variable>();
+					ArrayList<Variable> priC3Mean = new ArrayList<Variable>();
+					ArrayList<Variable> priC3IntDen = new ArrayList<Variable>();
+					
+					ArrayList<Variable> secLabel = new ArrayList<Variable>();
+					ArrayList<Variable> secImgID = new ArrayList<Variable>();
+					ArrayList<Variable> secParent = new ArrayList<Variable>();
+					ArrayList<Variable> secVolume = new ArrayList<Variable>();
+					ArrayList<Variable> secVoxels = new ArrayList<Variable>();
+					ArrayList<Variable> secSphericity = new ArrayList<Variable>();
+					ArrayList<Variable> secElongation = new ArrayList<Variable>();
+					ArrayList<Variable> secBreadth = new ArrayList<Variable>();
+					ArrayList<Variable> secSurfaceA = new ArrayList<Variable>();
+					ArrayList<Variable> secCentroidX = new ArrayList<Variable>();
+					ArrayList<Variable> secCentroidY = new ArrayList<Variable>();
+					ArrayList<Variable> secCentroidZ = new ArrayList<Variable>();
+					ArrayList<Variable> secC1Mean = new ArrayList<Variable>();
+					ArrayList<Variable> secC1IntDen = new ArrayList<Variable>();
+					ArrayList<Variable> secC2Mean = new ArrayList<Variable>();
+					ArrayList<Variable> secC2IntDen = new ArrayList<Variable>();
+					ArrayList<Variable> secC3Mean = new ArrayList<Variable>();
+					ArrayList<Variable> secC3IntDen = new ArrayList<Variable>();
+					
+					
 					
 					ResultsTable primaryFinalResults = null;
 					ResultsTable secondaryFinalResults = null;
@@ -124,6 +161,13 @@ public class Segment {
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
 						count++;
+						
+						// reset the temp arrays
+						Variable[] labels = null;
+						Variable[] imageID = null;
+						Variable[] vol = null;
+						
+						
 						String path = SpeckleView.inputDir + list[i];
 					
 						IJ.log("Processing image " + count + " of " + list.length);
@@ -178,7 +222,57 @@ public class Segment {
 						tertiaryObjectsSpeckles.setCalibration(cal);
 					
 					
-						if (!analysisOnly) {
+						// If kill borders is selected, then apply the appropriate method
+						switch(SpeckleView.killBordersText) {
+							case "No":
+								break;	
+							
+							case "X + Y":
+								
+								// add padding to Z for primary objects
+								LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
+				
+								ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
+								ClearCLBuffer removedBorders = clij2.create(primaryPadded);
+								ClearCLBuffer resetZ = null;
+								
+								// kill borders for primary object
+								clij2.excludeLabelsOnEdges(primaryPadded, removedBorders);
+								
+								// remove the z padding
+								clij2.subStack(removedBorders, resetZ, 1, (int) removedBorders.getDepth()-1);
+							
+								primaryObjectsSpeckles = clij2.pull(resetZ);
+								clij2.clear();
+								
+								// mask secondary and tertiary objects by remaining primary objects. 
+								// THIS CAN BE SENT TO GPU INSTEAD IF SLOW!
+								secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles, "Multiply create stack");
+								tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles, "Multiply create stack");
+								
+								break;
+								
+							
+							case "X + Y + Z":
+								// No padding required in Z
+								// Run kill borders on primary objects then mask other object channels
+								ClearCLBuffer primaryLabel = clij2.push(primaryObjectsSpeckles);
+								ClearCLBuffer removedBorder = clij2.create(primaryLabel);
+								
+								clij2.excludeLabelsOnEdges(primaryLabel, removedBorder);
+								
+								primaryObjectsSpeckles = clij2.pull(removedBorder);
+								clij2.clear();
+								
+								secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles, "Multiply create stack");
+								tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles, "Multiply create stack");
+								
+								break;
+						}
+						
+						
+						
+						if (!analysisOnly || SpeckleView.killBordersText == "X + Y" || SpeckleView.killBordersText == "X + Y + Z") {
 							IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "Primary_Objects_" + imgName);
 							IJ.saveAs(secondaryObjectsSpeckles, "TIF", dir + "Secondary_Objects_" + imgName);
 							IJ.saveAs(tertiaryObjectsSpeckles, "TIF", dir + "Tertiary_Objects_" + imgName);
@@ -299,9 +393,23 @@ public class Segment {
 						
 						
 						
-						priLabel.add(primaryIntensity.getColumnAsVariables("Label"));
-						priVolume.add(primaryResults.getColumnAsVariables("Volume"));
-						priImgID.add(primaryIntensity.getColumnAsVariables("ImageID"));
+						//priLabel.add(primaryIntensity.getColumnAsVariables("Label"));
+						//priVolume.add(primaryResults.getColumnAsVariables("Volume"));
+						//priImgID.add(primaryIntensity.getColumnAsVariables("ImageID"));
+						
+						labels = primaryIntensity.getColumnAsVariables("Label");
+						imageID = primaryIntensity.getColumnAsVariables("ImageID");
+						vol = primaryResults.getColumnAsVariables("Volume");
+						
+						for (Variable variable : labels) {
+							priLabel.add(variable);
+						}
+						for (Variable variable : imageID) {
+							priImgID.add(variable);
+						}
+						for (Variable variable : vol) {
+							priVolume.add(variable);
+						}
 						
 						
 						// Primary table
@@ -392,7 +500,17 @@ public class Segment {
 						
 					} // end of single image loop!!
 					
+					ResultsTable primary = new ResultsTable();
+					Variable[] primaryLabels = priLabel.toArray(new Variable[priLabel.size()]);
+					Variable[] primaryImgID = priImgID.toArray(new Variable[priImgID.size()]);
+					Variable[] primaryVolume = priVolume.toArray(new Variable[priVolume.size()]);
 					
+					primary.setColumn("Label", primaryLabels);
+					primary.setColumn("ImageID", primaryImgID);
+					primary.setColumn("Volume", primaryVolume);
+					
+					
+					/*
 					ResultsTable primary = new ResultsTable();
 					int c = priLabel.size();
 					for (int i = 0; i < c; i++) {
@@ -434,7 +552,7 @@ public class Segment {
 							primary1.addValue("ImageID", element.getString());
 						}
 					}
-					/* for (Variable[] array : priVolume) {
+					  for (Variable[] array : priVolume) {
 						for (Variable element : array) {
 							for (int i = 0; i < primary.size(); i++) {
 								primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
@@ -442,13 +560,13 @@ public class Segment {
 							primary2.addRow();
 							primary2.addValue("Volume", element.getString());
 						}
-					} */
+					} 
 					
 					ResultsTable rt = new ResultsTable();
 					rt.setColumn("Label", primary1.getColumnAsVariables("Label"));
 					rt.setColumn("ImageID", primary1.getColumnAsVariables("ImageID"));
 					//rt.setColumn("Volume", primary2.getColumnAsVariables("Volume"));
-					
+					*/
 					
 					
 					
@@ -460,8 +578,8 @@ public class Segment {
 					TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
 					TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
 					TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
-					TableUtility.saveTable(rt, dir, "RT.csv");
-					TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
+					//TableUtility.saveTable(rt, dir, "RT.csv");
+					//TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
 					
 					
 					long endTime = System.currentTimeMillis();
