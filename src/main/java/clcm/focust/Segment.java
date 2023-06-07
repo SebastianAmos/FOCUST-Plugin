@@ -16,13 +16,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
 /**
  * A class for segmenting fluorescent datasets based on user-defined parameters. 
- * Three segmentation workflows currently available (processSpheroids, processSingleCells and processSpeckles.
+ * Three segmentation protcols currently available (processSpheroids, processSingleCells and processSpeckles.
  * @author SebastianAmos
  *
  */
@@ -94,7 +95,15 @@ public class Segment {
 				
 				// could combine results tables for each image and pull them later to create final results tables.
 				Map<ImagePlus, ArrayList<ResultsTable>> results = new HashMap<>();
-
+				
+				
+				
+				Map<String, ArrayList<ArrayList<Variable>>> resultsArray = new HashMap<>();
+				
+				resultsArray.put("primary", null);
+				
+				
+				
 				
 				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
 					if(analysisOnly) {
@@ -231,7 +240,9 @@ public class Segment {
 								
 								// add padding to Z for primary objects
 								LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
-				
+								
+								IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "PADDED_PRIMARY_" + imgName);
+								
 								ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
 								ClearCLBuffer removedBorders = clij2.create(primaryPadded);
 								ClearCLBuffer resetZ = null;
