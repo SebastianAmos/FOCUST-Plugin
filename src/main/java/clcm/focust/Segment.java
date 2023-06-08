@@ -422,7 +422,8 @@ public class Segment {
 						TableUtility.collectColumns(c3CountEdit, primary);
 						
 						// add the parent label to the secondary and tertiary tables
-						TableUtility.collectColumns(tertiaryFinalResults, tertiary);
+						TableUtility.collectColumns(c2Parent, secondary);
+						TableUtility.collectColumns(c3Parent, tertiary);
 						
 						
 						
