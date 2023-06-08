@@ -15,7 +15,9 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,13 +98,42 @@ public class Segment {
 				// could combine results tables for each image and pull them later to create final results tables.
 				Map<ImagePlus, ArrayList<ResultsTable>> results = new HashMap<>();
 				
+				Map<String, List<Variable>> primary = new LinkedHashMap<>();
+				Map<String, List<Variable>> secondary = new LinkedHashMap<>();
+				Map<String, List<Variable>> tertiary = new LinkedHashMap<>();
 				
 				
-				Map<String, ArrayList<ArrayList<Variable>>> resultsArray = new HashMap<>();
-				
-				resultsArray.put("primary", null);
 				
 				
+				/*
+				// set up the arraylists to hold results for each image for each object type (keys). 
+				String[] keys = {"primary", "secondary", "tertiary"};
+				Map<String, ArrayList<Variable>> resultsMap = new HashMap<>();
+				
+				for (String key : keys) {
+					ArrayList<Variable> label = new ArrayList<>();
+					ArrayList<Variable> imageID = new ArrayList<>();
+					ArrayList<Variable> volume = new ArrayList<>();
+					ArrayList<Variable> voxelCount = new ArrayList<>();
+					ArrayList<Variable> sphericity = new ArrayList<>();
+					ArrayList<Variable> elongation = new ArrayList<>();
+					ArrayList<Variable> breadth = new ArrayList<>();
+					ArrayList<Variable> surfaceArea = new ArrayList<>();
+					ArrayList<Variable> centroidX = new ArrayList<>();
+					ArrayList<Variable> centroidY = new ArrayList<>();
+					ArrayList<Variable> centroidZ = new ArrayList<>();
+					ArrayList<Variable> c1Mean = new ArrayList<>();
+					ArrayList<Variable> c1IntDen = new ArrayList<>();
+					ArrayList<Variable> c2Mean = new ArrayList<>();
+					ArrayList<Variable> c2IntDen = new ArrayList<>();
+					ArrayList<Variable> c3Mean = new ArrayList<>();
+					ArrayList<Variable> c3IntDen = new ArrayList<>();
+					ArrayList<Variable> parent = new ArrayList<>();
+					ArrayList<Variable> secondaryCount = new ArrayList<>();
+					ArrayList<Variable> tertiaryCount = new ArrayList<>();
+				}
+				
+				*/
 				
 				
 				// If analysis-only-mode, create a new list[] containing image names that DO NOT match the prefix expectations i.e. are the original images, not the segmented outputs.
@@ -117,6 +148,7 @@ public class Segment {
 							list = tempList.toArray(list);
 					}
 					
+					/*
 					// --> COULD USE AN ARRAYMAP to link the array lists of variable[] to the strings primary, secondary and tertiary.
 					// Testing for batch processing!
 					ArrayList<Variable> priLabel = new ArrayList<Variable>();
@@ -157,7 +189,7 @@ public class Segment {
 					ArrayList<Variable> secC2IntDen = new ArrayList<Variable>();
 					ArrayList<Variable> secC3Mean = new ArrayList<Variable>();
 					ArrayList<Variable> secC3IntDen = new ArrayList<Variable>();
-					
+					*/
 					
 					
 					ResultsTable primaryFinalResults = null;
@@ -257,7 +289,7 @@ public class Segment {
 								clij2.clear();
 								
 								// mask secondary and tertiary objects by remaining primary objects. 
-								// THIS CAN BE SENT TO GPU INSTEAD IF SLOW!
+								// THIS CAN BE SENT TO GPU INSTEAD
 								secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles, "Multiply create stack");
 								tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles, "Multiply create stack");
 								
@@ -304,6 +336,18 @@ public class Segment {
 						ResultsTable secondaryResults = analyze3D.process(secondaryObjectsSpeckles);
 						ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsSpeckles);
 						
+						
+						// Add to the maps
+						TableUtility.collectColumns(primaryResults, primary);
+						TableUtility.collectColumns(secondaryResults, secondary);
+						TableUtility.collectColumns(tertiaryResults, tertiary);
+						
+						
+						
+						
+						
+						
+						
 						IJ.log("Running Intensity Analysis...");
 						IJ.log("-------------------------------------------------------");
 						
@@ -320,7 +364,7 @@ public class Segment {
 							for (int k = 0; k < channelsSpeckle.length; k++) {
 								
 								ResultsTable temp = TableUtility.processIntensity(channelsSpeckle[k], objectImages[j]);
-								result.setColumn("Label", temp.getColumnAsVariables("Label"));
+								//result.setColumn("Label", temp.getColumnAsVariables("Label"));
 								result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(), temp.getColumnAsVariables("Mean_Intensity"));
 								result.setColumn(("C" + (k + 1) + "_IntDen").toString(), temp.getColumnAsVariables("IntDen"));
 								
@@ -345,17 +389,45 @@ public class Segment {
 						IJ.log("Generating Results Tables...");
 						IJ.log("-------------------------------------------------------");
 						
+						
+						
 						// Count secondary and tertiary objects per primary object.
-						ResultsTable c2Count = countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
-						ResultsTable c3Count = countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
+						ResultsTable c2Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
+						ResultsTable c3Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
 						// Calculate parent (primary) for each secondary and tertiary object.
 						ResultsTable c2Parent = TableUtility.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 						ResultsTable c3Parent = TableUtility.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
+						// Leave the table with just max value (which represents the count per primary object)
+						ResultsTable c2CountEdit = c2Count;
+						ResultsTable c3CountEdit = c3Count;
+						ResultsTable c2ParentEdit = c2Parent;
+						ResultsTable c3ParentEdit = c3Parent;
 						
 						
-					
+						// remove all columns by max 
+						String[] colsToRemove = {"Label", "Mean_Intensity", "Volume", "IntDen"};
+						
+						TableUtility.removeColumns(c2CountEdit, colsToRemove);
+						TableUtility.removeColumns(c3CountEdit, colsToRemove);
+						TableUtility.removeColumns(c2Parent, colsToRemove);
+						TableUtility.removeColumns(c3Parent, colsToRemove);
+						
+						c2CountEdit.renameColumn("Max", "C2_Object_Count");
+						c3CountEdit.renameColumn("Max", "C3_Object_Count");
+						
+						// add the C2 and C3 counts to the primary map
+						TableUtility.collectColumns(c2CountEdit, primary);
+						TableUtility.collectColumns(c3CountEdit, primary);
+						
+						// add the parent label to the secondary and tertiary tables
+						TableUtility.collectColumns(tertiaryFinalResults, tertiary);
+						
+						
+						
+						
+						
 						// Add imageID and grouping info to intensity tables.
 						String group = SpeckleView.groupingInfo;
 						
@@ -402,12 +474,16 @@ public class Segment {
 							}
 						}
 						
+						TableUtility.collectColumns(primaryIntensity, primary);
+						TableUtility.collectColumns(secondaryIntensity, secondary);
+						TableUtility.collectColumns(tertiaryIntensity, tertiary);
+						
 						
 						
 						//priLabel.add(primaryIntensity.getColumnAsVariables("Label"));
 						//priVolume.add(primaryResults.getColumnAsVariables("Volume"));
 						//priImgID.add(primaryIntensity.getColumnAsVariables("ImageID"));
-						
+						/*
 						labels = primaryIntensity.getColumnAsVariables("Label");
 						imageID = primaryIntensity.getColumnAsVariables("ImageID");
 						vol = primaryResults.getColumnAsVariables("Volume");
@@ -421,6 +497,10 @@ public class Segment {
 						for (Variable variable : vol) {
 							priVolume.add(variable);
 						}
+						
+						*/
+						
+					
 						
 						
 						// Primary table
@@ -511,14 +591,15 @@ public class Segment {
 						
 					} // end of single image loop!!
 					
-					ResultsTable primary = new ResultsTable();
-					Variable[] primaryLabels = priLabel.toArray(new Variable[priLabel.size()]);
-					Variable[] primaryImgID = priImgID.toArray(new Variable[priImgID.size()]);
-					Variable[] primaryVolume = priVolume.toArray(new Variable[priVolume.size()]);
-					
-					primary.setColumn("Label", primaryLabels);
-					primary.setColumn("ImageID", primaryImgID);
-					primary.setColumn("Volume", primaryVolume);
+				/*
+				 * ResultsTable primary = new ResultsTable(); Variable[] primaryLabels =
+				 * priLabel.toArray(new Variable[priLabel.size()]); Variable[] primaryImgID =
+				 * priImgID.toArray(new Variable[priImgID.size()]); Variable[] primaryVolume =
+				 * priVolume.toArray(new Variable[priVolume.size()]);
+				 * 
+				 * primary.setColumn("Label", primaryLabels); primary.setColumn("ImageID",
+				 * primaryImgID); primary.setColumn("Volume", primaryVolume);
+				 */
 					
 					
 					/*
@@ -581,6 +662,29 @@ public class Segment {
 					
 					
 					
+					ResultsTable primaryTable = new ResultsTable();
+					ResultsTable secondaryTable = new ResultsTable();
+					ResultsTable tertiaryTable = new ResultsTable();
+					
+					for (Map.Entry<String, List<Variable>> entry : primary.entrySet()) {
+						String columnName = entry.getKey();
+						List<Variable> columnData = entry.getValue();
+						primaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
+					}
+					
+					for (Map.Entry<String, List<Variable>> entry : secondary.entrySet()) {
+						String columnName = entry.getKey();
+						List<Variable> columnData = entry.getValue();
+						secondaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
+					}
+					
+					for (Map.Entry<String, List<Variable>> entry : tertiary.entrySet()) {
+						String columnName = entry.getKey();
+						List<Variable> columnData = entry.getValue();
+						tertiaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
+					}
+					
+					
 
 					IJ.log("Saving Results Tables...");
 					IJ.log("-------------------------------------------------------");
@@ -588,7 +692,12 @@ public class Segment {
 					TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
 					TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
 					TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
-					TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
+					
+					TableUtility.saveTable(primaryTable, dir, "PrimaryTable.csv");
+					TableUtility.saveTable(secondaryTable, dir, "SecondaryTable.csv");
+					TableUtility.saveTable(tertiaryTable, dir, "TertiaryTable.csv");
+					
+					//TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
 					//TableUtility.saveTable(rt, dir, "RT.csv");
 					//TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
 					
@@ -1797,25 +1906,6 @@ public class Segment {
 
 	
 	
-	/**
-	 * Count how many labels from labelToCount overlap with mask. 
-	 * 
-	 * @param mask
-	 * @param labelToCount
-	 * @return ResultsTable
-	 */
-	public static ResultsTable countOverlappingLabels(ImagePlus mask, ImagePlus labelToCount) {
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		clij2.clear();
-		ClearCLBuffer larger = clij2.push(mask);
-		ClearCLBuffer smaller = clij2.push(labelToCount);
-		ClearCLBuffer countMap = clij2.create(larger);
-		clij2.labelOverlapCountMap(larger, smaller, countMap);
-		ImagePlus impCountMap = clij2.pull(countMap);
-		clij2.clear();
-		ResultsTable labelCounts = TableUtility.processIntensity(impCountMap, mask);
-		return labelCounts;
-	}
 	
 	
 	
