@@ -1,7 +1,7 @@
 package clcm.focust;
 
-import java.util.Enumeration;
 
+import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 
@@ -22,6 +22,7 @@ public class GuiHelper {
 		}
 		return null;
 	}
+
 	
 	
 }
