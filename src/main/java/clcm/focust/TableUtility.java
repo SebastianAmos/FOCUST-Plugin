@@ -1,6 +1,10 @@
 package clcm.focust;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -68,5 +72,37 @@ public class TableUtility {
 			IJ.log("Cannot save results table: " + dir + name);
 		}
 	}
+	
+	
+	public static void collectColumns(ResultsTable rt, Map<String, List<Variable>> columnDataMap) {
+		
+		String[] columnNames = rt.getHeadings();
+		
+		for (String name : columnNames) {
+			
+			// returns the list for that column header, or makes a new one if it doesn't exist yet.
+			List<Variable> columnData = columnDataMap.getOrDefault(name, new ArrayList<>());
+			
+			// grab the entire column
+			Variable[] columnVariables = rt.getColumnAsVariables(name);
+			
+			// add the array to the list	
+			columnData.addAll(Arrays.asList(columnVariables));
+			
+			// update the map
+			columnDataMap.put(name, columnData);
+			
+		}
+		
+	}
+	
+	public static void removeColumns(ResultsTable rt, String[] colsToRemove) {
+		
+		for (String col : colsToRemove) {
+			rt.deleteColumn(col);
+		}
+		
+	}
+	
 	
 }
