@@ -411,8 +411,8 @@ public class Segment {
 						
 						TableUtility.removeColumns(c2CountEdit, colsToRemove);
 						TableUtility.removeColumns(c3CountEdit, colsToRemove);
-						TableUtility.removeColumns(c2Parent, colsToRemove);
-						TableUtility.removeColumns(c3Parent, colsToRemove);
+						TableUtility.removeColumns(c2ParentEdit, colsToRemove);
+						TableUtility.removeColumns(c3ParentEdit, colsToRemove);
 						
 						c2CountEdit.renameColumn("Max", "C2_Object_Count");
 						c3CountEdit.renameColumn("Max", "C3_Object_Count");
@@ -422,8 +422,8 @@ public class Segment {
 						TableUtility.collectColumns(c3CountEdit, primary);
 						
 						// add the parent label to the secondary and tertiary tables
-						TableUtility.collectColumns(c2Parent, secondary);
-						TableUtility.collectColumns(c3Parent, tertiary);
+						TableUtility.collectColumns(c2ParentEdit, secondary);
+						TableUtility.collectColumns(c3ParentEdit, tertiary);
 						
 						
 						
@@ -506,7 +506,7 @@ public class Segment {
 						
 						// Primary table
 						primaryFinalResults = new ResultsTable();
-						primaryFinalResults.setColumn("Label", primaryIntensity.getColumnAsVariables("Label"));
+						primaryFinalResults.setColumn("Label", primaryResults.getColumnAsVariables("Label"));
 						primaryFinalResults.setColumn("ImageID", primaryIntensity.getColumnAsVariables("ImageID"));
 						if (!SpeckleView.groupingInfo.isEmpty()) {
 							primaryFinalResults.setColumn("Group", primaryIntensity.getColumnAsVariables("Group"));
