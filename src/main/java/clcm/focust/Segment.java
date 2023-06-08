@@ -421,6 +421,9 @@ public class Segment {
 						TableUtility.collectColumns(c2CountEdit, primary);
 						TableUtility.collectColumns(c3CountEdit, primary);
 						
+						c2ParentEdit.renameColumn("Max", "Parent_Label");
+						c2ParentEdit.renameColumn("Max", "Parent_Label");
+						
 						// add the parent label to the secondary and tertiary tables
 						TableUtility.collectColumns(c2ParentEdit, secondary);
 						TableUtility.collectColumns(c3ParentEdit, tertiary);
@@ -511,8 +514,8 @@ public class Segment {
 						if (!SpeckleView.groupingInfo.isEmpty()) {
 							primaryFinalResults.setColumn("Group", primaryIntensity.getColumnAsVariables("Group"));
 						}
-						primaryFinalResults.setColumn("C2_Object_Count", c2Count.getColumnAsVariables("Max"));
-						primaryFinalResults.setColumn("C3_Object_Count", c3Count.getColumnAsVariables("Max"));
+						primaryFinalResults.setColumn("C2_Object_Count", c2Count.getColumnAsVariables("C2_Object_Count"));
+						primaryFinalResults.setColumn("C3_Object_Count", c3Count.getColumnAsVariables("C3_Object_Count"));
 						primaryFinalResults.setColumn("Volume", primaryResults.getColumnAsVariables("Volume"));
 						primaryFinalResults.setColumn("Voxel_Count", primaryResults.getColumnAsVariables("VoxelCount"));
 						primaryFinalResults.setColumn("Sphericity", primaryResults.getColumnAsVariables("Sphericity"));
@@ -535,12 +538,12 @@ public class Segment {
 						// Secondary table
 						secondaryFinalResults = new ResultsTable();
 						
-						secondaryFinalResults.setColumn("Label", secondaryIntensity.getColumnAsVariables("Label"));
+						secondaryFinalResults.setColumn("Label", secondaryResults.getColumnAsVariables("Label"));
 						secondaryFinalResults.setColumn("ImageID", secondaryIntensity.getColumnAsVariables("ImageID"));
 						if (!SpeckleView.groupingInfo.isEmpty()) {
 							secondaryFinalResults.setColumn("Group", secondaryIntensity.getColumnAsVariables("Group"));
 						}
-						secondaryFinalResults.setColumn("Parent_Label", c2Parent.getColumnAsVariables("Max"));
+						secondaryFinalResults.setColumn("Parent_Label", c2Parent.getColumnAsVariables("Parent_Label"));
 						secondaryFinalResults.setColumn("Volume", secondaryResults.getColumnAsVariables("Volume"));
 						secondaryFinalResults.setColumn("Voxel_Count", secondaryResults.getColumnAsVariables("VoxelCount"));
 						secondaryFinalResults.setColumn("Sphericity", secondaryResults.getColumnAsVariables("Sphericity"));
@@ -563,12 +566,12 @@ public class Segment {
 						// Tertiary table
 						tertiaryFinalResults = new ResultsTable();
 						
-						tertiaryFinalResults.setColumn("Label", tertiaryIntensity.getColumnAsVariables("Label"));
+						tertiaryFinalResults.setColumn("Label", tertiaryResults.getColumnAsVariables("Label"));
 						tertiaryFinalResults.setColumn("ImageID", tertiaryIntensity.getColumnAsVariables("ImageID"));
 						if (!SpeckleView.groupingInfo.isEmpty()) {
 							tertiaryFinalResults.setColumn("Group", tertiaryIntensity.getColumnAsVariables("Group"));
 						}
-						tertiaryFinalResults.setColumn("Parent_Label", c3Parent.getColumnAsVariables("Max"));
+						tertiaryFinalResults.setColumn("Parent_Label", c3Parent.getColumnAsVariables("Parent_Label"));
 						tertiaryFinalResults.setColumn("Volume", tertiaryResults.getColumnAsVariables("Volume"));
 						tertiaryFinalResults.setColumn("Voxel_Count", tertiaryResults.getColumnAsVariables("VoxelCount"));
 						tertiaryFinalResults.setColumn("Sphericity", tertiaryResults.getColumnAsVariables("Sphericity"));
