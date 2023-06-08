@@ -10,6 +10,8 @@ import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 
 /**
@@ -23,7 +25,7 @@ public class LabelEditor {
 	public static ImagePlus renamedImage;
 	//private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
-	
+
 	
 	/**
 	 * Adds an empty black slice as the first and last slice of an image stack.
@@ -43,17 +45,31 @@ public class LabelEditor {
 		input.setSlice(input.getNSlices()+1);
 		input.getStack().addSlice(emptySlice);
 		
-		
-		
 	}
 	
 	
 	
 	
-	
-	
-	
-	
+
+	/**
+	 * Count how many labels from labelToCount overlap with mask. 
+	 * 
+	 * @param mask
+	 * @param labelToCount
+	 * @return ResultsTable
+	 */
+	public static ResultsTable countOverlappingLabels(ImagePlus mask, ImagePlus labelToCount) {
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		ClearCLBuffer larger = clij2.push(mask);
+		ClearCLBuffer smaller = clij2.push(labelToCount);
+		ClearCLBuffer countMap = clij2.create(larger);
+		clij2.labelOverlapCountMap(larger, smaller, countMap);
+		ImagePlus impCountMap = clij2.pull(countMap);
+		clij2.clear();
+		ResultsTable labelCounts = TableUtility.processIntensity(impCountMap, mask);
+		return labelCounts;
+	}
 	
 	
 	/**
@@ -209,7 +225,6 @@ public class LabelEditor {
 	
 	
 	/**
-	 * (STILL IN DEVELOPMENT!)
 	 * A method to re-index label values where they are duplicated between spatially indenpdent objects.
 	 * 
 	 * @param input The labelled image to be re-indexed where labels are duplicated between objects.
