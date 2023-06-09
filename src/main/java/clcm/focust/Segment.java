@@ -94,10 +94,7 @@ public class Segment {
 				String dir = SpeckleView.inputDir;
 				int count = 0;
 				
-				
-				// could combine results tables for each image and pull them later to create final results tables.
-				Map<ImagePlus, ArrayList<ResultsTable>> results = new HashMap<>();
-				
+				// make this conditional: link to the total number of objects set to create
 				Map<String, List<Variable>> primary = new LinkedHashMap<>();
 				Map<String, List<Variable>> secondary = new LinkedHashMap<>();
 				Map<String, List<Variable>> tertiary = new LinkedHashMap<>();
@@ -148,56 +145,12 @@ public class Segment {
 							list = tempList.toArray(list);
 					}
 					
-					/*
-					// --> COULD USE AN ARRAYMAP to link the array lists of variable[] to the strings primary, secondary and tertiary.
-					// Testing for batch processing!
-					ArrayList<Variable> priLabel = new ArrayList<Variable>();
-					ArrayList<Variable> priImgID = new ArrayList<Variable>();
-					ArrayList<Variable> priC2Count = new ArrayList<Variable>();
-					ArrayList<Variable> priC3Count = new ArrayList<Variable>();
-					ArrayList<Variable> priVolume = new ArrayList<Variable>();
-					ArrayList<Variable> priVoxels = new ArrayList<Variable>();
-					ArrayList<Variable> priSphericity = new ArrayList<Variable>();
-					ArrayList<Variable> priElongation = new ArrayList<Variable>();
-					ArrayList<Variable> priBreadth = new ArrayList<Variable>();
-					ArrayList<Variable> priSurfaceA = new ArrayList<Variable>();
-					ArrayList<Variable> priCentroidX = new ArrayList<Variable>();
-					ArrayList<Variable> priCentroidY = new ArrayList<Variable>();
-					ArrayList<Variable> priCentroidZ = new ArrayList<Variable>();
-					ArrayList<Variable> priC1Mean = new ArrayList<Variable>();
-					ArrayList<Variable> priC1IntDen = new ArrayList<Variable>();
-					ArrayList<Variable> priC2Mean = new ArrayList<Variable>();
-					ArrayList<Variable> priC2IntDen = new ArrayList<Variable>();
-					ArrayList<Variable> priC3Mean = new ArrayList<Variable>();
-					ArrayList<Variable> priC3IntDen = new ArrayList<Variable>();
-					
-					ArrayList<Variable> secLabel = new ArrayList<Variable>();
-					ArrayList<Variable> secImgID = new ArrayList<Variable>();
-					ArrayList<Variable> secParent = new ArrayList<Variable>();
-					ArrayList<Variable> secVolume = new ArrayList<Variable>();
-					ArrayList<Variable> secVoxels = new ArrayList<Variable>();
-					ArrayList<Variable> secSphericity = new ArrayList<Variable>();
-					ArrayList<Variable> secElongation = new ArrayList<Variable>();
-					ArrayList<Variable> secBreadth = new ArrayList<Variable>();
-					ArrayList<Variable> secSurfaceA = new ArrayList<Variable>();
-					ArrayList<Variable> secCentroidX = new ArrayList<Variable>();
-					ArrayList<Variable> secCentroidY = new ArrayList<Variable>();
-					ArrayList<Variable> secCentroidZ = new ArrayList<Variable>();
-					ArrayList<Variable> secC1Mean = new ArrayList<Variable>();
-					ArrayList<Variable> secC1IntDen = new ArrayList<Variable>();
-					ArrayList<Variable> secC2Mean = new ArrayList<Variable>();
-					ArrayList<Variable> secC2IntDen = new ArrayList<Variable>();
-					ArrayList<Variable> secC3Mean = new ArrayList<Variable>();
-					ArrayList<Variable> secC3IntDen = new ArrayList<Variable>();
-					*/
-					
-					
 					ResultsTable primaryFinalResults = null;
 					ResultsTable secondaryFinalResults = null;
 					ResultsTable tertiaryFinalResults = null;
 					
 					IJ.log("-------------------------------------------------------");
-					IJ.log("----------FOCUST: Speckle Protocol-----------");
+					IJ.log("		FOCUST: Speckle Protocol		");
 					
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
@@ -217,6 +170,7 @@ public class Segment {
 						ImagePlus imp = IJ.openImage(path);
 						int numberOfChannels = imp.getNChannels();
 						
+						
 						// TEST WITHOUT CONVERTING TO 8-BIT!
 						IJ.run(imp, "8-bit", "");
 						
@@ -229,9 +183,9 @@ public class Segment {
 						String imgName = imp.getTitle();
 						
 						
-						// if analysisMode is T, find the correct primary object file for the current image
+						// If analysisMode is T, find the correct primary object file for the current image
 						
-						// MAKE THIS WORK BY DETECTING THE IMAGE EXTENSION!!!! 
+						// MAKE THIS WORK BY DETECTING THE IMAGE EXTENSION!!!
 						// NOT ALL DATA WILL BE .nd2 or .dv
 						
 						if(analysisOnly) {
@@ -246,6 +200,7 @@ public class Segment {
 							// if analysis mode is F, segment objects based on channel preferences
 							IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
 							IJ.log("-------------------------------------------------------");
+							
 							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x, SpeckleView.radius_y, SpeckleView.radius_z);
 							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , SpeckleView.sigma_x2, SpeckleView.sigma_y2, SpeckleView.sigma_z2, SpeckleView.greaterConstantSecondary, SpeckleView.radius_x2, SpeckleView.radius_y2, SpeckleView.radius_z2);
 							// make tertiary processing conditional
@@ -395,9 +350,13 @@ public class Segment {
 						ResultsTable c2Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 						ResultsTable c3Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 						
+						c2Count.show("c2count");
+						c3Count.show("c2count");
+						
 						// Calculate parent (primary) for each secondary and tertiary object.
 						ResultsTable c2Parent = TableUtility.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 						ResultsTable c3Parent = TableUtility.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
+						c2Parent.show("c2parent");
 						
 						// Leave the table with just max value (which represents the count per primary object)
 						ResultsTable c2CountEdit = c2Count;
@@ -405,10 +364,13 @@ public class Segment {
 						ResultsTable c2ParentEdit = c2Parent;
 						ResultsTable c3ParentEdit = c3Parent;
 						
+						c2CountEdit.show("c2countedit");
+						c2ParentEdit.show("c2parentshow");
 						
 						// remove all columns by max 
 						String[] colsToRemove = {"Label", "Mean_Intensity", "Volume", "IntDen"};
 						
+						// remove cols not working 
 						TableUtility.removeColumns(c2CountEdit, colsToRemove);
 						TableUtility.removeColumns(c3CountEdit, colsToRemove);
 						TableUtility.removeColumns(c2ParentEdit, colsToRemove);
@@ -417,12 +379,13 @@ public class Segment {
 						c2CountEdit.renameColumn("Max", "C2_Object_Count");
 						c3CountEdit.renameColumn("Max", "C3_Object_Count");
 						
+						c3CountEdit.show("thisbitch!");
 						// add the C2 and C3 counts to the primary map
 						TableUtility.collectColumns(c2CountEdit, primary);
 						TableUtility.collectColumns(c3CountEdit, primary);
 						
 						c2ParentEdit.renameColumn("Max", "Parent_Label");
-						c2ParentEdit.renameColumn("Max", "Parent_Label");
+						c3ParentEdit.renameColumn("Max", "Parent_Label");
 						
 						// add the parent label to the secondary and tertiary tables
 						TableUtility.collectColumns(c2ParentEdit, secondary);
