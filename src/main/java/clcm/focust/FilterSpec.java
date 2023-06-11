@@ -1,5 +1,15 @@
 package clcm.focust;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
 public class FilterSpec {
     public double sigma_x;
     public double sigma_y;
@@ -19,5 +29,25 @@ public class FilterSpec {
         this.radius_y = radius_y;
         this.radius_z = radius_z;
         this.greaterConstant = greaterConstant;
+    }
+
+    public static void saveFilterSpecs(FilterSpec[] specs, String filename) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            File paramFile = new File(filename);
+            mapper.writeValue(paramFile, specs);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static FilterSpec[] readFilterSpecJSON(String filename){
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(Paths.get(filename).toFile(), FilterSpec[].class);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 }
