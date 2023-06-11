@@ -21,7 +21,6 @@ import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -63,29 +62,7 @@ public class SpeckleView extends JFrame {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
 
-	public static Double sigma_x;
-	public static Double sigma_y;
-	public static Double sigma_z;
-	public static Double sigma_x2;
-	public static Double sigma_y2;
-	public static Double sigma_z2;
-	public static Double sigma_x3;
-	public static Double sigma_y3;
-	public static Double sigma_z3;
-	public static Double radius_x;
-	public static Double radius_y;
-	public static Double radius_z;
-	public static Double radius_x2;
-	public static Double radius_y2;
-	public static Double radius_z2;
-	public static Double radius_x3;
-	public static Double radius_y3;
-	public static Double radius_z3;
-
 	public static String killBordersText;
-	public static Double greaterConstantPrimary;
-	public static Double greaterConstantSecondary;
-	public static Double greaterConstantTertiary;
 	public static String inputDir;
 	public static String channel2Name;
 	public static String channel3Name;
@@ -659,30 +636,34 @@ public class SpeckleView extends JFrame {
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				FilterSpec[] filterSpecs = new FilterSpec[3];
+
 				if (!cbAnalysisMode.isSelected()) {
-					sigma_x = Double.parseDouble(txtPriGBx.getText());
-					sigma_y = Double.parseDouble(txtPriGBy.getText());
-					sigma_z = Double.parseDouble(txtPriGBz.getText());
-					sigma_x2 = Double.parseDouble(txtSecGBx.getText());
-					sigma_y2 = Double.parseDouble(txtSecGBy.getText());
-					sigma_z2 = Double.parseDouble(txtSecGBz.getText());
-					sigma_x3 = Double.parseDouble(txtTertGBx.getText());
-					sigma_y3 = Double.parseDouble(txtTertGBy.getText());
-					sigma_z3 = Double.parseDouble(txtTertGBz.getText());
+					// TODO: Make this a function
+					// TODO: Delcare textboxes programmatically
+					filterSpecs[0].sigma_x = Double.parseDouble(txtPriGBx.getText());
+					filterSpecs[0].sigma_y = Double.parseDouble(txtPriGBy.getText());
+					filterSpecs[0].sigma_z = Double.parseDouble(txtPriGBz.getText());
+					filterSpecs[1].sigma_x = Double.parseDouble(txtSecGBx.getText());
+					filterSpecs[1].sigma_y = Double.parseDouble(txtSecGBy.getText());
+					filterSpecs[1].sigma_z = Double.parseDouble(txtSecGBz.getText());
+					filterSpecs[2].sigma_x = Double.parseDouble(txtTertGBx.getText());
+					filterSpecs[2].sigma_y = Double.parseDouble(txtTertGBy.getText());
+					filterSpecs[2].sigma_z = Double.parseDouble(txtTertGBz.getText());
 
-					radius_x = Double.parseDouble(txtPriDMx.getText());
-					radius_y = Double.parseDouble(txtPriDMy.getText());
-					radius_z = Double.parseDouble(txtPriDMz.getText());
-					radius_x2 = Double.parseDouble(txtSecDMx.getText());
-					radius_y2 = Double.parseDouble(txtSecDMy.getText());
-					radius_z2 = Double.parseDouble(txtSecDMz.getText());
-					radius_x3 = Double.parseDouble(txtTertDMx.getText());
-					radius_y3 = Double.parseDouble(txtTertDMy.getText());
-					radius_z3 = Double.parseDouble(txtTertDMz.getText());
+					filterSpecs[0].radius_x = Double.parseDouble(txtPriDMx.getText());
+					filterSpecs[0].radius_y = Double.parseDouble(txtPriDMy.getText());
+					filterSpecs[0].radius_z = Double.parseDouble(txtPriDMz.getText());
+					filterSpecs[1].radius_x = Double.parseDouble(txtSecDMx.getText());
+					filterSpecs[1].radius_y = Double.parseDouble(txtSecDMy.getText());
+					filterSpecs[1].radius_z = Double.parseDouble(txtSecDMz.getText());
+					filterSpecs[2].radius_x = Double.parseDouble(txtTertDMx.getText());
+					filterSpecs[2].radius_y = Double.parseDouble(txtTertDMy.getText());
+					filterSpecs[2].radius_z = Double.parseDouble(txtTertDMz.getText());
 
-					greaterConstantPrimary = Double.parseDouble(txtPriThreshold.getText());
-					greaterConstantSecondary = Double.parseDouble(txtSecThreshold.getText());
-					greaterConstantTertiary = Double.parseDouble(txtTertThreshold.getText());
+					filterSpecs[0].greaterConstant = Double.parseDouble(txtPriThreshold.getText());
+					filterSpecs[1].greaterConstant = Double.parseDouble(txtSecThreshold.getText());
+					filterSpecs[2].greaterConstant = Double.parseDouble(txtTertThreshold.getText());
 				}
 				
 				killBordersText = GuiHelper.getSelectedButton(btngrpKillBorders);
@@ -697,7 +678,7 @@ public class SpeckleView extends JFrame {
 				
 				
 				
-				Segment segment = new Segment();
+				Segment segment = new Segment(filterSpecs);
 				segment.processSpeckles(cbAnalysisMode.isSelected());
 				
 			}

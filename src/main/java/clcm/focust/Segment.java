@@ -15,7 +15,6 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,7 +50,12 @@ public class Segment {
 	private static String tertiaryPrefix = "Tertiary_Objects_";
 	private static String corePrefix = "Inner_Secondary_";
 	private static String outerPrefix = "Outer_Secondary_";
-	
+
+	private final FilterSpec[] filterSpecs;
+
+	public Segment(FilterSpec[] filterSpecs) {
+		this.filterSpecs = filterSpecs;
+	}
 
 	public static void threadLog(final String log) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -201,10 +205,10 @@ public class Segment {
 							IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
 							IJ.log("-------------------------------------------------------");
 							
-							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x, SpeckleView.radius_y, SpeckleView.radius_z);
-							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , SpeckleView.sigma_x2, SpeckleView.sigma_y2, SpeckleView.sigma_z2, SpeckleView.greaterConstantSecondary, SpeckleView.radius_x2, SpeckleView.radius_y2, SpeckleView.radius_z2);
+							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], filterSpecs[0].sigma_x, filterSpecs[0].sigma_y, filterSpecs[0].sigma_z, filterSpecs[0].radius_x, filterSpecs[0].radius_y, filterSpecs[0].radius_z);
+							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , filterSpecs[1].sigma_x, filterSpecs[1].sigma_y, filterSpecs[1].sigma_z, filterSpecs[1].greaterConstant, filterSpecs[1].radius_x, filterSpecs[1].radius_y, filterSpecs[1].radius_z);
 							// make tertiary processing conditional
-							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], SpeckleView.sigma_x3, SpeckleView.sigma_y3, SpeckleView.sigma_z3, SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3, SpeckleView.radius_z3);
+							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], filterSpecs[2].sigma_x, filterSpecs[2].sigma_y, filterSpecs[2].sigma_z, filterSpecs[2].greaterConstant, filterSpecs[2].radius_x, filterSpecs[2].radius_y, filterSpecs[2].radius_z);
 						}
 						
 						// Calibrate segmented outputs
@@ -765,7 +769,7 @@ public class Segment {
 							}*/
 						} else {
 							// if analysis mode is F, segment primary channel based on user inputs
-							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], filterSpecs[0].sigma_x, filterSpecs[0].sigma_y, filterSpecs[0].sigma_z, filterSpecs[0].greaterConstant, filterSpecs[0].radius_x, filterSpecs[0].radius_y, filterSpecs[0].radius_z);
 						}
 						
 						IJ.resetMinAndMax(primaryOriginalObjectsCells);
@@ -789,7 +793,7 @@ public class Segment {
 								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
 							}*/
 						} else {
-							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], filterSpecs[1].sigma_x, filterSpecs[1].sigma_y, filterSpecs[1].sigma_z, filterSpecs[1].greaterConstant, filterSpecs[1].radius_x, filterSpecs[1].radius_y, filterSpecs[1].radius_z);
 						}
 						
 						IJ.resetMinAndMax(secondaryObjectsCells);
