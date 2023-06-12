@@ -24,6 +24,8 @@ import javax.swing.ButtonGroup;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JCheckBox;
 
 public class SpeckleView extends JFrame {
@@ -58,6 +60,7 @@ public class SpeckleView extends JFrame {
 	private JTextField txtTertDMy;
 	private JTextField txtTertDMz;
 	private JTextField txtTertThreshold;
+	private JTextField txtSecThreshold;
 	private JCheckBox cbAnalysisMode = new JCheckBox("Analysis only mode?");
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private final ButtonGroup buttonGroup_1 = new ButtonGroup();
@@ -73,6 +76,81 @@ public class SpeckleView extends JFrame {
 	public static String groupingInfo;
 	public static boolean analysisMode;
 	private final ButtonGroup btngrpKillBorders = new ButtonGroup();
+
+	private FilterSpec[] filterSpecs = new FilterSpec[3];
+
+	void saveParameterValues(String outputFileDir){
+		// TODO: Not a great way to do this. Hard-coded filename is a no-no.
+		// TODO: Add button and input field for parameter filename and dir.
+		setFilterParameters(); // Just in case the user didn't set the button.
+		Path path = Paths.get(outputFileDir, "FilterSpecs.json");
+		FilterSpec.saveFilterSpecs(filterSpecs, path.toString());
+	}
+
+	void loadParameterValues(String parameterFilePath){
+		FilterSpec[] tempFilterSpecs = FilterSpec.readFilterSpecJSON(parameterFilePath);
+		if(tempFilterSpecs == null){
+			IJ.error("Error reading parameter file.");
+		} else if (tempFilterSpecs.length < 3){
+			// Catches the case where the parameter file has less than 3 filter specs.
+			System.arraycopy(tempFilterSpecs, 0, filterSpecs, 0, tempFilterSpecs.length);
+		} else {
+			// Catches both cases where the parameter file has more than 3 filter specs and where it has exactly 3.
+			System.arraycopy(tempFilterSpecs, 0, filterSpecs, 0, filterSpecs.length);
+		}
+	}
+
+	void setFilterParameterUIValues(){
+		// TODO: Remove the hard-coding
+		txtPriGBx.setText(String.valueOf(filterSpecs[0].sigma_x));
+		txtPriGBy.setText(String.valueOf(filterSpecs[0].sigma_y));
+		txtPriGBz.setText(String.valueOf(filterSpecs[0].sigma_z));
+		txtPriDMx.setText(String.valueOf(filterSpecs[0].radius_x));
+		txtPriDMy.setText(String.valueOf(filterSpecs[0].radius_y));
+		txtPriDMz.setText(String.valueOf(filterSpecs[0].radius_z));
+		txtPriThreshold.setText(String.valueOf(filterSpecs[0].greaterConstant));
+		txtSecGBx.setText(String.valueOf(filterSpecs[1].sigma_x));
+		txtSecGBy.setText(String.valueOf(filterSpecs[1].sigma_y));
+		txtSecGBz.setText(String.valueOf(filterSpecs[1].sigma_z));
+		txtSecDMx.setText(String.valueOf(filterSpecs[1].radius_x));
+		txtSecDMy.setText(String.valueOf(filterSpecs[1].radius_y));
+		txtSecDMz.setText(String.valueOf(filterSpecs[1].radius_z));
+		txtSecThreshold.setText(String.valueOf(filterSpecs[1].greaterConstant));
+		txtTertGBx.setText(String.valueOf(filterSpecs[2].sigma_x));
+		txtTertGBy.setText(String.valueOf(filterSpecs[2].sigma_y));
+		txtTertGBz.setText(String.valueOf(filterSpecs[2].sigma_z));
+		txtTertDMx.setText(String.valueOf(filterSpecs[2].radius_x));
+		txtTertDMy.setText(String.valueOf(filterSpecs[2].radius_y));
+		txtTertDMz.setText(String.valueOf(filterSpecs[2].radius_z));
+		txtTertThreshold.setText(String.valueOf(filterSpecs[2].greaterConstant));
+	}
+
+	void setFilterParameters(){
+		// TODO: Delcare textboxes programmatically
+		filterSpecs[0].sigma_x = Double.parseDouble(txtPriGBx.getText());
+		filterSpecs[0].sigma_y = Double.parseDouble(txtPriGBy.getText());
+		filterSpecs[0].sigma_z = Double.parseDouble(txtPriGBz.getText());
+		filterSpecs[1].sigma_x = Double.parseDouble(txtSecGBx.getText());
+		filterSpecs[1].sigma_y = Double.parseDouble(txtSecGBy.getText());
+		filterSpecs[1].sigma_z = Double.parseDouble(txtSecGBz.getText());
+		filterSpecs[2].sigma_x = Double.parseDouble(txtTertGBx.getText());
+		filterSpecs[2].sigma_y = Double.parseDouble(txtTertGBy.getText());
+		filterSpecs[2].sigma_z = Double.parseDouble(txtTertGBz.getText());
+
+		filterSpecs[0].radius_x = Double.parseDouble(txtPriDMx.getText());
+		filterSpecs[0].radius_y = Double.parseDouble(txtPriDMy.getText());
+		filterSpecs[0].radius_z = Double.parseDouble(txtPriDMz.getText());
+		filterSpecs[1].radius_x = Double.parseDouble(txtSecDMx.getText());
+		filterSpecs[1].radius_y = Double.parseDouble(txtSecDMy.getText());
+		filterSpecs[1].radius_z = Double.parseDouble(txtSecDMz.getText());
+		filterSpecs[2].radius_x = Double.parseDouble(txtTertDMx.getText());
+		filterSpecs[2].radius_y = Double.parseDouble(txtTertDMy.getText());
+		filterSpecs[2].radius_z = Double.parseDouble(txtTertDMz.getText());
+
+		filterSpecs[0].greaterConstant = Double.parseDouble(txtPriThreshold.getText());
+		filterSpecs[1].greaterConstant = Double.parseDouble(txtSecThreshold.getText());
+		filterSpecs[2].greaterConstant = Double.parseDouble(txtTertThreshold.getText());
+	}
 
 	/**
 	 * Construct the speckle gui.
@@ -575,7 +653,7 @@ public class SpeckleView extends JFrame {
 		lblThreshold_1.setBounds(10, 144, 76, 29);
 		SecondaryObjectPanel.add(lblThreshold_1);
 
-		JTextField txtSecThreshold = new JTextField();
+		txtSecThreshold = new JTextField();
 		txtSecThreshold.setColumns(10);
 		txtSecThreshold.setBackground(new Color(211, 211, 211));
 		txtSecThreshold.setBounds(76, 148, 55, 20);
@@ -636,34 +714,8 @@ public class SpeckleView extends JFrame {
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				FilterSpec[] filterSpecs = new FilterSpec[3];
-
 				if (!cbAnalysisMode.isSelected()) {
-					// TODO: Make this a function
-					// TODO: Delcare textboxes programmatically
-					filterSpecs[0].sigma_x = Double.parseDouble(txtPriGBx.getText());
-					filterSpecs[0].sigma_y = Double.parseDouble(txtPriGBy.getText());
-					filterSpecs[0].sigma_z = Double.parseDouble(txtPriGBz.getText());
-					filterSpecs[1].sigma_x = Double.parseDouble(txtSecGBx.getText());
-					filterSpecs[1].sigma_y = Double.parseDouble(txtSecGBy.getText());
-					filterSpecs[1].sigma_z = Double.parseDouble(txtSecGBz.getText());
-					filterSpecs[2].sigma_x = Double.parseDouble(txtTertGBx.getText());
-					filterSpecs[2].sigma_y = Double.parseDouble(txtTertGBy.getText());
-					filterSpecs[2].sigma_z = Double.parseDouble(txtTertGBz.getText());
-
-					filterSpecs[0].radius_x = Double.parseDouble(txtPriDMx.getText());
-					filterSpecs[0].radius_y = Double.parseDouble(txtPriDMy.getText());
-					filterSpecs[0].radius_z = Double.parseDouble(txtPriDMz.getText());
-					filterSpecs[1].radius_x = Double.parseDouble(txtSecDMx.getText());
-					filterSpecs[1].radius_y = Double.parseDouble(txtSecDMy.getText());
-					filterSpecs[1].radius_z = Double.parseDouble(txtSecDMz.getText());
-					filterSpecs[2].radius_x = Double.parseDouble(txtTertDMx.getText());
-					filterSpecs[2].radius_y = Double.parseDouble(txtTertDMy.getText());
-					filterSpecs[2].radius_z = Double.parseDouble(txtTertDMz.getText());
-
-					filterSpecs[0].greaterConstant = Double.parseDouble(txtPriThreshold.getText());
-					filterSpecs[1].greaterConstant = Double.parseDouble(txtSecThreshold.getText());
-					filterSpecs[2].greaterConstant = Double.parseDouble(txtTertThreshold.getText());
+					setFilterParameters();
 				}
 				
 				killBordersText = GuiHelper.getSelectedButton(btngrpKillBorders);
@@ -730,6 +782,14 @@ public class SpeckleView extends JFrame {
 		JButton btnLoadConfigSingleCell = new JButton("Load Parameters");
 		btnLoadConfigSingleCell.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		btnLoadConfigSingleCell.setBounds(152, 382, 147, 29);
+		btnLoadConfigSingleCell.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				String iFile = IJ.getFilePath("Select a parameter file.");
+				loadParameterValues(iFile);
+				setFilterParameterUIValues();
+				txtInputDir.setText(iFile);
+			}
+		});
 		paneSpeckle.add(btnLoadConfigSingleCell);
 
 		cbAnalysisMode.setToolTipText("Runs analysis where the user provides labelled and original images.");
