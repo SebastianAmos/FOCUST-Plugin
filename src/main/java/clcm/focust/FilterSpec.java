@@ -3,12 +3,8 @@ package clcm.focust;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 
 public class FilterSpec {
     public double sigma_x;
@@ -30,6 +26,8 @@ public class FilterSpec {
         this.radius_z = radius_z;
         this.greaterConstant = greaterConstant;
     }
+
+    public FilterSpec(){}  // Used for JSON deserialization
 
     public static void saveFilterSpecs(FilterSpec[] specs, String filename) {
         ObjectMapper mapper = new ObjectMapper();
