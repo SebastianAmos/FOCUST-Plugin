@@ -5,16 +5,16 @@ package clcm.focust.data;
  *
  * @param <T> the data type
  */
-public interface DataUpdateService<T> {
+public interface DataUpdateService<K,T> {
 	
 	/**
 	 * Update the DataUpdateService with the new (replacement) data.
 	 * @param newData to update with
 	 */
-	void notifyUpdated(T newData);
+	void notifyUpdated(K key, T newData);
 	
 	/**
 	 * Update the DataUpdateService with the deleted data.
 	 */
-	void notifyDeleted();
+	void notifyDeleted(K key, Class<?> clazz);
 }

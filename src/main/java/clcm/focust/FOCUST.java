@@ -15,7 +15,7 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
-public class FOCUST implements Command {
+public final class FOCUST implements Command {
 
 	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
 	public static File[] imageFiles;
@@ -24,15 +24,18 @@ public class FOCUST implements Command {
 	public static JFileChooser fileChooser = null;
 	public static Path inputPath;
 	
-	public DataManager<>
-	
+	/**
+	 * Constructor. Use  {@link #instance()}
+	 */
+	private FOCUST() {}	
+
 
 	/**
 	 * Thread-safe Singleton.
 	 *
 	 */
 	private static class InstanceHolder {
-		/** The singleton instance. */
+		/** The singleton instance. */ 
 		private static FOCUST INSTANCE = new FOCUST();;
 
 		/** Constructor. */
@@ -49,7 +52,7 @@ public class FOCUST implements Command {
 	}
 
 	@Override
-	public void run() {
+	public final void run() {
 		SwingUtilities.invokeLater(() -> {
 			MainScreen mainGui = new MainScreen();
 			mainGui.setVisible(true);
@@ -60,8 +63,8 @@ public class FOCUST implements Command {
 	}
 	
 	/**
-	 * Thread-safe instance accessor for 
-	 * @return
+	 * Thread-safe instance accessor for singleton
+	 * @return the singleton
 	 */
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;

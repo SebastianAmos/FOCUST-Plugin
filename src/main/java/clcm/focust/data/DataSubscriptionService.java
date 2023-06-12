@@ -5,18 +5,20 @@ package clcm.focust.data;
  *
  * @param <T> the data type
  */
-public interface DataSubscriptionService<T> {
+public interface DataSubscriptionService<K,T> {
 	
 	/**
-	 * Subscribe this listener to updates.
+	 * Subscribe this listener to updates for a key.
+	 * @param key of object
 	 * @param listener to subscribe
 	 */
-	void registerListener(DataListener<T> listener);
+	void registerListener(K key, DataListener<K,T> listener);
 	
 	/**
-	 * Unsubscribe from updates.
+	 * Unsubscribe from updates for a key.
+	 * @param key of object
 	 * @param listener to unsub
 	 */
-	void deregisterListener(DataListener<T> listener);
+	void deregisterListener(K key, DataListener<K,T> listener);
 
 }
