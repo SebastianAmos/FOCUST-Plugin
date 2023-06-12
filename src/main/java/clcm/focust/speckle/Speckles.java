@@ -23,6 +23,4 @@ public final class Speckles implements DataObject {
 		/*TODO: This is a shallow clone. That's not really good enough.  */
 		return Optional.ofNullable(speckles.get(key)).map( it -> (ImagePlus) it.clone());
 	}
-	
-
 }

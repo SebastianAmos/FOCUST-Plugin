@@ -168,6 +168,9 @@ public class Segment {
 					IJ.run(imp, "8-bit", "");
 
 					Calibration cal = imp.getCalibration();
+					
+					
+					
 					channelsSpeckle = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpeckleView.primaryChannelChoice;
 					int secondaryChannelChoice = SpeckleView.secondaryChannelChoice;
