@@ -3,6 +3,7 @@ package clcm.focust.speckle;
 import java.util.HashMap;
 import java.util.Map;
 
+import clcm.focust.FOCUST;
 import clcm.focust.FOCUSTService;
 import clcm.focust.LabelEditor;
 import clcm.focust.SpeckleView;
@@ -16,18 +17,21 @@ import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 
+/** TODO
+ * Document. 
+ * @author lachie
+ *
+ */
 public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckles>{
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-
+		FOCUST.instance().specklesManager().registerListener(Datum.DATUM, this);
 	}
 
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-
+		FOCUST.instance().specklesManager().deregisterListener(Datum.DATUM, this);
 	}
 
 	@Override
