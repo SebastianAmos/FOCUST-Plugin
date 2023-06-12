@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @param <K> the key type
  * @param <T> the object type
  */
-public class DataMapManager<K extends Enum<K>, T>
+public final class DataMapManager<K extends Enum<K>, T>
 		implements DataSubscriptionService<K, T>, DataService<K, T>, DataUpdateService<K, T> {
 
 	/**
@@ -42,7 +42,7 @@ public class DataMapManager<K extends Enum<K>, T>
 	}
 
 	@Override
-	public void notifyUpdated(K key, T newData) {
+	public final void notifyUpdated(K key, T newData) {
 		/* Receives new piece of data: 1. Store it. 2. Update subscribed classes. */
 		LOGGER.fine(() -> String.format("Data received for key [%s] , Datum [%s]", key, newData));
 		objects.put(key, newData);
@@ -51,7 +51,7 @@ public class DataMapManager<K extends Enum<K>, T>
 	}
 
 	@Override
-	public void notifyDeleted(K key, Class<?> clazz) {
+	public final void notifyDeleted(K key, Class<?> clazz) {
 		LOGGER.fine(() -> String.format("Data deleted for key [%s] ", key));
 		objects.remove(key);
 		listeners.get(key).forEach(listener -> listener.dataDeleted(key));
@@ -59,18 +59,18 @@ public class DataMapManager<K extends Enum<K>, T>
 	}
 
 	@Override
-	public Optional<T> get(K key) {
+	public final Optional<T> get(K key) {
 		return Optional.ofNullable(objects.get(key));
 	}
 
 	@Override
-	public void registerListener(K key, DataListener<K, T> listener) {
+	public final  void registerListener(K key, DataListener<K, T> listener) {
 		LOGGER.fine(() -> String.format("Listener %s subscribing for [%s]",listener, key));
 		listeners.get(key).add(listener);
 	}
 
 	@Override
-	public void deregisterListener(K key, DataListener<K, T> listener) {
+	public final void deregisterListener(K key, DataListener<K, T> listener) {
 		LOGGER.fine(() -> String.format("Listener %s unsubscribing for [%s]",listener, key));
 		listeners.get(key).remove(listener);
 	}
