@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @param <K> the key type
  * @param <T> the object type
  */
-public final class DataMapManager<K extends Enum<K>, T>
+public final class DataMapManager<K extends Enum<K>, T extends DataObject>
 		implements DataSubscriptionService<K, T>, DataService<K, T>, DataUpdateService<K, T> {
 
 	/**

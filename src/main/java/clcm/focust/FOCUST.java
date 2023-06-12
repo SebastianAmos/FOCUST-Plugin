@@ -1,9 +1,14 @@
 
 package clcm.focust;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +18,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
+
+import clcm.focust.data.DataConstants;
+import clcm.focust.data.DataMapManager;
+import clcm.focust.speckle.SpeckleService;
+import clcm.focust.speckle.Speckles;
 
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 public final class FOCUST implements Command {
@@ -24,11 +34,19 @@ public final class FOCUST implements Command {
 	public static JFileChooser fileChooser = null;
 	public static Path inputPath;
 	
+	private List<FOCUSTService> services;
+	
+	/** Data manager for speckles. */
+	private DataMapManager<DataConstants.Datum,Speckles> specklesManager;
+	
 	/**
 	 * Constructor. Use  {@link #instance()}
 	 */
-	private FOCUST() {}	
-
+	private FOCUST() {
+		 services = new ArrayList<>();
+		 specklesManager = new DataMapManager<>(DataConstants.Datum.class);
+		 services.add(new SpeckleService());
+	}	
 
 	/**
 	 * Thread-safe Singleton.
@@ -53,9 +71,18 @@ public final class FOCUST implements Command {
 
 	@Override
 	public final void run() {
+		services.forEach(FOCUSTService::init);		
+		
 		SwingUtilities.invokeLater(() -> {
 			MainScreen mainGui = new MainScreen();
 			mainGui.setVisible(true);
+			/* Cleanup our mess. */
+			mainGui.addWindowListener(new WindowAdapter() {
+				@Override
+			    public void windowClosed(WindowEvent e) {
+					services.forEach(FOCUSTService::shutdown);
+				}
+			});
 			mainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
 		ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -69,6 +96,11 @@ public final class FOCUST implements Command {
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;
 	}
+	
+	public final DataMapManager<DataConstants.Datum,Speckles> specklesManager(){
+		return specklesManager;
+	}
+	
 
 	public static void fileFinder() {
 		try {
