@@ -102,7 +102,6 @@ public class SpeckleView extends JFrame {
 	 */
 	
 	public SpeckleView() {
-
 		setTitle("FOCUST: Speckle Analysis");
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(SpeckleView.class.getResource("/clcm/focust/resources/icon2.png")));

@@ -1,7 +1,6 @@
 
 package clcm.focust;
 
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,71 +14,79 @@ import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
-
-
 public class FOCUST implements Command {
 
+	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
+	public static File[] imageFiles;
+	public static String inputDir = "";
+	public static String outputDir = "";
+	public static JFileChooser fileChooser = null;
+	public static Path inputPath;
+	
+	public DataManager<>
+	
 
-public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);	
-public static File[] imageFiles;
-public static String inputDir = "";
-public static String outputDir = "";
-public static JFileChooser fileChooser = null;
-public static Path inputPath;
+	/**
+	 * Thread-safe Singleton.
+	 *
+	 */
+	private static class InstanceHolder {
+		/** The singleton instance. */
+		private static FOCUST INSTANCE = new FOCUST();;
 
+		/** Constructor. */
+		private InstanceHolder() {
+			/* Empty. */ 
+		}
+	}
 
-/**
- * Launch the main gui for FOCUST.	
- */
- 
-// main for testing.
+	/**
+	 * Launch the main gui for FOCUST.
+	 */
 	public static void main(String[] args) {
-
-		SwingUtilities.invokeLater(() -> {
-			MainScreen MainGui = new MainScreen();
-			MainGui.setVisible(true);
-			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		});
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.execute(futureFileChooser);
-	} 
+		instance().run();
+	}
 
 	@Override
 	public void run() {
 		SwingUtilities.invokeLater(() -> {
-			MainScreen MainGui = new MainScreen();
-			MainGui.setVisible(true);
-			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			MainScreen mainGui = new MainScreen();
+			mainGui.setVisible(true);
+			mainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.execute(futureFileChooser);
-	}	
+	}
 	
+	/**
+	 * Thread-safe instance accessor for 
+	 * @return
+	 */
+	public static FOCUST instance() {
+		return InstanceHolder.INSTANCE;
+	}
 
-	public static void FileFinder() {
-		
-		
+	public static void fileFinder() {
 		try {
 			fileChooser = futureFileChooser.get();
 		} catch (InterruptedException | ExecutionException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setMultiSelectionEnabled(true);
 		fileChooser.setDialogTitle("Select a Directory or File(s):");
-		
-		// abort if nothing selected or return the selected files 
+
+		// abort if nothing selected or return the selected files
 		int returnValue = fileChooser.showOpenDialog(null);
-		if(returnValue == JFileChooser.APPROVE_OPTION) {
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			imageFiles = fileChooser.getSelectedFiles();
 			String imagePathString = imageFiles[0].getParent();
 			inputPath = Paths.get(imagePathString);
-			
+
 		} else {
 			return;
-		}	
+		}
 	}
 }

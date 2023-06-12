@@ -187,7 +187,7 @@ public class Segment {
 						
 						// MAKE THIS WORK BY DETECTING THE IMAGE EXTENSION!!!
 						// NOT ALL DATA WILL BE .nd2 or .dv
-						
+						//TODO lachlan extract analysis 
 						if(analysisOnly) {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
 							IJ.log("-------------------------------------------------------");
@@ -633,25 +633,10 @@ public class Segment {
 					ResultsTable secondaryTable = new ResultsTable();
 					ResultsTable tertiaryTable = new ResultsTable();
 					
-					for (Map.Entry<String, List<Variable>> entry : primary.entrySet()) {
-						String columnName = entry.getKey();
-						List<Variable> columnData = entry.getValue();
-						primaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
-					}
-					
-					for (Map.Entry<String, List<Variable>> entry : secondary.entrySet()) {
-						String columnName = entry.getKey();
-						List<Variable> columnData = entry.getValue();
-						secondaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
-					}
-					
-					for (Map.Entry<String, List<Variable>> entry : tertiary.entrySet()) {
-						String columnName = entry.getKey();
-						List<Variable> columnData = entry.getValue();
-						tertiaryTable.setColumn(columnName, columnData.toArray(new Variable[columnData.size()]));
-					}
-					
-					
+
+					primary.forEach((k,v) -> primaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
+					secondary.forEach((k,v) -> secondaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
+					tertiary.forEach((k,v) -> tertiaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
 
 					IJ.log("Saving Results Tables...");
 					IJ.log("-------------------------------------------------------");
