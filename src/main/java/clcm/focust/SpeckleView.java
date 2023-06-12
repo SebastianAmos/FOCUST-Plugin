@@ -194,131 +194,131 @@ public class SpeckleView extends JFrame {
 		lblSegmentPrimary.setBounds(324, 192, 187, 29);
 		paneSpeckle.add(lblSegmentPrimary);
 
-		JPanel PrimaryObjectPanel = new JPanel();
-		PrimaryObjectPanel.setLayout(null);
-		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(324, 250, 187, 182);
-		paneSpeckle.add(PrimaryObjectPanel);
+		JPanel primaryObjectPanel = new JPanel();
+		primaryObjectPanel.setLayout(null);
+		primaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		primaryObjectPanel.setBackground(new Color(211, 211, 211));
+		primaryObjectPanel.setBounds(324, 250, 187, 182);
+		paneSpeckle.add(primaryObjectPanel);
 
 		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
 		lblBgSubPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblBgSubPrimary.setBounds(10, 0, 161, 29);
-		PrimaryObjectPanel.add(lblBgSubPrimary);
+		primaryObjectPanel.add(lblBgSubPrimary);
 
 		JRadioButton rbBgSubPrimaryNo = new JRadioButton("No");
 		rbBgSubPrimaryNo.setSelected(true);
 		rbBgSubPrimaryNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbBgSubPrimaryNo.setBackground(new Color(211, 211, 211));
 		rbBgSubPrimaryNo.setBounds(10, 24, 43, 23);
-		PrimaryObjectPanel.add(rbBgSubPrimaryNo);
+		primaryObjectPanel.add(rbBgSubPrimaryNo);
 
 		JRadioButton rbBgSubPrimaryYes = new JRadioButton("Yes");
 		rbBgSubPrimaryYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbBgSubPrimaryYes.setEnabled(false);
 		rbBgSubPrimaryYes.setBackground(new Color(211, 211, 211));
 		rbBgSubPrimaryYes.setBounds(50, 24, 48, 23);
-		PrimaryObjectPanel.add(rbBgSubPrimaryYes);
+		primaryObjectPanel.add(rbBgSubPrimaryYes);
 
 		JLabel lblGaussianBlurPrimary = new JLabel("3D Gaussian blur:");
 		lblGaussianBlurPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblGaussianBlurPrimary.setBounds(10, 47, 161, 29);
-		PrimaryObjectPanel.add(lblGaussianBlurPrimary);
+		primaryObjectPanel.add(lblGaussianBlurPrimary);
 
 		JLabel lblRadius = new JLabel("Radius:\r\n");
 		lblRadius.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius.setEnabled(false);
 		lblRadius.setBounds(97, 21, 48, 29);
-		PrimaryObjectPanel.add(lblRadius);
+		primaryObjectPanel.add(lblRadius);
 
 		txtPriGBx = new JTextField();
 		txtPriGBx.setColumns(10);
 		txtPriGBx.setBackground(new Color(211, 211, 211));
 		txtPriGBx.setBounds(20, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBx);
+		primaryObjectPanel.add(txtPriGBx);
 
 		JLabel lblX = new JLabel("x");
 		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX.setBounds(10, 69, 21, 29);
-		PrimaryObjectPanel.add(lblX);
+		primaryObjectPanel.add(lblX);
 
 		JLabel lblY = new JLabel("y");
 		lblY.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY.setBounds(65, 69, 21, 29);
-		PrimaryObjectPanel.add(lblY);
+		primaryObjectPanel.add(lblY);
 
 		txtPriGBy = new JTextField();
 		txtPriGBy.setColumns(10);
 		txtPriGBy.setBackground(new Color(211, 211, 211));
 		txtPriGBy.setBounds(75, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBy);
+		primaryObjectPanel.add(txtPriGBy);
 
 		JLabel lblZ = new JLabel("z");
 		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ.setBounds(120, 69, 21, 29);
-		PrimaryObjectPanel.add(lblZ);
+		primaryObjectPanel.add(lblZ);
 
 		txtPriGBz = new JTextField();
 		txtPriGBz.setColumns(10);
 		txtPriGBz.setBackground(new Color(211, 211, 211));
 		txtPriGBz.setBounds(130, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBz);
+		primaryObjectPanel.add(txtPriGBz);
 
 		txtSpecklePrimaryBG = new JTextField();
 		txtSpecklePrimaryBG.setEnabled(false);
 		txtSpecklePrimaryBG.setColumns(10);
 		txtSpecklePrimaryBG.setBackground(new Color(211, 211, 211));
 		txtSpecklePrimaryBG.setBounds(145, 25, 35, 20);
-		PrimaryObjectPanel.add(txtSpecklePrimaryBG);
+		primaryObjectPanel.add(txtSpecklePrimaryBG);
 
 		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblDetectMaximaPrimary.setBounds(10, 96, 161, 29);
-		PrimaryObjectPanel.add(lblDetectMaximaPrimary);
+		primaryObjectPanel.add(lblDetectMaximaPrimary);
 
 		JLabel lblX_1 = new JLabel("x");
 		lblX_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_1.setBounds(10, 117, 21, 29);
-		PrimaryObjectPanel.add(lblX_1);
+		primaryObjectPanel.add(lblX_1);
 
 		txtPriDMx = new JTextField();
 		txtPriDMx.setColumns(10);
 		txtPriDMx.setBackground(new Color(211, 211, 211));
 		txtPriDMx.setBounds(20, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMx);
+		primaryObjectPanel.add(txtPriDMx);
 
 		JLabel lblY_1 = new JLabel("y");
 		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1.setBounds(65, 117, 21, 29);
-		PrimaryObjectPanel.add(lblY_1);
+		primaryObjectPanel.add(lblY_1);
 
 		txtPriDMy = new JTextField();
 		txtPriDMy.setColumns(10);
 		txtPriDMy.setBackground(new Color(211, 211, 211));
 		txtPriDMy.setBounds(75, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMy);
+		primaryObjectPanel.add(txtPriDMy);
 
 		JLabel lblZ_1 = new JLabel("z");
 		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1.setBounds(120, 117, 21, 29);
-		PrimaryObjectPanel.add(lblZ_1);
+		primaryObjectPanel.add(lblZ_1);
 
 		txtPriDMz = new JTextField();
 		txtPriDMz.setColumns(10);
 		txtPriDMz.setBackground(new Color(211, 211, 211));
 		txtPriDMz.setBounds(130, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMz);
+		primaryObjectPanel.add(txtPriDMz);
 
 		JLabel lblThreshold = new JLabel("Threshold:");
 		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold.setBounds(10, 144, 76, 29);
-		PrimaryObjectPanel.add(lblThreshold);
+		primaryObjectPanel.add(lblThreshold);
 
 		txtPriThreshold = new JTextField();
 		txtPriThreshold.setColumns(10);
 		txtPriThreshold.setBackground(new Color(211, 211, 211));
 		txtPriThreshold.setBounds(76, 148, 55, 20);
-		PrimaryObjectPanel.add(txtPriThreshold);
+		primaryObjectPanel.add(txtPriThreshold);
 
 		JLabel lblWhichChannel = new JLabel("Which channel? ");
 		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -339,131 +339,131 @@ public class SpeckleView extends JFrame {
 		pnlSegmentation.setBounds(309, 189, 639, 255);
 		paneSpeckle.add(pnlSegmentation);
 
-		JPanel TertiaryObjectPanel = new JPanel();
-		TertiaryObjectPanel.setLayout(null);
-		TertiaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		TertiaryObjectPanel.setBackground(new Color(211, 211, 211));
-		TertiaryObjectPanel.setBounds(435, 61, 187, 182);
-		pnlSegmentation.add(TertiaryObjectPanel);
+		JPanel tertiaryObjectPanel = new JPanel();
+		tertiaryObjectPanel.setLayout(null);
+		tertiaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		tertiaryObjectPanel.setBackground(new Color(211, 211, 211));
+		tertiaryObjectPanel.setBounds(435, 61, 187, 182);
+		pnlSegmentation.add(tertiaryObjectPanel);
 
 		JLabel lblBgSubSecondary_1 = new JLabel("Background subtraction?");
 		lblBgSubSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblBgSubSecondary_1.setBounds(10, 0, 161, 29);
-		TertiaryObjectPanel.add(lblBgSubSecondary_1);
+		tertiaryObjectPanel.add(lblBgSubSecondary_1);
 
 		JRadioButton rdbtnNewRadioButton_1_1_1 = new JRadioButton("No");
 		rdbtnNewRadioButton_1_1_1.setSelected(true);
 		rdbtnNewRadioButton_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnNewRadioButton_1_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnNewRadioButton_1_1_1.setBounds(10, 24, 43, 23);
-		TertiaryObjectPanel.add(rdbtnNewRadioButton_1_1_1);
+		tertiaryObjectPanel.add(rdbtnNewRadioButton_1_1_1);
 
 		JRadioButton rdbtnYes_1_1_1 = new JRadioButton("Yes");
 		rdbtnYes_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnYes_1_1_1.setEnabled(false);
 		rdbtnYes_1_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnYes_1_1_1.setBounds(50, 24, 48, 23);
-		TertiaryObjectPanel.add(rdbtnYes_1_1_1);
+		tertiaryObjectPanel.add(rdbtnYes_1_1_1);
 
 		JLabel lblGaussianBlurSecondary_1 = new JLabel("3D Gaussian blur:");
 		lblGaussianBlurSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblGaussianBlurSecondary_1.setBounds(10, 47, 161, 29);
-		TertiaryObjectPanel.add(lblGaussianBlurSecondary_1);
+		tertiaryObjectPanel.add(lblGaussianBlurSecondary_1);
 
 		JLabel lblRadius_1_1 = new JLabel("Radius:\r\n");
 		lblRadius_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius_1_1.setEnabled(false);
 		lblRadius_1_1.setBounds(98, 21, 48, 29);
-		TertiaryObjectPanel.add(lblRadius_1_1);
+		tertiaryObjectPanel.add(lblRadius_1_1);
 
 		txtTertGBx = new JTextField();
 		txtTertGBx.setColumns(10);
 		txtTertGBx.setBackground(new Color(211, 211, 211));
 		txtTertGBx.setBounds(20, 73, 41, 20);
-		TertiaryObjectPanel.add(txtTertGBx);
+		tertiaryObjectPanel.add(txtTertGBx);
 
 		JLabel lblX_2_1 = new JLabel("x");
 		lblX_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_2_1.setBounds(10, 69, 21, 29);
-		TertiaryObjectPanel.add(lblX_2_1);
+		tertiaryObjectPanel.add(lblX_2_1);
 
 		JLabel lblY_2_1 = new JLabel("y");
 		lblY_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_2_1.setBounds(65, 69, 21, 29);
-		TertiaryObjectPanel.add(lblY_2_1);
+		tertiaryObjectPanel.add(lblY_2_1);
 
 		txtTertGBy = new JTextField();
 		txtTertGBy.setColumns(10);
 		txtTertGBy.setBackground(new Color(211, 211, 211));
 		txtTertGBy.setBounds(75, 73, 41, 20);
-		TertiaryObjectPanel.add(txtTertGBy);
+		tertiaryObjectPanel.add(txtTertGBy);
 
 		JLabel lblZ_2_1 = new JLabel("z");
 		lblZ_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2_1.setBounds(120, 69, 21, 29);
-		TertiaryObjectPanel.add(lblZ_2_1);
+		tertiaryObjectPanel.add(lblZ_2_1);
 
 		txtTertGBz = new JTextField();
 		txtTertGBz.setColumns(10);
 		txtTertGBz.setBackground(new Color(211, 211, 211));
 		txtTertGBz.setBounds(130, 73, 41, 20);
-		TertiaryObjectPanel.add(txtTertGBz);
+		tertiaryObjectPanel.add(txtTertGBz);
 
 		txtSpeckleTertiaryBG = new JTextField();
 		txtSpeckleTertiaryBG.setEnabled(false);
 		txtSpeckleTertiaryBG.setColumns(10);
 		txtSpeckleTertiaryBG.setBackground(new Color(211, 211, 211));
 		txtSpeckleTertiaryBG.setBounds(145, 25, 31, 20);
-		TertiaryObjectPanel.add(txtSpeckleTertiaryBG);
+		tertiaryObjectPanel.add(txtSpeckleTertiaryBG);
 
 		JLabel lblDetectMaximaSecondary_1 = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblDetectMaximaSecondary_1.setBounds(10, 96, 161, 29);
-		TertiaryObjectPanel.add(lblDetectMaximaSecondary_1);
+		tertiaryObjectPanel.add(lblDetectMaximaSecondary_1);
 
 		JLabel lblX_1_1_1 = new JLabel("x");
 		lblX_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_1_1_1.setBounds(10, 117, 21, 29);
-		TertiaryObjectPanel.add(lblX_1_1_1);
+		tertiaryObjectPanel.add(lblX_1_1_1);
 
 		txtTertDMx = new JTextField();
 		txtTertDMx.setColumns(10);
 		txtTertDMx.setBackground(new Color(211, 211, 211));
 		txtTertDMx.setBounds(20, 121, 41, 20);
-		TertiaryObjectPanel.add(txtTertDMx);
+		tertiaryObjectPanel.add(txtTertDMx);
 
 		JLabel lblY_1_1_1 = new JLabel("y");
 		lblY_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1_1.setBounds(65, 117, 21, 29);
-		TertiaryObjectPanel.add(lblY_1_1_1);
+		tertiaryObjectPanel.add(lblY_1_1_1);
 
 		txtTertDMy = new JTextField();
 		txtTertDMy.setColumns(10);
 		txtTertDMy.setBackground(new Color(211, 211, 211));
 		txtTertDMy.setBounds(75, 121, 41, 20);
-		TertiaryObjectPanel.add(txtTertDMy);
+		tertiaryObjectPanel.add(txtTertDMy);
 
 		JLabel lblZ_1_1_1 = new JLabel("z");
 		lblZ_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1_1.setBounds(120, 117, 21, 29);
-		TertiaryObjectPanel.add(lblZ_1_1_1);
+		tertiaryObjectPanel.add(lblZ_1_1_1);
 
 		txtTertDMz = new JTextField();
 		txtTertDMz.setColumns(10);
 		txtTertDMz.setBackground(new Color(211, 211, 211));
 		txtTertDMz.setBounds(130, 121, 41, 20);
-		TertiaryObjectPanel.add(txtTertDMz);
+		tertiaryObjectPanel.add(txtTertDMz);
 
 		JLabel lblThreshold_1_1 = new JLabel("Threshold:");
 		lblThreshold_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1_1.setBounds(10, 144, 76, 29);
-		TertiaryObjectPanel.add(lblThreshold_1_1);
+		tertiaryObjectPanel.add(lblThreshold_1_1);
 
 		txtTertThreshold = new JTextField();
 		txtTertThreshold.setColumns(10);
 		txtTertThreshold.setBackground(new Color(211, 211, 211));
 		txtTertThreshold.setBounds(76, 148, 55, 20);
-		TertiaryObjectPanel.add(txtTertThreshold);
+		tertiaryObjectPanel.add(txtTertThreshold);
 
 		JLabel lblWhichChannel_1_1 = new JLabel("Which channel? ");
 		lblWhichChannel_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
@@ -478,131 +478,131 @@ public class SpeckleView extends JFrame {
 		cbChannelTertiary.setBounds(561, 30, 48, 25);
 		pnlSegmentation.add(cbChannelTertiary);
 
-		JPanel SecondaryObjectPanel = new JPanel();
-		SecondaryObjectPanel.setBounds(223, 61, 187, 182);
-		pnlSegmentation.add(SecondaryObjectPanel);
-		SecondaryObjectPanel.setLayout(null);
-		SecondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		SecondaryObjectPanel.setBackground(new Color(211, 211, 211));
+		JPanel secondaryObjectPanel = new JPanel();
+		secondaryObjectPanel.setBounds(223, 61, 187, 182);
+		pnlSegmentation.add(secondaryObjectPanel);
+		secondaryObjectPanel.setLayout(null);
+		secondaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		secondaryObjectPanel.setBackground(new Color(211, 211, 211));
 
 		JLabel lblBgSubSecondary = new JLabel("Background subtraction?");
 		lblBgSubSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblBgSubSecondary.setBounds(10, 0, 161, 29);
-		SecondaryObjectPanel.add(lblBgSubSecondary);
+		secondaryObjectPanel.add(lblBgSubSecondary);
 
 		JRadioButton rdbtnNewRadioButton_1_1 = new JRadioButton("No");
 		rdbtnNewRadioButton_1_1.setSelected(true);
 		rdbtnNewRadioButton_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnNewRadioButton_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnNewRadioButton_1_1.setBounds(10, 24, 43, 23);
-		SecondaryObjectPanel.add(rdbtnNewRadioButton_1_1);
+		secondaryObjectPanel.add(rdbtnNewRadioButton_1_1);
 
 		JRadioButton rdbtnYes_1_1 = new JRadioButton("Yes");
 		rdbtnYes_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rdbtnYes_1_1.setEnabled(false);
 		rdbtnYes_1_1.setBackground(new Color(211, 211, 211));
 		rdbtnYes_1_1.setBounds(50, 24, 48, 23);
-		SecondaryObjectPanel.add(rdbtnYes_1_1);
+		secondaryObjectPanel.add(rdbtnYes_1_1);
 
 		JLabel lblGaussianBlurSecondary = new JLabel("3D Gaussian blur:");
 		lblGaussianBlurSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblGaussianBlurSecondary.setBounds(10, 47, 161, 29);
-		SecondaryObjectPanel.add(lblGaussianBlurSecondary);
+		secondaryObjectPanel.add(lblGaussianBlurSecondary);
 
 		JLabel lblRadius_1 = new JLabel("Radius:\r\n");
 		lblRadius_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblRadius_1.setEnabled(false);
 		lblRadius_1.setBounds(98, 21, 48, 29);
-		SecondaryObjectPanel.add(lblRadius_1);
+		secondaryObjectPanel.add(lblRadius_1);
 
 		txtSecGBx = new JTextField();
 		txtSecGBx.setColumns(10);
 		txtSecGBx.setBackground(new Color(211, 211, 211));
 		txtSecGBx.setBounds(20, 73, 41, 20);
-		SecondaryObjectPanel.add(txtSecGBx);
+		secondaryObjectPanel.add(txtSecGBx);
 
 		JLabel lblX_2 = new JLabel("x");
 		lblX_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_2.setBounds(10, 69, 21, 29);
-		SecondaryObjectPanel.add(lblX_2);
+		secondaryObjectPanel.add(lblX_2);
 
 		JLabel lblY_2 = new JLabel("y");
 		lblY_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_2.setBounds(65, 69, 21, 29);
-		SecondaryObjectPanel.add(lblY_2);
+		secondaryObjectPanel.add(lblY_2);
 
 		txtSecGBy = new JTextField();
 		txtSecGBy.setColumns(10);
 		txtSecGBy.setBackground(new Color(211, 211, 211));
 		txtSecGBy.setBounds(75, 73, 41, 20);
-		SecondaryObjectPanel.add(txtSecGBy);
+		secondaryObjectPanel.add(txtSecGBy);
 
 		JLabel lblZ_2 = new JLabel("z");
 		lblZ_2.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_2.setBounds(120, 69, 21, 29);
-		SecondaryObjectPanel.add(lblZ_2);
+		secondaryObjectPanel.add(lblZ_2);
 
 		txtSecGBz = new JTextField();
 		txtSecGBz.setColumns(10);
 		txtSecGBz.setBackground(new Color(211, 211, 211));
 		txtSecGBz.setBounds(130, 73, 41, 20);
-		SecondaryObjectPanel.add(txtSecGBz);
+		secondaryObjectPanel.add(txtSecGBz);
 
 		txtSpeckleSecondaryBG = new JTextField();
 		txtSpeckleSecondaryBG.setEnabled(false);
 		txtSpeckleSecondaryBG.setColumns(10);
 		txtSpeckleSecondaryBG.setBackground(new Color(211, 211, 211));
 		txtSpeckleSecondaryBG.setBounds(145, 25, 31, 20);
-		SecondaryObjectPanel.add(txtSpeckleSecondaryBG);
+		secondaryObjectPanel.add(txtSpeckleSecondaryBG);
 
 		JLabel lblDetectMaximaSecondary = new JLabel("3D detect maxima radius:");
 		lblDetectMaximaSecondary.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblDetectMaximaSecondary.setBounds(10, 96, 161, 29);
-		SecondaryObjectPanel.add(lblDetectMaximaSecondary);
+		secondaryObjectPanel.add(lblDetectMaximaSecondary);
 
 		JLabel lblX_1_1 = new JLabel("x");
 		lblX_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblX_1_1.setBounds(10, 117, 21, 29);
-		SecondaryObjectPanel.add(lblX_1_1);
+		secondaryObjectPanel.add(lblX_1_1);
 
 		txtSecDMx = new JTextField();
 		txtSecDMx.setColumns(10);
 		txtSecDMx.setBackground(new Color(211, 211, 211));
 		txtSecDMx.setBounds(20, 121, 41, 20);
-		SecondaryObjectPanel.add(txtSecDMx);
+		secondaryObjectPanel.add(txtSecDMx);
 
 		JLabel lblY_1_1 = new JLabel("y");
 		lblY_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblY_1_1.setBounds(65, 117, 21, 29);
-		SecondaryObjectPanel.add(lblY_1_1);
+		secondaryObjectPanel.add(lblY_1_1);
 
 		txtSecDMy = new JTextField();
 		txtSecDMy.setColumns(10);
 		txtSecDMy.setBackground(new Color(211, 211, 211));
 		txtSecDMy.setBounds(75, 121, 41, 20);
-		SecondaryObjectPanel.add(txtSecDMy);
+		secondaryObjectPanel.add(txtSecDMy);
 
 		JLabel lblZ_1_1 = new JLabel("z");
 		lblZ_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblZ_1_1.setBounds(120, 117, 21, 29);
-		SecondaryObjectPanel.add(lblZ_1_1);
+		secondaryObjectPanel.add(lblZ_1_1);
 
 		txtSecDMz = new JTextField();
 		txtSecDMz.setColumns(10);
 		txtSecDMz.setBackground(new Color(211, 211, 211));
 		txtSecDMz.setBounds(130, 121, 41, 20);
-		SecondaryObjectPanel.add(txtSecDMz);
+		secondaryObjectPanel.add(txtSecDMz);
 
 		JLabel lblThreshold_1 = new JLabel("Threshold:");
 		lblThreshold_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblThreshold_1.setBounds(10, 144, 76, 29);
-		SecondaryObjectPanel.add(lblThreshold_1);
+		secondaryObjectPanel.add(lblThreshold_1);
 
 		JTextField txtSecThreshold = new JTextField();
 		txtSecThreshold.setColumns(10);
 		txtSecThreshold.setBackground(new Color(211, 211, 211));
 		txtSecThreshold.setBounds(76, 148, 55, 20);
-		SecondaryObjectPanel.add(txtSecThreshold);
+		secondaryObjectPanel.add(txtSecThreshold);
 
 		JLabel lblSegmentSecondary = new JLabel("Secondary Object");
 		lblSegmentSecondary.setBounds(223, 3, 187, 29);
