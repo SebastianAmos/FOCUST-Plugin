@@ -15,13 +15,15 @@ import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-
+/**
+ * TODO 
+ * Class javadoc
+ *
+ */
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
-
-
 public class FOCUST implements Command {
 
-
+/** TODO:  public fields. Should be private. */
 public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);	
 public static File[] imageFiles;
 public static String inputDir = "";
@@ -30,11 +32,10 @@ public static JFileChooser fileChooser = null;
 public static Path inputPath;
 
 
-/**
- * Launch the main gui for FOCUST.	
- */
- 
-// main for testing in IDE.
+	/**
+	 * Launch the main gui for FOCUST.
+	 * @param args the command line arguments	
+	 */
 	public static void main(String[] args) {
 
 		SwingUtilities.invokeLater(() -> {
@@ -58,9 +59,7 @@ public static Path inputPath;
 	}	
 	
 
-	public static void FileFinder() {
-		
-		
+	public static void fileFinder() {
 		try {
 			fileChooser = futureFileChooser.get();
 		} catch (InterruptedException | ExecutionException e1) {

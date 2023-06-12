@@ -101,7 +101,7 @@ public class OptimizationSingleCellView extends JFrame {
 		btnInputDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Find and set the input directory.
-				FOCUST.FileFinder();
+				FOCUST.fileFinder();
 				FOCUST.inputDir = FOCUST.imageFiles[0].getParent();
 			
 				// update the textbox 

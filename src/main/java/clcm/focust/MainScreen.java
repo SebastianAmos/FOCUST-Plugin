@@ -183,7 +183,10 @@ public class MainScreen extends JFrame{
 	}
 
 
-	void OptimizeGuiDisplay() {
+	/**
+	 * TODO: Comment for non-private method.
+	 */
+	void optimizeGuiDisplay() {
 		GenericDialog gd = new GenericDialog("Optimization Selector");
 		String[] choices = {"Spheroid Analysis", "Single Cell Analysis", "Speckle Analysis"};
 		gd.addRadioButtonGroup("Select a Mode to Optimize:", choices, 1, 3, null);

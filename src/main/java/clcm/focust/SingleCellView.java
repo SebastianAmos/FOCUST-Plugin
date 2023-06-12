@@ -571,7 +571,7 @@ public class SingleCellView extends JFrame {
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSingleCellGroupName.getText();
 				
-				Segment.ProcessSingleCells(cbAnalysisMode.isSelected());
+				Segment.processSingleCells(cbAnalysisMode.isSelected());
 				
 			}
 		});

@@ -79,7 +79,7 @@ public class Segment {
 	 */
 	
 	
-	public static void ProcessSingleCells(boolean analysisOnly) {
+	public static void processSingleCells(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -127,7 +127,7 @@ public class Segment {
 						} else {
 							// if analysis mode is F, segment primary channel from user inputs
 							IJ.log("Primary object segmention:");
-							primaryObjectsCells = GPUSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryObjectsCells = gpuSingleCell(primaryChannelChoice, SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
 						}
 						
 						IJ.log("Processing primary object...");
@@ -151,7 +151,7 @@ public class Segment {
 							String fileName = list[i].replace(".nd2", ".tif");
 							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
 						} else {
-							secondaryObjectsCells = GPUSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+							secondaryObjectsCells = gpuSingleCell(secondaryChannelChoice, SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
 						}
 						
 						secondaryObjectsCells.setCalibration(cal);
@@ -261,7 +261,7 @@ public class Segment {
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
 	 * -----------------------------------------------------------------------------------*/
-	public static void ProcessSpheroid(boolean analysisOnly) {
+	public static void processSpheroid(boolean analysisOnly) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -314,7 +314,7 @@ public class Segment {
 						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
-						GPUSpheroidPrimaryObject(primaryChannelChoice);
+						gpuSpheroidPrimaryObject(primaryChannelChoice);
 					}
 					
 					IJ.log("Processing primary object...");
@@ -351,7 +351,7 @@ public class Segment {
 						String fileName = list[i].replace(".nd2", ".tif");
 						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
 					} else {
-						GPUSpheroidSecondaryObject(secondaryChannelChoice);
+						gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}
 					
 					
@@ -587,7 +587,7 @@ public class Segment {
 	 * Take the selected channel and process as the primary object
 	 */
 	
-	public static ImagePlus GPUSpheroidPrimaryObject(int primaryChannelChoice) {
+	public static ImagePlus gpuSpheroidPrimaryObject(int primaryChannelChoice) {
 
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -671,7 +671,7 @@ public class Segment {
 	 * Take the selected channel and process as the secondary object
 	 */
 	
-	public static ImagePlus GPUSpheroidSecondaryObject(int secondaryChannelChoice) {
+	public static ImagePlus gpuSpheroidSecondaryObject(int secondaryChannelChoice) {
 
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -710,7 +710,7 @@ public class Segment {
 	 * Take the selected channel and process for single cells
 	 */
 
-	public static ImagePlus GPUSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
+	public static ImagePlus gpuSingleCell(int channelChoice, double sigma_x, double sigma_y, double sigma_z, double constant, double detect_x, double detect_y, double detect_z) {
 		// ready clij2
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
