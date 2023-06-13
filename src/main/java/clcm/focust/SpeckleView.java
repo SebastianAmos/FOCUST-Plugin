@@ -102,27 +102,33 @@ public class SpeckleView extends JFrame {
 
 	void setFilterParameterUIValues(){
 		// TODO: Remove the hard-coding
-		txtPriGBx.setText(String.valueOf(filterSpecs[0].sigma_x));
-		txtPriGBy.setText(String.valueOf(filterSpecs[0].sigma_y));
-		txtPriGBz.setText(String.valueOf(filterSpecs[0].sigma_z));
-		txtPriDMx.setText(String.valueOf(filterSpecs[0].radius_x));
-		txtPriDMy.setText(String.valueOf(filterSpecs[0].radius_y));
-		txtPriDMz.setText(String.valueOf(filterSpecs[0].radius_z));
-		txtPriThreshold.setText(String.valueOf(filterSpecs[0].greaterConstant));
-		txtSecGBx.setText(String.valueOf(filterSpecs[1].sigma_x));
-		txtSecGBy.setText(String.valueOf(filterSpecs[1].sigma_y));
-		txtSecGBz.setText(String.valueOf(filterSpecs[1].sigma_z));
-		txtSecDMx.setText(String.valueOf(filterSpecs[1].radius_x));
-		txtSecDMy.setText(String.valueOf(filterSpecs[1].radius_y));
-		txtSecDMz.setText(String.valueOf(filterSpecs[1].radius_z));
-		txtSecThreshold.setText(String.valueOf(filterSpecs[1].greaterConstant));
-		txtTertGBx.setText(String.valueOf(filterSpecs[2].sigma_x));
-		txtTertGBy.setText(String.valueOf(filterSpecs[2].sigma_y));
-		txtTertGBz.setText(String.valueOf(filterSpecs[2].sigma_z));
-		txtTertDMx.setText(String.valueOf(filterSpecs[2].radius_x));
-		txtTertDMy.setText(String.valueOf(filterSpecs[2].radius_y));
-		txtTertDMz.setText(String.valueOf(filterSpecs[2].radius_z));
-		txtTertThreshold.setText(String.valueOf(filterSpecs[2].greaterConstant));
+		if(filterSpecs[0] != null){
+			txtPriGBx.setText(String.valueOf(filterSpecs[0].sigma_x));
+			txtPriGBy.setText(String.valueOf(filterSpecs[0].sigma_y));
+			txtPriGBz.setText(String.valueOf(filterSpecs[0].sigma_z));
+			txtPriDMx.setText(String.valueOf(filterSpecs[0].radius_x));
+			txtPriDMy.setText(String.valueOf(filterSpecs[0].radius_y));
+			txtPriDMz.setText(String.valueOf(filterSpecs[0].radius_z));
+			txtPriThreshold.setText(String.valueOf(filterSpecs[0].greaterConstant));
+		}
+		if(filterSpecs[1] != null){
+			txtSecGBx.setText(String.valueOf(filterSpecs[1].sigma_x));
+			txtSecGBy.setText(String.valueOf(filterSpecs[1].sigma_y));
+			txtSecGBz.setText(String.valueOf(filterSpecs[1].sigma_z));
+			txtSecDMx.setText(String.valueOf(filterSpecs[1].radius_x));
+			txtSecDMy.setText(String.valueOf(filterSpecs[1].radius_y));
+			txtSecDMz.setText(String.valueOf(filterSpecs[1].radius_z));
+			txtSecThreshold.setText(String.valueOf(filterSpecs[1].greaterConstant));
+		}
+		if(filterSpecs[2] != null){
+			txtTertGBx.setText(String.valueOf(filterSpecs[2].sigma_x));
+			txtTertGBy.setText(String.valueOf(filterSpecs[2].sigma_y));
+			txtTertGBz.setText(String.valueOf(filterSpecs[2].sigma_z));
+			txtTertDMx.setText(String.valueOf(filterSpecs[2].radius_x));
+			txtTertDMy.setText(String.valueOf(filterSpecs[2].radius_y));
+			txtTertDMz.setText(String.valueOf(filterSpecs[2].radius_z));
+			txtTertThreshold.setText(String.valueOf(filterSpecs[2].greaterConstant));
+		}
 	}
 
 	void setFilterParameters(){
