@@ -793,7 +793,6 @@ public class SpeckleView extends JFrame {
 				String iFile = IJ.getFilePath("Select a parameter file.");
 				loadParameterValues(iFile);
 				setFilterParameterUIValues();
-				txtInputDir.setText(iFile);
 			}
 		});
 		paneSpeckle.add(btnLoadConfigSingleCell);
