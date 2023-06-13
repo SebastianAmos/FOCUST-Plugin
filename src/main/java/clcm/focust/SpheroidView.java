@@ -86,7 +86,7 @@ public class SpheroidView extends JFrame {
 	 
 	public SpheroidView() {
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(SpheroidView.class.getResource("/icon2.png")));
 		setTitle("FOCUST: Spheroid Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 827, 485);

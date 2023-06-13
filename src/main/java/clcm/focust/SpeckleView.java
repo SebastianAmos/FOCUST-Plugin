@@ -160,7 +160,7 @@ public class SpeckleView extends JFrame {
 
 		setTitle("FOCUST: Speckle Analysis");
 		setIconImage(Toolkit.getDefaultToolkit()
-				.getImage(SpeckleView.class.getResource("/clcm/focust/resources/icon2.png")));
+				.getImage(SpeckleView.class.getResource("/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 980, 497);
 		paneSpeckle = new JPanel();

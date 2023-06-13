@@ -42,7 +42,7 @@ public class OptimizeModeSelector extends JFrame {
 	 */
 	
 	public OptimizeModeSelector() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeModeSelector.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeModeSelector.class.getResource("/icon2.png")));
 		setTitle("FOCUST: Optimization Mode Selector");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 346, 338);
@@ -74,17 +74,17 @@ public class OptimizeModeSelector extends JFrame {
 		paneSelector.add(lblSelectAMode);
 		
 		JLabel lblSpheroidIcon = new JLabel("");
-		lblSpheroidIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
+		lblSpheroidIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/spheroidIcon0.2.png")));
 		lblSpheroidIcon.setBounds(34, 36, 77, 67);
 		paneSelector.add(lblSpheroidIcon);
 		
 		JLabel lblSingleCellIcon = new JLabel("");
-		lblSingleCellIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/clcm/focust/resources/singlecellicon.png")));
+		lblSingleCellIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/singlecellicon.png")));
 		lblSingleCellIcon.setBounds(44, 106, 77, 67);
 		paneSelector.add(lblSingleCellIcon);
 		
 		JLabel lblSpeckleIcon = new JLabel("");
-		lblSpeckleIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/clcm/focust/resources/speckleIcon.png")));
+		lblSpeckleIcon.setIcon(new ImageIcon(OptimizeModeSelector.class.getResource("/speckleIcon.png")));
 		lblSpeckleIcon.setBounds(44, 177, 77, 67);
 		paneSelector.add(lblSpeckleIcon);
 		
