@@ -36,20 +36,9 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 
 	@Override
 	public void dataUpdated(Datum key, Speckles newData) {
-		
 		ImagePlus primaryObjectsSpeckles = newData.getSpeckle(SpeckleType.PRIMARY).orElseThrow(IllegalStateException::new);
 		ImagePlus secondaryObjectsSpeckles = newData.getSpeckle(SpeckleType.SECONDARY).orElseThrow(IllegalStateException::new);
 		ImagePlus tertiaryObjectsSpeckles = newData.getSpeckle(SpeckleType.TERTIARY).orElseThrow(IllegalStateException::new);
-		
-		IJ.resetMinAndMax(primaryObjectsSpeckles);
-		primaryObjectsSpeckles.setCalibration(cal);
-
-		IJ.resetMinAndMax(secondaryObjectsSpeckles);
-		secondaryObjectsSpeckles.setCalibration(cal);
-
-		IJ.resetMinAndMax(tertiaryObjectsSpeckles);
-		tertiaryObjectsSpeckles.setCalibration(cal);
-
 		// If kill borders is selected, then apply the appropriate method
 		//TODO killBordersText cannot be accessed like this!.
 		switch (SpeckleView.killBordersText) {

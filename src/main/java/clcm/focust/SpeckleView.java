@@ -694,7 +694,7 @@ public class SpeckleView extends JFrame {
 				tertiaryChannelChoice = cbChannelTertiary.getSelectedIndex();
 				groupingInfo = txtGroupingName.getText();
 				
-				
+				FOCUST.instance().rtConfManager().
 				
 				Segment segment = new Segment();
 				segment.processSpeckles(cbAnalysisMode.isSelected());

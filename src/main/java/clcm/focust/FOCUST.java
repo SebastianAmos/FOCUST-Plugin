@@ -21,6 +21,7 @@ import org.scijava.plugin.Plugin;
 
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
+import clcm.focust.dynamicConfig.RuntimeConfiguration;
 import clcm.focust.speckle.SpeckleService;
 import clcm.focust.speckle.Speckles;
 
@@ -39,12 +40,16 @@ public final class FOCUST implements Command {
 	/** Data manager for speckles. */
 	private DataMapManager<DataConstants.Datum,Speckles> specklesManager;
 	
+	/** Data manager for runtime configuration. */
+	private DataMapManager<DataConstants.Datum,RuntimeConfiguration> configurationManager; 
+	
 	/**
 	 * Constructor. Use  {@link #instance()}
 	 */
 	private FOCUST() {
 		 services = new ArrayList<>();
 		 specklesManager = new DataMapManager<>(DataConstants.Datum.class);
+		 configurationManager = new DataMapManager<>(DataConstants.Datum.class);
 		 services.add(new SpeckleService());
 	}	
 
@@ -99,6 +104,10 @@ public final class FOCUST implements Command {
 	
 	public final DataMapManager<DataConstants.Datum,Speckles> specklesManager(){
 		return specklesManager;
+	}
+	
+	public final DataMapManager<DataConstants.Datum,RuntimeConfiguration> rtConfManager(){
+		return configurationManager;
 	}
 	
 

@@ -211,6 +211,18 @@ public class Segment {
 								SpeckleView.radius_z3);
 					}
 					Map<SpeckleType,ImagePlus> speckles = new EnumMap<>(SpeckleType.class);
+					
+					
+					IJ.resetMinAndMax(primaryObjectsSpeckles);
+					primaryObjectsSpeckles.setCalibration(cal);
+
+					IJ.resetMinAndMax(secondaryObjectsSpeckles);
+					secondaryObjectsSpeckles.setCalibration(cal);
+
+					IJ.resetMinAndMax(tertiaryObjectsSpeckles);
+					tertiaryObjectsSpeckles.setCalibration(cal);
+
+					
 					speckles.put(SpeckleType.PRIMARY,primaryObjectsSpeckles);
 					speckles.put(SpeckleType.SECONDARY,primaryObjectsSpeckles);
 					speckles.put(SpeckleType.TERTIARY,primaryObjectsSpeckles);
