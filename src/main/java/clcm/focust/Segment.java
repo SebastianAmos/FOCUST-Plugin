@@ -14,6 +14,7 @@ import net.haesleinhuepf.clijx.CLIJx;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -24,7 +25,11 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import clcm.focust.config.RuntimeConfiguration;
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.data.DataConstants;
+import clcm.focust.data.DataMapService;
+import clcm.focust.data.DatumService;
 import clcm.focust.speckle.SpeckleType;
 import clcm.focust.speckle.Speckles;
 
@@ -48,7 +53,6 @@ public class Segment {
 	private static ImagePlus secondaryObjectsCells;
 
 	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	private CLIJ2 clij2 = CLIJ2.getInstance();
 
 	// Could make these user-input strings to provide greater flexibility
 	private static String primaryPrefix = "Primary_Objects_";
@@ -86,11 +90,14 @@ public class Segment {
 			@Override
 			public void run() {
 
+				DatumService<RuntimeConfiguration> confMgr = FOCUST.instance().rtConfManager();
+
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
-				File f = new File(SpeckleView.inputDir);
-				String[] list = f.list();
-				String dir = SpeckleView.inputDir;
+
+				File f = confMgr.get().map(RuntimeConfiguration::getInputDirectory).map(Path::toFile)
+						.orElseThrow(IllegalArgumentException::new);
+				String[] filesList = f.list();
 				int count = 0;
 
 				/*
@@ -124,15 +131,15 @@ public class Segment {
 				// outputs.
 				if (analysisOnly) {
 					ArrayList<String> tempList = new ArrayList<>();
-					for (String imgName : list) {
+					for (String imgName : filesList) {
 						if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix)
 								&& !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix)
 								&& !imgName.startsWith(tertiaryPrefix)) {
 							tempList.add(imgName);
 						}
 					}
-					list = new String[tempList.size()];
-					list = tempList.toArray(list);
+					filesList = new String[tempList.size()];
+					filesList = tempList.toArray(filesList);
 				}
 
 				ResultsTable primaryFinalResults = null;
@@ -148,7 +155,7 @@ public class Segment {
 				IJ.log("		FOCUST: Speckle Protocol		");
 
 				// iterate through each image in the list
-				for (int i = 0; i < list.length; i++) {
+				for (int i = 0; i < filesList.length; i++) {
 					count++;
 
 					// reset the temp arrays
@@ -156,21 +163,19 @@ public class Segment {
 					Variable[] imageID = null;
 					Variable[] vol = null;
 
-					String path = SpeckleView.inputDir + list[i];
+					Path path = f.toPath().resolve(filesList[i]);
 
-					IJ.log("Processing image " + count + " of " + list.length);
-					IJ.log("Current image name: " + list[i]);
+					IJ.log("Processing image " + count + " of " + filesList.length);
+					IJ.log("Current image name: " + filesList[i]);
 					IJ.log("-------------------------------------------------------");
-					ImagePlus imp = IJ.openImage(path);
+					ImagePlus imp = IJ.openImage(path.toString());
 					int numberOfChannels = imp.getNChannels();
 
 					// TEST WITHOUT CONVERTING TO 8-BIT!
 					IJ.run(imp, "8-bit", "");
 
 					Calibration cal = imp.getCalibration();
-					
-					
-					
+
 					channelsSpeckle = ChannelSplitter.split(imp);
 					int primaryChannelChoice = SpeckleView.primaryChannelChoice;
 					int secondaryChannelChoice = SpeckleView.secondaryChannelChoice;
@@ -187,7 +192,7 @@ public class Segment {
 					if (analysisOnly) {
 						IJ.log("Analysis Only Mode Active: Finding Images...");
 						IJ.log("-------------------------------------------------------");
-						String fileName = list[i].replace(".dv", ".tif");
+						String fileName = filesList[i].replace(".dv", ".tif");
 						primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
 						secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
 						tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
@@ -210,9 +215,8 @@ public class Segment {
 								SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3,
 								SpeckleView.radius_z3);
 					}
-					Map<SpeckleType,ImagePlus> speckles = new EnumMap<>(SpeckleType.class);
-					
-					
+					Map<SpeckleType, ImagePlus> speckles = new EnumMap<>(SpeckleType.class);
+
 					IJ.resetMinAndMax(primaryObjectsSpeckles);
 					primaryObjectsSpeckles.setCalibration(cal);
 
@@ -222,10 +226,9 @@ public class Segment {
 					IJ.resetMinAndMax(tertiaryObjectsSpeckles);
 					tertiaryObjectsSpeckles.setCalibration(cal);
 
-					
-					speckles.put(SpeckleType.PRIMARY,primaryObjectsSpeckles);
-					speckles.put(SpeckleType.SECONDARY,primaryObjectsSpeckles);
-					speckles.put(SpeckleType.TERTIARY,primaryObjectsSpeckles);
+					speckles.put(SpeckleType.PRIMARY, primaryObjectsSpeckles);
+					speckles.put(SpeckleType.SECONDARY, primaryObjectsSpeckles);
+					speckles.put(SpeckleType.TERTIARY, primaryObjectsSpeckles);
 					FOCUST.instance().specklesManager().notifyUpdated(Datum.DATUM, new Speckles(speckles));
 				}
 			}

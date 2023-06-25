@@ -5,7 +5,7 @@ package clcm.focust.data;
  *
  * @param <T> the data type
  */
-public interface DataSubscriptionService<K,T> {
+public interface DataMapSubscriptionService<K,T> {
 	
 	/**
 	 * Subscribe this listener to updates for a key.

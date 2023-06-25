@@ -17,6 +17,8 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
+
+import clcm.focust.config.RuntimeConfiguration;
 import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -24,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 
 import java.awt.event.ActionListener;
+import java.nio.file.Paths;
 import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 
@@ -82,11 +85,9 @@ public class SpeckleView extends JFrame {
 	public static Double radius_y3;
 	public static Double radius_z3;
 
-	public static String killBordersText;
 	public static Double greaterConstantPrimary;
 	public static Double greaterConstantSecondary;
 	public static Double greaterConstantTertiary;
-	public static String inputDir;
 	public static String channel2Name;
 	public static String channel3Name;
 	public static String channel4Name;
@@ -684,17 +685,18 @@ public class SpeckleView extends JFrame {
 					greaterConstantTertiary = Double.parseDouble(txtTertThreshold.getText());
 				}
 				
-				killBordersText = GuiHelper.getSelectedButton(btngrpKillBorders);
 				channel2Name = txtC2Name.getText();
 				channel3Name = txtC3Name.getText();
 				channel4Name = txtC4Name.getText();
-				inputDir = txtInputDir.getText();
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				tertiaryChannelChoice = cbChannelTertiary.getSelectedIndex();
 				groupingInfo = txtGroupingName.getText();
 				
-				FOCUST.instance().rtConfManager().
+				RuntimeConfiguration conf = RuntimeConfiguration.builder()
+						.inputDirectory(Paths.get(txtInputDir.getText()))
+						.killBordersText(GuiHelper.getSelectedButton(btngrpKillBorders))
+						.build();
 				
 				Segment segment = new Segment();
 				segment.processSpeckles(cbAnalysisMode.isSelected());

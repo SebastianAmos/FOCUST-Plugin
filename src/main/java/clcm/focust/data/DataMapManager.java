@@ -11,12 +11,14 @@ import java.util.logging.Logger;
 
 /**
  * Publish-subscribe model for data in a map format of a given type.
+ * 
+ * TODO: Consider a separate datamanager for individual keys instead of using the Datum constant which is a bit unweildy. 
  *
  * @param <K> the key type
  * @param <T> the object type
  */
-public final class DataMapManager<K extends Enum<K>, T extends DataObject>
-		implements DataSubscriptionService<K, T>, DataService<K, T>, DataUpdateService<K, T> {
+public class DataMapManager<K extends Enum<K>, T extends DataObject>
+		implements DataMapSubscriptionService<K, T>, DataMapService<K, T>, DataMapUpdateService<K, T> {
 
 	/**
 	 * The class logger.
@@ -51,7 +53,7 @@ public final class DataMapManager<K extends Enum<K>, T extends DataObject>
 	}
 
 	@Override
-	public final void notifyDeleted(K key, Class<?> clazz) {
+	public final void notifyDeleted(K key) {
 		LOGGER.fine(() -> String.format("Data deleted for key [%s] ", key));
 		objects.remove(key);
 		listeners.get(key).forEach(listener -> listener.dataDeleted(key));

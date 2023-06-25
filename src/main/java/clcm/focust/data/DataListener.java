@@ -1,7 +1,7 @@
 package clcm.focust.data;
 
 /**
- * Use this inteface to subscribe to a {@link DataSubscriptionService}
+ * Use this inteface to subscribe to a {@link DataMapSubscriptionService}
  *
  * @param <T> the data to listen to.
  */

@@ -19,9 +19,10 @@ import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
+import clcm.focust.config.RuntimeConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
-import clcm.focust.dynamicConfig.RuntimeConfiguration;
+import clcm.focust.data.DatumManager;
 import clcm.focust.speckle.SpeckleService;
 import clcm.focust.speckle.Speckles;
 
@@ -34,36 +35,36 @@ public final class FOCUST implements Command {
 	public static String outputDir = "";
 	public static JFileChooser fileChooser = null;
 	public static Path inputPath;
-	
+
 	private List<FOCUSTService> services;
-	
+
 	/** Data manager for speckles. */
-	private DataMapManager<DataConstants.Datum,Speckles> specklesManager;
-	
+	private DatumManager<Speckles> specklesManager;
+
 	/** Data manager for runtime configuration. */
-	private DataMapManager<DataConstants.Datum,RuntimeConfiguration> configurationManager; 
-	
+	private DatumManager<RuntimeConfiguration> configurationManager;
+
 	/**
-	 * Constructor. Use  {@link #instance()}
+	 * Constructor. Use {@link #instance()}
 	 */
 	private FOCUST() {
-		 services = new ArrayList<>();
-		 specklesManager = new DataMapManager<>(DataConstants.Datum.class);
-		 configurationManager = new DataMapManager<>(DataConstants.Datum.class);
-		 services.add(new SpeckleService());
-	}	
+		services = new ArrayList<>();
+		specklesManager = new DatumManager<>();
+		configurationManager = new DatumManager<>();
+		services.add(new SpeckleService());
+	}
 
 	/**
 	 * Thread-safe Singleton.
 	 *
 	 */
 	private static class InstanceHolder {
-		/** The singleton instance. */ 
+		/** The singleton instance. */
 		private static FOCUST INSTANCE = new FOCUST();;
 
 		/** Constructor. */
 		private InstanceHolder() {
-			/* Empty. */ 
+			/* Empty. */
 		}
 	}
 
@@ -76,15 +77,15 @@ public final class FOCUST implements Command {
 
 	@Override
 	public final void run() {
-		services.forEach(FOCUSTService::init);		
-		
+		services.forEach(FOCUSTService::init);
+
 		SwingUtilities.invokeLater(() -> {
 			MainScreen mainGui = new MainScreen();
 			mainGui.setVisible(true);
 			/* Cleanup our mess. */
 			mainGui.addWindowListener(new WindowAdapter() {
 				@Override
-			    public void windowClosed(WindowEvent e) {
+				public void windowClosed(WindowEvent e) {
 					services.forEach(FOCUSTService::shutdown);
 				}
 			});
@@ -93,23 +94,23 @@ public final class FOCUST implements Command {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		executor.execute(futureFileChooser);
 	}
-	
+
 	/**
 	 * Thread-safe instance accessor for singleton
+	 * 
 	 * @return the singleton
 	 */
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;
 	}
-	
-	public final DataMapManager<DataConstants.Datum,Speckles> specklesManager(){
+
+	public final DatumManager<Speckles> specklesManager() {
 		return specklesManager;
 	}
-	
-	public final DataMapManager<DataConstants.Datum,RuntimeConfiguration> rtConfManager(){
+
+	public final DatumManager<RuntimeConfiguration> rtConfManager() {
 		return configurationManager;
 	}
-	
 
 	public static void fileFinder() {
 		try {

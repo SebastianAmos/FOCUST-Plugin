@@ -1,5 +1,6 @@
 package clcm.focust.speckle;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,20 +10,28 @@ import clcm.focust.LabelEditor;
 import clcm.focust.SpeckleView;
 import clcm.focust.TableUtility;
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.config.RuntimeConfiguration;
+import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
+import clcm.focust.data.DataMapService;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij2.CLIJ2;
 
-/** TODO
- * Document. 
+/**
+ * TODO Document.
+ * 
  * @author lachie
  *
  */
-public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckles>{
+public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckles> {
+
+	private static final DataMapService<DataConstants.Datum, clcm.focust.config.RuntimeConfiguration> configMgr = FOCUST
+			.instance().rtConfManager();
 
 	@Override
 	public void init() {
@@ -36,21 +45,30 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 
 	@Override
 	public void dataUpdated(Datum key, Speckles newData) {
-		ImagePlus primaryObjectsSpeckles = newData.getSpeckle(SpeckleType.PRIMARY).orElseThrow(IllegalStateException::new);
-		ImagePlus secondaryObjectsSpeckles = newData.getSpeckle(SpeckleType.SECONDARY).orElseThrow(IllegalStateException::new);
-		ImagePlus tertiaryObjectsSpeckles = newData.getSpeckle(SpeckleType.TERTIARY).orElseThrow(IllegalStateException::new);
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ImagePlus primaryObjectsSpeckles = newData.getSpeckle(SpeckleType.PRIMARY)
+				.orElseThrow(IllegalStateException::new);
+		ImagePlus secondaryObjectsSpeckles = newData.getSpeckle(SpeckleType.SECONDARY)
+				.orElseThrow(IllegalStateException::new);
+		ImagePlus tertiaryObjectsSpeckles = newData.getSpeckle(SpeckleType.TERTIARY)
+				.orElseThrow(IllegalStateException::new);
+
 		// If kill borders is selected, then apply the appropriate method
-		//TODO killBordersText cannot be accessed like this!.
+		// TODO killBordersText cannot be accessed like this!.
 		switch (SpeckleView.killBordersText) {
-		case "No":
+		case "No"  :
 			break;
 
 		case "X + Y":
-
+			String imgName = "temp"; // TODO obtain this bad boi from data.
 			// add padding to Z for primary objects
 			LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
+			final Path saveAsPath = configMgr.get(DataConstants.Datum.DATUM)
+					.map(RuntimeConfiguration::getInputDirectory)
+					.map(p -> p.resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName))
+					.orElseThrow(() -> new IllegalArgumentException(""));
 
-			IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "PADDED_PRIMARY_" + imgName);
+			IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
 
 			ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
 			ClearCLBuffer removedBorders = clij2.create(primaryPadded);
@@ -351,79 +369,88 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 				tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 		tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 
-	} // end of single image loop!!
+		// end of single image loop!!
 
-	/*
-	 * ResultsTable primary = new ResultsTable(); Variable[] primaryLabels =
-	 * priLabel.toArray(new Variable[priLabel.size()]); Variable[] primaryImgID =
-	 * priImgID.toArray(new Variable[priImgID.size()]); Variable[] primaryVolume =
-	 * priVolume.toArray(new Variable[priVolume.size()]);
-	 * 
-	 * primary.setColumn("Label", primaryLabels); primary.setColumn("ImageID",
-	 * primaryImgID); primary.setColumn("Volume", primaryVolume);
-	 */
+		/*
+		 * ResultsTable primary = new ResultsTable(); Variable[] primaryLabels =
+		 * priLabel.toArray(new Variable[priLabel.size()]); Variable[] primaryImgID =
+		 * priImgID.toArray(new Variable[priImgID.size()]); Variable[] primaryVolume =
+		 * priVolume.toArray(new Variable[priVolume.size()]);
+		 * 
+		 * primary.setColumn("Label", primaryLabels); primary.setColumn("ImageID",
+		 * primaryImgID); primary.setColumn("Volume", primaryVolume);
+		 */
 
-	/*
-	 * ResultsTable primary = new ResultsTable(); int c = priLabel.size(); for (int
-	 * i = 0; i < c; i++) { // if it's the first element to be written to the table
-	 * if (primary.size() == 0 ) { primary.setColumn("Label", priLabel.get(i));
-	 * primary.setColumn("ImageID", priImgID.get(i)); primary.setColumn("Volume",
-	 * priVolume.get(i)); } else {
-	 * 
-	 * Variable[] lab = priLabel.get(i); Variable[] imgID = priImgID.get(i);
-	 * Variable[] vol = priVolume.get(i);
-	 * 
-	 * 
-	 * 
-	 * 
-	 * for (int j = 0; j < lab.length; j++) { primary.addValue("Label",
-	 * lab[j].getString()); } } }
-	 * 
-	 * ResultsTable primaryFinal = new ResultsTable(); ResultsTable primary1 = new
-	 * ResultsTable(); ResultsTable primary2 = new ResultsTable(); for (Variable[]
-	 * array : priLabel) { for (Variable element : array) { primaryFinal.addRow();
-	 * primaryFinal.addValue("Label", element.getString()); } } for (Variable[]
-	 * array : priImgID) { for (Variable element : array) { for (int i = 0; i <
-	 * primary.size(); i++) { primaryFinal.setValue("ImageID", i,
-	 * element.getString()); } primary1.addRow(); primary1.addValue("ImageID",
-	 * element.getString()); } } for (Variable[] array : priVolume) { for (Variable
-	 * element : array) { for (int i = 0; i < primary.size(); i++) {
-	 * primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
-	 * } primary2.addRow(); primary2.addValue("Volume", element.getString()); } }
-	 * 
-	 * ResultsTable rt = new ResultsTable(); rt.setColumn("Label",
-	 * primary1.getColumnAsVariables("Label")); rt.setColumn("ImageID",
-	 * primary1.getColumnAsVariables("ImageID")); //rt.setColumn("Volume",
-	 * primary2.getColumnAsVariables("Volume"));
-	 */
+		/*
+		 * ResultsTable primary = new ResultsTable(); int c = priLabel.size(); for (int
+		 * i = 0; i < c; i++) { // if it's the first element to be written to the table
+		 * if (primary.size() == 0 ) { primary.setColumn("Label", priLabel.get(i));
+		 * primary.setColumn("ImageID", priImgID.get(i)); primary.setColumn("Volume",
+		 * priVolume.get(i)); } else {
+		 * 
+		 * Variable[] lab = priLabel.get(i); Variable[] imgID = priImgID.get(i);
+		 * Variable[] vol = priVolume.get(i);
+		 * 
+		 * 
+		 * 
+		 * 
+		 * for (int j = 0; j < lab.length; j++) { primary.addValue("Label",
+		 * lab[j].getString()); } } }
+		 * 
+		 * ResultsTable primaryFinal = new ResultsTable(); ResultsTable primary1 = new
+		 * ResultsTable(); ResultsTable primary2 = new ResultsTable(); for (Variable[]
+		 * array : priLabel) { for (Variable element : array) { primaryFinal.addRow();
+		 * primaryFinal.addValue("Label", element.getString()); } } for (Variable[]
+		 * array : priImgID) { for (Variable element : array) { for (int i = 0; i <
+		 * primary.size(); i++) { primaryFinal.setValue("ImageID", i,
+		 * element.getString()); } primary1.addRow(); primary1.addValue("ImageID",
+		 * element.getString()); } } for (Variable[] array : priVolume) { for (Variable
+		 * element : array) { for (int i = 0; i < primary.size(); i++) {
+		 * primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
+		 * } primary2.addRow(); primary2.addValue("Volume", element.getString()); } }
+		 * 
+		 * ResultsTable rt = new ResultsTable(); rt.setColumn("Label",
+		 * primary1.getColumnAsVariables("Label")); rt.setColumn("ImageID",
+		 * primary1.getColumnAsVariables("ImageID")); //rt.setColumn("Volume",
+		 * primary2.getColumnAsVariables("Volume"));
+		 */
 
-	ResultsTable primaryTable = new ResultsTable();
-	ResultsTable secondaryTable = new ResultsTable();
-	ResultsTable tertiaryTable = new ResultsTable();
+		ResultsTable primaryTable = new ResultsTable();
+		ResultsTable secondaryTable = new ResultsTable();
+		ResultsTable tertiaryTable = new ResultsTable();
 
-	primary.forEach((k,v)->primaryTable.setColumn(k,v.toArray(new Variable[v.size()])));secondary.forEach((k,v)->secondaryTable.setColumn(k,v.toArray(new Variable[v.size()])));tertiary.forEach((k,v)->tertiaryTable.setColumn(k,v.toArray(new Variable[v.size()])));
+		primary.forEach((k, v) -> primaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
+		secondary.forEach((k, v) -> secondaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
+		tertiary.forEach((k, v) -> tertiaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
 
-	IJ.log("Saving Results Tables...");IJ.log("-------------------------------------------------------");
+		IJ.log("Saving Results Tables...");
+		IJ.log("-------------------------------------------------------");
 
-	TableUtility.saveTable(primaryFinalResults,dir,"Primary_Results.csv");TableUtility.saveTable(secondaryFinalResults,dir,"Secondary_Results.csv");TableUtility.saveTable(tertiaryFinalResults,dir,"Tertiary_Results.csv");
+		TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
+		TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
+		TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
 
-	TableUtility.saveTable(primaryTable,dir,"PrimaryTable.csv");TableUtility.saveTable(secondaryTable,dir,"SecondaryTable.csv");TableUtility.saveTable(tertiaryTable,dir,"TertiaryTable.csv");
+		TableUtility.saveTable(primaryTable, dir, "PrimaryTable.csv");
+		TableUtility.saveTable(secondaryTable, dir, "SecondaryTable.csv");
+		TableUtility.saveTable(tertiaryTable, dir, "TertiaryTable.csv");
 
-	// TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
-	// TableUtility.saveTable(rt, dir, "RT.csv");
-	// TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
+		// TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
+		// TableUtility.saveTable(rt, dir, "RT.csv");
+		// TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
 
-	long endTime = System.currentTimeMillis();
-	double timeSec = (endTime - startTime)
-			/ 1000;IJ.log("It took "+timeSec+" seconds to process "+list.length+" images.");IJ.log("Speckle Batch Protocol Complete!");IJ.getLog();IJ.saveString(IJ.getLog(),dir+"Log.txt");}
-		// TODO Auto-generated method stub
-		
+		long endTime = System.currentTimeMillis();
+		double timeSec = (endTime - startTime) / 1000;
+		IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
+		IJ.log("Speckle Batch Protocol Complete!");
+		IJ.getLog();
+		IJ.saveString(IJ.getLog(), dir + "Log.txt");
 	}
+	// TODO Auto-generated method stub
 
 	@Override
 	public void dataDeleted(Datum key) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
