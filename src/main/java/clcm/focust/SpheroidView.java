@@ -25,6 +25,20 @@ import javax.swing.ButtonGroup;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
+import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.DropMode;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import javax.swing.SpringLayout;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 
 @SuppressWarnings("serial")
@@ -37,14 +51,6 @@ public class SpheroidView extends JFrame {
 	 private JTextField txtSpheroidC3Name;
 	 private JTextField txtSpheroidC4Name;
 	 private JTextField txtSpheroidGroupName;
-	 private JTextField txtPriGBx;
-	 private JTextField txtPriGBy;
-	 private JTextField txtPriGBz;
-	 private JTextField txtBgSubPrimaryVar;
-	 private JTextField txtPriDMx;
-	 private JTextField txtPriDMy;
-	 private JTextField txtPriDMz;
-	 private JTextField txtPriThreshold;
 	 private JTextField txtSecGBx;
 	 private JTextField txtSecGBy;
 	 private JTextField txtSecGBz;
@@ -76,6 +82,13 @@ public class SpheroidView extends JFrame {
 	 public static int secondaryChannelChoice;
 	 public static String groupingInfo;
 	 public static boolean analysisMode;
+	 private JTextField textField;
+	 private JTextField txtPriGBx;
+	 private JTextField txtPriGBy;
+	 private JTextField txtPriGBz;
+	 private JTextField txtPriDMx;
+	 private JTextField txtPriDMy;
+	 private JTextField txtPriDMz;
 	 
 	/**
 	 * A class that defines and builds the gui for the spheroid analysis mode.
@@ -300,140 +313,6 @@ public class SpheroidView extends JFrame {
 		lblSegmentSecondary.setBounds(590, 183, 187, 29);
 		paneSpheroid.add(lblSegmentSecondary);
 		
-		JPanel PrimaryObjectPanel = new JPanel();
-		PrimaryObjectPanel.setLayout(null);
-		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
-		PrimaryObjectPanel.setBounds(336, 241, 187, 182);
-		paneSpheroid.add(PrimaryObjectPanel);
-		
-		JLabel lblBgSubPrimary = new JLabel("Background subtraction?");
-		lblBgSubPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblBgSubPrimary.setBounds(10, 0, 161, 29);
-		PrimaryObjectPanel.add(lblBgSubPrimary);
-		
-		JRadioButton rbBgSubPrimaryNo = new JRadioButton("No");
-		btnGroupBGPrimary.add(rbBgSubPrimaryNo);
-		rbBgSubPrimaryNo.setSelected(true);
-		rbBgSubPrimaryNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbBgSubPrimaryNo.setBackground(new Color(211, 211, 211));
-		rbBgSubPrimaryNo.setBounds(10, 24, 43, 23);
-		PrimaryObjectPanel.add(rbBgSubPrimaryNo);
-		
-		JRadioButton rbBgSubPrimaryYes = new JRadioButton("Yes");
-		btnGroupBGPrimary.add(rbBgSubPrimaryYes);
-		rbBgSubPrimaryYes.setFont(new Font("Gadugi", Font.PLAIN, 13));
-		rbBgSubPrimaryYes.setBackground(new Color(211, 211, 211));
-		rbBgSubPrimaryYes.setBounds(50, 24, 48, 23);
-		PrimaryObjectPanel.add(rbBgSubPrimaryYes);
-		
-		JLabel lblGaussianBlurPrimary = new JLabel("3D Gaussian blur:");
-		lblGaussianBlurPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblGaussianBlurPrimary.setBounds(10, 47, 161, 29);
-		PrimaryObjectPanel.add(lblGaussianBlurPrimary);
-		
-		JLabel lblRadius = new JLabel("Radius:\r\n");
-		lblRadius.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblRadius.setEnabled(false);
-		lblRadius.setBounds(98, 21, 48, 29);
-		PrimaryObjectPanel.add(lblRadius);
-		
-		txtPriGBx = new JTextField();
-		txtPriGBx.setText("1");
-		txtPriGBx.setColumns(10);
-		txtPriGBx.setBackground(new Color(211, 211, 211));
-		txtPriGBx.setBounds(20, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBx);
-		
-		JLabel lblX = new JLabel("x");
-		lblX.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblX.setBounds(10, 69, 21, 29);
-		PrimaryObjectPanel.add(lblX);
-		
-		JLabel lblY = new JLabel("y");
-		lblY.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblY.setBounds(65, 69, 21, 29);
-		PrimaryObjectPanel.add(lblY);
-		
-		txtPriGBy = new JTextField();
-		txtPriGBy.setText("1");
-		txtPriGBy.setColumns(10);
-		txtPriGBy.setBackground(new Color(211, 211, 211));
-		txtPriGBy.setBounds(75, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBy);
-		
-		JLabel lblZ = new JLabel("z");
-		lblZ.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblZ.setBounds(120, 69, 21, 29);
-		PrimaryObjectPanel.add(lblZ);
-		
-		txtPriGBz = new JTextField();
-		txtPriGBz.setText("1");
-		txtPriGBz.setColumns(10);
-		txtPriGBz.setBackground(new Color(211, 211, 211));
-		txtPriGBz.setBounds(130, 73, 41, 20);
-		PrimaryObjectPanel.add(txtPriGBz);
-		
-		txtBgSubPrimaryVar = new JTextField();
-		txtBgSubPrimaryVar.setEnabled(false);
-		txtBgSubPrimaryVar.setColumns(10);
-		txtBgSubPrimaryVar.setBackground(new Color(211, 211, 211));
-		txtBgSubPrimaryVar.setBounds(145, 25, 31, 20);
-		PrimaryObjectPanel.add(txtBgSubPrimaryVar);
-		
-		JLabel lblDetectMaximaPrimary = new JLabel("3D detect maxima radius:");
-		lblDetectMaximaPrimary.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblDetectMaximaPrimary.setBounds(10, 96, 161, 29);
-		PrimaryObjectPanel.add(lblDetectMaximaPrimary);
-		
-		JLabel lblX_1 = new JLabel("x");
-		lblX_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblX_1.setBounds(10, 117, 21, 29);
-		PrimaryObjectPanel.add(lblX_1);
-		
-		txtPriDMx = new JTextField();
-		txtPriDMx.setText("1");
-		txtPriDMx.setColumns(10);
-		txtPriDMx.setBackground(new Color(211, 211, 211));
-		txtPriDMx.setBounds(20, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMx);
-		
-		JLabel lblY_1 = new JLabel("y");
-		lblY_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblY_1.setBounds(65, 117, 21, 29);
-		PrimaryObjectPanel.add(lblY_1);
-		
-		txtPriDMy = new JTextField();
-		txtPriDMy.setText("1");
-		txtPriDMy.setColumns(10);
-		txtPriDMy.setBackground(new Color(211, 211, 211));
-		txtPriDMy.setBounds(75, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMy);
-		
-		JLabel lblZ_1 = new JLabel("z");
-		lblZ_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblZ_1.setBounds(120, 117, 21, 29);
-		PrimaryObjectPanel.add(lblZ_1);
-		
-		txtPriDMz = new JTextField();
-		txtPriDMz.setText("1");
-		txtPriDMz.setColumns(10);
-		txtPriDMz.setBackground(new Color(211, 211, 211));
-		txtPriDMz.setBounds(130, 121, 41, 20);
-		PrimaryObjectPanel.add(txtPriDMz);
-		
-		JLabel lblThreshold = new JLabel("Threshold:");
-		lblThreshold.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		lblThreshold.setBounds(10, 144, 76, 29);
-		PrimaryObjectPanel.add(lblThreshold);
-		
-		txtPriThreshold = new JTextField();
-		txtPriThreshold.setText("1");
-		txtPriThreshold.setColumns(10);
-		txtPriThreshold.setBackground(new Color(211, 211, 211));
-		txtPriThreshold.setBounds(76, 148, 55, 20);
-		PrimaryObjectPanel.add(txtPriThreshold);
-		
 		
 		cbChannelPrimary.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbChannelPrimary.setSelectedIndex(0);
@@ -548,17 +427,6 @@ public class SpheroidView extends JFrame {
 		cbChannelSecondary.setBounds(716, 210, 61, 25);
 		paneSpheroid.add(cbChannelSecondary);
 		
-		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel.setBounds(321, 180, 469, 255);
-		paneSpheroid.add(panel);
-		
-		JLabel lblWhichChannel = new JLabel("Which channel? ");
-		lblWhichChannel.setBounds(15, 30, 146, 29);
-		panel.add(lblWhichChannel);
-		lblWhichChannel.setFont(new Font("Gadugi", Font.PLAIN, 14));
-		
 		JLabel lblSegmentationParameters = new JLabel("Segmentation Parameters");
 		lblSegmentationParameters.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSegmentationParameters.setFont(new Font("Gadugi", Font.BOLD, 14));
@@ -608,5 +476,115 @@ public class SpheroidView extends JFrame {
 		rbOutputDirNo.setFont(new Font("Gadugi", Font.PLAIN, 13));
 		rbOutputDirNo.setBounds(214, 71, 67, 23);
 		paneSpheroid.add(rbOutputDirNo);
+		
+		JLabel lblWhichChannel_1_1 = new JLabel("Which channel? ");
+		lblWhichChannel_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblWhichChannel_1_1.setBounds(336, 211, 106, 29);
+		paneSpheroid.add(lblWhichChannel_1_1);
+		
+		JPanel PrimaryObjectPanel = new JPanel();
+		PrimaryObjectPanel.setBounds(336, 241, 207, 182);
+		paneSpheroid.add(PrimaryObjectPanel);
+		PrimaryObjectPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		PrimaryObjectPanel.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		
+		JLabel lblBgSubSecondary_1 = new JLabel("Background subtraction?    ");
+		lblBgSubSecondary_1.setAlignmentX(0.5f);
+		lblBgSubSecondary_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblBgSubSecondary_1);
+		
+		JRadioButton rdbtnNewRadioButton_1_1_1 = new JRadioButton("No");
+		rdbtnNewRadioButton_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		rdbtnNewRadioButton_1_1_1.setSelected(true);
+		rdbtnNewRadioButton_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rdbtnNewRadioButton_1_1_1.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(rdbtnNewRadioButton_1_1_1);
+		
+		JRadioButton rdbtnYes_1_1_1 = new JRadioButton("Yes");
+		rdbtnYes_1_1_1.setFont(new Font("Gadugi", Font.PLAIN, 13));
+		rdbtnYes_1_1_1.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(rdbtnYes_1_1_1);
+		
+		JLabel lblRadius_1_1 = new JLabel("Radius:\r\n");
+		lblRadius_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		lblRadius_1_1.setEnabled(false);
+		PrimaryObjectPanel.add(lblRadius_1_1);
+		
+		textField = new JTextField();
+		textField.setEnabled(false);
+		textField.setColumns(3);
+		textField.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(textField);
+		
+		JLabel lbldGaussianBlur = new JLabel("3D Gaussian Blur:                     ");
+		lbldGaussianBlur.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lbldGaussianBlur);
+		
+		JLabel lblX_2_1 = new JLabel("x");
+		lblX_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblX_2_1);
+		
+		txtPriGBx = new JTextField();
+		txtPriGBx.setHorizontalAlignment(SwingConstants.LEFT);
+		txtPriGBx.setText("1");
+		txtPriGBx.setColumns(3);
+		txtPriGBx.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriGBx);
+		
+		JLabel lblY_2_1 = new JLabel("y");
+		lblY_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblY_2_1);
+		
+		txtPriGBy = new JTextField();
+		txtPriGBy.setText("1");
+		txtPriGBy.setColumns(3);
+		txtPriGBy.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriGBy);
+		
+		JLabel lblZ_2_1 = new JLabel("z");
+		lblZ_2_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblZ_2_1);
+		
+		txtPriGBz = new JTextField();
+		txtPriGBz.setText("1");
+		txtPriGBz.setColumns(3);
+		txtPriGBz.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriGBz);
+		
+		JLabel lbldMaxima = new JLabel("3D Maxima Radius:                    ");
+		lbldMaxima.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lbldMaxima);
+		
+		JLabel lblX_2_1_1 = new JLabel("x");
+		lblX_2_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblX_2_1_1);
+		
+		txtPriDMx = new JTextField();
+		txtPriDMx.setText("1");
+		txtPriDMx.setHorizontalAlignment(SwingConstants.LEFT);
+		txtPriDMx.setColumns(3);
+		txtPriDMx.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriDMx);
+		
+		JLabel lblY_2_1_1 = new JLabel("y");
+		lblY_2_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblY_2_1_1);
+		
+		txtPriDMy = new JTextField();
+		txtPriDMy.setText("1");
+		txtPriDMy.setColumns(3);
+		txtPriDMy.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriDMy);
+		
+		JLabel lblZ_2_1_1 = new JLabel("z");
+		lblZ_2_1_1.setFont(new Font("Gadugi", Font.PLAIN, 14));
+		PrimaryObjectPanel.add(lblZ_2_1_1);
+		
+		txtPriDMz = new JTextField();
+		txtPriDMz.setText("1");
+		txtPriDMz.setColumns(3);
+		txtPriDMz.setBackground(new Color(211, 211, 211));
+		PrimaryObjectPanel.add(txtPriDMz);
 	}
 }
