@@ -118,8 +118,8 @@ public class MyPanel extends JPanel {
             frame.setLayout(new GridBagLayout());
             
             GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 1;
-            c.gridy = 1;
+            c.gridx = 0;
+            c.gridy = 0;
             c.anchor = GridBagConstraints.WEST;
 
             MyPanel panel = new MyPanel();
