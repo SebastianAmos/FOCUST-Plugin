@@ -2,6 +2,8 @@ package clcm.focust.speckle;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import clcm.focust.FOCUST;
@@ -14,11 +16,13 @@ import clcm.focust.config.RuntimeConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapService;
+import clcm.focust.data.DatumService;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
+import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
@@ -30,8 +34,13 @@ import net.haesleinhuepf.clij2.CLIJ2;
  */
 public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckles> {
 
-	private static final DataMapService<DataConstants.Datum, clcm.focust.config.RuntimeConfiguration> configMgr = FOCUST
-			.instance().rtConfManager();
+	/* TODO. Surely IMAGEJ have a constant for this. */
+	private static final String MULTIPLY_CREATE_STACK_MODE = "Multiply create stack";
+	
+	/** Config manager service. Really this should be injected via constructor. */
+	private final DatumService<RuntimeConfiguration> configMgr = FOCUST.instance().rtConfManager();
+	
+	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 
 	@Override
 	public void init() {
@@ -45,6 +54,13 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 
 	@Override
 	public void dataUpdated(Datum key, Speckles newData) {
+		
+		String imgName = "temp"; // TODO obtain this bad boi from data.
+
+		/*
+		 * CLIJ2 using a singleton here is a bit suspicious. Is it thread-safe? TODO -
+		 * documentation and understand how this will affect us.
+		 */
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ImagePlus primaryObjectsSpeckles = newData.getSpeckle(SpeckleType.PRIMARY)
 				.orElseThrow(IllegalStateException::new);
@@ -53,20 +69,21 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		ImagePlus tertiaryObjectsSpeckles = newData.getSpeckle(SpeckleType.TERTIARY)
 				.orElseThrow(IllegalStateException::new);
 
+		/* TODO - defaults. */
+		final RuntimeConfiguration rtConf = configMgr.get().orElseThrow(IllegalStateException::new);
+		
+		/* TODO. "No." repeated constant. We should make this enum an enum. */
+		
 		// If kill borders is selected, then apply the appropriate method
 		// TODO killBordersText cannot be accessed like this!.
-		switch (SpeckleView.killBordersText) {
-		case "No"  :
+		switch (rtConf.getKillBordersText()) {
+		case "No":
 			break;
 
 		case "X + Y":
-			String imgName = "temp"; // TODO obtain this bad boi from data.
 			// add padding to Z for primary objects
 			LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
-			final Path saveAsPath = configMgr.get(DataConstants.Datum.DATUM)
-					.map(RuntimeConfiguration::getInputDirectory)
-					.map(p -> p.resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName))
-					.orElseThrow(() -> new IllegalArgumentException(""));
+			final Path saveAsPath = rtConf.getInputDirectory().resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName);
 
 			IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
 
@@ -86,9 +103,9 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 			// mask secondary and tertiary objects by remaining primary objects.
 			// THIS CAN BE SENT TO GPU INSTEAD
 			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-					"Multiply create stack");
+					MULTIPLY_CREATE_STACK_MODE);
 			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-					"Multiply create stack");
+					MULTIPLY_CREATE_STACK_MODE);
 
 			break;
 
@@ -104,17 +121,19 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 			clij2.clear();
 
 			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-					"Multiply create stack");
+					MULTIPLY_CREATE_STACK_MODE);
 			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-					"Multiply create stack");
+					MULTIPLY_CREATE_STACK_MODE);
 
 			break;
 		}
 
-		if (!analysisOnly || SpeckleView.killBordersText == "X + Y" || SpeckleView.killBordersText == "X + Y + Z") {
-			IJ.saveAs(primaryObjectsSpeckles, "TIF", dir + "Primary_Objects_" + imgName);
-			IJ.saveAs(secondaryObjectsSpeckles, "TIF", dir + "Secondary_Objects_" + imgName);
-			IJ.saveAs(tertiaryObjectsSpeckles, "TIF", dir + "Tertiary_Objects_" + imgName);
+		final boolean analysisOnly = rtConf.isAnalysisMode();
+
+		if (!analysisOnly || rtConf.getKillBordersText() == "X + Y" || rtConf.getKillBordersText() == "X + Y + Z") {
+			IJ.saveAs(primaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Primary_Objects_" + imgName);
+			IJ.saveAs(secondaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Secondary_Objects_" + imgName);
+			IJ.saveAs(tertiaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Tertiary_Objects_" + imgName);
 		}
 
 		IJ.log("Running Volumetric Analysis...");
@@ -129,6 +148,11 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		ResultsTable secondaryResults = analyze3D.process(secondaryObjectsSpeckles);
 		ResultsTable tertiaryResults = analyze3D.process(tertiaryObjectsSpeckles);
 
+		// make this conditional: link to the total number of objects set to create
+		Map<String, List<Variable>> primary = new LinkedHashMap<>();
+		Map<String, List<Variable>> secondary = new LinkedHashMap<>();
+		Map<String, List<Variable>> tertiary = new LinkedHashMap<>();
+		
 		// Add to the maps
 		TableUtility.collectColumns(primaryResults, primary);
 		TableUtility.collectColumns(secondaryResults, secondary);
@@ -143,11 +167,11 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		// Measure the intensity of each channel, within each segmented object.
 		for (int j = 0; j < objectImages.length; j++) {
 
+			List<ImagePlus> channelsSpeckle = newData.getChannelsSpeckles().orElseThrow(IllegalStateException::new);
 			ResultsTable result = new ResultsTable();
+			for (int k = 0; k < channelsSpeckle.size(); k++) {
 
-			for (int k = 0; k < channelsSpeckle.length; k++) {
-
-				ResultsTable temp = TableUtility.processIntensity(channelsSpeckle[k], objectImages[j]);
+				ResultsTable temp = TableUtility.processIntensity(channelsSpeckle.get(k), objectImages[j]);
 				// result.setColumn("Label", temp.getColumnAsVariables("Label"));
 				result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(),
 						temp.getColumnAsVariables("Mean_Intensity"));
@@ -245,18 +269,18 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 
 		for (Map.Entry<ImagePlus, ResultsTable> entry : intensityTables.entrySet()) {
 
-			ImagePlus key = entry.getKey();
+			ImagePlus k = entry.getKey();
 			ResultsTable val = entry.getValue();
 
-			if (key.equals(primaryObjectsSpeckles)) {
+			if (k.equals(primaryObjectsSpeckles)) {
 				primaryIntensity = val;
 			}
 
-			if (key.equals(secondaryObjectsSpeckles)) {
+			if (k.equals(secondaryObjectsSpeckles)) {
 				secondaryIntensity = val;
 			}
 
-			if (key.equals(tertiaryObjectsSpeckles)) {
+			if (k.equals(tertiaryObjectsSpeckles)) {
 				tertiaryIntensity = val;
 			}
 		}
@@ -280,7 +304,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		 */
 
 		// Primary table
-		primaryFinalResults = new ResultsTable();
+		ResultsTable primaryFinalResults = new ResultsTable();
 		primaryFinalResults.setColumn("Label", primaryResults.getColumnAsVariables("Label"));
 		primaryFinalResults.setColumn("ImageID", primaryIntensity.getColumnAsVariables("ImageID"));
 		if (!SpeckleView.groupingInfo.isEmpty()) {
@@ -308,7 +332,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		primaryFinalResults.setColumn("C3_IntDen", primaryIntensity.getColumnAsVariables("C3_IntDen"));
 
 		// Secondary table
-		secondaryFinalResults = new ResultsTable();
+		ResultsTable secondaryFinalResults = new ResultsTable();
 
 		secondaryFinalResults.setColumn("Label", secondaryResults.getColumnAsVariables("Label"));
 		secondaryFinalResults.setColumn("ImageID", secondaryIntensity.getColumnAsVariables("ImageID"));
@@ -339,7 +363,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		secondaryFinalResults.setColumn("C3_IntDen", secondaryIntensity.getColumnAsVariables("C3_IntDen"));
 
 		// Tertiary table
-		tertiaryFinalResults = new ResultsTable();
+		ResultsTable tertiaryFinalResults = new ResultsTable();
 
 		tertiaryFinalResults.setColumn("Label", tertiaryResults.getColumnAsVariables("Label"));
 		tertiaryFinalResults.setColumn("ImageID", tertiaryIntensity.getColumnAsVariables("ImageID"));
@@ -426,24 +450,24 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		IJ.log("Saving Results Tables...");
 		IJ.log("-------------------------------------------------------");
 
-		TableUtility.saveTable(primaryFinalResults, dir, "Primary_Results.csv");
-		TableUtility.saveTable(secondaryFinalResults, dir, "Secondary_Results.csv");
-		TableUtility.saveTable(tertiaryFinalResults, dir, "Tertiary_Results.csv");
+		TableUtility.saveTable(primaryFinalResults, rtConf.getInputDirectory().toString() , "Primary_Results.csv");
+		TableUtility.saveTable(secondaryFinalResults, rtConf.getInputDirectory().toString(), "Secondary_Results.csv");
+		TableUtility.saveTable(tertiaryFinalResults, rtConf.getInputDirectory().toString(), "Tertiary_Results.csv");
 
-		TableUtility.saveTable(primaryTable, dir, "PrimaryTable.csv");
-		TableUtility.saveTable(secondaryTable, dir, "SecondaryTable.csv");
-		TableUtility.saveTable(tertiaryTable, dir, "TertiaryTable.csv");
+		TableUtility.saveTable(primaryTable, rtConf.getInputDirectory().toString(), "PrimaryTable.csv");
+		TableUtility.saveTable(secondaryTable, rtConf.getInputDirectory().toString(), "SecondaryTable.csv");
+		TableUtility.saveTable(tertiaryTable, rtConf.getInputDirectory().toString(), "TertiaryTable.csv");
 
 		// TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
 		// TableUtility.saveTable(rt, dir, "RT.csv");
 		// TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
 
-		long endTime = System.currentTimeMillis();
-		double timeSec = (endTime - startTime) / 1000;
-		IJ.log("It took " + timeSec + " seconds to process " + list.length + " images.");
+		//long endTime = System.currentTimeMillis();
+		//double timeSec = (endTime - startTime) / 1000;
+		IJ.log("It took " + /* timeSec */ "NaN" + " seconds to process " + list.length + " images.");
 		IJ.log("Speckle Batch Protocol Complete!");
 		IJ.getLog();
-		IJ.saveString(IJ.getLog(), dir + "Log.txt");
+		IJ.saveString(IJ.getLog(), rtConf.getInputDirectory().toString() + "Log.txt");
 	}
 	// TODO Auto-generated method stub
 

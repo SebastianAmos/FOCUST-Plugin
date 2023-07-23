@@ -16,4 +16,5 @@ import lombok.Value;
 public class RuntimeConfiguration implements DataObject {
 	private final Path inputDirectory;
 	private final String killBordersText;
+	private final boolean analysisMode;
 }

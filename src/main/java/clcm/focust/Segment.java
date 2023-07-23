@@ -41,7 +41,6 @@ import clcm.focust.speckle.Speckles;
  * @author SebastianAmos
  *
  */
-
 public class Segment {
 
 	public static ImagePlus[] channelsSpheroid;
@@ -229,7 +228,7 @@ public class Segment {
 					speckles.put(SpeckleType.PRIMARY, primaryObjectsSpeckles);
 					speckles.put(SpeckleType.SECONDARY, primaryObjectsSpeckles);
 					speckles.put(SpeckleType.TERTIARY, primaryObjectsSpeckles);
-					FOCUST.instance().specklesManager().notifyUpdated(Datum.DATUM, new Speckles(speckles));
+					FOCUST.instance().specklesManager().notifyUpdated(Datum.DATUM, new Speckles(speckles,Arrays.asList(channelsSpeckle)));
 				}
 			}
 		});

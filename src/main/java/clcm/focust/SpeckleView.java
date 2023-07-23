@@ -696,6 +696,7 @@ public class SpeckleView extends JFrame {
 				RuntimeConfiguration conf = RuntimeConfiguration.builder()
 						.inputDirectory(Paths.get(txtInputDir.getText()))
 						.killBordersText(GuiHelper.getSelectedButton(btngrpKillBorders))
+						.analysisMode(cbAnalysisMode.isSelected())
 						.build();
 				
 				Segment segment = new Segment();
