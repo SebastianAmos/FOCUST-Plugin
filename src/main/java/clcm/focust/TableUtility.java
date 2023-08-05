@@ -73,9 +73,8 @@ public class TableUtility {
 		}
 	}
 	
-	
 	/**
-	 * Takes columns from RT and puts them into map - Column heading to List of variable. 
+	 * Collects the columns from RT and puts them into a Map of columns. 
 	 * @param rt
 	 * @param columnDataMap
 	 */
