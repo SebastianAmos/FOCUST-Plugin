@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-import clcm.focust.config.RuntimeConfiguration;
+import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants.Datum;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapService;
@@ -67,6 +67,9 @@ public class Segment {
 			}
 		});
 	}
+	
+	// (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
+	// IJ.showProgress(i+1, list.length);
 
 	/*
 	 * TODO OVERALL: - implement a file extension filter - could be a good way to
@@ -80,22 +83,21 @@ public class Segment {
 	 *
 	 * Implementing a file extension filter may be useful.
 	 */
-	// (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
-	// IJ.showProgress(i+1, list.length);
-
-	public void processSpeckles(boolean analysisOnly) {
+	
+	/**
+	 * Main processing loop for speckle analysis of multiple images. 
+	 * @param analysisOnly
+	 * @param speckleConf
+	 */
+	public void processSpeckles(boolean analysisOnly, final SpecklesConfiguration speckleConf) {
 		Thread t1 = new Thread(new Runnable() {
-
+			/* TODO: Better threading than this! */
 			@Override
 			public void run() {
-
-				DatumService<RuntimeConfiguration> confMgr = FOCUST.instance().rtConfManager();
-
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
 
-				File f = confMgr.get().map(RuntimeConfiguration::getInputDirectory).map(Path::toFile)
-						.orElseThrow(IllegalArgumentException::new);
+				File f = speckleConf.getInputDirectory().toFile();
 				String[] filesList = f.list();
 				int count = 0;
 
@@ -154,7 +156,7 @@ public class Segment {
 				IJ.log("		FOCUST: Speckle Protocol		");
 
 				// iterate through each image in the list
-				for (int i = 0; i < filesList.length; i++) {
+				for (String file:filesList) {
 					count++;
 
 					// reset the temp arrays
@@ -162,10 +164,10 @@ public class Segment {
 					Variable[] imageID = null;
 					Variable[] vol = null;
 
-					Path path = f.toPath().resolve(filesList[i]);
+					Path path = f.toPath().resolve(file);
 
 					IJ.log("Processing image " + count + " of " + filesList.length);
-					IJ.log("Current image name: " + filesList[i]);
+					IJ.log("Current image name: " + file);
 					IJ.log("-------------------------------------------------------");
 					ImagePlus imp = IJ.openImage(path.toString());
 					int numberOfChannels = imp.getNChannels();
@@ -191,10 +193,10 @@ public class Segment {
 					if (analysisOnly) {
 						IJ.log("Analysis Only Mode Active: Finding Images...");
 						IJ.log("-------------------------------------------------------");
-						String fileName = filesList[i].replace(".dv", ".tif");
-						primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
-						secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
-						tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
+						String fileName = file.replace(".dv", ".tif");
+						primaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + primaryPrefix + fileName);
+						secondaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + secondaryPrefix + fileName);
+						tertiaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + tertiaryPrefix + fileName);
 
 					} else {
 						// if analysis mode is F, segment objects based on channel preferences
@@ -228,8 +230,12 @@ public class Segment {
 					speckles.put(SpeckleType.PRIMARY, primaryObjectsSpeckles);
 					speckles.put(SpeckleType.SECONDARY, primaryObjectsSpeckles);
 					speckles.put(SpeckleType.TERTIARY, primaryObjectsSpeckles);
-					FOCUST.instance().specklesManager().notifyUpdated(Datum.DATUM, new Speckles(speckles,Arrays.asList(channelsSpeckle)));
+					
+					/** Provide a new speckle for further analysis: */
+					FOCUST.instance().specklesManager().notifyUpdated(file, new Speckles(speckles,Arrays.asList(channelsSpeckle)));
+										
 				}
+				/* Await All of the speckles to be done. TODO Process results complete*/
 			}
 		});
 		t1.start();

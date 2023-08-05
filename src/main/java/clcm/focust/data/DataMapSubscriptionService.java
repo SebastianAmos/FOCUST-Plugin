@@ -1,5 +1,9 @@
 package clcm.focust.data;
 
+import java.util.Optional;
+
+import clcm.focust.speckle.SpeckleResultsHandler;
+
 /**
  * Use this interface to subscribe to updates of a type of data.
  *
@@ -20,5 +24,11 @@ public interface DataMapSubscriptionService<K,T> {
 	 * @param listener to unsub
 	 */
 	void deregisterListener(K key, DataListener<K,T> listener);
+
+	/** Register a listener that listens to all keys. */
+	void registerAllKeysListener(DataListener<K,T> speckleResultsHandler);
+	
+	/** Deregister a listener that listens to all keys. */
+	void deregisterAllKeysListener(DataListener<K,T> speckleResultsHandler);
 
 }

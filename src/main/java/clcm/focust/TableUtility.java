@@ -74,6 +74,11 @@ public class TableUtility {
 	}
 	
 	
+	/**
+	 * Takes columns from RT and puts them into map - Column heading to List of variable. 
+	 * @param rt
+	 * @param columnDataMap
+	 */
 	public static void collectColumns(ResultsTable rt, Map<String, List<Variable>> columnDataMap) {
 		
 		String[] columnNames = rt.getHeadings();

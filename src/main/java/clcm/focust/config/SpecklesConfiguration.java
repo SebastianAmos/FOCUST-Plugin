@@ -13,7 +13,7 @@ import lombok.Value;
  */
 @Builder
 @Value
-public class RuntimeConfiguration implements DataObject {
+public class SpecklesConfiguration implements DataObject {
 	private final Path inputDirectory;
 	private final String killBordersText;
 	private final boolean analysisMode;

@@ -8,6 +8,6 @@ public class DatumManager<T extends DataObject> extends DataMapManager<DataConst
 		implements DatumService<T>, DatumSubscriptionService<T>, DatumUpdateService<T> {
 
 	public DatumManager() {
-		super(DataConstants.Datum.class);
+		super();
 	}
 }

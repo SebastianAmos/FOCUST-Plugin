@@ -12,12 +12,13 @@ import java.util.logging.Logger;
 /**
  * Publish-subscribe model for data in a map format of a given type.
  * 
- * TODO: Consider a separate datamanager for individual keys instead of using the Datum constant which is a bit unweildy. 
+ * TODO: Consider a separate datamanager for individual keys instead of using
+ * the Datum constant which is a bit unweildy.
  *
  * @param <K> the key type
  * @param <T> the object type
  */
-public class DataMapManager<K extends Enum<K>, T extends DataObject>
+public class DataMapManager<K, T extends DataObject>
 		implements DataMapSubscriptionService<K, T>, DataMapService<K, T>, DataMapUpdateService<K, T> {
 
 	/**
@@ -32,15 +33,17 @@ public class DataMapManager<K extends Enum<K>, T extends DataObject>
 
 	/** The registered Data listeners. */
 	private Map<K, Set<DataListener<K, T>>> listeners;
+	
+	/** The registered data listeners for all keys. */
+	private Set<DataListener<K, T>> allKeyListeners;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param the class of the key.
 	 */
-	public DataMapManager(Class<K> keyClazz) {
-		listeners = new EnumMap<>(keyClazz);
-		Arrays.stream(keyClazz.getEnumConstants()).forEach(k -> listeners.put(k, new HashSet<>()));
+	public DataMapManager() {
+		listeners = new HashMap<>();
 	}
 
 	@Override
@@ -48,7 +51,11 @@ public class DataMapManager<K extends Enum<K>, T extends DataObject>
 		/* Receives new piece of data: 1. Store it. 2. Update subscribed classes. */
 		LOGGER.fine(() -> String.format("Data received for key [%s] , Datum [%s]", key, newData));
 		objects.put(key, newData);
+		/* TODO Determine and handle overlap. */
 		listeners.get(key).forEach(listener -> listener.dataUpdated(key, newData));
+		
+		allKeyListeners.forEach(listener -> listener.dataUpdated(key, newData));
+		
 		LOGGER.finer(() -> String.format("Listeners notified for key [%s], Datum [%s]", key, newData));
 	}
 
@@ -56,7 +63,11 @@ public class DataMapManager<K extends Enum<K>, T extends DataObject>
 	public final void notifyDeleted(K key) {
 		LOGGER.fine(() -> String.format("Data deleted for key [%s] ", key));
 		objects.remove(key);
+
 		listeners.get(key).forEach(listener -> listener.dataDeleted(key));
+		/* TODO Determine and handle overlap. */
+		allKeyListeners.forEach(listener -> listener.dataDeleted(key));
+
 		LOGGER.finer(() -> String.format("Data delete notification sent for key [%s] by %s", key));
 	}
 
@@ -66,15 +77,26 @@ public class DataMapManager<K extends Enum<K>, T extends DataObject>
 	}
 
 	@Override
-	public final  void registerListener(K key, DataListener<K, T> listener) {
-		LOGGER.fine(() -> String.format("Listener %s subscribing for [%s]",listener, key));
+	public final void registerListener(K key, DataListener<K, T> listener) {
+		LOGGER.fine(() -> String.format("Listener %s subscribing for [%s]", listener, key));
 		listeners.get(key).add(listener);
 	}
 
 	@Override
+	public final void registerAllKeysListener(DataListener<K,T> listener) {
+		LOGGER.fine(() -> String.format("Listener %s subscribing for [All Keys]", listener));
+		allKeyListeners.add(listener);
+	} 
+
+	@Override
 	public final void deregisterListener(K key, DataListener<K, T> listener) {
 		LOGGER.fine(() -> String.format("Listener %s unsubscribing for [%s]",listener, key));
-		listeners.get(key).remove(listener);
+		listeners.get(key).remove(listener); 
+	}
+
+	@Override
+	public void deregisterAllKeysListener(DataListener<K, T> listener) {
+      allKeyListeners.remove(listener);	
 	}
 
 }

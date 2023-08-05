@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import clcm.focust.config.RuntimeConfiguration;
+import clcm.focust.config.SpecklesConfiguration;
 import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -693,14 +693,14 @@ public class SpeckleView extends JFrame {
 				tertiaryChannelChoice = cbChannelTertiary.getSelectedIndex();
 				groupingInfo = txtGroupingName.getText();
 				
-				RuntimeConfiguration conf = RuntimeConfiguration.builder()
+				SpecklesConfiguration conf = SpecklesConfiguration.builder()
 						.inputDirectory(Paths.get(txtInputDir.getText()))
 						.killBordersText(GuiHelper.getSelectedButton(btngrpKillBorders))
 						.analysisMode(cbAnalysisMode.isSelected())
 						.build();
 				
 				Segment segment = new Segment();
-				segment.processSpeckles(cbAnalysisMode.isSelected());
+				segment.processSpeckles(cbAnalysisMode.isSelected(),conf);
 				
 			}
 		});

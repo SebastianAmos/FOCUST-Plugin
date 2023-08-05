@@ -12,10 +12,11 @@ import clcm.focust.LabelEditor;
 import clcm.focust.SpeckleView;
 import clcm.focust.TableUtility;
 import clcm.focust.data.DataConstants.Datum;
-import clcm.focust.config.RuntimeConfiguration;
+import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapService;
+import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumService;
 import ij.IJ;
 import ij.ImagePlus;
@@ -23,39 +24,45 @@ import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
 import inra.ijpb.plugins.AnalyzeRegions3D;
+import lombok.RequiredArgsConstructor;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
 /**
- * TODO Document.
- * 
- * @author lachie
- *
+ * The speckle service class takes speckle updates and processes them, providing
+ * a new SpeckleResult object.
  */
-public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckles> {
+@RequiredArgsConstructor
+public class SpeckleService implements FOCUSTService, DataListener<String, Speckles> {
 
-	/* TODO. Surely IMAGEJ have a constant for this. */
+	/*
+	 * TODO. Surely IMAGEJ have a constant for this. If not, we should probably put
+	 * it elsewhere if it's used outside this class.
+	 */
 	private static final String MULTIPLY_CREATE_STACK_MODE = "Multiply create stack";
-	
+
 	/** Config manager service. Really this should be injected via constructor. */
-	private final DatumService<RuntimeConfiguration> configMgr = FOCUST.instance().rtConfManager();
+	private final DatumService<SpecklesConfiguration> configMgr;
+
+	private final DataMapUpdateService<String, SpeckleResult> resultsUpdateService;
 	
 	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 
 	@Override
 	public void init() {
-		FOCUST.instance().specklesManager().registerListener(Datum.DATUM, this);
+		FOCUST.instance().specklesManager().registerAllKeysListener(this);
 	}
 
 	@Override
 	public void shutdown() {
-		FOCUST.instance().specklesManager().deregisterListener(Datum.DATUM, this);
+		FOCUST.instance().specklesManager().deregisterAllKeysListener(this);
 	}
 
 	@Override
-	public void dataUpdated(Datum key, Speckles newData) {
-		
-		String imgName = "temp"; // TODO obtain this bad boi from data.
+	public void dataUpdated(String key, Speckles newData) {
+		/* LACHIE COMMENTED THIS OUT. (And replaced it ) */
+		// String imgName = "temp"; // TODO obtain this bad boi from data.
+		String imgName = key;
 
 		/*
 		 * CLIJ2 using a singleton here is a bit suspicious. Is it thread-safe? TODO -
@@ -70,70 +77,73 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 				.orElseThrow(IllegalStateException::new);
 
 		/* TODO - defaults. */
-		final RuntimeConfiguration rtConf = configMgr.get().orElseThrow(IllegalStateException::new);
-		
+		final SpecklesConfiguration rtConf = configMgr.get().orElseThrow(IllegalStateException::new);
+
 		/* TODO. "No." repeated constant. We should make this enum an enum. */
-		
+
 		// If kill borders is selected, then apply the appropriate method
-		// TODO killBordersText cannot be accessed like this!.
 		switch (rtConf.getKillBordersText()) {
-		case "No":
-			break;
-
-		case "X + Y":
-			// add padding to Z for primary objects
-			LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
-			final Path saveAsPath = rtConf.getInputDirectory().resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName);
-
-			IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
-
-			ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
-			ClearCLBuffer removedBorders = clij2.create(primaryPadded);
-			ClearCLBuffer resetZ = null;
-
-			// kill borders for primary object
-			clij2.excludeLabelsOnEdges(primaryPadded, removedBorders);
-
-			// remove the z padding
-			clij2.subStack(removedBorders, resetZ, 1, (int) removedBorders.getDepth() - 1);
-
-			primaryObjectsSpeckles = clij2.pull(resetZ);
-			clij2.clear();
-
-			// mask secondary and tertiary objects by remaining primary objects.
-			// THIS CAN BE SENT TO GPU INSTEAD
-			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-					MULTIPLY_CREATE_STACK_MODE);
-			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-					MULTIPLY_CREATE_STACK_MODE);
-
-			break;
-
-		case "X + Y + Z":
-			// No padding required in Z
-			// Run kill borders on primary objects then mask other object channels
-			ClearCLBuffer primaryLabel = clij2.push(primaryObjectsSpeckles);
-			ClearCLBuffer removedBorder = clij2.create(primaryLabel);
-
-			clij2.excludeLabelsOnEdges(primaryLabel, removedBorder);
-
-			primaryObjectsSpeckles = clij2.pull(removedBorder);
-			clij2.clear();
-
-			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-					MULTIPLY_CREATE_STACK_MODE);
-			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-					MULTIPLY_CREATE_STACK_MODE);
-
-			break;
+			case "No":
+				break;
+	
+			case "X + Y":
+				// add padding to Z for primary objects
+				LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
+				final Path saveAsPath = rtConf.getInputDirectory().resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName);
+	
+				IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
+	
+				ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
+				ClearCLBuffer removedBorders = clij2.create(primaryPadded);
+				ClearCLBuffer resetZ = null;
+	
+				// kill borders for primary object
+				clij2.excludeLabelsOnEdges(primaryPadded, removedBorders);
+	
+				// remove the z padding
+				clij2.subStack(removedBorders, resetZ, 1, (int) removedBorders.getDepth() - 1);
+	
+				primaryObjectsSpeckles = clij2.pull(resetZ);
+				clij2.clear();
+	
+				// mask secondary and tertiary objects by remaining primary objects.
+				// THIS CAN BE SENT TO GPU INSTEAD
+				secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
+						MULTIPLY_CREATE_STACK_MODE);
+				tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
+						MULTIPLY_CREATE_STACK_MODE);
+	
+				break;
+	
+			case "X + Y + Z":
+				// No padding required in Z
+				// Run kill borders on primary objects then mask other object channels
+				ClearCLBuffer primaryLabel = clij2.push(primaryObjectsSpeckles);
+				ClearCLBuffer removedBorder = clij2.create(primaryLabel);
+	
+				clij2.excludeLabelsOnEdges(primaryLabel, removedBorder);
+	
+				primaryObjectsSpeckles = clij2.pull(removedBorder);
+				clij2.clear();
+	
+				secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
+						MULTIPLY_CREATE_STACK_MODE);
+				tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
+						MULTIPLY_CREATE_STACK_MODE);
+	
+				break;
 		}
 
 		final boolean analysisOnly = rtConf.isAnalysisMode();
 
+		// TODO let's enum this XY crap. 
 		if (!analysisOnly || rtConf.getKillBordersText() == "X + Y" || rtConf.getKillBordersText() == "X + Y + Z") {
-			IJ.saveAs(primaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Primary_Objects_" + imgName);
-			IJ.saveAs(secondaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Secondary_Objects_" + imgName);
-			IJ.saveAs(tertiaryObjectsSpeckles, "TIF", rtConf.getInputDirectory().toString() + "Tertiary_Objects_" + imgName);
+			IJ.saveAs(primaryObjectsSpeckles, "TIF",
+					rtConf.getInputDirectory().toString() + "Primary_Objects_" + imgName);
+			IJ.saveAs(secondaryObjectsSpeckles, "TIF",
+					rtConf.getInputDirectory().toString() + "Secondary_Objects_" + imgName);
+			IJ.saveAs(tertiaryObjectsSpeckles, "TIF",
+					rtConf.getInputDirectory().toString() + "Tertiary_Objects_" + imgName);
 		}
 
 		IJ.log("Running Volumetric Analysis...");
@@ -152,7 +162,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		Map<String, List<Variable>> primary = new LinkedHashMap<>();
 		Map<String, List<Variable>> secondary = new LinkedHashMap<>();
 		Map<String, List<Variable>> tertiary = new LinkedHashMap<>();
-		
+
 		// Add to the maps
 		TableUtility.collectColumns(primaryResults, primary);
 		TableUtility.collectColumns(secondaryResults, secondary);
@@ -165,22 +175,22 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
 
 		// Measure the intensity of each channel, within each segmented object.
+		/* For each speckle */
 		for (int j = 0; j < objectImages.length; j++) {
-
+			
 			List<ImagePlus> channelsSpeckle = newData.getChannelsSpeckles().orElseThrow(IllegalStateException::new);
 			ResultsTable result = new ResultsTable();
+			/* Make a new results table. */
 			for (int k = 0; k < channelsSpeckle.size(); k++) {
 
 				ResultsTable temp = TableUtility.processIntensity(channelsSpeckle.get(k), objectImages[j]);
 				// result.setColumn("Label", temp.getColumnAsVariables("Label"));
-				result.setColumn(("C" + (k + 1) + "_Mean_Intensity").toString(),
+				result.setColumn(("C" + (k + 1) + "_Mean_Intensity"),
 						temp.getColumnAsVariables("Mean_Intensity"));
-				result.setColumn(("C" + (k + 1) + "_IntDen").toString(), temp.getColumnAsVariables("IntDen"));
-
+				result.setColumn(("C" + (k + 1) + "_IntDen"), temp.getColumnAsVariables("IntDen"));
 			}
-
 			intensityTables.put(objectImages[j], result);
-
+			/* Each table has two columns for each channelsSpeckle : mean intensity and IntDen */
 		}
 
 		/*
@@ -221,7 +231,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		// remove all columns by max
 		String[] colsToRemove = { "Label", "Mean_Intensity", "Volume", "IntDen" };
 
-		// remove cols not working
+		// remove cols not working //TODO HUH!
 		TableUtility.removeColumns(c2CountEdit, colsToRemove);
 		TableUtility.removeColumns(c3CountEdit, colsToRemove);
 		TableUtility.removeColumns(c2ParentEdit, colsToRemove);
@@ -230,6 +240,7 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		c2CountEdit.renameColumn("Max", "C2_Object_Count");
 		c3CountEdit.renameColumn("Max", "C3_Object_Count");
 
+		// TODO what's this seb ?
 		c3CountEdit.show("thisbitch!");
 		// add the C2 and C3 counts to the primary map
 		TableUtility.collectColumns(c2CountEdit, primary);
@@ -303,6 +314,8 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 		 * 
 		 */
 
+		
+		/* Collects each column from the appropriate location. It's pretty weird. */
 		// Primary table
 		ResultsTable primaryFinalResults = new ResultsTable();
 		primaryFinalResults.setColumn("Label", primaryResults.getColumnAsVariables("Label"));
@@ -393,88 +406,22 @@ public class SpeckleService implements FOCUSTService, DataListener<Datum, Speckl
 				tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 		tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 
-		// end of single image loop!!
-
-		/*
-		 * ResultsTable primary = new ResultsTable(); Variable[] primaryLabels =
-		 * priLabel.toArray(new Variable[priLabel.size()]); Variable[] primaryImgID =
-		 * priImgID.toArray(new Variable[priImgID.size()]); Variable[] primaryVolume =
-		 * priVolume.toArray(new Variable[priVolume.size()]);
-		 * 
-		 * primary.setColumn("Label", primaryLabels); primary.setColumn("ImageID",
-		 * primaryImgID); primary.setColumn("Volume", primaryVolume);
-		 */
-
-		/*
-		 * ResultsTable primary = new ResultsTable(); int c = priLabel.size(); for (int
-		 * i = 0; i < c; i++) { // if it's the first element to be written to the table
-		 * if (primary.size() == 0 ) { primary.setColumn("Label", priLabel.get(i));
-		 * primary.setColumn("ImageID", priImgID.get(i)); primary.setColumn("Volume",
-		 * priVolume.get(i)); } else {
-		 * 
-		 * Variable[] lab = priLabel.get(i); Variable[] imgID = priImgID.get(i);
-		 * Variable[] vol = priVolume.get(i);
-		 * 
-		 * 
-		 * 
-		 * 
-		 * for (int j = 0; j < lab.length; j++) { primary.addValue("Label",
-		 * lab[j].getString()); } } }
-		 * 
-		 * ResultsTable primaryFinal = new ResultsTable(); ResultsTable primary1 = new
-		 * ResultsTable(); ResultsTable primary2 = new ResultsTable(); for (Variable[]
-		 * array : priLabel) { for (Variable element : array) { primaryFinal.addRow();
-		 * primaryFinal.addValue("Label", element.getString()); } } for (Variable[]
-		 * array : priImgID) { for (Variable element : array) { for (int i = 0; i <
-		 * primary.size(); i++) { primaryFinal.setValue("ImageID", i,
-		 * element.getString()); } primary1.addRow(); primary1.addValue("ImageID",
-		 * element.getString()); } } for (Variable[] array : priVolume) { for (Variable
-		 * element : array) { for (int i = 0; i < primary.size(); i++) {
-		 * primaryFinal.setValue("Volume", i, Double.parseDouble(element.getString()));
-		 * } primary2.addRow(); primary2.addValue("Volume", element.getString()); } }
-		 * 
-		 * ResultsTable rt = new ResultsTable(); rt.setColumn("Label",
-		 * primary1.getColumnAsVariables("Label")); rt.setColumn("ImageID",
-		 * primary1.getColumnAsVariables("ImageID")); //rt.setColumn("Volume",
-		 * primary2.getColumnAsVariables("Volume"));
-		 */
-
-		ResultsTable primaryTable = new ResultsTable();
-		ResultsTable secondaryTable = new ResultsTable();
-		ResultsTable tertiaryTable = new ResultsTable();
-
-		primary.forEach((k, v) -> primaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
-		secondary.forEach((k, v) -> secondaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
-		tertiary.forEach((k, v) -> tertiaryTable.setColumn(k, v.toArray(new Variable[v.size()])));
-
-		IJ.log("Saving Results Tables...");
-		IJ.log("-------------------------------------------------------");
-
-		TableUtility.saveTable(primaryFinalResults, rtConf.getInputDirectory().toString() , "Primary_Results.csv");
-		TableUtility.saveTable(secondaryFinalResults, rtConf.getInputDirectory().toString(), "Secondary_Results.csv");
-		TableUtility.saveTable(tertiaryFinalResults, rtConf.getInputDirectory().toString(), "Tertiary_Results.csv");
-
-		TableUtility.saveTable(primaryTable, rtConf.getInputDirectory().toString(), "PrimaryTable.csv");
-		TableUtility.saveTable(secondaryTable, rtConf.getInputDirectory().toString(), "SecondaryTable.csv");
-		TableUtility.saveTable(tertiaryTable, rtConf.getInputDirectory().toString(), "TertiaryTable.csv");
-
-		// TableUtility.saveTable(primary, dir, "ArrayListResults.csv");
-		// TableUtility.saveTable(rt, dir, "RT.csv");
-		// TableUtility.saveTable(primaryFinal, dir, "primaryFINAL.csv");
-
-		//long endTime = System.currentTimeMillis();
-		//double timeSec = (endTime - startTime) / 1000;
-		IJ.log("It took " + /* timeSec */ "NaN" + " seconds to process " + list.length + " images.");
-		IJ.log("Speckle Batch Protocol Complete!");
-		IJ.getLog();
-		IJ.saveString(IJ.getLog(), rtConf.getInputDirectory().toString() + "Log.txt");
+		
+		/** Collect up the above. */
+		Map<SpeckleType, ResultsTable> resultsMap = new HashMap<>();
+		resultsMap.put(SpeckleType.PRIMARY, primaryFinalResults);
+		resultsMap.put(SpeckleType.SECONDARY, secondaryFinalResults);
+		resultsMap.put(SpeckleType.TERTIARY, tertiaryFinalResults);
+		SpeckleResult results = SpeckleResult.builder().results(resultsMap).build();
+		
+		
+		/* Submit these final results for the image to the data manager. */
+		resultsUpdateService.notifyUpdated(key, results);		
 	}
-	// TODO Auto-generated method stub
 
 	@Override
-	public void dataDeleted(Datum key) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public void dataDeleted(String key) {
+		/* Nothing much for us to do. Just pass it on. */
+		resultsUpdateService.notifyDeleted(key);
+    }
 }

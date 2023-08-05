@@ -19,7 +19,7 @@ import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-import clcm.focust.config.RuntimeConfiguration;
+import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DatumManager;
@@ -39,18 +39,17 @@ public final class FOCUST implements Command {
 	private List<FOCUSTService> services;
 
 	/** Data manager for speckles. */
-	private DatumManager<Speckles> specklesManager;
+	private DataMapManager<String,Speckles> specklesManager;
 
 	/** Data manager for runtime configuration. */
-	private DatumManager<RuntimeConfiguration> configurationManager;
+	private DatumManager<SpecklesConfiguration> configurationManager;
 
 	/**
 	 * Constructor. Use {@link #instance()}
 	 */
 	private FOCUST() {
 		services = new ArrayList<>();
-		specklesManager = new DatumManager<>();
-		configurationManager = new DatumManager<>();
+		specklesManager = new DataMapManager<>();
 		services.add(new SpeckleService());
 	}
 
@@ -104,11 +103,11 @@ public final class FOCUST implements Command {
 		return InstanceHolder.INSTANCE;
 	}
 
-	public final DatumManager<Speckles> specklesManager() {
+	public final DataMapManager<String,Speckles> specklesManager() {
 		return specklesManager;
 	}
 
-	public final DatumManager<RuntimeConfiguration> rtConfManager() {
+	public final DatumManager<SpecklesConfiguration> rtConfManager() {
 		return configurationManager;
 	}
 

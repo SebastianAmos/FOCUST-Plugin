@@ -105,8 +105,7 @@ public class BinarySearch {
 	 * 			The original volume of imp. 
 	 * 			
 	 * @return The number of iterations that erode the ip to approximately 50 % of it's original volume. 
-	 */
-	
+	 */	
 	private static int binarySearchIterationNumber(ImagePlus imp, int maxIterations, int originalVoxNum, double reductionPercentage) {
 		
 		int lower = 0;
