@@ -198,6 +198,7 @@ public class SpheroidGUI extends JFrame {
 		pnlHeader.add(txtOutputDir, gbc_txtOutputDir);
 		
 		JCheckBox cbAnalysisOnly = new JCheckBox("Analysis only mode?");
+		cbAnalysisOnly.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		cbAnalysisOnly.setSelected(true);
 		cbAnalysisOnly.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbAnalysisOnly = new GridBagConstraints();
@@ -206,6 +207,39 @@ public class SpheroidGUI extends JFrame {
 		gbc_cbAnalysisOnly.gridx = 0;
 		gbc_cbAnalysisOnly.gridy = 3;
 		pnlHeader.add(cbAnalysisOnly, gbc_cbAnalysisOnly);
+		
+		JCheckBox cbCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
+		cbCoreVsPeriphery.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
+		cbCoreVsPeriphery.setSelected(true);
+		GridBagConstraints gbc_cbCoreVsPeriphery = new GridBagConstraints();
+		gbc_cbCoreVsPeriphery.gridwidth = 2;
+		gbc_cbCoreVsPeriphery.insets = new Insets(0, 0, 5, 5);
+		gbc_cbCoreVsPeriphery.gridx = 1;
+		gbc_cbCoreVsPeriphery.gridy = 3;
+		pnlHeader.add(cbCoreVsPeriphery, gbc_cbCoreVsPeriphery);
+		cbCoreVsPeriphery.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+			
+		
+		JLabel lblCoreVolValue = new JLabel("Core Volume % (0:1)");
+		lblCoreVolValue.setToolTipText("Provide the volume % to reduce the \"core\" of the spheroid to. i.e 0.5 = 50 %.");
+		GridBagConstraints gbc_lblCoreVolValue = new GridBagConstraints();
+		gbc_lblCoreVolValue.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCoreVolValue.gridx = 3;
+		gbc_lblCoreVolValue.gridy = 3;
+		pnlHeader.add(lblCoreVolValue, gbc_lblCoreVolValue);
+		lblCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+		txtCoreProportion = new JTextField();
+		txtCoreProportion.setText("0.5");
+		GridBagConstraints gbc_txtCoreProportion = new GridBagConstraints();
+		gbc_txtCoreProportion.anchor = GridBagConstraints.WEST;
+		gbc_txtCoreProportion.insets = new Insets(0, 0, 5, 5);
+		gbc_txtCoreProportion.gridx = 4;
+		gbc_txtCoreProportion.gridy = 3;
+		pnlHeader.add(txtCoreProportion, gbc_txtCoreProportion);
+		txtCoreProportion.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtCoreProportion.setColumns(5);
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setForeground(new Color(169, 169, 169));
@@ -393,8 +427,8 @@ public class SpheroidGUI extends JFrame {
 		JLabel lblNewLabel_5_1_1 = new JLabel("Filter:");
 		lblNewLabel_5_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_1_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_1.gridx = 0;
 		gbc_lblNewLabel_5_1_1.gridy = 3;
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
@@ -412,7 +446,8 @@ public class SpheroidGUI extends JFrame {
 		
 		JPanel pnlPrimaryBlurSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryBlurSize = new GridBagConstraints();
-		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.BOTH;
+		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBlurSize.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
@@ -477,9 +512,10 @@ public class SpheroidGUI extends JFrame {
 		
 		JPanel pnlPrimarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
+		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimarySpotSize.gridwidth = 2;
-		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.BOTH;
+		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
 		gbc_pnlPrimarySpotSize.gridy = 6;
 		pnlPrimary.add(pnlPrimarySpotSize, gbc_pnlPrimarySpotSize);
@@ -523,16 +559,16 @@ public class SpheroidGUI extends JFrame {
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
 		GridBagLayout gbl_pnlSecondary = new GridBagLayout();
-		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0};
+		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0, 0};
 		gbl_pnlSecondary.rowHeights = new int[] {0, 0, 0, 30, 0, 0, 0, 30, 0};
-		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		pnlSecondary.setLayout(gbl_pnlSecondary);
 		
 		JLabel lblNewLabel_4_1 = new JLabel("Secondary Object");
 		lblNewLabel_4_1.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_4_1 = new GridBagConstraints();
-		gbc_lblNewLabel_4_1.gridwidth = 2;
+		gbc_lblNewLabel_4_1.gridwidth = 3;
 		gbc_lblNewLabel_4_1.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_4_1.gridx = 0;
 		gbc_lblNewLabel_4_1.gridy = 0;
@@ -552,6 +588,7 @@ public class SpheroidGUI extends JFrame {
 		cbSecondaryChannel.setSelectedIndex(3);
 		cbSecondaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryChannel = new GridBagConstraints();
+		gbc_cbSecondaryChannel.gridwidth = 2;
 		gbc_cbSecondaryChannel.anchor = GridBagConstraints.WEST;
 		gbc_cbSecondaryChannel.insets = new Insets(0, 0, 5, 0);
 		gbc_cbSecondaryChannel.gridx = 1;
@@ -561,6 +598,7 @@ public class SpheroidGUI extends JFrame {
 		JCheckBox cbSecBg = new JCheckBox("Subtract Bg*:");
 		cbSecBg.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecBg = new GridBagConstraints();
+		gbc_cbSecBg.anchor = GridBagConstraints.WEST;
 		gbc_cbSecBg.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecBg.gridx = 0;
 		gbc_cbSecBg.gridy = 2;
@@ -572,7 +610,7 @@ public class SpheroidGUI extends JFrame {
 		txtSecondaryBgSize.setColumns(5);
 		GridBagConstraints gbc_txtSecondaryBgSize = new GridBagConstraints();
 		gbc_txtSecondaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtSecondaryBgSize.insets = new Insets(0, 0, 5, 0);
+		gbc_txtSecondaryBgSize.insets = new Insets(0, 0, 5, 5);
 		gbc_txtSecondaryBgSize.fill = GridBagConstraints.VERTICAL;
 		gbc_txtSecondaryBgSize.gridx = 1;
 		gbc_txtSecondaryBgSize.gridy = 2;
@@ -592,6 +630,7 @@ public class SpheroidGUI extends JFrame {
 		cbSecondaryFilter.setSelectedIndex(0);
 		cbSecondaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryFilter = new GridBagConstraints();
+		gbc_cbSecondaryFilter.gridwidth = 2;
 		gbc_cbSecondaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryFilter.insets = new Insets(0, 0, 5, 0);
 		gbc_cbSecondaryFilter.gridx = 1;
@@ -600,8 +639,9 @@ public class SpheroidGUI extends JFrame {
 		
 		JPanel pnlPrimaryBlurSize_1 = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryBlurSize_1 = new GridBagConstraints();
-		gbc_pnlPrimaryBlurSize_1.fill = GridBagConstraints.BOTH;
-		gbc_pnlPrimaryBlurSize_1.gridwidth = 2;
+		gbc_pnlPrimaryBlurSize_1.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryBlurSize_1.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlPrimaryBlurSize_1.gridwidth = 3;
 		gbc_pnlPrimaryBlurSize_1.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBlurSize_1.gridx = 0;
 		gbc_pnlPrimaryBlurSize_1.gridy = 4;
@@ -654,30 +694,12 @@ public class SpheroidGUI extends JFrame {
 		
 		JComboBox cbSecondaryMethod = new JComboBox();
 		
-		JPanel pnlSecondaryThreshold = new JPanel();
-		GridBagConstraints gbc_pnlSecondaryTreshold = new GridBagConstraints();
-		gbc_pnlSecondaryTreshold.gridwidth = 2;
-		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlSecondaryTreshold.fill = GridBagConstraints.BOTH;
-		gbc_pnlSecondaryTreshold.gridx = 0;
-		gbc_pnlSecondaryTreshold.gridy = 6;
-		pnlSecondary.add(pnlSecondaryThreshold, gbc_pnlSecondaryTreshold);
-
-		JPanel pnlSecondarySpotSize = new JPanel();
-		GridBagConstraints gbc_pnlSecondarySpotSize = new GridBagConstraints();
-		gbc_pnlSecondarySpotSize.fill = GridBagConstraints.BOTH;
-		gbc_pnlSecondarySpotSize.gridwidth = 2;
-		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlSecondarySpotSize.gridx = 0;
-		gbc_pnlSecondarySpotSize.gridy = 6;
-		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
-		pnlSecondarySpotSize.setVisible(false);
-		
 		
 		cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled", "Greater Constant", "Otsu Threshold"}));
 		cbSecondaryMethod.setSelectedIndex(1);
 		cbSecondaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryMethod = new GridBagConstraints();
+		gbc_cbSecondaryMethod.gridwidth = 2;
 		gbc_cbSecondaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryMethod.insets = new Insets(0, 0, 5, 0);
 		gbc_cbSecondaryMethod.gridx = 1;
@@ -685,23 +707,27 @@ public class SpheroidGUI extends JFrame {
 		pnlSecondary.add(cbSecondaryMethod, gbc_cbSecondaryMethod);
 		
 		
-		cbSecondaryMethod.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbSecondaryMethod.getSelectedItem().toString().equals("Marker Controlled")) {
-					pnlSecondarySpotSize.setVisible(true);
-					pnlSecondaryThreshold.setVisible(false);
-				} else {
-					pnlSecondarySpotSize.setVisible(false);
-					pnlSecondaryThreshold.setVisible(true);
-					
-				}
-				if(cbSecondaryMethod.getSelectedItem().toString().equals("Otsu Threshold")) {
-					txtSecondaryThreshold.setEnabled(false);
-				} else {
-					txtSecondaryThreshold.setEnabled(true);
-				}
-			}
-		});
+		
+		JPanel pnlSecondaryThreshold = new JPanel();
+		GridBagConstraints gbc_pnlSecondaryTreshold = new GridBagConstraints();
+		gbc_pnlSecondaryTreshold.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondaryTreshold.gridwidth = 3;
+		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondaryTreshold.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondaryTreshold.gridx = 0;
+		gbc_pnlSecondaryTreshold.gridy = 6;
+		pnlSecondary.add(pnlSecondaryThreshold, gbc_pnlSecondaryTreshold);
+
+		JPanel pnlSecondarySpotSize = new JPanel();
+		GridBagConstraints gbc_pnlSecondarySpotSize = new GridBagConstraints();
+		gbc_pnlSecondarySpotSize.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondarySpotSize.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondarySpotSize.gridwidth = 3;
+		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondarySpotSize.gridx = 0;
+		gbc_pnlSecondarySpotSize.gridy = 6;
+		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
+		pnlSecondarySpotSize.setVisible(false);
 		
 		
 	
@@ -797,16 +823,6 @@ public class SpheroidGUI extends JFrame {
 		gbc_separator_1_1_1.gridy = 0;
 		pnlFooter.add(separator_1_1_1, gbc_separator_1_1_1);
 		
-		JCheckBox cbCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
-		GridBagConstraints gbc_cbCoreVsPeriphery = new GridBagConstraints();
-		gbc_cbCoreVsPeriphery.anchor = GridBagConstraints.WEST;
-		gbc_cbCoreVsPeriphery.insets = new Insets(0, 0, 5, 5);
-		gbc_cbCoreVsPeriphery.gridx = 2;
-		gbc_cbCoreVsPeriphery.gridy = 1;
-		pnlFooter.add(cbCoreVsPeriphery, gbc_cbCoreVsPeriphery);
-		cbCoreVsPeriphery.setSelected(true);
-		cbCoreVsPeriphery.setFont(new Font("Arial", Font.PLAIN, 14));
-		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
@@ -817,45 +833,12 @@ public class SpheroidGUI extends JFrame {
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
 		
-		JLabel lblCoreVolValue = new JLabel("Core Volume % (0:1)");
-		lblCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblCoreVolValue = new GridBagConstraints();
-		gbc_lblCoreVolValue.anchor = GridBagConstraints.WEST;
-		gbc_lblCoreVolValue.insets = new Insets(0, 2, 0, 5);
-		gbc_lblCoreVolValue.gridx = 2;
-		gbc_lblCoreVolValue.gridy = 2;
-		pnlFooter.add(lblCoreVolValue, gbc_lblCoreVolValue);
-		
-		txtCoreProportion = new JTextField();
-		txtCoreProportion.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_txtCoreProportion = new GridBagConstraints();
-		gbc_txtCoreProportion.fill = GridBagConstraints.VERTICAL;
-		gbc_txtCoreProportion.anchor = GridBagConstraints.WEST;
-		gbc_txtCoreProportion.insets = new Insets(0, 0, 0, 5);
-		gbc_txtCoreProportion.gridx = 3;
-		gbc_txtCoreProportion.gridy = 2;
-		pnlFooter.add(txtCoreProportion, gbc_txtCoreProportion);
-		txtCoreProportion.setColumns(5);
-		
 		JLabel lblNewLabel_5_1_1_2_1 = new JLabel("*Subtract background");
 		lblNewLabel_5_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1_2_1 = new GridBagConstraints();
 		gbc_lblNewLabel_5_1_1_2_1.gridx = 7;
 		gbc_lblNewLabel_5_1_1_2_1.gridy = 2;
 		pnlFooter.add(lblNewLabel_5_1_1_2_1, gbc_lblNewLabel_5_1_1_2_1);
-	
-		
-		cbCoreVsPeriphery.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbCoreVsPeriphery.isSelected()) {
-					lblCoreVolValue.setVisible(true);
-					txtCoreProportion.setVisible(true);
-				} else {
-					lblCoreVolValue.setVisible(false);
-					txtCoreProportion.setVisible(false);
-				}
-			}
-		});
 		
 		cbPriBg.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -886,6 +869,37 @@ public class SpheroidGUI extends JFrame {
 			}
 		});
 		
+
+		cbCoreVsPeriphery.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbCoreVsPeriphery.isSelected()) {
+					lblCoreVolValue.setVisible(true);
+					txtCoreProportion.setVisible(true);
+				} else {
+					lblCoreVolValue.setVisible(false);
+					txtCoreProportion.setVisible(false);
+				}
+			}
+		});
+		
+
+		cbSecondaryMethod.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbSecondaryMethod.getSelectedItem().toString().equals("Marker Controlled")) {
+					pnlSecondarySpotSize.setVisible(true);
+					pnlSecondaryThreshold.setVisible(false);
+				} else {
+					pnlSecondarySpotSize.setVisible(false);
+					pnlSecondaryThreshold.setVisible(true);
+					
+				}
+				if(cbSecondaryMethod.getSelectedItem().toString().equals("Otsu Threshold")) {
+					txtSecondaryThreshold.setEnabled(false);
+				} else {
+					txtSecondaryThreshold.setEnabled(true);
+				}
+			}
+		});
 		
 	}
 
