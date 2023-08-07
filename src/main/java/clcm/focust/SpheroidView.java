@@ -177,7 +177,7 @@ public class SpheroidView extends JFrame {
 		btnInputDir.setBounds(214, 28, 96, 29);
 		paneSpheroid.add(btnInputDir);
 		
-		JLabel lblSeperateOutputDirectory = new JLabel("Seperate output directory?");
+		JLabel lblSeperateOutputDirectory = new JLabel("Separate output directory?");
 		lblSeperateOutputDirectory.setToolTipText("Selecting yes will save output files to the specified directory.");
 		lblSeperateOutputDirectory.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		lblSeperateOutputDirectory.setBounds(20, 68, 202, 29);
@@ -203,12 +203,6 @@ public class SpheroidView extends JFrame {
 		txtOutputDir.setColumns(10);
 		txtOutputDir.setBounds(455, 68, 289, 29);
 		paneSpheroid.add(txtOutputDir);
-		
-		JSeparator separator = new JSeparator();
-		separator.setForeground(new Color(169, 169, 169));
-		separator.setBackground(Color.WHITE);
-		separator.setBounds(12, 113, 778, -3);
-		paneSpheroid.add(separator);
 		
 		JButton btnHelp = new JButton("Help");
 		btnHelp.setFont(new Font("Gadugi", Font.PLAIN, 14));

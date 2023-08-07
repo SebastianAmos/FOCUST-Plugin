@@ -114,8 +114,10 @@ public class MainScreen extends JFrame{
 		btnSpheroid_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SpheroidView SpheroidGui = new SpheroidView();
-					SpheroidGui.setVisible(true);
+					//SpheroidView SpheroidGui = new SpheroidView();
+					SpheroidGUI spheroidGUI = new SpheroidGUI();
+					//SpheroidGui.setVisible(true);
+					spheroidGUI.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
