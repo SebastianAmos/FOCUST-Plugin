@@ -146,8 +146,10 @@ public class MainScreen extends JFrame{
 		btnSpeckle_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SpeckleView SpeckleGui = new SpeckleView();
-					SpeckleGui.setVisible(true);
+					//SpeckleView SpeckleGui = new SpeckleView();
+					//SpeckleGui.setVisible(true);
+					SpeckleGUI speckleGUI = new SpeckleGUI();
+					speckleGUI.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
