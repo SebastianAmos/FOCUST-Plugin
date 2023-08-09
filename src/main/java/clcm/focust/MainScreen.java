@@ -85,10 +85,7 @@ public class MainScreen extends JFrame{
 				
 				JButton btnHelp = new JButton("Help");
 				pnlHeader.add(btnHelp, "cell 3 0,growx,aligny top");
-				btnHelp.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-					}
-				});
+			
 				btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
 		
 		JPanel pnlModeSelect = new JPanel();
@@ -183,6 +180,18 @@ public class MainScreen extends JFrame{
 		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
 		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
 		
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					SpeckleView SpeckleGui = new SpeckleView();
+					SpeckleGui.setVisible(true);
+					SpeckleGUI speckleGUI = new SpeckleGUI();
+					speckleGUI.setVisible(true);
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
+					win.dispose();
+				});
+			}
+		});
 		
 	}
 

@@ -24,6 +24,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+
 import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
 import javax.swing.JComboBox;
@@ -31,10 +34,14 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
+import javax.swing.JProgressBar;
 
-public class SpheroidGUI extends JFrame {
+public class SingleCellGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtInputDir;
@@ -58,9 +65,17 @@ public class SpheroidGUI extends JFrame {
 	private JTextField txtSecSpotY;
 	private JTextField txtSecSpotZ;
 	private JTextField txtSecondaryThreshold;
-	private JTextField txtCoreProportion;
 	private JTextField txtPrimaryBgSize;
 	private JTextField txtSecondaryBgSize;
+	private JTextField txtTertiaryBgSize;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	private JTextField textField_5;
+	private JTextField textField_6;
+	private JTextField textField_7;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JTextField txtTertiaryThreshold;
 
 	/**
 	 * Launch the application.
@@ -69,7 +84,7 @@ public class SpheroidGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SpheroidGUI frame = new SpheroidGUI();
+					SingleCellGUI frame = new SingleCellGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -81,10 +96,10 @@ public class SpheroidGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public SpheroidGUI() {
-		setTitle("FOCUST: Spheroid Analysis");
+	public SingleCellGUI() {
+		setTitle("FOCUST: Single Cell Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 846, 530);
+		setBounds(100, 100, 1102, 530);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -198,7 +213,6 @@ public class SpheroidGUI extends JFrame {
 		pnlHeader.add(txtOutputDir, gbc_txtOutputDir);
 		
 		JCheckBox cbAnalysisOnly = new JCheckBox("Analysis only mode?");
-		cbAnalysisOnly.setToolTipText("Runs analysis where the user provides labelled and original images.");
 		cbAnalysisOnly.setSelected(true);
 		cbAnalysisOnly.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbAnalysisOnly = new GridBagConstraints();
@@ -207,39 +221,6 @@ public class SpheroidGUI extends JFrame {
 		gbc_cbAnalysisOnly.gridx = 0;
 		gbc_cbAnalysisOnly.gridy = 3;
 		pnlHeader.add(cbAnalysisOnly, gbc_cbAnalysisOnly);
-		
-		JCheckBox cbCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
-		cbCoreVsPeriphery.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
-		cbCoreVsPeriphery.setSelected(true);
-		GridBagConstraints gbc_cbCoreVsPeriphery = new GridBagConstraints();
-		gbc_cbCoreVsPeriphery.gridwidth = 2;
-		gbc_cbCoreVsPeriphery.insets = new Insets(0, 0, 5, 5);
-		gbc_cbCoreVsPeriphery.gridx = 1;
-		gbc_cbCoreVsPeriphery.gridy = 3;
-		pnlHeader.add(cbCoreVsPeriphery, gbc_cbCoreVsPeriphery);
-		cbCoreVsPeriphery.setFont(new Font("Arial", Font.PLAIN, 14));
-		
-			
-		
-		JLabel lblCoreVolValue = new JLabel("Core Volume % (0:1)");
-		lblCoreVolValue.setToolTipText("Provide the volume % to reduce the \"core\" of the spheroid to. i.e 0.5 = 50 %.");
-		GridBagConstraints gbc_lblCoreVolValue = new GridBagConstraints();
-		gbc_lblCoreVolValue.insets = new Insets(0, 0, 5, 5);
-		gbc_lblCoreVolValue.gridx = 3;
-		gbc_lblCoreVolValue.gridy = 3;
-		pnlHeader.add(lblCoreVolValue, gbc_lblCoreVolValue);
-		lblCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
-		
-		txtCoreProportion = new JTextField();
-		txtCoreProportion.setText("0.5");
-		GridBagConstraints gbc_txtCoreProportion = new GridBagConstraints();
-		gbc_txtCoreProportion.anchor = GridBagConstraints.WEST;
-		gbc_txtCoreProportion.insets = new Insets(0, 0, 5, 5);
-		gbc_txtCoreProportion.gridx = 4;
-		gbc_txtCoreProportion.gridy = 3;
-		pnlHeader.add(txtCoreProportion, gbc_txtCoreProportion);
-		txtCoreProportion.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtCoreProportion.setColumns(5);
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setForeground(new Color(169, 169, 169));
@@ -258,24 +239,55 @@ public class SpheroidGUI extends JFrame {
 		gbc_pnlMain.gridx = 0;
 		gbc_pnlMain.gridy = 1;
 		contentPane.add(pnlMain, gbc_pnlMain);
-		pnlMain.setLayout(new GridLayout(1, 3, 3, 0));
+		pnlMain.setLayout(new GridLayout(0, 4, 3, 0));
 		
 		JPanel pnlVariable = new JPanel();
 		pnlMain.add(pnlVariable);
 		GridBagLayout gbl_pnlVariable = new GridBagLayout();
 		gbl_pnlVariable.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 45, 35, 0};
-		gbl_pnlVariable.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlVariable.rowHeights = new int[] {35, 22, 35, 35, 35, 35, 35, 0};
+		gbl_pnlVariable.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlVariable.setLayout(gbl_pnlVariable);
+		
+		JPanel pnlKillBorders = new JPanel();
+		GridBagConstraints gbc_pnlKillBorders = new GridBagConstraints();
+		gbc_pnlKillBorders.anchor = GridBagConstraints.NORTH;
+		gbc_pnlKillBorders.gridheight = 2;
+		gbc_pnlKillBorders.fill = GridBagConstraints.HORIZONTAL;
+		gbc_pnlKillBorders.gridwidth = 2;
+		gbc_pnlKillBorders.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlKillBorders.gridx = 0;
+		gbc_pnlKillBorders.gridy = 0;
+		pnlVariable.add(pnlKillBorders, gbc_pnlKillBorders);
+		
+		JLabel lblNewLabel_7 = new JLabel("Kill borders?");
+		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlKillBorders.add(lblNewLabel_7);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
+		buttonGroup.add(rdbtnNewRadioButton);
+		rdbtnNewRadioButton.setSelected(true);
+		rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
+		pnlKillBorders.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnXY = new JRadioButton("X+Y");
+		buttonGroup.add(rdbtnXY);
+		rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
+		pnlKillBorders.add(rdbtnXY);
+		
+		JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z");
+		buttonGroup.add(rdbtnXyz);
+		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
+		pnlKillBorders.add(rdbtnXyz);
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Name Channel 1:");
 		lblNewLabel_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_3_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_3_1.gridx = 0;
-		gbc_lblNewLabel_3_1.gridy = 0;
+		gbc_lblNewLabel_3_1.gridy = 2;
 		pnlVariable.add(lblNewLabel_3_1, gbc_lblNewLabel_3_1);
 		
 		txtC1 = new JTextField();
@@ -284,17 +296,17 @@ public class SpheroidGUI extends JFrame {
 		gbc_txtC1.insets = new Insets(0, 0, 5, 5);
 		gbc_txtC1.fill = GridBagConstraints.BOTH;
 		gbc_txtC1.gridx = 1;
-		gbc_txtC1.gridy = 0;
+		gbc_txtC1.gridy = 2;
 		pnlVariable.add(txtC1, gbc_txtC1);
 		txtC1.setColumns(10);
 		
 		JLabel lblNewLabel_3_1_1 = new JLabel("Name Channel 2:");
 		lblNewLabel_3_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_1.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_3_1_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_3_1_1.gridx = 0;
-		gbc_lblNewLabel_3_1_1.gridy = 1;
+		gbc_lblNewLabel_3_1_1.gridy = 3;
 		pnlVariable.add(lblNewLabel_3_1_1, gbc_lblNewLabel_3_1_1);
 		
 		txtC2 = new JTextField();
@@ -304,16 +316,16 @@ public class SpheroidGUI extends JFrame {
 		gbc_txtC2.insets = new Insets(0, 0, 5, 5);
 		gbc_txtC2.fill = GridBagConstraints.BOTH;
 		gbc_txtC2.gridx = 1;
-		gbc_txtC2.gridy = 1;
+		gbc_txtC2.gridy = 3;
 		pnlVariable.add(txtC2, gbc_txtC2);
 		
 		JLabel lblNewLabel_3_1_2 = new JLabel("Name Channel 3:");
 		lblNewLabel_3_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_2.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_3_1_2.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1_2.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_3_1_2.gridx = 0;
-		gbc_lblNewLabel_3_1_2.gridy = 2;
+		gbc_lblNewLabel_3_1_2.gridy = 4;
 		pnlVariable.add(lblNewLabel_3_1_2, gbc_lblNewLabel_3_1_2);
 		
 		txtC3 = new JTextField();
@@ -323,16 +335,16 @@ public class SpheroidGUI extends JFrame {
 		gbc_txtC3.insets = new Insets(0, 0, 5, 5);
 		gbc_txtC3.fill = GridBagConstraints.BOTH;
 		gbc_txtC3.gridx = 1;
-		gbc_txtC3.gridy = 2;
+		gbc_txtC3.gridy = 4;
 		pnlVariable.add(txtC3, gbc_txtC3);
 		
 		JLabel lblNewLabel_3_1_3 = new JLabel("Name Channel 4:");
 		lblNewLabel_3_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_3.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_3_1_3.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1_3.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_3_1_3.gridx = 0;
-		gbc_lblNewLabel_3_1_3.gridy = 3;
+		gbc_lblNewLabel_3_1_3.gridy = 5;
 		pnlVariable.add(lblNewLabel_3_1_3, gbc_lblNewLabel_3_1_3);
 		
 		txtC4 = new JTextField();
@@ -342,42 +354,42 @@ public class SpheroidGUI extends JFrame {
 		gbc_txtC4.insets = new Insets(0, 0, 5, 5);
 		gbc_txtC4.fill = GridBagConstraints.BOTH;
 		gbc_txtC4.gridx = 1;
-		gbc_txtC4.gridy = 3;
+		gbc_txtC4.gridy = 5;
 		pnlVariable.add(txtC4, gbc_txtC4);
 		
 		JLabel lblNewLabel_3_1_4 = new JLabel("Grouping Info?");
 		lblNewLabel_3_1_4.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_4 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4.insets = new Insets(8, 5, 5, 5);
+		gbc_lblNewLabel_3_1_4.insets = new Insets(8, 5, 0, 5);
 		gbc_lblNewLabel_3_1_4.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1_4.gridx = 0;
-		gbc_lblNewLabel_3_1_4.gridy = 4;
+		gbc_lblNewLabel_3_1_4.gridy = 6;
 		pnlVariable.add(lblNewLabel_3_1_4, gbc_lblNewLabel_3_1_4);
 		
 		textField = new JTextField();
 		textField.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField.setColumns(10);
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(8, 0, 5, 5);
+		gbc_textField.insets = new Insets(8, 0, 0, 5);
 		gbc_textField.fill = GridBagConstraints.BOTH;
 		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 4;
+		gbc_textField.gridy = 6;
 		pnlVariable.add(textField, gbc_textField);
 		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
 		GridBagLayout gbl_pnlPrimary = new GridBagLayout();
-		gbl_pnlPrimary.columnWidths = new int[]{0, 0, 0};
+		gbl_pnlPrimary.columnWidths = new int[]{0, 0, 0, 0};
 		gbl_pnlPrimary.rowHeights = new int[] {0, 0, 0, 30, 0, 0, 0, 30, 0};
-		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlPrimary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlPrimary.setLayout(gbl_pnlPrimary);
 		
 		JLabel lblNewLabel_4 = new JLabel("Primary Objects");
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.gridwidth = 2;
+		gbc_lblNewLabel_4.gridwidth = 3;
 		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_4.gridx = 0;
 		gbc_lblNewLabel_4.gridy = 0;
@@ -397,6 +409,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbPrimaryChannel.setSelectedIndex(0);
 		GridBagConstraints gbc_cbPrimaryChannel = new GridBagConstraints();
+		gbc_cbPrimaryChannel.gridwidth = 2;
 		gbc_cbPrimaryChannel.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryChannel.anchor = GridBagConstraints.WEST;
 		gbc_cbPrimaryChannel.gridx = 1;
@@ -417,7 +430,7 @@ public class SpheroidGUI extends JFrame {
 		txtPrimaryBgSize.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_txtPrimaryBgSize = new GridBagConstraints();
 		gbc_txtPrimaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtPrimaryBgSize.insets = new Insets(0, 0, 5, 0);
+		gbc_txtPrimaryBgSize.insets = new Insets(0, 0, 5, 5);
 		gbc_txtPrimaryBgSize.fill = GridBagConstraints.VERTICAL;
 		gbc_txtPrimaryBgSize.gridx = 1;
 		gbc_txtPrimaryBgSize.gridy = 2;
@@ -427,8 +440,8 @@ public class SpheroidGUI extends JFrame {
 		JLabel lblNewLabel_5_1_1 = new JLabel("Filter:");
 		lblNewLabel_5_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_1.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_1_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_1.gridx = 0;
 		gbc_lblNewLabel_5_1_1.gridy = 3;
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
@@ -438,6 +451,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
+		gbc_cbPrimaryFilter.gridwidth = 2;
 		gbc_cbPrimaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryFilter.gridx = 1;
@@ -449,7 +463,7 @@ public class SpheroidGUI extends JFrame {
 		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlPrimaryBlurSize.gridwidth = 2;
+		gbc_pnlPrimaryBlurSize.gridwidth = 3;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
 		gbc_pnlPrimaryBlurSize.gridy = 4;
 		pnlPrimary.add(pnlPrimaryBlurSize, gbc_pnlPrimaryBlurSize);
@@ -504,6 +518,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
+		gbc_cbPrimaryMethod.gridwidth = 2;
 		gbc_cbPrimaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryMethod.gridx = 1;
@@ -514,7 +529,7 @@ public class SpheroidGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
 		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlPrimarySpotSize.gridwidth = 2;
+		gbc_pnlPrimarySpotSize.gridwidth = 3;
 		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
 		gbc_pnlPrimarySpotSize.gridy = 6;
@@ -559,16 +574,16 @@ public class SpheroidGUI extends JFrame {
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
 		GridBagLayout gbl_pnlSecondary = new GridBagLayout();
-		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0};
 		gbl_pnlSecondary.rowHeights = new int[] {0, 0, 0, 30, 0, 0, 0, 30, 0};
-		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 		pnlSecondary.setLayout(gbl_pnlSecondary);
 		
-		JLabel lblNewLabel_4_1 = new JLabel("Secondary Object");
+		JLabel lblNewLabel_4_1 = new JLabel("Secondary Objects");
 		lblNewLabel_4_1.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_4_1 = new GridBagConstraints();
-		gbc_lblNewLabel_4_1.gridwidth = 3;
+		gbc_lblNewLabel_4_1.gridwidth = 2;
 		gbc_lblNewLabel_4_1.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_4_1.gridx = 0;
 		gbc_lblNewLabel_4_1.gridy = 0;
@@ -588,7 +603,6 @@ public class SpheroidGUI extends JFrame {
 		cbSecondaryChannel.setSelectedIndex(3);
 		cbSecondaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryChannel = new GridBagConstraints();
-		gbc_cbSecondaryChannel.gridwidth = 2;
 		gbc_cbSecondaryChannel.anchor = GridBagConstraints.WEST;
 		gbc_cbSecondaryChannel.insets = new Insets(0, 0, 5, 0);
 		gbc_cbSecondaryChannel.gridx = 1;
@@ -610,7 +624,7 @@ public class SpheroidGUI extends JFrame {
 		txtSecondaryBgSize.setColumns(5);
 		GridBagConstraints gbc_txtSecondaryBgSize = new GridBagConstraints();
 		gbc_txtSecondaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtSecondaryBgSize.insets = new Insets(0, 0, 5, 5);
+		gbc_txtSecondaryBgSize.insets = new Insets(0, 0, 5, 0);
 		gbc_txtSecondaryBgSize.fill = GridBagConstraints.VERTICAL;
 		gbc_txtSecondaryBgSize.gridx = 1;
 		gbc_txtSecondaryBgSize.gridy = 2;
@@ -630,7 +644,6 @@ public class SpheroidGUI extends JFrame {
 		cbSecondaryFilter.setSelectedIndex(0);
 		cbSecondaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryFilter = new GridBagConstraints();
-		gbc_cbSecondaryFilter.gridwidth = 2;
 		gbc_cbSecondaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryFilter.gridx = 1;
@@ -641,7 +654,7 @@ public class SpheroidGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBlurSize_1 = new GridBagConstraints();
 		gbc_pnlPrimaryBlurSize_1.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize_1.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryBlurSize_1.gridwidth = 3;
+		gbc_pnlPrimaryBlurSize_1.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize_1.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBlurSize_1.gridx = 0;
 		gbc_pnlPrimaryBlurSize_1.gridy = 4;
@@ -694,12 +707,32 @@ public class SpheroidGUI extends JFrame {
 		
 		JComboBox cbSecondaryMethod = new JComboBox();
 		
+		JPanel pnlSecondaryThreshold = new JPanel();
+		GridBagConstraints gbc_pnlSecondaryTreshold = new GridBagConstraints();
+		gbc_pnlSecondaryTreshold.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondaryTreshold.gridwidth = 2;
+		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondaryTreshold.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondaryTreshold.gridx = 0;
+		gbc_pnlSecondaryTreshold.gridy = 6;
+		pnlSecondary.add(pnlSecondaryThreshold, gbc_pnlSecondaryTreshold);
+		pnlSecondaryThreshold.setVisible(false);
+
+		JPanel pnlSecondarySpotSize = new JPanel();
+		GridBagConstraints gbc_pnlSecondarySpotSize = new GridBagConstraints();
+		gbc_pnlSecondarySpotSize.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondarySpotSize.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondarySpotSize.gridwidth = 2;
+		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondarySpotSize.gridx = 0;
+		gbc_pnlSecondarySpotSize.gridy = 6;
+		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
+		
 		
 		cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled", "Greater Constant", "Otsu Threshold"}));
-		cbSecondaryMethod.setSelectedIndex(1);
+		cbSecondaryMethod.setSelectedIndex(0);
 		cbSecondaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryMethod = new GridBagConstraints();
-		gbc_cbSecondaryMethod.gridwidth = 2;
 		gbc_cbSecondaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryMethod.gridx = 1;
@@ -707,27 +740,23 @@ public class SpheroidGUI extends JFrame {
 		pnlSecondary.add(cbSecondaryMethod, gbc_cbSecondaryMethod);
 		
 		
-		
-		JPanel pnlSecondaryThreshold = new JPanel();
-		GridBagConstraints gbc_pnlSecondaryTreshold = new GridBagConstraints();
-		gbc_pnlSecondaryTreshold.anchor = GridBagConstraints.EAST;
-		gbc_pnlSecondaryTreshold.gridwidth = 3;
-		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlSecondaryTreshold.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlSecondaryTreshold.gridx = 0;
-		gbc_pnlSecondaryTreshold.gridy = 6;
-		pnlSecondary.add(pnlSecondaryThreshold, gbc_pnlSecondaryTreshold);
-
-		JPanel pnlSecondarySpotSize = new JPanel();
-		GridBagConstraints gbc_pnlSecondarySpotSize = new GridBagConstraints();
-		gbc_pnlSecondarySpotSize.anchor = GridBagConstraints.EAST;
-		gbc_pnlSecondarySpotSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlSecondarySpotSize.gridwidth = 3;
-		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlSecondarySpotSize.gridx = 0;
-		gbc_pnlSecondarySpotSize.gridy = 6;
-		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
-		pnlSecondarySpotSize.setVisible(false);
+		cbSecondaryMethod.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbSecondaryMethod.getSelectedItem().toString().equals("Marker Controlled")) {
+					pnlSecondarySpotSize.setVisible(true);
+					pnlSecondaryThreshold.setVisible(false);
+				} else {
+					pnlSecondarySpotSize.setVisible(false);
+					pnlSecondaryThreshold.setVisible(true);
+					
+				}
+				if(cbSecondaryMethod.getSelectedItem().toString().equals("Otsu Threshold")) {
+					txtSecondaryThreshold.setEnabled(false);
+				} else {
+					txtSecondaryThreshold.setEnabled(true);
+				}
+			}
+		});
 		
 		
 	
@@ -779,6 +808,228 @@ public class SpheroidGUI extends JFrame {
 		txtSecSpotZ.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecSpotZ);
 		
+		JPanel pnlTertiary = new JPanel();
+		pnlTertiary.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(169, 169, 169)));
+		pnlMain.add(pnlTertiary);
+		GridBagLayout gbl_pnlTertiary = new GridBagLayout();
+		gbl_pnlTertiary.columnWidths = new int[] {0, 0, 0};
+		gbl_pnlTertiary.rowHeights = new int[]{0, 0, 0, 30, 0, 0, 0, 30, 0};
+		gbl_pnlTertiary.columnWeights = new double[]{1.0, 1.0, 1.0};
+		gbl_pnlTertiary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		pnlTertiary.setLayout(gbl_pnlTertiary);
+		
+		JCheckBox cbTertiary = new JCheckBox("Tertiary Objects");
+		cbTertiary.setFont(new Font("Arial", Font.BOLD, 14));
+		cbTertiary.setEnabled(true);
+		cbTertiary.setSelected(false);
+		GridBagConstraints gbc_cbTertiary = new GridBagConstraints();
+		gbc_cbTertiary.gridwidth = 3;
+		gbc_cbTertiary.insets = new Insets(0, 0, 5, 5);
+		gbc_cbTertiary.gridx = 0;
+		gbc_cbTertiary.gridy = 0;
+		pnlTertiary.add(cbTertiary, gbc_cbTertiary);
+		
+		JLabel lblNewLabel_5_3 = new JLabel("Channel:");
+		lblNewLabel_5_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_3 = new GridBagConstraints();
+		gbc_lblNewLabel_5_3.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_3.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_3.gridx = 0;
+		gbc_lblNewLabel_5_3.gridy = 1;
+		pnlTertiary.add(lblNewLabel_5_3, gbc_lblNewLabel_5_3);
+		
+		JComboBox cbTertiaryChannel = new JComboBox();
+		cbTertiaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbTertiaryChannel.setSelectedIndex(0);
+		cbTertiaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbTertiaryChannel = new GridBagConstraints();
+		gbc_cbTertiaryChannel.gridwidth = 2;
+		gbc_cbTertiaryChannel.anchor = GridBagConstraints.WEST;
+		gbc_cbTertiaryChannel.insets = new Insets(0, 0, 5, 0);
+		gbc_cbTertiaryChannel.gridx = 1;
+		gbc_cbTertiaryChannel.gridy = 1;
+		pnlTertiary.add(cbTertiaryChannel, gbc_cbTertiaryChannel);
+		
+		JCheckBox cbTertBg = new JCheckBox("Subtract Bg*:");
+		cbTertBg.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbTertBg = new GridBagConstraints();
+		gbc_cbTertBg.anchor = GridBagConstraints.WEST;
+		gbc_cbTertBg.insets = new Insets(0, 4, 5, 5);
+		gbc_cbTertBg.gridx = 0;
+		gbc_cbTertBg.gridy = 2;
+		pnlTertiary.add(cbTertBg, gbc_cbTertBg);
+		
+		txtTertiaryBgSize = new JTextField();
+		txtTertiaryBgSize.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryBgSize.setEnabled(false);
+		txtTertiaryBgSize.setColumns(5);
+		GridBagConstraints gbc_txtTertiaryBgSize = new GridBagConstraints();
+		gbc_txtTertiaryBgSize.anchor = GridBagConstraints.WEST;
+		gbc_txtTertiaryBgSize.fill = GridBagConstraints.VERTICAL;
+		gbc_txtTertiaryBgSize.insets = new Insets(0, 0, 5, 5);
+		gbc_txtTertiaryBgSize.gridx = 1;
+		gbc_txtTertiaryBgSize.gridy = 2;
+		pnlTertiary.add(txtTertiaryBgSize, gbc_txtTertiaryBgSize);
+		
+		JLabel lblNewLabel_5_1_1_2 = new JLabel("Filter:");
+		lblNewLabel_5_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_1_1_2 = new GridBagConstraints();
+		gbc_lblNewLabel_5_1_1_2.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_1_1_2.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_1_1_2.gridx = 0;
+		gbc_lblNewLabel_5_1_1_2.gridy = 3;
+		pnlTertiary.add(lblNewLabel_5_1_1_2, gbc_lblNewLabel_5_1_1_2);
+		
+		JComboBox cbTertiaryFilter = new JComboBox();
+		cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"3D Gaussian Blur", "3D Median"}));
+		cbTertiaryFilter.setSelectedIndex(0);
+		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbTertiaryFilter = new GridBagConstraints();
+		gbc_cbTertiaryFilter.gridwidth = 2;
+		gbc_cbTertiaryFilter.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbTertiaryFilter.insets = new Insets(0, 0, 5, 5);
+		gbc_cbTertiaryFilter.gridx = 1;
+		gbc_cbTertiaryFilter.gridy = 3;
+		pnlTertiary.add(cbTertiaryFilter, gbc_cbTertiaryFilter);
+		
+		JPanel pnlTertiaryBlurSize = new JPanel();
+		GridBagConstraints gbc_pnlTertiaryBlurSize = new GridBagConstraints();
+		gbc_pnlTertiaryBlurSize.anchor = GridBagConstraints.EAST;
+		gbc_pnlTertiaryBlurSize.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlTertiaryBlurSize.gridwidth = 3;
+		gbc_pnlTertiaryBlurSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlTertiaryBlurSize.gridx = 0;
+		gbc_pnlTertiaryBlurSize.gridy = 4;
+		pnlTertiary.add(pnlTertiaryBlurSize, gbc_pnlTertiaryBlurSize);
+		
+		JLabel lblNewLabel_6_5 = new JLabel("X");
+		lblNewLabel_6_5.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_5.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_5.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBlurSize.add(lblNewLabel_6_5);
+		
+		textField_2 = new JTextField();
+		textField_2.setText("1");
+		textField_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_2.setColumns(4);
+		pnlTertiaryBlurSize.add(textField_2);
+		
+		JLabel lblNewLabel_6_1_3 = new JLabel("Y");
+		lblNewLabel_6_1_3.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_3.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBlurSize.add(lblNewLabel_6_1_3);
+		
+		textField_3 = new JTextField();
+		textField_3.setText("1");
+		textField_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_3.setColumns(4);
+		pnlTertiaryBlurSize.add(textField_3);
+		
+		JLabel lblNewLabel_6_2_3 = new JLabel("Z");
+		lblNewLabel_6_2_3.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_3.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBlurSize.add(lblNewLabel_6_2_3);
+		
+		textField_4 = new JTextField();
+		textField_4.setText("1");
+		textField_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_4.setColumns(4);
+		pnlTertiaryBlurSize.add(textField_4);
+		
+		JLabel lblNewLabel_5_1_3 = new JLabel("Method:");
+		lblNewLabel_5_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_1_3 = new GridBagConstraints();
+		gbc_lblNewLabel_5_1_3.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_1_3.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_1_3.gridx = 0;
+		gbc_lblNewLabel_5_1_3.gridy = 5;
+		pnlTertiary.add(lblNewLabel_5_1_3, gbc_lblNewLabel_5_1_3);
+		
+		JComboBox cbTertiaryMethod = new JComboBox();
+		
+		
+		
+		
+		cbTertiaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled", "Greater Constant", "Otsu Threshold"}));
+		cbTertiaryMethod.setSelectedIndex(0);
+		cbTertiaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbTertiaryMethod = new GridBagConstraints();
+		gbc_cbTertiaryMethod.gridwidth = 2;
+		gbc_cbTertiaryMethod.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbTertiaryMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_cbTertiaryMethod.gridx = 1;
+		gbc_cbTertiaryMethod.gridy = 5;
+		pnlTertiary.add(cbTertiaryMethod, gbc_cbTertiaryMethod);
+		
+		JPanel pnlTertiarySpotSize = new JPanel();
+		GridBagConstraints gbc_pnlTertiarySpotSize = new GridBagConstraints();
+		gbc_pnlTertiarySpotSize.anchor = GridBagConstraints.EAST;
+		gbc_pnlTertiarySpotSize.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlTertiarySpotSize.gridwidth = 3;
+		gbc_pnlTertiarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlTertiarySpotSize.gridx = 0;
+		gbc_pnlTertiarySpotSize.gridy = 6;
+		pnlTertiary.add(pnlTertiarySpotSize, gbc_pnlTertiarySpotSize);
+		
+		JLabel lblNewLabel_6_3_2 = new JLabel("X");
+		lblNewLabel_6_3_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiarySpotSize.add(lblNewLabel_6_3_2);
+		
+		textField_5 = new JTextField();
+		textField_5.setText("1");
+		textField_5.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_5.setColumns(4);
+		pnlTertiarySpotSize.add(textField_5);
+		
+		JLabel lblNewLabel_6_1_1_2 = new JLabel("Y");
+		lblNewLabel_6_1_1_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiarySpotSize.add(lblNewLabel_6_1_1_2);
+		
+		textField_6 = new JTextField();
+		textField_6.setText("1");
+		textField_6.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_6.setColumns(4);
+		pnlTertiarySpotSize.add(textField_6);
+		
+		JLabel lblNewLabel_6_2_1_2 = new JLabel("Z");
+		lblNewLabel_6_2_1_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiarySpotSize.add(lblNewLabel_6_2_1_2);
+		
+		textField_7 = new JTextField();
+		textField_7.setText("1");
+		textField_7.setFont(new Font("Arial", Font.PLAIN, 14));
+		textField_7.setColumns(4);
+		pnlTertiarySpotSize.add(textField_7);
+		
+		JPanel pnlTertiaryThreshold = new JPanel();
+		GridBagConstraints gbc_pnlTertiaryThreshold = new GridBagConstraints();
+		gbc_pnlTertiaryThreshold.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlTertiaryThreshold.gridwidth = 3;
+		gbc_pnlTertiaryThreshold.fill = GridBagConstraints.BOTH;
+		gbc_pnlTertiaryThreshold.gridx = 0;
+		gbc_pnlTertiaryThreshold.gridy = 6;
+		pnlTertiary.add(pnlTertiaryThreshold, gbc_pnlTertiaryThreshold);
+		pnlTertiaryThreshold.setVisible(false);
+		
+		JLabel lblNewLabel_6_3_1_1_1 = new JLabel("Threshold:");
+		lblNewLabel_6_3_1_1_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryThreshold.add(lblNewLabel_6_3_1_1_1);
+		
+		txtTertiaryThreshold = new JTextField();
+		txtTertiaryThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryThreshold.setColumns(6);
+		pnlTertiaryThreshold.add(txtTertiaryThreshold);
+		
 		
 		
 		JPanel pnlFooter = new JPanel();
@@ -790,9 +1041,9 @@ public class SpheroidGUI extends JFrame {
 		gbc_pnlFooter.gridy = 2;
 		contentPane.add(pnlFooter, gbc_pnlFooter);
 		GridBagLayout gbl_pnlFooter = new GridBagLayout();
-		gbl_pnlFooter.columnWidths = new int[]{0, 0, 0, 0};
+		gbl_pnlFooter.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_pnlFooter.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_pnlFooter.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0};
+		gbl_pnlFooter.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 1.0};
 		gbl_pnlFooter.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlFooter.setLayout(gbl_pnlFooter);
 		
@@ -817,7 +1068,7 @@ public class SpheroidGUI extends JFrame {
 		separator_1_1_1.setBackground(Color.WHITE);
 		GridBagConstraints gbc_separator_1_1_1 = new GridBagConstraints();
 		gbc_separator_1_1_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_separator_1_1_1.gridwidth = 8;
+		gbc_separator_1_1_1.gridwidth = 10;
 		gbc_separator_1_1_1.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_1_1_1.gridx = 0;
 		gbc_separator_1_1_1.gridy = 0;
@@ -833,11 +1084,18 @@ public class SpheroidGUI extends JFrame {
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
 		
+		JProgressBar progressBar = new JProgressBar();
+		GridBagConstraints gbc_progressBar = new GridBagConstraints();
+		gbc_progressBar.fill = GridBagConstraints.BOTH;
+		gbc_progressBar.insets = new Insets(0, 0, 0, 5);
+		gbc_progressBar.gridx = 3;
+		gbc_progressBar.gridy = 2;
+		pnlFooter.add(progressBar, gbc_progressBar);
+		
 		JLabel lblNewLabel_5_1_1_2_1 = new JLabel("*Subtract background");
 		lblNewLabel_5_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1_2_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1_1_2_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_5_1_1_2_1.gridx = 7;
+		gbc_lblNewLabel_5_1_1_2_1.gridx = 9;
 		gbc_lblNewLabel_5_1_1_2_1.gridy = 2;
 		pnlFooter.add(lblNewLabel_5_1_1_2_1, gbc_lblNewLabel_5_1_1_2_1);
 		
@@ -861,6 +1119,18 @@ public class SpheroidGUI extends JFrame {
 			}
 		});
 		
+		
+		cbTertBg.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbTertBg.isSelected()) {
+					txtTertiaryBgSize.setEnabled(true);
+				} else {
+					txtTertiaryBgSize.setEnabled(false);
+				}
+			}
+		});
+		
+	
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainScreen MainGui = new MainScreen();
@@ -870,43 +1140,40 @@ public class SpheroidGUI extends JFrame {
 			}
 		});
 		
-
-		cbCoreVsPeriphery.addItemListener(new ItemListener() {
+		
+		cbTertiaryMethod.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(cbCoreVsPeriphery.isSelected()) {
-					lblCoreVolValue.setVisible(true);
-					txtCoreProportion.setVisible(true);
+				if(cbTertiaryMethod.getSelectedItem().toString().equals("Marker Controlled")) {
+					pnlTertiarySpotSize.setVisible(true);
+					pnlTertiaryThreshold.setVisible(false);
 				} else {
-					lblCoreVolValue.setVisible(false);
-					txtCoreProportion.setVisible(false);
+					pnlTertiarySpotSize.setVisible(false);
+					pnlTertiaryThreshold.setVisible(true);
+					
 				}
+				if(cbTertiaryMethod.getSelectedItem().toString().equals("Otsu Threshold")) {
+					txtTertiaryThreshold.setEnabled(false);
+				} else {
+					txtTertiaryThreshold.setEnabled(true);
+				}
+				
 			}
 		});
 		
-
-		cbSecondaryMethod.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbSecondaryMethod.getSelectedItem().toString().equals("Marker Controlled")) {
-					pnlSecondarySpotSize.setVisible(true);
-					pnlSecondaryThreshold.setVisible(false);
-				} else {
-					pnlSecondarySpotSize.setVisible(false);
-					pnlSecondaryThreshold.setVisible(true);
-					
-				}
-				if(cbSecondaryMethod.getSelectedItem().toString().equals("Otsu Threshold")) {
-					txtSecondaryThreshold.setEnabled(false);
-				} else {
-					txtSecondaryThreshold.setEnabled(true);
-				}
-			}
-		});
+		
+		
+		
 		
 	}
 
+	
+	
 	private static class __Tmp {
 		private static void __tmp() {
 			  javax.swing.JPanel __wbp_panel = new javax.swing.JPanel();
 		}
 	}
+	
+	
+	
 }
