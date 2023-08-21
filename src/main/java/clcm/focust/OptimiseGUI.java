@@ -709,7 +709,7 @@ public class OptimiseGUI extends JFrame {
 		pnlMain.add(pnlSecondary);
 		GridBagLayout gbl_pnlSecondary = new GridBagLayout();
 		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlSecondary.rowHeights = new int[] {0, 0, 0, 0, 0, 30, 0, 0, 0, 30, 0};
+		gbl_pnlSecondary.rowHeights = new int[] {25, 0, 0, 0, 0, 30, 0, 0, 0, 30, 0};
 		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlSecondary.setLayout(gbl_pnlSecondary);
