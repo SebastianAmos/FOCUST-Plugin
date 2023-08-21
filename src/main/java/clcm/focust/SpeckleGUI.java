@@ -64,9 +64,6 @@ public class SpeckleGUI extends JFrame {
 	private JTextField txtSecSpotY;
 	private JTextField txtSecSpotZ;
 	private JTextField txtSecondaryThreshold;
-	private JTextField txtPrimaryBgSize;
-	private JTextField txtSecondaryBgSize;
-	private JTextField txtTertiaryBgSize;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
@@ -75,6 +72,27 @@ public class SpeckleGUI extends JFrame {
 	private JTextField textField_7;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtTertiaryThreshold;
+	private JTextField txtPrimaryS1X;
+	private JTextField txtPrimaryS1Y;
+	private JTextField txtPrimaryS1Z;
+	private JTextField txtPrimaryS2X;
+	private JTextField txtPrimaryS2Y;
+	private JTextField txtPrimaryS2Z;
+	private JTextField txtPrimaryBGRadius;
+	private JTextField txtSecondaryS1X;
+	private JTextField txtSecondaryS1Y;
+	private JTextField txtSecondaryS1Z;
+	private JTextField txtSecondaryS2X;
+	private JTextField txtSecondaryS2Y;
+	private JTextField txtSecondaryS2Z;
+	private JTextField txtSecondaryBGRadius;
+	private JTextField txtTertiaryBGRadius;
+	private JTextField txtTertiaryS2X;
+	private JTextField txtTertiaryS2Y;
+	private JTextField txtTertiaryS2Z;
+	private JTextField txtTertiaryS1X;
+	private JTextField txtTertiaryS1Y;
+	private JTextField txtTertiaryS1Z;
 
 	/**
 	 * Launch the application.
@@ -98,7 +116,7 @@ public class SpeckleGUI extends JFrame {
 	public SpeckleGUI() {
 		setTitle("FOCUST: Speckle Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1102, 530);
+		setBounds(100, 100, 1102, 599);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -389,16 +407,16 @@ public class SpeckleGUI extends JFrame {
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
 		GridBagLayout gbl_pnlPrimary = new GridBagLayout();
-		gbl_pnlPrimary.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_pnlPrimary.rowHeights = new int[] {0, 0, 0, 30, 0, 0, 0, 30, 0};
-		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlPrimary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlPrimary.columnWidths = new int[]{0, 0, 0};
+		gbl_pnlPrimary.rowHeights = new int[] {0, 0, 0, 0, 0, 30, 0, 0, 0, 30, 0};
+		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlPrimary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		pnlPrimary.setLayout(gbl_pnlPrimary);
 		
 		JLabel lblNewLabel_4 = new JLabel("Primary Objects");
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.gridwidth = 3;
+		gbc_lblNewLabel_4.gridwidth = 2;
 		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_4.gridx = 0;
 		gbc_lblNewLabel_4.gridy = 0;
@@ -418,33 +436,134 @@ public class SpeckleGUI extends JFrame {
 		cbPrimaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbPrimaryChannel.setSelectedIndex(0);
 		GridBagConstraints gbc_cbPrimaryChannel = new GridBagConstraints();
-		gbc_cbPrimaryChannel.gridwidth = 2;
 		gbc_cbPrimaryChannel.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryChannel.anchor = GridBagConstraints.WEST;
 		gbc_cbPrimaryChannel.gridx = 1;
 		gbc_cbPrimaryChannel.gridy = 1;
 		pnlPrimary.add(cbPrimaryChannel, gbc_cbPrimaryChannel);
 		
-		JCheckBox cbPriBg = new JCheckBox("Subtract Bg*:");
+		JLabel lblNewLabel_5_3_1 = new JLabel("Background:");
+		lblNewLabel_5_3_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_3_1 = new GridBagConstraints();
+		gbc_lblNewLabel_5_3_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_3_1.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_3_1.gridx = 0;
+		gbc_lblNewLabel_5_3_1.gridy = 2;
+		pnlPrimary.add(lblNewLabel_5_3_1, gbc_lblNewLabel_5_3_1);
 		
-		cbPriBg.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_cbPriBg = new GridBagConstraints();
-		gbc_cbPriBg.insets = new Insets(0, 0, 5, 5);
-		gbc_cbPriBg.gridx = 0;
-		gbc_cbPriBg.gridy = 2;
-		pnlPrimary.add(cbPriBg, gbc_cbPriBg);
+		JComboBox cbPrimaryBackground = new JComboBox();
+		cbPrimaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbPrimaryBackground.setSelectedIndex(0);
+		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
+		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryBackground.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbPrimaryBackground.gridx = 1;
+		gbc_cbPrimaryBackground.gridy = 2;
+		pnlPrimary.add(cbPrimaryBackground, gbc_cbPrimaryBackground);
 		
-		txtPrimaryBgSize = new JTextField();
-		txtPrimaryBgSize.setEnabled(false);
-		txtPrimaryBgSize.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_txtPrimaryBgSize = new GridBagConstraints();
-		gbc_txtPrimaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtPrimaryBgSize.insets = new Insets(0, 0, 5, 5);
-		gbc_txtPrimaryBgSize.fill = GridBagConstraints.VERTICAL;
-		gbc_txtPrimaryBgSize.gridx = 1;
-		gbc_txtPrimaryBgSize.gridy = 2;
-		pnlPrimary.add(txtPrimaryBgSize, gbc_txtPrimaryBgSize);
-		txtPrimaryBgSize.setColumns(5);
+		JPanel pnlPrimaryBGFirstBlur = new JPanel();
+		GridBagConstraints gbc_pnlPrimaryBGFirstBlur = new GridBagConstraints();
+		gbc_pnlPrimaryBGFirstBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryBGFirstBlur.gridwidth = 2;
+		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlPrimaryBGFirstBlur.gridx = 0;
+		gbc_pnlPrimaryBGFirstBlur.gridy = 3;
+		pnlPrimary.add(pnlPrimaryBGFirstBlur, gbc_pnlPrimaryBGFirstBlur);
+		pnlPrimaryBGFirstBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_1_1 = new JLabel("S1:");
+		lblNewLabel_7_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGFirstBlur.add(lblNewLabel_7_1_1);
+		
+		JLabel lblNewLabel_6_6 = new JLabel("X");
+		lblNewLabel_6_6.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_6.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_6.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_6);
+		
+		txtPrimaryS1X = new JTextField();
+		txtPrimaryS1X.setText("1");
+		txtPrimaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS1X.setColumns(4);
+		pnlPrimaryBGFirstBlur.add(txtPrimaryS1X);
+		
+		JLabel lblNewLabel_6_1_4 = new JLabel("Y");
+		lblNewLabel_6_1_4.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_4.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_1_4);
+		
+		txtPrimaryS1Y = new JTextField();
+		txtPrimaryS1Y.setText("1");
+		txtPrimaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS1Y.setColumns(4);
+		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Y);
+		
+		JLabel lblNewLabel_6_2_4 = new JLabel("Z");
+		lblNewLabel_6_2_4.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_4.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_2_4);
+		
+		txtPrimaryS1Z = new JTextField();
+		txtPrimaryS1Z.setText("1");
+		txtPrimaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS1Z.setColumns(4);
+		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Z);
+		
+		JPanel pnlPrimaryBGSecondBlur = new JPanel();
+		GridBagConstraints gbc_pnlPrimaryBGSecondBlur = new GridBagConstraints();
+		gbc_pnlPrimaryBGSecondBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryBGSecondBlur.gridwidth = 2;
+		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlPrimaryBGSecondBlur.gridx = 0;
+		gbc_pnlPrimaryBGSecondBlur.gridy = 4;
+		pnlPrimary.add(pnlPrimaryBGSecondBlur, gbc_pnlPrimaryBGSecondBlur);
+		pnlPrimaryBGSecondBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_2_1 = new JLabel("S2:");
+		lblNewLabel_7_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGSecondBlur.add(lblNewLabel_7_2_1);
+		
+		JLabel lblNewLabel_6_6_1 = new JLabel("X");
+		lblNewLabel_6_6_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_6_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_6_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_6_1);
+		
+		txtPrimaryS2X = new JTextField();
+		txtPrimaryS2X.setText("1");
+		txtPrimaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS2X.setColumns(4);
+		pnlPrimaryBGSecondBlur.add(txtPrimaryS2X);
+		
+		JLabel lblNewLabel_6_1_4_1 = new JLabel("Y");
+		lblNewLabel_6_1_4_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_4_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_4_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_1_4_1);
+		
+		txtPrimaryS2Y = new JTextField();
+		txtPrimaryS2Y.setText("1");
+		txtPrimaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS2Y.setColumns(4);
+		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Y);
+		
+		JLabel lblNewLabel_6_2_4_1 = new JLabel("Z");
+		lblNewLabel_6_2_4_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_4_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_4_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_2_4_1);
+		
+		txtPrimaryS2Z = new JTextField();
+		txtPrimaryS2Z.setText("1");
+		txtPrimaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryS2Z.setColumns(4);
+		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Z);
 		
 		JLabel lblNewLabel_5_1_1 = new JLabel("Filter:");
 		lblNewLabel_5_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -452,7 +571,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_1.gridx = 0;
-		gbc_lblNewLabel_5_1_1.gridy = 3;
+		gbc_lblNewLabel_5_1_1.gridy = 5;
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
 		
 		JComboBox cbPrimaryFilter = new JComboBox();
@@ -460,21 +579,20 @@ public class SpeckleGUI extends JFrame {
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
-		gbc_cbPrimaryFilter.gridwidth = 2;
 		gbc_cbPrimaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryFilter.gridx = 1;
-		gbc_cbPrimaryFilter.gridy = 3;
+		gbc_cbPrimaryFilter.gridy = 5;
 		pnlPrimary.add(cbPrimaryFilter, gbc_cbPrimaryFilter);
 		
 		JPanel pnlPrimaryBlurSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryBlurSize = new GridBagConstraints();
 		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlPrimaryBlurSize.gridwidth = 3;
+		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBlurSize.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
-		gbc_pnlPrimaryBlurSize.gridy = 4;
+		gbc_pnlPrimaryBlurSize.gridy = 6;
 		pnlPrimary.add(pnlPrimaryBlurSize, gbc_pnlPrimaryBlurSize);
 		
 		JLabel lblNewLabel_6 = new JLabel("X");
@@ -519,7 +637,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1.gridx = 0;
-		gbc_lblNewLabel_5_1.gridy = 5;
+		gbc_lblNewLabel_5_1.gridy = 7;
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
 		JComboBox cbPrimaryMethod = new JComboBox();
@@ -527,21 +645,20 @@ public class SpeckleGUI extends JFrame {
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
-		gbc_cbPrimaryMethod.gridwidth = 2;
 		gbc_cbPrimaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryMethod.gridx = 1;
-		gbc_cbPrimaryMethod.gridy = 5;
+		gbc_cbPrimaryMethod.gridy = 7;
 		pnlPrimary.add(cbPrimaryMethod, gbc_cbPrimaryMethod);
 		
 		JPanel pnlPrimarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
 		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
-		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlPrimarySpotSize.gridwidth = 3;
+		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimarySpotSize.gridwidth = 2;
 		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
-		gbc_pnlPrimarySpotSize.gridy = 6;
+		gbc_pnlPrimarySpotSize.gridy = 8;
 		pnlPrimary.add(pnlPrimarySpotSize, gbc_pnlPrimarySpotSize);
 		
 		JLabel lblNewLabel_6_3 = new JLabel("X");
@@ -580,13 +697,34 @@ public class SpeckleGUI extends JFrame {
 		txtPriSpotZ.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotZ);
 		
+		JPanel pnlPrimaryBGRadius = new JPanel();
+		GridBagConstraints gbc_pnlPrimaryBGRadius = new GridBagConstraints();
+		gbc_pnlPrimaryBGRadius.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlPrimaryBGRadius.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryBGRadius.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlPrimaryBGRadius.gridx = 1;
+		gbc_pnlPrimaryBGRadius.gridy = 3;
+		pnlPrimary.add(pnlPrimaryBGRadius, gbc_pnlPrimaryBGRadius);
+		pnlPrimaryBGRadius.setVisible(false);
+		
+		JLabel lblNewLabel_6_3_1_1_2 = new JLabel("Radius:");
+		lblNewLabel_6_3_1_1_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_1_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlPrimaryBGRadius.add(lblNewLabel_6_3_1_1_2);
+		
+		txtPrimaryBGRadius = new JTextField();
+		txtPrimaryBGRadius.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryBGRadius.setColumns(6);
+		pnlPrimaryBGRadius.add(txtPrimaryBGRadius);
+		
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
 		GridBagLayout gbl_pnlSecondary = new GridBagLayout();
 		gbl_pnlSecondary.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlSecondary.rowHeights = new int[] {0, 0, 0, 30, 0, 0, 0, 30, 0};
+		gbl_pnlSecondary.rowHeights = new int[] {0, 0, 0, 0, 0, 30, 0, 0, 0, 30, 0};
 		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlSecondary.setLayout(gbl_pnlSecondary);
 		
 		JLabel lblNewLabel_4_1 = new JLabel("Secondary Objects");
@@ -618,26 +756,128 @@ public class SpeckleGUI extends JFrame {
 		gbc_cbSecondaryChannel.gridy = 1;
 		pnlSecondary.add(cbSecondaryChannel, gbc_cbSecondaryChannel);
 		
-		JCheckBox cbSecBg = new JCheckBox("Subtract Bg*:");
-		cbSecBg.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_cbSecBg = new GridBagConstraints();
-		gbc_cbSecBg.anchor = GridBagConstraints.WEST;
-		gbc_cbSecBg.insets = new Insets(0, 0, 5, 5);
-		gbc_cbSecBg.gridx = 0;
-		gbc_cbSecBg.gridy = 2;
-		pnlSecondary.add(cbSecBg, gbc_cbSecBg);
+		JLabel lblNewLabel_5_3_1_1 = new JLabel("Background:");
+		lblNewLabel_5_3_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_3_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_3_1_1 = new GridBagConstraints();
+		gbc_lblNewLabel_5_3_1_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_3_1_1.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_3_1_1.gridx = 0;
+		gbc_lblNewLabel_5_3_1_1.gridy = 2;
+		pnlSecondary.add(lblNewLabel_5_3_1_1, gbc_lblNewLabel_5_3_1_1);
 		
-		txtSecondaryBgSize = new JTextField();
-		txtSecondaryBgSize.setEnabled(false);
-		txtSecondaryBgSize.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtSecondaryBgSize.setColumns(5);
-		GridBagConstraints gbc_txtSecondaryBgSize = new GridBagConstraints();
-		gbc_txtSecondaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtSecondaryBgSize.insets = new Insets(0, 0, 5, 0);
-		gbc_txtSecondaryBgSize.fill = GridBagConstraints.VERTICAL;
-		gbc_txtSecondaryBgSize.gridx = 1;
-		gbc_txtSecondaryBgSize.gridy = 2;
-		pnlSecondary.add(txtSecondaryBgSize, gbc_txtSecondaryBgSize);
+		JComboBox cbSecondaryBackground = new JComboBox();
+		cbSecondaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbSecondaryBackground.setSelectedIndex(0);
+		cbSecondaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbSecondaryBackground = new GridBagConstraints();
+		gbc_cbSecondaryBackground.insets = new Insets(0, 0, 5, 5);
+		gbc_cbSecondaryBackground.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbSecondaryBackground.gridx = 1;
+		gbc_cbSecondaryBackground.gridy = 2;
+		pnlSecondary.add(cbSecondaryBackground, gbc_cbSecondaryBackground);
+		
+		JPanel pnlSecondaryBGFirstBlur = new JPanel();
+		GridBagConstraints gbc_pnlSecondaryBGFirstBlur = new GridBagConstraints();
+		gbc_pnlSecondaryBGFirstBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondaryBGFirstBlur.gridwidth = 2;
+		gbc_pnlSecondaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlSecondaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondaryBGFirstBlur.gridx = 0;
+		gbc_pnlSecondaryBGFirstBlur.gridy = 3;
+		pnlSecondary.add(pnlSecondaryBGFirstBlur, gbc_pnlSecondaryBGFirstBlur);
+		pnlSecondaryBGFirstBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_1 = new JLabel("S1:");
+		lblNewLabel_7_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGFirstBlur.add(lblNewLabel_7_1);
+		
+		JLabel lblNewLabel_6_4_1 = new JLabel("X");
+		lblNewLabel_6_4_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_4_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_4_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_4_1);
+		
+		txtSecondaryS1X = new JTextField();
+		txtSecondaryS1X.setText("1");
+		txtSecondaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS1X.setColumns(4);
+		pnlSecondaryBGFirstBlur.add(txtSecondaryS1X);
+		
+		JLabel lblNewLabel_6_1_2_1 = new JLabel("Y");
+		lblNewLabel_6_1_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_1_2_1);
+		
+		txtSecondaryS1Y = new JTextField();
+		txtSecondaryS1Y.setText("1");
+		txtSecondaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS1Y.setColumns(4);
+		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Y);
+		
+		JLabel lblNewLabel_6_2_2_1 = new JLabel("Z");
+		lblNewLabel_6_2_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_2_2_1);
+		
+		txtSecondaryS1Z = new JTextField();
+		txtSecondaryS1Z.setText("1");
+		txtSecondaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS1Z.setColumns(4);
+		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Z);
+		
+		JPanel pnlSecondaryBGSecondBlur = new JPanel();
+		GridBagConstraints gbc_pnlSecondaryBGSecondBlur = new GridBagConstraints();
+		gbc_pnlSecondaryBGSecondBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondaryBGSecondBlur.gridwidth = 2;
+		gbc_pnlSecondaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlSecondaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondaryBGSecondBlur.gridx = 0;
+		gbc_pnlSecondaryBGSecondBlur.gridy = 4;
+		pnlSecondary.add(pnlSecondaryBGSecondBlur, gbc_pnlSecondaryBGSecondBlur);
+		pnlSecondaryBGSecondBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_2 = new JLabel("S2:");
+		lblNewLabel_7_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGSecondBlur.add(lblNewLabel_7_2);
+		
+		JLabel lblNewLabel_6_4_2 = new JLabel("X");
+		lblNewLabel_6_4_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_4_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_4_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_4_2);
+		
+		txtSecondaryS2X = new JTextField();
+		txtSecondaryS2X.setText("1");
+		txtSecondaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS2X.setColumns(4);
+		pnlSecondaryBGSecondBlur.add(txtSecondaryS2X);
+		
+		JLabel lblNewLabel_6_1_2_2 = new JLabel("Y");
+		lblNewLabel_6_1_2_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_2_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_2_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_1_2_2);
+		
+		txtSecondaryS2Y = new JTextField();
+		txtSecondaryS2Y.setText("1");
+		txtSecondaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS2Y.setColumns(4);
+		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Y);
+		
+		JLabel lblNewLabel_6_2_2_2 = new JLabel("Z");
+		lblNewLabel_6_2_2_2.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_2_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_2_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_2_2_2);
+		
+		txtSecondaryS2Z = new JTextField();
+		txtSecondaryS2Z.setText("1");
+		txtSecondaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryS2Z.setColumns(4);
+		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Z);
 		
 		JLabel lblNewLabel_5_1_1_1 = new JLabel("Filter:");
 		lblNewLabel_5_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -645,7 +885,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1_1_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_1_1.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_1_1.gridx = 0;
-		gbc_lblNewLabel_5_1_1_1.gridy = 3;
+		gbc_lblNewLabel_5_1_1_1.gridy = 5;
 		pnlSecondary.add(lblNewLabel_5_1_1_1, gbc_lblNewLabel_5_1_1_1);
 		
 		JComboBox cbSecondaryFilter = new JComboBox();
@@ -656,7 +896,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_cbSecondaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryFilter.gridx = 1;
-		gbc_cbSecondaryFilter.gridy = 3;
+		gbc_cbSecondaryFilter.gridy = 5;
 		pnlSecondary.add(cbSecondaryFilter, gbc_cbSecondaryFilter);
 		
 		JPanel pnlPrimaryBlurSize_1 = new JPanel();
@@ -664,9 +904,9 @@ public class SpeckleGUI extends JFrame {
 		gbc_pnlPrimaryBlurSize_1.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize_1.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBlurSize_1.gridwidth = 2;
-		gbc_pnlPrimaryBlurSize_1.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlPrimaryBlurSize_1.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlPrimaryBlurSize_1.gridx = 0;
-		gbc_pnlPrimaryBlurSize_1.gridy = 4;
+		gbc_pnlPrimaryBlurSize_1.gridy = 6;
 		pnlSecondary.add(pnlPrimaryBlurSize_1, gbc_pnlPrimaryBlurSize_1);
 		
 		JLabel lblNewLabel_6_4 = new JLabel("X");
@@ -711,7 +951,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1_2.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_2.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_2.gridx = 0;
-		gbc_lblNewLabel_5_1_2.gridy = 5;
+		gbc_lblNewLabel_5_1_2.gridy = 7;
 		pnlSecondary.add(lblNewLabel_5_1_2, gbc_lblNewLabel_5_1_2);
 		
 		JComboBox cbSecondaryMethod = new JComboBox();
@@ -720,10 +960,10 @@ public class SpeckleGUI extends JFrame {
 		GridBagConstraints gbc_pnlSecondaryTreshold = new GridBagConstraints();
 		gbc_pnlSecondaryTreshold.anchor = GridBagConstraints.EAST;
 		gbc_pnlSecondaryTreshold.gridwidth = 2;
-		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondaryTreshold.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlSecondaryTreshold.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlSecondaryTreshold.gridx = 0;
-		gbc_pnlSecondaryTreshold.gridy = 6;
+		gbc_pnlSecondaryTreshold.gridy = 8;
 		pnlSecondary.add(pnlSecondaryThreshold, gbc_pnlSecondaryTreshold);
 		pnlSecondaryThreshold.setVisible(false);
 
@@ -732,9 +972,9 @@ public class SpeckleGUI extends JFrame {
 		gbc_pnlSecondarySpotSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlSecondarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlSecondarySpotSize.gridwidth = 2;
-		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlSecondarySpotSize.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlSecondarySpotSize.gridx = 0;
-		gbc_pnlSecondarySpotSize.gridy = 6;
+		gbc_pnlSecondarySpotSize.gridy = 8;
 		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
 		
 		
@@ -745,7 +985,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_cbSecondaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbSecondaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryMethod.gridx = 1;
-		gbc_cbSecondaryMethod.gridy = 5;
+		gbc_cbSecondaryMethod.gridy = 7;
 		pnlSecondary.add(cbSecondaryMethod, gbc_cbSecondaryMethod);
 		
 		
@@ -780,6 +1020,27 @@ public class SpeckleGUI extends JFrame {
 		txtSecondaryThreshold.setColumns(6);
 		pnlSecondaryThreshold.add(txtSecondaryThreshold);
 		
+		JPanel pnlSecondaryBGRadius = new JPanel();
+		GridBagConstraints gbc_pnlSecondaryBGRadius = new GridBagConstraints();
+		gbc_pnlSecondaryBGRadius.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlSecondaryBGRadius.anchor = GridBagConstraints.EAST;
+		gbc_pnlSecondaryBGRadius.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlSecondaryBGRadius.gridx = 1;
+		gbc_pnlSecondaryBGRadius.gridy = 3;
+		pnlSecondary.add(pnlSecondaryBGRadius, gbc_pnlSecondaryBGRadius);
+		pnlSecondaryBGRadius.setVisible(false);
+		
+		JLabel lblNewLabel_6_3_1_1_2_1 = new JLabel("Radius:");
+		lblNewLabel_6_3_1_1_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_1_1_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlSecondaryBGRadius.add(lblNewLabel_6_3_1_1_2_1);
+		
+		txtSecondaryBGRadius = new JTextField();
+		txtSecondaryBGRadius.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecondaryBGRadius.setColumns(6);
+		pnlSecondaryBGRadius.add(txtSecondaryBGRadius);
+		pnlSecondaryBGRadius.setVisible(false);
 		
 		JLabel lblNewLabel_6_3_1 = new JLabel("X");
 		lblNewLabel_6_3_1.setVerticalAlignment(SwingConstants.TOP);
@@ -821,10 +1082,10 @@ public class SpeckleGUI extends JFrame {
 		pnlTertiary.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlTertiary);
 		GridBagLayout gbl_pnlTertiary = new GridBagLayout();
-		gbl_pnlTertiary.columnWidths = new int[] {0, 0, 0};
-		gbl_pnlTertiary.rowHeights = new int[]{0, 0, 0, 30, 0, 0, 0, 30, 0};
-		gbl_pnlTertiary.columnWeights = new double[]{1.0, 1.0, 1.0};
-		gbl_pnlTertiary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlTertiary.columnWidths = new int[] {0, 0};
+		gbl_pnlTertiary.rowHeights = new int[]{0, 0, 0, 0, 0, 30, 0, 0, 0, 30, 0};
+		gbl_pnlTertiary.columnWeights = new double[]{1.0, 1.0};
+		gbl_pnlTertiary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlTertiary.setLayout(gbl_pnlTertiary);
 		
 		JCheckBox ckbTertiary = new JCheckBox("Tertiary Object");
@@ -832,8 +1093,8 @@ public class SpeckleGUI extends JFrame {
 		ckbTertiary.setEnabled(true);
 		ckbTertiary.setSelected(true);
 		GridBagConstraints gbc_ckbTertiary = new GridBagConstraints();
-		gbc_ckbTertiary.gridwidth = 3;
-		gbc_ckbTertiary.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbTertiary.gridwidth = 2;
+		gbc_ckbTertiary.insets = new Insets(0, 0, 5, 0);
 		gbc_ckbTertiary.gridx = 0;
 		gbc_ckbTertiary.gridy = 0;
 		pnlTertiary.add(ckbTertiary, gbc_ckbTertiary);
@@ -852,33 +1113,158 @@ public class SpeckleGUI extends JFrame {
 		cbTertiaryChannel.setSelectedIndex(0);
 		cbTertiaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryChannel = new GridBagConstraints();
-		gbc_cbTertiaryChannel.gridwidth = 2;
 		gbc_cbTertiaryChannel.anchor = GridBagConstraints.WEST;
 		gbc_cbTertiaryChannel.insets = new Insets(0, 0, 5, 0);
 		gbc_cbTertiaryChannel.gridx = 1;
 		gbc_cbTertiaryChannel.gridy = 1;
 		pnlTertiary.add(cbTertiaryChannel, gbc_cbTertiaryChannel);
 		
-		JCheckBox cbTertBg = new JCheckBox("Subtract Bg*:");
-		cbTertBg.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_cbTertBg = new GridBagConstraints();
-		gbc_cbTertBg.anchor = GridBagConstraints.WEST;
-		gbc_cbTertBg.insets = new Insets(0, 4, 5, 5);
-		gbc_cbTertBg.gridx = 0;
-		gbc_cbTertBg.gridy = 2;
-		pnlTertiary.add(cbTertBg, gbc_cbTertBg);
+		JLabel lblNewLabel_5_3_1_1_1 = new JLabel("Background:");
+		lblNewLabel_5_3_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_5_3_1_1_1 = new GridBagConstraints();
+		gbc_lblNewLabel_5_3_1_1_1.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_5_3_1_1_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5_3_1_1_1.gridx = 0;
+		gbc_lblNewLabel_5_3_1_1_1.gridy = 2;
+		pnlTertiary.add(lblNewLabel_5_3_1_1_1, gbc_lblNewLabel_5_3_1_1_1);
 		
-		txtTertiaryBgSize = new JTextField();
-		txtTertiaryBgSize.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtTertiaryBgSize.setEnabled(false);
-		txtTertiaryBgSize.setColumns(5);
-		GridBagConstraints gbc_txtTertiaryBgSize = new GridBagConstraints();
-		gbc_txtTertiaryBgSize.anchor = GridBagConstraints.WEST;
-		gbc_txtTertiaryBgSize.fill = GridBagConstraints.VERTICAL;
-		gbc_txtTertiaryBgSize.insets = new Insets(0, 0, 5, 5);
-		gbc_txtTertiaryBgSize.gridx = 1;
-		gbc_txtTertiaryBgSize.gridy = 2;
-		pnlTertiary.add(txtTertiaryBgSize, gbc_txtTertiaryBgSize);
+		JPanel pnlTertiaryBGFirstBlur = new JPanel();
+		GridBagConstraints gbc_pnlTertiaryBGFirstBlur = new GridBagConstraints();
+		gbc_pnlTertiaryBGFirstBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlTertiaryBGFirstBlur.gridwidth = 2;
+		gbc_pnlTertiaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlTertiaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlTertiaryBGFirstBlur.gridx = 0;
+		gbc_pnlTertiaryBGFirstBlur.gridy = 3;
+		pnlTertiary.add(pnlTertiaryBGFirstBlur, gbc_pnlTertiaryBGFirstBlur);
+		pnlTertiaryBGFirstBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_1_2 = new JLabel("S1:");
+		lblNewLabel_7_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGFirstBlur.add(lblNewLabel_7_1_2);
+		
+		JLabel lblNewLabel_6_4_1_1 = new JLabel("X");
+		lblNewLabel_6_4_1_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_4_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_4_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_4_1_1);
+		
+		txtTertiaryS1X = new JTextField();
+		txtTertiaryS1X.setText("1");
+		txtTertiaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS1X.setColumns(4);
+		pnlTertiaryBGFirstBlur.add(txtTertiaryS1X);
+		
+		JLabel lblNewLabel_6_1_2_1_1 = new JLabel("Y");
+		lblNewLabel_6_1_2_1_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_2_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_1_2_1_1);
+		
+		txtTertiaryS1Y = new JTextField();
+		txtTertiaryS1Y.setText("1");
+		txtTertiaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS1Y.setColumns(4);
+		pnlTertiaryBGFirstBlur.add(txtTertiaryS1Y);
+		
+		JLabel lblNewLabel_6_2_2_1_1 = new JLabel("Z");
+		lblNewLabel_6_2_2_1_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_2_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_2_2_1_1);
+		
+		txtTertiaryS1Z = new JTextField();
+		txtTertiaryS1Z.setText("1");
+		txtTertiaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS1Z.setColumns(4);
+		pnlTertiaryBGFirstBlur.add(txtTertiaryS1Z);
+		
+		JPanel pnlTertiaryBGSecondBlur = new JPanel();
+		GridBagConstraints gbc_pnlTertiaryBGSecondBlur = new GridBagConstraints();
+		gbc_pnlTertiaryBGSecondBlur.anchor = GridBagConstraints.EAST;
+		gbc_pnlTertiaryBGSecondBlur.gridwidth = 2;
+		gbc_pnlTertiaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlTertiaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlTertiaryBGSecondBlur.gridx = 0;
+		gbc_pnlTertiaryBGSecondBlur.gridy = 4;
+		pnlTertiary.add(pnlTertiaryBGSecondBlur, gbc_pnlTertiaryBGSecondBlur);
+		pnlTertiaryBGSecondBlur.setVisible(false);
+		
+		JLabel lblNewLabel_7_2_2 = new JLabel("S2:");
+		lblNewLabel_7_2_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGSecondBlur.add(lblNewLabel_7_2_2);
+		
+		JLabel lblNewLabel_6_4_2_1 = new JLabel("X");
+		lblNewLabel_6_4_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_4_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_4_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_4_2_1);
+		
+		txtTertiaryS2X = new JTextField();
+		txtTertiaryS2X.setText("1");
+		txtTertiaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS2X.setColumns(4);
+		pnlTertiaryBGSecondBlur.add(txtTertiaryS2X);
+		
+		JLabel lblNewLabel_6_1_2_2_1 = new JLabel("Y");
+		lblNewLabel_6_1_2_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_1_2_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_1_2_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_1_2_2_1);
+		
+		txtTertiaryS2Y = new JTextField();
+		txtTertiaryS2Y.setText("1");
+		txtTertiaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS2Y.setColumns(4);
+		pnlTertiaryBGSecondBlur.add(txtTertiaryS2Y);
+		
+		JLabel lblNewLabel_6_2_2_2_1 = new JLabel("Z");
+		lblNewLabel_6_2_2_2_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_2_2_2_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_2_2_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_2_2_2_1);
+		
+		txtTertiaryS2Z = new JTextField();
+		txtTertiaryS2Z.setText("1");
+		txtTertiaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryS2Z.setColumns(4);
+		pnlTertiaryBGSecondBlur.add(txtTertiaryS2Z);
+		
+		
+		JPanel pnlTertiaryBGRadius = new JPanel();
+		GridBagConstraints gbc_pnlTertiaryBGRadius = new GridBagConstraints();
+		gbc_pnlTertiaryBGRadius.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlTertiaryBGRadius.anchor = GridBagConstraints.EAST;
+		gbc_pnlTertiaryBGRadius.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlTertiaryBGRadius.gridx = 1;
+		gbc_pnlTertiaryBGRadius.gridy = 3;
+		pnlTertiary.add(pnlTertiaryBGRadius, gbc_pnlTertiaryBGRadius);
+		pnlTertiaryBGRadius.setVisible(false);
+		
+		JLabel lblNewLabel_6_3_1_1_2_1_1 = new JLabel("Radius:");
+		lblNewLabel_6_3_1_1_2_1_1.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_1_1_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_1_1_2_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlTertiaryBGRadius.add(lblNewLabel_6_3_1_1_2_1_1);
+		
+		txtTertiaryBGRadius = new JTextField();
+		txtTertiaryBGRadius.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryBGRadius.setColumns(6);
+		pnlTertiaryBGRadius.add(txtTertiaryBGRadius);
+		
+		
+		
+		JComboBox cbTertiaryBackground = new JComboBox();
+		cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbTertiaryBackground.setSelectedIndex(0);
+		cbTertiaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbTertiaryBackground = new GridBagConstraints();
+		gbc_cbTertiaryBackground.insets = new Insets(0, 0, 5, 5);
+		gbc_cbTertiaryBackground.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbTertiaryBackground.gridx = 1;
+		gbc_cbTertiaryBackground.gridy = 2;
+		pnlTertiary.add(cbTertiaryBackground, gbc_cbTertiaryBackground);
 		
 		JLabel lblNewLabel_5_1_1_2 = new JLabel("Filter:");
 		lblNewLabel_5_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -886,7 +1272,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1_1_2.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_1_2.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_1_2.gridx = 0;
-		gbc_lblNewLabel_5_1_1_2.gridy = 3;
+		gbc_lblNewLabel_5_1_1_2.gridy = 5;
 		pnlTertiary.add(lblNewLabel_5_1_1_2, gbc_lblNewLabel_5_1_1_2);
 		
 		JComboBox cbTertiaryFilter = new JComboBox();
@@ -894,21 +1280,20 @@ public class SpeckleGUI extends JFrame {
 		cbTertiaryFilter.setSelectedIndex(0);
 		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryFilter = new GridBagConstraints();
-		gbc_cbTertiaryFilter.gridwidth = 2;
 		gbc_cbTertiaryFilter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbTertiaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbTertiaryFilter.gridx = 1;
-		gbc_cbTertiaryFilter.gridy = 3;
+		gbc_cbTertiaryFilter.gridy = 5;
 		pnlTertiary.add(cbTertiaryFilter, gbc_cbTertiaryFilter);
 		
 		JPanel pnlTertiaryBlurSize = new JPanel();
 		GridBagConstraints gbc_pnlTertiaryBlurSize = new GridBagConstraints();
 		gbc_pnlTertiaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlTertiaryBlurSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlTertiaryBlurSize.gridwidth = 3;
-		gbc_pnlTertiaryBlurSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlTertiaryBlurSize.gridwidth = 2;
+		gbc_pnlTertiaryBlurSize.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlTertiaryBlurSize.gridx = 0;
-		gbc_pnlTertiaryBlurSize.gridy = 4;
+		gbc_pnlTertiaryBlurSize.gridy = 6;
 		pnlTertiary.add(pnlTertiaryBlurSize, gbc_pnlTertiaryBlurSize);
 		
 		JLabel lblNewLabel_6_5 = new JLabel("X");
@@ -953,7 +1338,7 @@ public class SpeckleGUI extends JFrame {
 		gbc_lblNewLabel_5_1_3.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_5_1_3.insets = new Insets(0, 5, 5, 5);
 		gbc_lblNewLabel_5_1_3.gridx = 0;
-		gbc_lblNewLabel_5_1_3.gridy = 5;
+		gbc_lblNewLabel_5_1_3.gridy = 7;
 		pnlTertiary.add(lblNewLabel_5_1_3, gbc_lblNewLabel_5_1_3);
 		
 		JComboBox cbTertiaryMethod = new JComboBox();
@@ -965,21 +1350,20 @@ public class SpeckleGUI extends JFrame {
 		cbTertiaryMethod.setSelectedIndex(0);
 		cbTertiaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryMethod = new GridBagConstraints();
-		gbc_cbTertiaryMethod.gridwidth = 2;
 		gbc_cbTertiaryMethod.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbTertiaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbTertiaryMethod.gridx = 1;
-		gbc_cbTertiaryMethod.gridy = 5;
+		gbc_cbTertiaryMethod.gridy = 7;
 		pnlTertiary.add(cbTertiaryMethod, gbc_cbTertiaryMethod);
 		
 		JPanel pnlTertiarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlTertiarySpotSize = new GridBagConstraints();
 		gbc_pnlTertiarySpotSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlTertiarySpotSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlTertiarySpotSize.gridwidth = 3;
-		gbc_pnlTertiarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlTertiarySpotSize.gridwidth = 2;
+		gbc_pnlTertiarySpotSize.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlTertiarySpotSize.gridx = 0;
-		gbc_pnlTertiarySpotSize.gridy = 6;
+		gbc_pnlTertiarySpotSize.gridy = 8;
 		pnlTertiary.add(pnlTertiarySpotSize, gbc_pnlTertiarySpotSize);
 		
 		JLabel lblNewLabel_6_3_2 = new JLabel("X");
@@ -1021,10 +1405,10 @@ public class SpeckleGUI extends JFrame {
 		JPanel pnlTertiaryThreshold = new JPanel();
 		GridBagConstraints gbc_pnlTertiaryThreshold = new GridBagConstraints();
 		gbc_pnlTertiaryThreshold.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlTertiaryThreshold.gridwidth = 3;
+		gbc_pnlTertiaryThreshold.gridwidth = 2;
 		gbc_pnlTertiaryThreshold.fill = GridBagConstraints.BOTH;
 		gbc_pnlTertiaryThreshold.gridx = 0;
-		gbc_pnlTertiaryThreshold.gridy = 6;
+		gbc_pnlTertiaryThreshold.gridy = 8;
 		pnlTertiary.add(pnlTertiaryThreshold, gbc_pnlTertiaryThreshold);
 		pnlTertiaryThreshold.setVisible(false);
 		
@@ -1093,45 +1477,6 @@ public class SpeckleGUI extends JFrame {
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
 		
-		JLabel lblNewLabel_5_1_1_2_1 = new JLabel("*Subtract background");
-		lblNewLabel_5_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_5_1_1_2_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1_1_2_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_5_1_1_2_1.gridx = 9;
-		gbc_lblNewLabel_5_1_1_2_1.gridy = 2;
-		pnlFooter.add(lblNewLabel_5_1_1_2_1, gbc_lblNewLabel_5_1_1_2_1);
-		
-		cbPriBg.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbPriBg.isSelected()) {
-					txtPrimaryBgSize.setEnabled(true);
-				} else {
-					txtPrimaryBgSize.setEnabled(false);
-				}
-			}
-		});
-		
-		cbSecBg.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbSecBg.isSelected()) {
-					txtSecondaryBgSize.setEnabled(true);
-				} else {
-					txtSecondaryBgSize.setEnabled(false);
-				}
-			}
-		});
-		
-		
-		cbTertBg.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(cbTertBg.isSelected()) {
-					txtTertiaryBgSize.setEnabled(true);
-				} else {
-					txtTertiaryBgSize.setEnabled(false);
-				}
-			}
-		});
-		
 	
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1183,8 +1528,80 @@ public class SpeckleGUI extends JFrame {
 			
 		});
 		
+		cbPrimaryBackground.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbPrimaryBackground.getSelectedItem().toString().equals("3D DoG")) {
+					pnlPrimaryBGFirstBlur.setVisible(true);
+					pnlPrimaryBGSecondBlur.setVisible(true);
+					pnlPrimaryBGRadius.setVisible(false);
+				} 
+				if(cbPrimaryBackground.getSelectedItem().toString().equals("3D Top Hat")) {
+					pnlPrimaryBGFirstBlur.setVisible(true);
+					pnlPrimaryBGSecondBlur.setVisible(false);
+					pnlPrimaryBGRadius.setVisible(false);
+				}
+				if(cbPrimaryBackground.getSelectedItem().toString().equals("Default")) {
+					pnlPrimaryBGRadius.setVisible(true);
+					pnlPrimaryBGFirstBlur.setVisible(false);
+					pnlPrimaryBGSecondBlur.setVisible(false);
+				} 
+				if(cbPrimaryBackground.getSelectedItem().toString().equals("None")) {
+					pnlPrimaryBGRadius.setVisible(false);
+					pnlPrimaryBGFirstBlur.setVisible(false);
+					pnlPrimaryBGSecondBlur.setVisible(false);
+				}
+			}
+		});
 		
+		cbSecondaryBackground.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbSecondaryBackground.getSelectedItem().toString().equals("3D DoG")) {
+					pnlSecondaryBGFirstBlur.setVisible(true);
+					pnlSecondaryBGSecondBlur.setVisible(true);
+					pnlSecondaryBGRadius.setVisible(false);
+				} 
+				if(cbSecondaryBackground.getSelectedItem().toString().equals("3D Top Hat")) {
+					pnlSecondaryBGFirstBlur.setVisible(true);
+					pnlSecondaryBGSecondBlur.setVisible(false);
+					pnlSecondaryBGRadius.setVisible(false);
+				}
+				if(cbSecondaryBackground.getSelectedItem().toString().equals("Default")) {
+					pnlSecondaryBGRadius.setVisible(true);
+					pnlSecondaryBGFirstBlur.setVisible(false);
+					pnlSecondaryBGSecondBlur.setVisible(false);
+				} 
+				if(cbSecondaryBackground.getSelectedItem().toString().equals("None")) {
+					pnlSecondaryBGRadius.setVisible(false);
+					pnlSecondaryBGFirstBlur.setVisible(false);
+					pnlSecondaryBGSecondBlur.setVisible(false);
+				}
+			}
+		});
 		
+		cbTertiaryBackground.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbTertiaryBackground.getSelectedItem().toString().equals("3D DoG")) {
+					pnlTertiaryBGFirstBlur.setVisible(true);
+					pnlTertiaryBGSecondBlur.setVisible(true);
+					pnlTertiaryBGRadius.setVisible(false);
+				} 
+				if(cbTertiaryBackground.getSelectedItem().toString().equals("3D Top Hat")) {
+					pnlTertiaryBGFirstBlur.setVisible(true);
+					pnlTertiaryBGSecondBlur.setVisible(false);
+					pnlTertiaryBGRadius.setVisible(false);
+				}
+				if(cbTertiaryBackground.getSelectedItem().toString().equals("Default")) {
+					pnlTertiaryBGRadius.setVisible(true);
+					pnlTertiaryBGFirstBlur.setVisible(false);
+					pnlTertiaryBGSecondBlur.setVisible(false);
+				} 
+				if(cbTertiaryBackground.getSelectedItem().toString().equals("None")) {
+					pnlTertiaryBGRadius.setVisible(false);
+					pnlTertiaryBGFirstBlur.setVisible(false);
+					pnlTertiaryBGSecondBlur.setVisible(false);
+				}
+			}
+		});
 		
 	}
 
