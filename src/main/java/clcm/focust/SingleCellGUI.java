@@ -1058,6 +1058,7 @@ public class SingleCellGUI extends JFrame {
 		JButton btnLoadParameters = new JButton("Load Parameters");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
+		gbc_btnLoadParameters.fill = GridBagConstraints.VERTICAL;
 		gbc_btnLoadParameters.insets = new Insets(0, 0, 5, 5);
 		gbc_btnLoadParameters.gridx = 1;
 		gbc_btnLoadParameters.gridy = 1;
@@ -1077,7 +1078,7 @@ public class SingleCellGUI extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
-		gbc_btnRunAnalysis.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnRunAnalysis.fill = GridBagConstraints.BOTH;
 		gbc_btnRunAnalysis.gridwidth = 2;
 		gbc_btnRunAnalysis.insets = new Insets(0, 0, 0, 5);
 		gbc_btnRunAnalysis.gridx = 0;
@@ -1095,6 +1096,7 @@ public class SingleCellGUI extends JFrame {
 		JLabel lblNewLabel_5_1_1_2_1 = new JLabel("*Subtract background");
 		lblNewLabel_5_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1_2_1 = new GridBagConstraints();
+		gbc_lblNewLabel_5_1_1_2_1.fill = GridBagConstraints.VERTICAL;
 		gbc_lblNewLabel_5_1_1_2_1.gridx = 9;
 		gbc_lblNewLabel_5_1_1_2_1.gridy = 2;
 		pnlFooter.add(lblNewLabel_5_1_1_2_1, gbc_lblNewLabel_5_1_1_2_1);
