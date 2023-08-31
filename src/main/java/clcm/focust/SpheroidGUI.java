@@ -447,7 +447,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
-		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryBackground.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryBackground.gridx = 1;
 		gbc_cbPrimaryBackground.gridy = 2;
@@ -457,7 +457,7 @@ public class SpheroidGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGFirstBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGFirstBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGFirstBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGFirstBlur.gridx = 0;
 		gbc_pnlPrimaryBGFirstBlur.gridy = 3;
@@ -508,7 +508,7 @@ public class SpheroidGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGSecondBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGSecondBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGSecondBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGSecondBlur.gridx = 0;
 		gbc_pnlPrimaryBGSecondBlur.gridy = 4;
@@ -571,7 +571,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
 		gbc_cbPrimaryFilter.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryFilter.gridx = 1;
 		gbc_cbPrimaryFilter.gridy = 5;
 		pnlPrimary.add(cbPrimaryFilter, gbc_cbPrimaryFilter);
@@ -580,7 +580,7 @@ public class SpheroidGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBlurSize = new GridBagConstraints();
 		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBlurSize.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
 		gbc_pnlPrimaryBlurSize.gridy = 6;
@@ -637,7 +637,7 @@ public class SpheroidGUI extends JFrame {
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
 		gbc_cbPrimaryMethod.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryMethod.gridx = 1;
 		gbc_cbPrimaryMethod.gridy = 7;
 		pnlPrimary.add(cbPrimaryMethod, gbc_cbPrimaryMethod);
@@ -645,7 +645,7 @@ public class SpheroidGUI extends JFrame {
 		JPanel pnlPrimarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
 		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
-		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimarySpotSize.gridwidth = 2;
 		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
@@ -690,7 +690,7 @@ public class SpheroidGUI extends JFrame {
 		
 		JPanel pnlPrimaryBGRadius = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryBGRadius = new GridBagConstraints();
-		gbc_pnlPrimaryBGRadius.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlPrimaryBGRadius.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGRadius.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGRadius.gridwidth = 2;
 		gbc_pnlPrimaryBGRadius.fill = GridBagConstraints.VERTICAL;
@@ -1106,14 +1106,6 @@ public class SpheroidGUI extends JFrame {
 		gbc_btnRunAnalysis.gridx = 0;
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
-		
-		JLabel lblNewLabel_5_1_1_2_1 = new JLabel("*Subtract background");
-		lblNewLabel_5_1_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_5_1_1_2_1 = new GridBagConstraints();
-		gbc_lblNewLabel_5_1_1_2_1.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_5_1_1_2_1.gridx = 7;
-		gbc_lblNewLabel_5_1_1_2_1.gridy = 2;
-		pnlFooter.add(lblNewLabel_5_1_1_2_1, gbc_lblNewLabel_5_1_1_2_1);
 		
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
