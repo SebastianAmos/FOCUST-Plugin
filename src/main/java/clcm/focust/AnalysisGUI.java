@@ -1550,9 +1550,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
 		
-		for(Component comp:guiHelper.getComponents(pnlTertiary)) {
-			comp.setEnabled(false);
-		}
+		
 	
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
