@@ -94,6 +94,7 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertiaryS1Y;
 	private JTextField txtTertiaryS1Z;
 	private JTextField txtCoreVolValue;
+	private JTextField txtPrimaryClassiferDirectory;
 
 	/**
 	 * Launch the application.
@@ -531,7 +532,7 @@ public class AnalysisGUI extends JFrame {
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
-		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryBackground.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryBackground.gridx = 1;
 		gbc_cbPrimaryBackground.gridy = 2;
@@ -541,7 +542,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGFirstBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGFirstBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGFirstBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGFirstBlur.gridx = 0;
 		gbc_pnlPrimaryBGFirstBlur.gridy = 3;
@@ -592,7 +593,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGSecondBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGSecondBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGSecondBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGSecondBlur.gridx = 0;
 		gbc_pnlPrimaryBGSecondBlur.gridy = 4;
@@ -654,7 +655,7 @@ public class AnalysisGUI extends JFrame {
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
 		gbc_cbPrimaryFilter.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryFilter.gridx = 1;
 		gbc_cbPrimaryFilter.gridy = 5;
 		pnlPrimary.add(cbPrimaryFilter, gbc_cbPrimaryFilter);
@@ -663,7 +664,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBlurSize = new GridBagConstraints();
 		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBlurSize.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
 		gbc_pnlPrimaryBlurSize.gridy = 6;
@@ -715,12 +716,12 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
 		JComboBox cbPrimaryMethod = new JComboBox();
-		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled"}));
+		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled", "Weka Classifer", "Labkit Classifer"}));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
 		gbc_cbPrimaryMethod.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 5);
+		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 0);
 		gbc_cbPrimaryMethod.gridx = 1;
 		gbc_cbPrimaryMethod.gridy = 7;
 		pnlPrimary.add(cbPrimaryMethod, gbc_cbPrimaryMethod);
@@ -728,7 +729,7 @@ public class AnalysisGUI extends JFrame {
 		JPanel pnlPrimarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
 		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
-		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimarySpotSize.gridwidth = 2;
 		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
@@ -773,7 +774,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JPanel pnlPrimaryBGRadius = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryBGRadius = new GridBagConstraints();
-		gbc_pnlPrimaryBGRadius.insets = new Insets(0, 0, 0, 5);
+		gbc_pnlPrimaryBGRadius.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryBGRadius.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGRadius.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGRadius.gridx = 1;
@@ -791,6 +792,26 @@ public class AnalysisGUI extends JFrame {
 		txtPrimaryBGRadius.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryBGRadius.setColumns(6);
 		pnlPrimaryBGRadius.add(txtPrimaryBGRadius);
+		
+		JButton btnBrowsePrimaryClassifer = new JButton("Load");
+		btnBrowsePrimaryClassifer.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnBrowsePrimaryClassifer = new GridBagConstraints();
+		gbc_btnBrowsePrimaryClassifer.anchor = GridBagConstraints.WEST;
+		gbc_btnBrowsePrimaryClassifer.insets = new Insets(0, 5, 0, 5);
+		gbc_btnBrowsePrimaryClassifer.gridx = 0;
+		gbc_btnBrowsePrimaryClassifer.gridy = 8;
+		pnlPrimary.add(btnBrowsePrimaryClassifer, gbc_btnBrowsePrimaryClassifer);
+		btnBrowsePrimaryClassifer.setVisible(false);
+		
+		txtPrimaryClassiferDirectory = new JTextField();
+		txtPrimaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryClassiferDirectory.setColumns(10);
+		GridBagConstraints gbc_txtPrimaryClassiferDirectory = new GridBagConstraints();
+		gbc_txtPrimaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtPrimaryClassiferDirectory.gridx = 1;
+		gbc_txtPrimaryClassiferDirectory.gridy = 8;
+		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
+		txtPrimaryClassiferDirectory.setVisible(false);
 		
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
@@ -1649,6 +1670,22 @@ public class AnalysisGUI extends JFrame {
 					pnlSecondaryBGFirstBlur.setVisible(false);
 					pnlSecondaryBGSecondBlur.setVisible(false);
 				}
+			}
+		});
+		
+		cbPrimaryMethod.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbPrimaryMethod.getSelectedItem().toString().equals("Weka Classifer") || cbPrimaryMethod.getSelectedItem().toString().equals("Labkit Classifer")) {
+					btnBrowsePrimaryClassifer.setVisible(true);
+					txtPrimaryClassiferDirectory.setVisible(true);
+					pnlPrimarySpotSize.setVisible(false);
+				} else {
+					btnBrowsePrimaryClassifer.setVisible(false);
+					txtPrimaryClassiferDirectory.setVisible(false);
+					pnlPrimarySpotSize.setVisible(true);
+				}
+				
+				
 			}
 		});
 		
