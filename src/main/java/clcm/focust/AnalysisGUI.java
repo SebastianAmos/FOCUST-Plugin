@@ -95,6 +95,8 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertiaryS1Z;
 	private JTextField txtCoreVolValue;
 	private JTextField txtPrimaryClassiferDirectory;
+	private JTextField txtPrimaryMethodThreshold;
+	private JComboBox<String> cbAnalysisMode;
 
 	/**
 	 * Launch the application.
@@ -104,6 +106,7 @@ public class AnalysisGUI extends JFrame {
 			public void run() {
 				try {
 					AnalysisGUI frame = new AnalysisGUI();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -244,8 +247,11 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_5_4.gridy = 3;
 		pnlHeader.add(lblNewLabel_5_4, gbc_lblNewLabel_5_4);
 		
-		JComboBox cbAnalysisMode = new JComboBox();
-		cbAnalysisMode.setModel(new DefaultComboBoxModel(new String[] {"None", "Spheroid", "Single Cells", "Speckles"}));
+		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
+		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
+		//cbAnalysisMode = new JComboBox<>(new String[] {"None", "Spheroid", "Single Cells", "Speckles"});
+		//cbAnalysisMode.setModel(new DefaultComboBoxModel(new String[] {"None", "Spheroid", "Single Cells", "Speckles"}));
+		cbAnalysisMode = new JComboBox<String>(analysisModel);
 		cbAnalysisMode.setSelectedIndex(0);
 		cbAnalysisMode.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbAnalysisMode = new GridBagConstraints();
@@ -716,7 +722,7 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
 		JComboBox cbPrimaryMethod = new JComboBox();
-		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Marker Controlled", "Weka Classifer", "Labkit Classifer"}));
+		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
@@ -796,8 +802,8 @@ public class AnalysisGUI extends JFrame {
 		JButton btnBrowsePrimaryClassifer = new JButton("Load");
 		btnBrowsePrimaryClassifer.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowsePrimaryClassifer = new GridBagConstraints();
-		gbc_btnBrowsePrimaryClassifer.anchor = GridBagConstraints.WEST;
-		gbc_btnBrowsePrimaryClassifer.insets = new Insets(0, 5, 0, 5);
+		gbc_btnBrowsePrimaryClassifer.anchor = GridBagConstraints.EAST;
+		gbc_btnBrowsePrimaryClassifer.insets = new Insets(0, 5, 5, 5);
 		gbc_btnBrowsePrimaryClassifer.gridx = 0;
 		gbc_btnBrowsePrimaryClassifer.gridy = 8;
 		pnlPrimary.add(btnBrowsePrimaryClassifer, gbc_btnBrowsePrimaryClassifer);
@@ -807,10 +813,57 @@ public class AnalysisGUI extends JFrame {
 		txtPrimaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryClassiferDirectory.setColumns(10);
 		GridBagConstraints gbc_txtPrimaryClassiferDirectory = new GridBagConstraints();
+		gbc_txtPrimaryClassiferDirectory.insets = new Insets(0, 0, 5, 0);
 		gbc_txtPrimaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtPrimaryClassiferDirectory.gridx = 1;
 		gbc_txtPrimaryClassiferDirectory.gridy = 8;
 		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
+		
+		JComboBox cbPrimaryMethodThreshold = new JComboBox();
+		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel(new String[] {"Otsu", "G.C", "Huang", "Yen"}));
+		cbPrimaryMethodThreshold.setSelectedIndex(0);
+		cbPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_cbPrimaryMethodThreshold = new GridBagConstraints();
+		gbc_cbPrimaryMethodThreshold.anchor = GridBagConstraints.WEST;
+		gbc_cbPrimaryMethodThreshold.insets = new Insets(0, 5, 0, 5);
+		gbc_cbPrimaryMethodThreshold.gridx = 0;
+		gbc_cbPrimaryMethodThreshold.gridy = 9;
+		pnlPrimary.add(cbPrimaryMethodThreshold, gbc_cbPrimaryMethodThreshold);
+		
+		JPanel pnlPrimaryMethodThreshold = new JPanel();
+		GridBagConstraints gbc_pnlPrimaryMethodThreshold = new GridBagConstraints();
+		gbc_pnlPrimaryMethodThreshold.anchor = GridBagConstraints.EAST;
+		gbc_pnlPrimaryMethodThreshold.fill = GridBagConstraints.VERTICAL;
+		gbc_pnlPrimaryMethodThreshold.gridx = 1;
+		gbc_pnlPrimaryMethodThreshold.gridy = 9;
+		pnlPrimary.add(pnlPrimaryMethodThreshold, gbc_pnlPrimaryMethodThreshold);
+		GridBagLayout gbl_pnlPrimaryMethodThreshold = new GridBagLayout();
+		gbl_pnlPrimaryMethodThreshold.columnWidths = new int[]{0, 0, 0};
+		gbl_pnlPrimaryMethodThreshold.rowHeights = new int[]{0, 0};
+		gbl_pnlPrimaryMethodThreshold.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlPrimaryMethodThreshold.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		pnlPrimaryMethodThreshold.setLayout(gbl_pnlPrimaryMethodThreshold);
+		
+		JLabel lblNewLabel_6_3_1_1_3 = new JLabel("Threshold:");
+		GridBagConstraints gbc_lblNewLabel_6_3_1_1_3 = new GridBagConstraints();
+		gbc_lblNewLabel_6_3_1_1_3.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel_6_3_1_1_3.insets = new Insets(0, 0, 0, 5);
+		gbc_lblNewLabel_6_3_1_1_3.gridx = 0;
+		gbc_lblNewLabel_6_3_1_1_3.gridy = 0;
+		pnlPrimaryMethodThreshold.add(lblNewLabel_6_3_1_1_3, gbc_lblNewLabel_6_3_1_1_3);
+		lblNewLabel_6_3_1_1_3.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_6_3_1_1_3.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+		txtPrimaryMethodThreshold = new JTextField();
+		GridBagConstraints gbc_txtPrimaryMethodThreshold = new GridBagConstraints();
+		gbc_txtPrimaryMethodThreshold.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtPrimaryMethodThreshold.gridx = 1;
+		gbc_txtPrimaryMethodThreshold.gridy = 0;
+		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold, gbc_txtPrimaryMethodThreshold);
+		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPrimaryMethodThreshold.setColumns(6);
+		pnlPrimaryMethodThreshold.setVisible(true);
 		txtPrimaryClassiferDirectory.setVisible(false);
 		
 		JPanel pnlSecondary = new JPanel();
@@ -1194,6 +1247,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(ckbTertiary, gbc_ckbTertiary);
 		
 		JLabel lblNewLabel_5_3 = new JLabel("Channel:");
+		lblNewLabel_5_3.setEnabled(false);
 		lblNewLabel_5_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_3 = new GridBagConstraints();
 		gbc_lblNewLabel_5_3.anchor = GridBagConstraints.WEST;
@@ -1203,6 +1257,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(lblNewLabel_5_3, gbc_lblNewLabel_5_3);
 		
 		JComboBox cbTertiaryChannel = new JComboBox();
+		cbTertiaryChannel.setEnabled(false);
 		cbTertiaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
 		cbTertiaryChannel.setSelectedIndex(0);
 		cbTertiaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1214,6 +1269,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(cbTertiaryChannel, gbc_cbTertiaryChannel);
 		
 		JLabel lblNewLabel_5_3_1_1_1 = new JLabel("Background:");
+		lblNewLabel_5_3_1_1_1.setEnabled(false);
 		lblNewLabel_5_3_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_5_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_3_1_1_1 = new GridBagConstraints();
@@ -1232,43 +1288,49 @@ public class AnalysisGUI extends JFrame {
 		gbc_pnlTertiaryBGFirstBlur.gridx = 0;
 		gbc_pnlTertiaryBGFirstBlur.gridy = 3;
 		pnlTertiary.add(pnlTertiaryBGFirstBlur, gbc_pnlTertiaryBGFirstBlur);
-		pnlTertiaryBGFirstBlur.setVisible(false);
 		
 		JLabel lblNewLabel_7_1_2 = new JLabel("S1:");
+		lblNewLabel_7_1_2.setEnabled(false);
 		lblNewLabel_7_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_7_1_2);
 		
 		JLabel lblNewLabel_6_4_1_1 = new JLabel("X");
+		lblNewLabel_6_4_1_1.setEnabled(false);
 		lblNewLabel_6_4_1_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_4_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_4_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_4_1_1);
 		
 		txtTertiaryS1X = new JTextField();
+		txtTertiaryS1X.setEnabled(false);
 		txtTertiaryS1X.setText("1");
 		txtTertiaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1X.setColumns(4);
 		pnlTertiaryBGFirstBlur.add(txtTertiaryS1X);
 		
 		JLabel lblNewLabel_6_1_2_1_1 = new JLabel("Y");
+		lblNewLabel_6_1_2_1_1.setEnabled(false);
 		lblNewLabel_6_1_2_1_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_1_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_1_2_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_1_2_1_1);
 		
 		txtTertiaryS1Y = new JTextField();
+		txtTertiaryS1Y.setEnabled(false);
 		txtTertiaryS1Y.setText("1");
 		txtTertiaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Y.setColumns(4);
 		pnlTertiaryBGFirstBlur.add(txtTertiaryS1Y);
 		
 		JLabel lblNewLabel_6_2_2_1_1 = new JLabel("Z");
+		lblNewLabel_6_2_2_1_1.setEnabled(false);
 		lblNewLabel_6_2_2_1_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_2_2_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_2_2_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_2_2_1_1);
 		
 		txtTertiaryS1Z = new JTextField();
+		txtTertiaryS1Z.setEnabled(false);
 		txtTertiaryS1Z.setText("1");
 		txtTertiaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Z.setColumns(4);
@@ -1286,40 +1348,47 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiaryBGSecondBlur.setVisible(false);
 		
 		JLabel lblNewLabel_7_2_2 = new JLabel("S2:");
+		lblNewLabel_7_2_2.setEnabled(false);
 		lblNewLabel_7_2_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_7_2_2);
 		
 		JLabel lblNewLabel_6_4_2_1 = new JLabel("X");
+		lblNewLabel_6_4_2_1.setEnabled(false);
 		lblNewLabel_6_4_2_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_4_2_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_4_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_4_2_1);
 		
 		txtTertiaryS2X = new JTextField();
+		txtTertiaryS2X.setEnabled(false);
 		txtTertiaryS2X.setText("1");
 		txtTertiaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2X.setColumns(4);
 		pnlTertiaryBGSecondBlur.add(txtTertiaryS2X);
 		
 		JLabel lblNewLabel_6_1_2_2_1 = new JLabel("Y");
+		lblNewLabel_6_1_2_2_1.setEnabled(false);
 		lblNewLabel_6_1_2_2_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_1_2_2_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_1_2_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_1_2_2_1);
 		
 		txtTertiaryS2Y = new JTextField();
+		txtTertiaryS2Y.setEnabled(false);
 		txtTertiaryS2Y.setText("1");
 		txtTertiaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Y.setColumns(4);
 		pnlTertiaryBGSecondBlur.add(txtTertiaryS2Y);
 		
 		JLabel lblNewLabel_6_2_2_2_1 = new JLabel("Z");
+		lblNewLabel_6_2_2_2_1.setEnabled(false);
 		lblNewLabel_6_2_2_2_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_2_2_2_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_2_2_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_2_2_2_1);
 		
 		txtTertiaryS2Z = new JTextField();
+		txtTertiaryS2Z.setEnabled(false);
 		txtTertiaryS2Z.setText("1");
 		txtTertiaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Z.setColumns(4);
@@ -1350,6 +1419,7 @@ public class AnalysisGUI extends JFrame {
 		
 		
 		JComboBox cbTertiaryBackground = new JComboBox();
+		cbTertiaryBackground.setEnabled(false);
 		cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
 		cbTertiaryBackground.setSelectedIndex(0);
 		cbTertiaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1361,6 +1431,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(cbTertiaryBackground, gbc_cbTertiaryBackground);
 		
 		JLabel lblNewLabel_5_1_1_2 = new JLabel("Filter:");
+		lblNewLabel_5_1_1_2.setEnabled(false);
 		lblNewLabel_5_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_1_2 = new GridBagConstraints();
 		gbc_lblNewLabel_5_1_1_2.anchor = GridBagConstraints.WEST;
@@ -1370,6 +1441,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(lblNewLabel_5_1_1_2, gbc_lblNewLabel_5_1_1_2);
 		
 		JComboBox cbTertiaryFilter = new JComboBox();
+		cbTertiaryFilter.setEnabled(false);
 		cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"3D Gaussian Blur", "3D DoG", "3D Median"}));
 		cbTertiaryFilter.setSelectedIndex(0);
 		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1391,42 +1463,49 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(pnlTertiaryBlurSize, gbc_pnlTertiaryBlurSize);
 		
 		JLabel lblNewLabel_6_5 = new JLabel("X");
+		lblNewLabel_6_5.setEnabled(false);
 		lblNewLabel_6_5.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_5.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBlurSize.add(lblNewLabel_6_5);
 		
 		textField_2 = new JTextField();
+		textField_2.setEnabled(false);
 		textField_2.setText("1");
 		textField_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_2.setColumns(4);
 		pnlTertiaryBlurSize.add(textField_2);
 		
 		JLabel lblNewLabel_6_1_3 = new JLabel("Y");
+		lblNewLabel_6_1_3.setEnabled(false);
 		lblNewLabel_6_1_3.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_1_3.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBlurSize.add(lblNewLabel_6_1_3);
 		
 		textField_3 = new JTextField();
+		textField_3.setEnabled(false);
 		textField_3.setText("1");
 		textField_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_3.setColumns(4);
 		pnlTertiaryBlurSize.add(textField_3);
 		
 		JLabel lblNewLabel_6_2_3 = new JLabel("Z");
+		lblNewLabel_6_2_3.setEnabled(false);
 		lblNewLabel_6_2_3.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_2_3.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryBlurSize.add(lblNewLabel_6_2_3);
 		
 		textField_4 = new JTextField();
+		textField_4.setEnabled(false);
 		textField_4.setText("1");
 		textField_4.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_4.setColumns(4);
 		pnlTertiaryBlurSize.add(textField_4);
 		
 		JLabel lblNewLabel_5_1_3 = new JLabel("Method:");
+		lblNewLabel_5_1_3.setEnabled(false);
 		lblNewLabel_5_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_5_1_3 = new GridBagConstraints();
 		gbc_lblNewLabel_5_1_3.anchor = GridBagConstraints.WEST;
@@ -1436,6 +1515,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(lblNewLabel_5_1_3, gbc_lblNewLabel_5_1_3);
 		
 		JComboBox cbTertiaryMethod = new JComboBox();
+		cbTertiaryMethod.setEnabled(false);
 		
 		
 		
@@ -1461,36 +1541,42 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(pnlTertiarySpotSize, gbc_pnlTertiarySpotSize);
 		
 		JLabel lblNewLabel_6_3_2 = new JLabel("X");
+		lblNewLabel_6_3_2.setEnabled(false);
 		lblNewLabel_6_3_2.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_3_2.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_3_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_3_2);
 		
 		textField_5 = new JTextField();
+		textField_5.setEnabled(false);
 		textField_5.setText("1");
 		textField_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_5.setColumns(4);
 		pnlTertiarySpotSize.add(textField_5);
 		
 		JLabel lblNewLabel_6_1_1_2 = new JLabel("Y");
+		lblNewLabel_6_1_1_2.setEnabled(false);
 		lblNewLabel_6_1_1_2.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_1_1_2.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_1_1_2);
 		
 		textField_6 = new JTextField();
+		textField_6.setEnabled(false);
 		textField_6.setText("1");
 		textField_6.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_6.setColumns(4);
 		pnlTertiarySpotSize.add(textField_6);
 		
 		JLabel lblNewLabel_6_2_1_2 = new JLabel("Z");
+		lblNewLabel_6_2_1_2.setEnabled(false);
 		lblNewLabel_6_2_1_2.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_2_1_2.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_2_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_2_1_2);
 		
 		textField_7 = new JTextField();
+		textField_7.setEnabled(false);
 		textField_7.setText("1");
 		textField_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_7.setColumns(4);
@@ -1576,6 +1662,7 @@ public class AnalysisGUI extends JFrame {
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainScreen MainGui = new MainScreen();
+				MainGui.setLocationRelativeTo(null);
 				MainGui.setVisible(true);
 				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);
 				win.dispose();
@@ -1675,17 +1762,20 @@ public class AnalysisGUI extends JFrame {
 		
 		cbPrimaryMethod.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(cbPrimaryMethod.getSelectedItem().toString().equals("Weka Classifer") || cbPrimaryMethod.getSelectedItem().toString().equals("Labkit Classifer")) {
+				if(cbPrimaryMethod.getSelectedItem().toString().equals("Trained Classifer")) {
 					btnBrowsePrimaryClassifer.setVisible(true);
 					txtPrimaryClassiferDirectory.setVisible(true);
 					pnlPrimarySpotSize.setVisible(false);
+					pnlPrimaryMethodThreshold.setVisible(false);
+					cbPrimaryMethodThreshold.setVisible(false);
 				} else {
 					btnBrowsePrimaryClassifer.setVisible(false);
 					txtPrimaryClassiferDirectory.setVisible(false);
 					pnlPrimarySpotSize.setVisible(true);
+					pnlPrimaryMethodThreshold.setVisible(true);
+					cbPrimaryMethodThreshold.setVisible(true);
+					
 				}
-				
-				
 			}
 		});
 		
@@ -1745,6 +1835,21 @@ public class AnalysisGUI extends JFrame {
 		});
 		
 		
+		
+		cbPrimaryMethodThreshold.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if(cbPrimaryMethodThreshold.getSelectedItem().toString().equals("G.C")){
+					txtPrimaryMethodThreshold.setEnabled(true);
+				} else {
+					txtPrimaryMethodThreshold.setEnabled(false);
+				}
+			}
+		});
+		
+		
+		
+		
+		
 		ckbSpheroidCoreVsPeriphery.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(ckbSpheroidCoreVsPeriphery.isSelected()) {
@@ -1757,7 +1862,9 @@ public class AnalysisGUI extends JFrame {
 		
 	}
 
-	
+	public void setMode(int index) {
+		cbAnalysisMode.setSelectedIndex(index);
+	}
 	
 	private static class __Tmp {
 		private static void __tmp() {
