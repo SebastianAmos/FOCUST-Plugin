@@ -111,10 +111,12 @@ public class MainScreen extends JFrame{
 		btnSpheroid_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					//SpheroidView SpheroidGui = new SpheroidView();
-					SpheroidGUI spheroidGUI = new SpheroidGUI();
-					//SpheroidGui.setVisible(true);
-					spheroidGUI.setVisible(true);
+					
+					// launch anaylsis with the spheroid analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(1);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
@@ -127,8 +129,13 @@ public class MainScreen extends JFrame{
 		btnSingleCell_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SingleCellView SingleCellGui = new SingleCellView();
-					SingleCellGui.setVisible(true);
+					
+					// launch anaylsis with the single cell analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(2);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
+					
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 					
@@ -143,10 +150,13 @@ public class MainScreen extends JFrame{
 		btnSpeckle_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					//SpeckleView SpeckleGui = new SpeckleView();
-					//SpeckleGui.setVisible(true);
-					SpeckleGUI speckleGUI = new SpeckleGUI();
-					speckleGUI.setVisible(true);
+					
+					// launch anaylsis with the speckle analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(3);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
+					
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
@@ -183,10 +193,12 @@ public class MainScreen extends JFrame{
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
+					
 					SpeckleView SpeckleGui = new SpeckleView();
 					SpeckleGui.setVisible(true);
 					SpeckleGUI speckleGUI = new SpeckleGUI();
 					speckleGUI.setVisible(true);
+					
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
