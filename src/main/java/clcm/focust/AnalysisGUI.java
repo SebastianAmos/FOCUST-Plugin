@@ -1628,7 +1628,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_btnBackToMenu.gridy = 1;
 		pnlFooter.add(btnBackToMenu, gbc_btnBackToMenu);
 		
-		JButton btnLoadParameters = new JButton("Load Parameters");
+		JButton btnLoadParameters = new JButton("Load Configuration");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
 		gbc_btnLoadParameters.insets = new Insets(0, 0, 5, 5);

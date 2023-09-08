@@ -45,11 +45,6 @@ public class OptimiseGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtInputDir;
 	private final ButtonGroup rbtnOutputDir = new ButtonGroup();
-	private JTextField txtC1;
-	private JTextField txtC2;
-	private JTextField txtC3;
-	private JTextField txtC4;
-	private JTextField textField;
 	private JTextField txtPriFilterX;
 	private JTextField txtPriFilterY;
 	private JTextField txtPriFilterZ;
@@ -135,9 +130,9 @@ public class OptimiseGUI extends JFrame {
 		gbc_pnlHeader.gridy = 0;
 		contentPane.add(pnlHeader, gbc_pnlHeader);
 		GridBagLayout gbl_pnlHeader = new GridBagLayout();
-		gbl_pnlHeader.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_pnlHeader.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_pnlHeader.rowHeights = new int[]{0, 0, 0, 0, 19, 0};
-		gbl_pnlHeader.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlHeader.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_pnlHeader.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlHeader.setLayout(gbl_pnlHeader);
 		
@@ -154,7 +149,7 @@ public class OptimiseGUI extends JFrame {
 		lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.fill = GridBagConstraints.VERTICAL;
-		gbc_lblNewLabel_1.gridwidth = 4;
+		gbc_lblNewLabel_1.gridwidth = 6;
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.gridx = 1;
@@ -165,7 +160,7 @@ public class OptimiseGUI extends JFrame {
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
 		gbc_btnHelp.insets = new Insets(0, 0, 5, 0);
-		gbc_btnHelp.gridx = 8;
+		gbc_btnHelp.gridx = 10;
 		gbc_btnHelp.gridy = 0;
 		pnlHeader.add(btnHelp, gbc_btnHelp);
 		
@@ -190,7 +185,7 @@ public class OptimiseGUI extends JFrame {
 		txtInputDir = new JTextField();
 		txtInputDir.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_txtInputDir = new GridBagConstraints();
-		gbc_txtInputDir.gridwidth = 3;
+		gbc_txtInputDir.gridwidth = 5;
 		gbc_txtInputDir.fill = GridBagConstraints.BOTH;
 		gbc_txtInputDir.anchor = GridBagConstraints.WEST;
 		gbc_txtInputDir.insets = new Insets(0, 0, 5, 5);
@@ -199,40 +194,29 @@ public class OptimiseGUI extends JFrame {
 		pnlHeader.add(txtInputDir, gbc_txtInputDir);
 		txtInputDir.setColumns(10);
 		
+		JButton btnPreviousImage = new JButton("Previous Image");
+		GridBagConstraints gbc_btnPreviousImage = new GridBagConstraints();
+		gbc_btnPreviousImage.fill = GridBagConstraints.VERTICAL;
+		gbc_btnPreviousImage.insets = new Insets(0, 0, 5, 5);
+		gbc_btnPreviousImage.gridx = 0;
+		gbc_btnPreviousImage.gridy = 3;
+		pnlHeader.add(btnPreviousImage, gbc_btnPreviousImage);
+		btnPreviousImage.setFont(new Font("Arial", Font.PLAIN, 14));
+		
 		JButton btnLoadNextImage = new JButton("Load Next Image");
-		btnLoadNextImage.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadNextImage = new GridBagConstraints();
-		gbc_btnLoadNextImage.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnLoadNextImage.fill = GridBagConstraints.VERTICAL;
 		gbc_btnLoadNextImage.insets = new Insets(0, 0, 5, 5);
-		gbc_btnLoadNextImage.gridx = 0;
-		gbc_btnLoadNextImage.gridy = 2;
+		gbc_btnLoadNextImage.gridx = 1;
+		gbc_btnLoadNextImage.gridy = 3;
 		pnlHeader.add(btnLoadNextImage, gbc_btnLoadNextImage);
-		
-		JCheckBox ckbAnalysisOnly = new JCheckBox("Analysis only mode?");
-		ckbAnalysisOnly.setSelected(true);
-		ckbAnalysisOnly.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbAnalysisOnly = new GridBagConstraints();
-		gbc_ckbAnalysisOnly.anchor = GridBagConstraints.WEST;
-		gbc_ckbAnalysisOnly.insets = new Insets(0, 0, 5, 5);
-		gbc_ckbAnalysisOnly.gridx = 0;
-		gbc_ckbAnalysisOnly.gridy = 3;
-		pnlHeader.add(ckbAnalysisOnly, gbc_ckbAnalysisOnly);
-		
-		JCheckBox ckbSkeletons = new JCheckBox("Skeleton-based elongation?");
-		ckbSkeletons.setSelected(true);
-		ckbSkeletons.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbSkeletons = new GridBagConstraints();
-		gbc_ckbSkeletons.gridwidth = 2;
-		gbc_ckbSkeletons.insets = new Insets(0, 0, 5, 5);
-		gbc_ckbSkeletons.gridx = 1;
-		gbc_ckbSkeletons.gridy = 3;
-		pnlHeader.add(ckbSkeletons, gbc_ckbSkeletons);
+		btnLoadNextImage.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setForeground(new Color(169, 169, 169));
 		separator_1_1.setBackground(Color.WHITE);
 		GridBagConstraints gbc_separator_1_1 = new GridBagConstraints();
-		gbc_separator_1_1.gridwidth = 9;
+		gbc_separator_1_1.gridwidth = 11;
 		gbc_separator_1_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_separator_1_1.gridx = 0;
 		gbc_separator_1_1.gridy = 4;
@@ -251,15 +235,14 @@ public class OptimiseGUI extends JFrame {
 		pnlMain.add(pnlVariable);
 		GridBagLayout gbl_pnlVariable = new GridBagLayout();
 		gbl_pnlVariable.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlVariable.rowHeights = new int[] {35, 22, 35, 35, 35, 35, 35, 0};
+		gbl_pnlVariable.rowHeights = new int[] {35, 22, 35, 35, 35, 35, 35, 0, 0, 0, 0};
 		gbl_pnlVariable.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlVariable.setLayout(gbl_pnlVariable);
 		
 		JPanel pnlKillBorders = new JPanel();
 		GridBagConstraints gbc_pnlKillBorders = new GridBagConstraints();
 		gbc_pnlKillBorders.anchor = GridBagConstraints.NORTH;
-		gbc_pnlKillBorders.gridheight = 2;
 		gbc_pnlKillBorders.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pnlKillBorders.gridwidth = 2;
 		gbc_pnlKillBorders.insets = new Insets(0, 0, 5, 0);
@@ -286,101 +269,6 @@ public class OptimiseGUI extends JFrame {
 		buttonGroup.add(rdbtnXyz);
 		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
 		pnlKillBorders.add(rdbtnXyz);
-		
-		JLabel lblNewLabel_3_1 = new JLabel("Name Channel 1:");
-		lblNewLabel_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3_1.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1.gridx = 0;
-		gbc_lblNewLabel_3_1.gridy = 2;
-		pnlVariable.add(lblNewLabel_3_1, gbc_lblNewLabel_3_1);
-		
-		txtC1 = new JTextField();
-		txtC1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_txtC1 = new GridBagConstraints();
-		gbc_txtC1.insets = new Insets(0, 0, 5, 5);
-		gbc_txtC1.fill = GridBagConstraints.BOTH;
-		gbc_txtC1.gridx = 1;
-		gbc_txtC1.gridy = 2;
-		pnlVariable.add(txtC1, gbc_txtC1);
-		txtC1.setColumns(10);
-		
-		JLabel lblNewLabel_3_1_1 = new JLabel("Name Channel 2:");
-		lblNewLabel_3_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3_1_1.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_1.gridx = 0;
-		gbc_lblNewLabel_3_1_1.gridy = 3;
-		pnlVariable.add(lblNewLabel_3_1_1, gbc_lblNewLabel_3_1_1);
-		
-		txtC2 = new JTextField();
-		txtC2.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtC2.setColumns(10);
-		GridBagConstraints gbc_txtC2 = new GridBagConstraints();
-		gbc_txtC2.insets = new Insets(0, 0, 5, 5);
-		gbc_txtC2.fill = GridBagConstraints.BOTH;
-		gbc_txtC2.gridx = 1;
-		gbc_txtC2.gridy = 3;
-		pnlVariable.add(txtC2, gbc_txtC2);
-		
-		JLabel lblNewLabel_3_1_2 = new JLabel("Name Channel 3:");
-		lblNewLabel_3_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3_1_2.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_2.gridx = 0;
-		gbc_lblNewLabel_3_1_2.gridy = 4;
-		pnlVariable.add(lblNewLabel_3_1_2, gbc_lblNewLabel_3_1_2);
-		
-		txtC3 = new JTextField();
-		txtC3.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtC3.setColumns(10);
-		GridBagConstraints gbc_txtC3 = new GridBagConstraints();
-		gbc_txtC3.insets = new Insets(0, 0, 5, 5);
-		gbc_txtC3.fill = GridBagConstraints.BOTH;
-		gbc_txtC3.gridx = 1;
-		gbc_txtC3.gridy = 4;
-		pnlVariable.add(txtC3, gbc_txtC3);
-		
-		JLabel lblNewLabel_3_1_3 = new JLabel("Name Channel 4:");
-		lblNewLabel_3_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3_1_3.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_3.gridx = 0;
-		gbc_lblNewLabel_3_1_3.gridy = 5;
-		pnlVariable.add(lblNewLabel_3_1_3, gbc_lblNewLabel_3_1_3);
-		
-		txtC4 = new JTextField();
-		txtC4.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtC4.setColumns(10);
-		GridBagConstraints gbc_txtC4 = new GridBagConstraints();
-		gbc_txtC4.insets = new Insets(0, 0, 5, 5);
-		gbc_txtC4.fill = GridBagConstraints.BOTH;
-		gbc_txtC4.gridx = 1;
-		gbc_txtC4.gridy = 5;
-		pnlVariable.add(txtC4, gbc_txtC4);
-		
-		JLabel lblNewLabel_3_1_4 = new JLabel("Grouping Info?");
-		lblNewLabel_3_1_4.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4.insets = new Insets(8, 5, 0, 5);
-		gbc_lblNewLabel_3_1_4.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3_1_4.gridx = 0;
-		gbc_lblNewLabel_3_1_4.gridy = 6;
-		pnlVariable.add(lblNewLabel_3_1_4, gbc_lblNewLabel_3_1_4);
-		
-		textField = new JTextField();
-		textField.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField.setColumns(10);
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(8, 0, 0, 5);
-		gbc_textField.fill = GridBagConstraints.BOTH;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 6;
-		pnlVariable.add(textField, gbc_textField);
 		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -1470,8 +1358,8 @@ public class OptimiseGUI extends JFrame {
 		gbc_separator_1_1_1.gridy = 0;
 		pnlFooter.add(separator_1_1_1, gbc_separator_1_1_1);
 		
-		JButton btnRunAnalysis = new JButton("Save Parameters");
-		btnRunAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
+		JButton btnRunAnalysis = new JButton("Save Configuration");
+		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
 		gbc_btnRunAnalysis.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnRunAnalysis.gridwidth = 2;
