@@ -22,12 +22,15 @@ import org.scijava.plugin.Plugin;
 import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
+import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
+import clcm.focust.speckle.ExpectedSpeckleResults;
+import clcm.focust.speckle.SpeckleResult;
+import clcm.focust.speckle.SpeckleResultsHandlerService;
 import clcm.focust.speckle.SpeckleService;
 import clcm.focust.speckle.Speckles;
 
-@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
-public final class FOCUST implements Command {
+public final class FOCUST{
 
 	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
 	public static File[] imageFiles;
@@ -39,7 +42,11 @@ public final class FOCUST implements Command {
 	private List<FOCUSTService> services;
 
 	/** Data manager for speckles. */
-	private DataMapManager<String,Speckles> specklesManager;
+	private DataMapManager<String, Speckles> specklesManager;
+
+	private DataMapManager<String, SpeckleResult> speckleResultsManager;
+
+	private final DatumManager<ExpectedSpeckleResults> expectedSpeckleResultsManager;
 
 	/** Data manager for runtime configuration. */
 	private DatumManager<SpecklesConfiguration> configurationManager;
@@ -49,8 +56,14 @@ public final class FOCUST implements Command {
 	 */
 	private FOCUST() {
 		services = new ArrayList<>();
+		/* Data managers. */
 		specklesManager = new DataMapManager<>();
-		services.add(new SpeckleService());
+		speckleResultsManager = new DataMapManager<>();
+		expectedSpeckleResultsManager = new DatumManager<>();
+
+		/* Services. */
+		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
+		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager, configurationManager));
 	}
 
 	/**
@@ -74,20 +87,17 @@ public final class FOCUST implements Command {
 		instance().run();
 	}
 
-	@Override
-	public final void run() {
+	/**
+	 * Do the tings.
+	 */
+	final void run() {
 		services.forEach(FOCUSTService::init);
+		/* Clean up our mess, to be good citizens. */
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> services.forEach(FOCUSTService::shutdown)));
 
 		SwingUtilities.invokeLater(() -> {
 			MainScreen mainGui = new MainScreen();
 			mainGui.setVisible(true);
-			/* Cleanup our mess. */
-			mainGui.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosed(WindowEvent e) {
-					services.forEach(FOCUSTService::shutdown);
-				}
-			});
 			mainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
 		ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -103,12 +113,14 @@ public final class FOCUST implements Command {
 		return InstanceHolder.INSTANCE;
 	}
 
-	public final DataMapManager<String,Speckles> specklesManager() {
+	/**
+	 * Accessor for specklesUpdateService. Temporary measure. Ideally not necessary
+	 * and instead this should be injected into the classes that require it.
+	 * 
+	 * @return an update service for the speckles
+	 */
+	public final DataMapUpdateService<String, Speckles> specklesUpdateService() {
 		return specklesManager;
-	}
-
-	public final DatumManager<SpecklesConfiguration> rtConfManager() {
-		return configurationManager;
 	}
 
 	public static void fileFinder() {
@@ -133,4 +145,5 @@ public final class FOCUST implements Command {
 			return;
 		}
 	}
+	
 }

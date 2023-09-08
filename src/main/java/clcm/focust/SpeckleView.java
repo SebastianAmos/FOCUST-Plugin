@@ -699,7 +699,7 @@ public class SpeckleView extends JFrame {
 						.analysisMode(cbAnalysisMode.isSelected())
 						.build();
 				
-				Segment segment = new Segment();
+				Segment segment = new Segment(FOCUST.instance().specklesUpdateService());
 				segment.processSpeckles(cbAnalysisMode.isSelected(),conf);
 				
 			}

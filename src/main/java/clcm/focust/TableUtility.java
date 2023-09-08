@@ -95,9 +95,7 @@ public class TableUtility {
 			
 			// update the map
 			columnDataMap.put(name, columnData);
-			
 		}
-		
 	}
 	
 	public static void removeColumns(ResultsTable rt, String[] colsToRemove) {

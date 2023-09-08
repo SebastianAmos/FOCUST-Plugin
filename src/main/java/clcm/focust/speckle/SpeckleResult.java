@@ -8,11 +8,11 @@ import lombok.Value;
 import ij.measure.ResultsTable;
 
 /**
- * Speckle Results. Prefer compositon over inheritance. 
+ * Speckle Results. Prefer compositon over inheritance.
  *
  */
 @Builder
 @Value
-public class SpeckleResult implements DataObject{
-	private final Map<SpeckleType,ResultsTable> results;
+public class SpeckleResult implements DataObject {
+	private final Map<SpeckleType, ResultsTable> results;
 }

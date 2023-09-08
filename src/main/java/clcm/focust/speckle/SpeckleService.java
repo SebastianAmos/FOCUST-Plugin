@@ -16,6 +16,7 @@ import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapService;
+import clcm.focust.data.DataMapSubscriptionService;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumService;
 import ij.IJ;
@@ -43,6 +44,9 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 	/** Config manager service. Really this should be injected via constructor. */
 	private final DatumService<SpecklesConfiguration> configMgr;
+	
+	/** Register for speckle updates on this service. */
+	private final DataMapSubscriptionService<String,Speckles> specklesSubService;
 
 	private final DataMapUpdateService<String, SpeckleResult> resultsUpdateService;
 	
@@ -50,12 +54,12 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 	@Override
 	public void init() {
-		FOCUST.instance().specklesManager().registerAllKeysListener(this);
+		specklesSubService.registerAllKeysListener(this);
 	}
 
 	@Override
 	public void shutdown() {
-		FOCUST.instance().specklesManager().deregisterAllKeysListener(this);
+		specklesSubService.deregisterAllKeysListener(this);
 	}
 
 	@Override
@@ -407,7 +411,7 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 
 		
-		/** Collect up the above. */
+		/* Collect up the above. */
 		Map<SpeckleType, ResultsTable> resultsMap = new HashMap<>();
 		resultsMap.put(SpeckleType.PRIMARY, primaryFinalResults);
 		resultsMap.put(SpeckleType.SECONDARY, secondaryFinalResults);

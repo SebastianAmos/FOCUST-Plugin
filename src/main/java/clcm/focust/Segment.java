@@ -29,6 +29,7 @@ import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants.Datum;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapService;
+import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumService;
 import clcm.focust.speckle.SpeckleType;
 import clcm.focust.speckle.Speckles;
@@ -51,22 +52,35 @@ public class Segment {
 	private static ImagePlus primaryOriginalObjectsCells;
 	private static ImagePlus secondaryObjectsCells;
 
-	private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+	private static final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 
+	// TODO refactor these constants into the right place. 
 	// Could make these user-input strings to provide greater flexibility
-	private static String primaryPrefix = "Primary_Objects_";
-	private static String secondaryPrefix = "Secondary_Objects_";
-	private static String tertiaryPrefix = "Tertiary_Objects_";
-	private static String corePrefix = "Inner_Secondary_";
-	private static String outerPrefix = "Outer_Secondary_";
+	private static final String PRIMARYPREFIX = "Primary_Objects_";
+	private static final String SECONDARYPREFIX = "Secondary_Objects_";
+	private static final String TERTIARYPREFIX = "Tertiary_Objects_";
+	private static final String COREPREFIX = "Inner_Secondary_";
+	private static final String OUTERPREFIX = "Outer_Secondary_";
+	
+	/** The update service for speckles */
+	private final DataMapUpdateService<String, Speckles> specklesUpdateService;
 
+	/** 
+	 * IJ logs the provided string on the EDT.
+	 * @param log the string to log
+	 */ 
 	public static void threadLog(final String log) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				IJ.log(log);
-			}
-		});
+		SwingUtilities.invokeLater(() -> IJ.log(log));
 	}
+	
+	/**
+	 * Constructor.
+	 * @param aSpecklesUpdateService to update speckles on
+	 */
+	public Segment( DataMapUpdateService<String, Speckles> aSpecklesUpdateService) {
+		specklesUpdateService=aSpecklesUpdateService;
+	}
+	
 	
 	// (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));
 	// IJ.showProgress(i+1, list.length);
@@ -133,9 +147,9 @@ public class Segment {
 				if (analysisOnly) {
 					ArrayList<String> tempList = new ArrayList<>();
 					for (String imgName : filesList) {
-						if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix)
-								&& !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix)
-								&& !imgName.startsWith(tertiaryPrefix)) {
+						if (!imgName.startsWith(PRIMARYPREFIX) && !imgName.startsWith(SECONDARYPREFIX)
+								&& !imgName.startsWith(COREPREFIX) && !imgName.startsWith(OUTERPREFIX)
+								&& !imgName.startsWith(TERTIARYPREFIX)) {
 							tempList.add(imgName);
 						}
 					}
@@ -194,15 +208,18 @@ public class Segment {
 						IJ.log("Analysis Only Mode Active: Finding Images...");
 						IJ.log("-------------------------------------------------------");
 						String fileName = file.replace(".dv", ".tif");
-						primaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + primaryPrefix + fileName);
-						secondaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + secondaryPrefix + fileName);
-						tertiaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + tertiaryPrefix + fileName);
-
+						IJ.log("Opening:[" + speckleConf.getInputDirectory() + PRIMARYPREFIX + fileName + "]");
+						primaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + PRIMARYPREFIX + fileName);
+						secondaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + SECONDARYPREFIX + fileName);
+						tertiaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory() + TERTIARYPREFIX + fileName);
+						IJ.log("Analysis Only Mode Active: Found Images...");
+						IJ.log("-------------------------------------------------------");
 					} else {
 						// if analysis mode is F, segment objects based on channel preferences
 						IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
 						IJ.log("-------------------------------------------------------");
-
+						IJ.log("CLIJ2 CLINFO: ["+CLIJ2.clinfo()+"]");
+						IJ.log("CLIJ2 GPU: ["+CLIJ2.getInstance().getGPUName()+"] OCL:[" + CLIJ2.getInstance().getOpenCLVersion()+"]");
 						primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice],
 								SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x,
 								SpeckleView.radius_y, SpeckleView.radius_z);
@@ -215,7 +232,11 @@ public class Segment {
 								SpeckleView.sigma_x3, SpeckleView.sigma_y3, SpeckleView.sigma_z3,
 								SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3,
 								SpeckleView.radius_z3);
+						IJ.log("Analysis Only Mode Not Active: Finished Segmentation...");
+						IJ.log("-------------------------------------------------------");
 					}
+					
+
 					Map<SpeckleType, ImagePlus> speckles = new EnumMap<>(SpeckleType.class);
 
 					IJ.resetMinAndMax(primaryObjectsSpeckles);
@@ -232,7 +253,7 @@ public class Segment {
 					speckles.put(SpeckleType.TERTIARY, primaryObjectsSpeckles);
 					
 					/** Provide a new speckle for further analysis: */
-					FOCUST.instance().specklesManager().notifyUpdated(file, new Speckles(speckles,Arrays.asList(channelsSpeckle)));
+					specklesUpdateService.notifyUpdated(file, new Speckles(speckles,Arrays.asList(channelsSpeckle)));
 										
 				}
 				/* Await All of the speckles to be done. TODO Process results complete*/
@@ -281,8 +302,8 @@ public class Segment {
 				if (analysisOnly) {
 					ArrayList<String> tempList = new ArrayList<>();
 					for (String imgName : list) {
-						if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix)
-								&& !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix)) {
+						if (!imgName.startsWith(PRIMARYPREFIX) && !imgName.startsWith(SECONDARYPREFIX)
+								&& !imgName.startsWith(COREPREFIX) && !imgName.startsWith(OUTERPREFIX)) {
 							tempList.add(imgName);
 						}
 					}
@@ -317,7 +338,7 @@ public class Segment {
 					// image
 					if (analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+						primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + PRIMARYPREFIX + fileName);
 						/*
 						 * if (primaryOriginalObjectsCells.getStackSize() != imp.getStackSize()) {
 						 * IJ.error("Error",
@@ -348,7 +369,7 @@ public class Segment {
 					// image.
 					if (analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
+						secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + SECONDARYPREFIX + fileName);
 						/*
 						 * if (secondaryObjectsCells.getStackSize() != imp.getStackSize()) {
 						 * IJ.error("Error",
@@ -1017,8 +1038,8 @@ public class Segment {
 				if (analysisOnly) {
 					ArrayList<String> tempList = new ArrayList<>();
 					for (String imgName : list) {
-						if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix)
-								&& !imgName.startsWith(corePrefix) && !imgName.startsWith(outerPrefix)) {
+						if (!imgName.startsWith(PRIMARYPREFIX) && !imgName.startsWith(SECONDARYPREFIX)
+								&& !imgName.startsWith(COREPREFIX) && !imgName.startsWith(OUTERPREFIX)) {
 							tempList.add(imgName);
 						}
 					}
@@ -1053,7 +1074,7 @@ public class Segment {
 					// image.
 					if (analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
+						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + PRIMARYPREFIX + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
 						primaryObjectSpheroid = gpuSegmentOtsu(channelsSpheroid[primaryChannelChoice],
@@ -1087,7 +1108,7 @@ public class Segment {
 					// image.
 					if (analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
+						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + SECONDARYPREFIX + fileName);
 					} else {
 						secondaryObjectSpheroid = gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}

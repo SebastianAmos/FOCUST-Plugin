@@ -2,7 +2,7 @@ package clcm.focust.data;
 
 import java.util.Optional;
 
-import clcm.focust.speckle.SpeckleResultsHandler;
+import clcm.focust.speckle.SpeckleResultsHandlerService;
 
 /**
  * Use this interface to subscribe to updates of a type of data.
