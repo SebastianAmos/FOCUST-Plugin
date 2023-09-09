@@ -57,9 +57,13 @@ public class DataMapManager<K, T extends DataObject>
 				.invokeLater(() -> IJ.log(String.format("Data received for key [%s] , Datum [%s]", key, newData)));
 		objects.put(key, newData);
 		/* TODO Determine and handle overlap. */
-		listeners.get(key).forEach(listener -> listener.dataUpdated(key, newData));
-
-		allKeyListeners.forEach(listener -> listener.dataUpdated(key, newData));
+		listeners.getOrDefault(key, new HashSet<>()).forEach(listener -> listener.dataUpdated(key, newData));
+		SwingUtilities
+				.invokeLater(() -> IJ.log(String.format("Data received for key [%s] , Datum [%s]", key, newData)));
+		allKeyListeners.forEach(listener -> {
+			SwingUtilities.invokeLater(() -> IJ.log(String.format("Notifying [%s] , Datum [%s]", listener, newData)));
+			listener.dataUpdated(key, newData);
+		});
 
 		LOGGER.finer(() -> String.format("Listeners notified for key [%s], Datum [%s]", key, newData));
 	}
@@ -70,7 +74,7 @@ public class DataMapManager<K, T extends DataObject>
 		SwingUtilities.invokeLater(() -> IJ.log(String.format("Data deleted for key [%s]", key)));
 		objects.remove(key);
 
-		listeners.get(key).forEach(listener -> listener.dataDeleted(key));
+		listeners.getOrDefault(key, new HashSet<>()).forEach(listener -> listener.dataDeleted(key));
 		/* TODO Determine and handle overlap. */
 		allKeyListeners.forEach(listener -> listener.dataDeleted(key));
 
@@ -101,8 +105,8 @@ public class DataMapManager<K, T extends DataObject>
 
 	@Override
 	public final void deregisterListener(K key, DataListener<K, T> listener) {
-		SwingUtilities.invokeLater(
-				() -> IJ.log(String.format("Listener %s deregistered for key [%s]", listener.getClass().getName(), key)));
+		SwingUtilities.invokeLater(() -> IJ
+				.log(String.format("Listener %s deregistered for key [%s]", listener.getClass().getName(), key)));
 		LOGGER.fine(() -> String.format("Listener %s unsubscribing for [%s]", listener, key));
 		Optional.ofNullable(listeners.get(key)).ifPresent(set -> set.remove(listener));
 	}

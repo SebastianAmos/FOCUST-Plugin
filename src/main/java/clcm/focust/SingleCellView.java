@@ -539,7 +539,7 @@ public class SingleCellView extends JFrame {
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSingleCellGroupName.getText();
 
-				Segment segment = new Segment(FOCUST.instance().specklesUpdateService());
+				Segment segment = new Segment();
 				segment.processSingleCells(cbAnalysisMode.isSelected());
 
 			}

@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.speckle.view;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,7 +18,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 
-import clcm.focust.config.SpecklesConfiguration;
+import clcm.focust.FOCUST;
+import clcm.focust.GuiHelper;
+import clcm.focust.MainScreen;
+import clcm.focust.speckle.SpecklesConfiguration;
 import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -698,10 +701,7 @@ public class SpeckleView extends JFrame {
 						.killBordersText(GuiHelper.getSelectedButton(btngrpKillBorders))
 						.analysisMode(cbAnalysisMode.isSelected())
 						.build();
-				
-				Segment segment = new Segment(FOCUST.instance().specklesUpdateService());
-				segment.processSpeckles(cbAnalysisMode.isSelected(),conf);
-				
+				FOCUST.instance().specklesConfigurationManager().notifyUpdated(conf);			
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));

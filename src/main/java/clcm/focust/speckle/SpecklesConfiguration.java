@@ -1,4 +1,4 @@
-package clcm.focust.config;
+package clcm.focust.speckle;
 
 import java.nio.file.Path;
 

@@ -1,4 +1,4 @@
-package clcm.focust.speckle;
+package clcm.focust.speckle.service;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,9 +7,12 @@ import java.util.Set;
 
 import clcm.focust.FOCUSTService;
 import clcm.focust.TableUtility;
-import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.speckle.ExpectedSpeckleResults;
+import clcm.focust.speckle.SpeckleResult;
+import clcm.focust.speckle.SpeckleType;
+import clcm.focust.speckle.SpecklesConfiguration;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapSubscriptionService;
 import clcm.focust.data.DatumService;

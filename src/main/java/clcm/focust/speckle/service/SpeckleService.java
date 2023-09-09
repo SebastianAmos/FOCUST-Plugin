@@ -1,4 +1,4 @@
-package clcm.focust.speckle;
+package clcm.focust.speckle.service;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -9,10 +9,13 @@ import java.util.Map;
 import clcm.focust.FOCUST;
 import clcm.focust.FOCUSTService;
 import clcm.focust.LabelEditor;
-import clcm.focust.SpeckleView;
 import clcm.focust.TableUtility;
 import clcm.focust.data.DataConstants.Datum;
-import clcm.focust.config.SpecklesConfiguration;
+import clcm.focust.speckle.SpeckleResult;
+import clcm.focust.speckle.SpeckleType;
+import clcm.focust.speckle.Speckles;
+import clcm.focust.speckle.SpecklesConfiguration;
+import clcm.focust.speckle.view.SpeckleView;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapService;

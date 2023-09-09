@@ -3,6 +3,12 @@ package clcm.focust;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import clcm.focust.data.DataConstants;
+import clcm.focust.data.DataMapManager;
+import clcm.focust.data.DatumManager;
+import clcm.focust.speckle.SpecklesConfiguration;
+import clcm.focust.speckle.view.SpeckleView;
 import ij.gui.GenericDialog;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -33,7 +39,7 @@ public class MainScreen extends JFrame{
 	private JButton btnSingleCell;
 	/** Button to open the speckle window. */ 
 	private JButton btnSpeckle;
-
+	
 	/**
 	 * construct the main menu gui. 
 	 */

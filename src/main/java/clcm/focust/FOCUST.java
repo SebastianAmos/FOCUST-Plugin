@@ -19,16 +19,17 @@ import javax.swing.WindowConstants;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-import clcm.focust.config.SpecklesConfiguration;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
 import clcm.focust.speckle.ExpectedSpeckleResults;
 import clcm.focust.speckle.SpeckleResult;
-import clcm.focust.speckle.SpeckleResultsHandlerService;
-import clcm.focust.speckle.SpeckleService;
 import clcm.focust.speckle.Speckles;
+import clcm.focust.speckle.SpecklesConfiguration;
+import clcm.focust.speckle.service.SpeckleProcessor;
+import clcm.focust.speckle.service.SpeckleResultsHandlerService;
+import clcm.focust.speckle.service.SpeckleService;
 
 public final class FOCUST{
 
@@ -60,8 +61,10 @@ public final class FOCUST{
 		specklesManager = new DataMapManager<>();
 		speckleResultsManager = new DataMapManager<>();
 		expectedSpeckleResultsManager = new DatumManager<>();
+		configurationManager = new DatumManager<>();
 
-		/* Services. */
+		/* Services - Speckle. */
+		services.add(new SpeckleProcessor(configurationManager,specklesManager));
 		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
 		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager, configurationManager));
 	}
@@ -112,16 +115,10 @@ public final class FOCUST{
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;
 	}
-
-	/**
-	 * Accessor for specklesUpdateService. Temporary measure. Ideally not necessary
-	 * and instead this should be injected into the classes that require it.
-	 * 
-	 * @return an update service for the speckles
-	 */
-	public final DataMapUpdateService<String, Speckles> specklesUpdateService() {
-		return specklesManager;
-	}
+	
+	public final DatumManager<SpecklesConfiguration> specklesConfigurationManager(){
+		return configurationManager;
+	} 
 
 	public static void fileFinder() {
 		try {
