@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
+import java.awt.Toolkit;
 
 public class AnalysisGUI extends JFrame {
 
@@ -119,6 +120,7 @@ public class AnalysisGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public AnalysisGUI() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1102, 617);
@@ -301,8 +303,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JPanel pnlKillBorders = new JPanel();
 		GridBagConstraints gbc_pnlKillBorders = new GridBagConstraints();
-		gbc_pnlKillBorders.anchor = GridBagConstraints.NORTH;
-		gbc_pnlKillBorders.fill = GridBagConstraints.HORIZONTAL;
+		gbc_pnlKillBorders.anchor = GridBagConstraints.NORTHWEST;
 		gbc_pnlKillBorders.gridwidth = 2;
 		gbc_pnlKillBorders.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlKillBorders.gridx = 0;
@@ -538,7 +539,7 @@ public class AnalysisGUI extends JFrame {
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
-		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 0);
+		gbc_cbPrimaryBackground.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryBackground.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPrimaryBackground.gridx = 1;
 		gbc_cbPrimaryBackground.gridy = 2;
@@ -548,7 +549,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGFirstBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGFirstBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGFirstBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlPrimaryBGFirstBlur.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlPrimaryBGFirstBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGFirstBlur.gridx = 0;
 		gbc_pnlPrimaryBGFirstBlur.gridy = 3;
@@ -599,7 +600,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBGSecondBlur = new GridBagConstraints();
 		gbc_pnlPrimaryBGSecondBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBGSecondBlur.gridwidth = 2;
-		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlPrimaryBGSecondBlur.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlPrimaryBGSecondBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryBGSecondBlur.gridx = 0;
 		gbc_pnlPrimaryBGSecondBlur.gridy = 4;
@@ -661,7 +662,7 @@ public class AnalysisGUI extends JFrame {
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
 		gbc_cbPrimaryFilter.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 0);
+		gbc_cbPrimaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryFilter.gridx = 1;
 		gbc_cbPrimaryFilter.gridy = 5;
 		pnlPrimary.add(cbPrimaryFilter, gbc_cbPrimaryFilter);
@@ -670,7 +671,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryBlurSize = new GridBagConstraints();
 		gbc_pnlPrimaryBlurSize.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryBlurSize.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlPrimaryBlurSize.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlPrimaryBlurSize.gridwidth = 2;
 		gbc_pnlPrimaryBlurSize.gridx = 0;
 		gbc_pnlPrimaryBlurSize.gridy = 6;
@@ -727,7 +728,7 @@ public class AnalysisGUI extends JFrame {
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
 		gbc_cbPrimaryMethod.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 0);
+		gbc_cbPrimaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPrimaryMethod.gridx = 1;
 		gbc_cbPrimaryMethod.gridy = 7;
 		pnlPrimary.add(cbPrimaryMethod, gbc_cbPrimaryMethod);
@@ -735,7 +736,7 @@ public class AnalysisGUI extends JFrame {
 		JPanel pnlPrimarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlPrimarySpotSize = new GridBagConstraints();
 		gbc_pnlPrimarySpotSize.anchor = GridBagConstraints.EAST;
-		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 0);
+		gbc_pnlPrimarySpotSize.insets = new Insets(0, 0, 5, 5);
 		gbc_pnlPrimarySpotSize.gridwidth = 2;
 		gbc_pnlPrimarySpotSize.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySpotSize.gridx = 0;
@@ -813,7 +814,7 @@ public class AnalysisGUI extends JFrame {
 		txtPrimaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryClassiferDirectory.setColumns(10);
 		GridBagConstraints gbc_txtPrimaryClassiferDirectory = new GridBagConstraints();
-		gbc_txtPrimaryClassiferDirectory.insets = new Insets(0, 0, 5, 0);
+		gbc_txtPrimaryClassiferDirectory.insets = new Insets(0, 0, 5, 5);
 		gbc_txtPrimaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtPrimaryClassiferDirectory.gridx = 1;
 		gbc_txtPrimaryClassiferDirectory.gridy = 8;
@@ -832,6 +833,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JPanel pnlPrimaryMethodThreshold = new JPanel();
 		GridBagConstraints gbc_pnlPrimaryMethodThreshold = new GridBagConstraints();
+		gbc_pnlPrimaryMethodThreshold.insets = new Insets(0, 0, 0, 5);
 		gbc_pnlPrimaryMethodThreshold.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryMethodThreshold.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimaryMethodThreshold.gridx = 1;
@@ -856,6 +858,7 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		txtPrimaryMethodThreshold = new JTextField();
+		txtPrimaryMethodThreshold.setEnabled(false);
 		GridBagConstraints gbc_txtPrimaryMethodThreshold = new GridBagConstraints();
 		gbc_txtPrimaryMethodThreshold.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtPrimaryMethodThreshold.gridx = 1;
