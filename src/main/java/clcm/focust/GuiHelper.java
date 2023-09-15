@@ -30,7 +30,7 @@ public class GuiHelper {
 
 
 	/**
-	 * Collects components from a GUI container so they can edited en masse. 
+	 * Collects components from a GUI container so they can edited together. 
 	 * Intended to allow enabling or disabling of a container's components.
 	 * 
 	 * @param container Probably a JPanel
