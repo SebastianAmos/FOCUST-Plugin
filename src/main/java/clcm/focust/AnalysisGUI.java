@@ -2082,8 +2082,7 @@ public class AnalysisGUI extends JFrame {
 					btnBrowseTertiaryClassifer.setVisible(false);
 					txtTertiaryClassiferDirectory.setVisible(false);
 					
-				}
-				
+				}	
 			}
 		});
 		
