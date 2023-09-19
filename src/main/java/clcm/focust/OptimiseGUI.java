@@ -270,6 +270,22 @@ public class OptimiseGUI extends JFrame {
 		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
 		pnlKillBorders.add(rdbtnXyz);
 		
+		JButton btnPreviousImage_1 = new JButton("Previous Image");
+		btnPreviousImage_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnPreviousImage_1 = new GridBagConstraints();
+		gbc_btnPreviousImage_1.insets = new Insets(0, 0, 5, 5);
+		gbc_btnPreviousImage_1.gridx = 0;
+		gbc_btnPreviousImage_1.gridy = 8;
+		pnlVariable.add(btnPreviousImage_1, gbc_btnPreviousImage_1);
+		
+		JButton btnLoadNextImage_1 = new JButton("Load Next Image");
+		btnLoadNextImage_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnLoadNextImage_1 = new GridBagConstraints();
+		gbc_btnLoadNextImage_1.insets = new Insets(0, 0, 5, 0);
+		gbc_btnLoadNextImage_1.gridx = 1;
+		gbc_btnLoadNextImage_1.gridy = 8;
+		pnlVariable.add(btnLoadNextImage_1, gbc_btnLoadNextImage_1);
+		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
