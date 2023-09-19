@@ -40,7 +40,7 @@ import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
-public class OptimiseGUI extends JFrame {
+public class OptimisePanel extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtInputDir;
@@ -95,7 +95,7 @@ public class OptimiseGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					OptimiseGUI frame = new OptimiseGUI();
+					OptimisePanel frame = new OptimisePanel();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -107,7 +107,7 @@ public class OptimiseGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public OptimiseGUI() {
+	public OptimisePanel() {
 		setTitle("FOCUST: Optimization");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1102, 599);
