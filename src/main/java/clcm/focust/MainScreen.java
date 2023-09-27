@@ -98,6 +98,7 @@ public class MainScreen extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 			SwingUtilities.invokeLater(() -> {
 					OptimizeGUI optimizeGui = new OptimizeGUI();
+					optimizeGui.setLocationRelativeTo(null);
 					optimizeGui.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
