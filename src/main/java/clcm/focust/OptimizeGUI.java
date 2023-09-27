@@ -34,11 +34,17 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.plugin.ChannelSplitter;
+
 import java.awt.Toolkit;
 
 public class OptimizeGUI extends JFrame {
@@ -102,9 +108,24 @@ public class OptimizeGUI extends JFrame {
 	private JTextField textField_13;
 	private JTextField textField_14;
 	private JTextField textField_15;
+	
+	public String inputDir;
+	public ImagePlus currentImage;
+	public int currentIndex;
+	
+	public String[] list;
+	public ImagePlus[] channelArray;
+	private ImagePlus priImg;
+	private ImagePlus secImg;
+	private ImagePlus terImg;
+	
 
+	OptimizeHelpers optimize;
+	
+	
+	
 	/**
-	 * Launch the application.
+	 * Launch for testing
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -120,10 +141,17 @@ public class OptimizeGUI extends JFrame {
 		});
 	}
 
+	
+	//OptimizeHelpers optimize = new OptimizeHelpers();
+	
 	/**
 	 * Create the frame.
 	 */
 	public OptimizeGUI() {
+		
+		optimize = new OptimizeHelpers();
+		optimize.setOptimizeGUI(this);
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Optimization");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -185,6 +213,22 @@ public class OptimizeGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		JButton btnBrowseInput = new JButton("Browse");
+		btnBrowseInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// Find and set the input directory.
+				inputDir = IJ.getDir("Select an Input Directory");
+				String inputDirSt = inputDir.toString();
+				txtInputDir.setText(inputDirSt);
+				
+				// make the file list and load the first image
+				File f = new File(inputDir);
+				list = f.list();
+				String path = inputDir + list[0];
+				ImagePlus imp = IJ.openImage(path);
+				channelArray = ChannelSplitter.split(imp);
+			}
+		});
 		btnBrowseInput.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowseInput = new GridBagConstraints();
 		gbc_btnBrowseInput.fill = GridBagConstraints.HORIZONTAL;
@@ -237,6 +281,13 @@ public class OptimizeGUI extends JFrame {
 		pnlVariable.setLayout(gbl_pnlVariable);
 		
 		JButton btnPrevious = new JButton("Previous");
+		btnPrevious.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				optimize.loadPrevious();
+				
+			}
+		});
 		GridBagConstraints gbc_btnPrevious = new GridBagConstraints();
 		gbc_btnPrevious.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnPrevious.insets = new Insets(0, 5, 5, 5);
@@ -246,6 +297,13 @@ public class OptimizeGUI extends JFrame {
 		btnPrevious.setFont(new Font("Arial", Font.BOLD, 14));
 		
 		JButton btnNext = new JButton("      Next      ");
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				optimize.loadNext();
+				
+			}
+		});
 		btnNext.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnNext = new GridBagConstraints();
 		gbc_btnNext.fill = GridBagConstraints.HORIZONTAL;
@@ -370,6 +428,7 @@ public class OptimizeGUI extends JFrame {
 		pnlVariable.add(horizontalSeparator_1_1_1, gbc_horizontalSeparator_1_1_1);
 		
 		JPanel pnlKillBorders = new JPanel();
+		pnlKillBorders.setToolTipText("Do you want to remove objects touching the X + Y or X + Y+ Z borders?");
 		GridBagConstraints gbc_pnlKillBorders = new GridBagConstraints();
 		gbc_pnlKillBorders.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pnlKillBorders.anchor = GridBagConstraints.NORTH;
@@ -480,7 +539,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_6);
 		
 		txtPrimaryS1X = new JTextField();
-		txtPrimaryS1X.setText("1");
 		txtPrimaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1X.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1X);
@@ -492,7 +550,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_1_4);
 		
 		txtPrimaryS1Y = new JTextField();
-		txtPrimaryS1Y.setText("1");
 		txtPrimaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1Y.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Y);
@@ -504,7 +561,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_2_4);
 		
 		txtPrimaryS1Z = new JTextField();
-		txtPrimaryS1Z.setText("1");
 		txtPrimaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1Z.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Z);
@@ -531,7 +587,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_6_1);
 		
 		txtPrimaryS2X = new JTextField();
-		txtPrimaryS2X.setText("1");
 		txtPrimaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2X.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2X);
@@ -543,7 +598,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_1_4_1);
 		
 		txtPrimaryS2Y = new JTextField();
-		txtPrimaryS2Y.setText("1");
 		txtPrimaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2Y.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Y);
@@ -555,7 +609,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_2_4_1);
 		
 		txtPrimaryS2Z = new JTextField();
-		txtPrimaryS2Z.setText("1");
 		txtPrimaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2Z.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Z);
@@ -602,7 +655,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6);
 		
 		txtPriFilterX = new JTextField();
-		txtPriFilterX.setText("1");
 		txtPriFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterX.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterX);
@@ -614,7 +666,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6_1);
 		
 		txtPriFilterY = new JTextField();
-		txtPriFilterY.setText("1");
 		txtPriFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterY.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterY);
@@ -626,7 +677,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6_2);
 		
 		txtPriFilterZ = new JTextField();
-		txtPriFilterZ.setText("1");
 		txtPriFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterZ.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterZ);
@@ -653,7 +703,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_7);
 		
 		textField_1 = new JTextField();
-		textField_1.setText("1");
 		textField_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_1.setColumns(4);
 		pnlPrimarySecondBlur.add(textField_1);
@@ -665,7 +714,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_1_5);
 		
 		textField_8 = new JTextField();
-		textField_8.setText("1");
 		textField_8.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_8.setColumns(4);
 		pnlPrimarySecondBlur.add(textField_8);
@@ -677,7 +725,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_2_5);
 		
 		textField_9 = new JTextField();
-		textField_9.setText("1");
 		textField_9.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_9.setColumns(4);
 		pnlPrimarySecondBlur.add(textField_9);
@@ -719,7 +766,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_3);
 		
 		txtPriSpotX = new JTextField();
-		txtPriSpotX.setText("1");
 		txtPriSpotX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotX.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotX);
@@ -731,7 +777,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_1_1);
 		
 		txtPriSpotY = new JTextField();
-		txtPriSpotY.setText("1");
 		txtPriSpotY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotY.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotY);
@@ -743,7 +788,6 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_2_1);
 		
 		txtPriSpotZ = new JTextField();
-		txtPriSpotZ.setText("1");
 		txtPriSpotZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotZ.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotZ);
@@ -822,14 +866,32 @@ public class OptimizeGUI extends JFrame {
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryMethodThreshold.setColumns(6);
 		
-		JButton btnNewButton = new JButton("Process");
-		btnNewButton.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton.gridx = 1;
-		gbc_btnNewButton.gridy = 11;
-		pnlPrimary.add(btnNewButton, gbc_btnNewButton);
+		JButton btnProcessPrimary = new JButton("Process");
+		btnProcessPrimary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int primaryIndex = cbPrimaryChannel.getSelectedIndex();
+				
+				
+					priImg = channelArray[primaryIndex];
+					ImagePlus priDup = priImg.duplicate();
+					
+					if(!priDup.isVisible()) {
+						priDup.show();
+						IJ.run("Tile", "");
+					}
+				
+				 
+			}
+		});
+		btnProcessPrimary.setToolTipText("Run primary object segmentation");
+		btnProcessPrimary.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnProcessPrimary = new GridBagConstraints();
+		gbc_btnProcessPrimary.insets = new Insets(0, 0, 0, 5);
+		gbc_btnProcessPrimary.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnProcessPrimary.gridx = 1;
+		gbc_btnProcessPrimary.gridy = 11;
+		pnlPrimary.add(btnProcessPrimary, gbc_btnProcessPrimary);
 		pnlPrimaryMethodThreshold.setVisible(true);
 		txtPrimaryClassiferDirectory.setVisible(false);
 		
@@ -914,7 +976,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_4_1);
 		
 		txtSecondaryS1X = new JTextField();
-		txtSecondaryS1X.setText("1");
 		txtSecondaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1X.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1X);
@@ -926,7 +987,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_1_2_1);
 		
 		txtSecondaryS1Y = new JTextField();
-		txtSecondaryS1Y.setText("1");
 		txtSecondaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1Y.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Y);
@@ -938,7 +998,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_2_2_1);
 		
 		txtSecondaryS1Z = new JTextField();
-		txtSecondaryS1Z.setText("1");
 		txtSecondaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1Z.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Z);
@@ -965,7 +1024,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_4_2);
 		
 		txtSecondaryS2X = new JTextField();
-		txtSecondaryS2X.setText("1");
 		txtSecondaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2X.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2X);
@@ -977,7 +1035,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_1_2_2);
 		
 		txtSecondaryS2Y = new JTextField();
-		txtSecondaryS2Y.setText("1");
 		txtSecondaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2Y.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Y);
@@ -989,7 +1046,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_2_2_2);
 		
 		txtSecondaryS2Z = new JTextField();
-		txtSecondaryS2Z.setText("1");
 		txtSecondaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2Z.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Z);
@@ -1036,7 +1092,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_4);
 		
 		txtSecFilterX = new JTextField();
-		txtSecFilterX.setText("1");
 		txtSecFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterX.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterX);
@@ -1048,7 +1103,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_1_2);
 		
 		txtSecFilterY = new JTextField();
-		txtSecFilterY.setText("1");
 		txtSecFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterY.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterY);
@@ -1060,7 +1114,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_2_2);
 		
 		txtSecFilterZ = new JTextField();
-		txtSecFilterZ.setText("1");
 		txtSecFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterZ.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterZ);
@@ -1087,7 +1140,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_4_3);
 		
 		textField_10 = new JTextField();
-		textField_10.setText("1");
 		textField_10.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_10.setColumns(4);
 		pnlSecondarySecondBlur.add(textField_10);
@@ -1099,7 +1151,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_1_2_3);
 		
 		textField_11 = new JTextField();
-		textField_11.setText("1");
 		textField_11.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_11.setColumns(4);
 		pnlSecondarySecondBlur.add(textField_11);
@@ -1111,7 +1162,6 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_2_2_3);
 		
 		textField_12 = new JTextField();
-		textField_12.setText("1");
 		textField_12.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_12.setColumns(4);
 		pnlSecondarySecondBlur.add(textField_12);
@@ -1260,14 +1310,30 @@ public class OptimizeGUI extends JFrame {
 		txtSecondaryMethodThreshold.setColumns(6);
 		pnlSecondaryThreshold.add(txtSecondaryMethodThreshold);
 		
-		JButton btnNewButton_2 = new JButton("Process");
-		btnNewButton_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-		gbc_btnNewButton_2.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_2.gridx = 1;
-		gbc_btnNewButton_2.gridy = 11;
-		pnlSecondary.add(btnNewButton_2, gbc_btnNewButton_2);
+		JButton btnProcessSecondary = new JButton("Process");
+		btnProcessSecondary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int seocndaryIndex = cbSecondaryChannel.getSelectedIndex();
+				secImg = channelArray[seocndaryIndex];
+				ImagePlus secDup = secImg.duplicate();
+				
+				if(!secDup.isVisible()) {
+					secDup.show();
+					IJ.run("Tile", "");
+				}
+		
+				
+			}
+		});
+		btnProcessSecondary.setToolTipText("Run secondary object segmentation");
+		btnProcessSecondary.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnProcessSecondary = new GridBagConstraints();
+		gbc_btnProcessSecondary.insets = new Insets(0, 0, 0, 5);
+		gbc_btnProcessSecondary.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnProcessSecondary.gridx = 1;
+		gbc_btnProcessSecondary.gridy = 11;
+		pnlSecondary.add(btnProcessSecondary, gbc_btnProcessSecondary);
 		
 		JPanel pnlTertiary = new JPanel();
 		pnlTertiary.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(169, 169, 169)));
@@ -1347,7 +1413,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS1X = new JTextField();
 		txtTertiaryS1X.setEnabled(false);
-		txtTertiaryS1X.setText("1");
 		txtTertiaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1X.setColumns(4);
 		pnlTertiaryBGFirstBlur.add(txtTertiaryS1X);
@@ -1361,7 +1426,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS1Y = new JTextField();
 		txtTertiaryS1Y.setEnabled(false);
-		txtTertiaryS1Y.setText("1");
 		txtTertiaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Y.setColumns(4);
 		pnlTertiaryBGFirstBlur.add(txtTertiaryS1Y);
@@ -1375,7 +1439,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS1Z = new JTextField();
 		txtTertiaryS1Z.setEnabled(false);
-		txtTertiaryS1Z.setText("1");
 		txtTertiaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Z.setColumns(4);
 		pnlTertiaryBGFirstBlur.add(txtTertiaryS1Z);
@@ -1405,7 +1468,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS2X = new JTextField();
 		txtTertiaryS2X.setEnabled(false);
-		txtTertiaryS2X.setText("1");
 		txtTertiaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2X.setColumns(4);
 		pnlTertiaryBGSecondBlur.add(txtTertiaryS2X);
@@ -1419,7 +1481,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS2Y = new JTextField();
 		txtTertiaryS2Y.setEnabled(false);
-		txtTertiaryS2Y.setText("1");
 		txtTertiaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Y.setColumns(4);
 		pnlTertiaryBGSecondBlur.add(txtTertiaryS2Y);
@@ -1433,7 +1494,6 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryS2Z = new JTextField();
 		txtTertiaryS2Z.setEnabled(false);
-		txtTertiaryS2Z.setText("1");
 		txtTertiaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Z.setColumns(4);
 		pnlTertiaryBGSecondBlur.add(txtTertiaryS2Z);
@@ -1521,7 +1581,6 @@ public class OptimizeGUI extends JFrame {
 		
 		textField_2 = new JTextField();
 		textField_2.setEnabled(false);
-		textField_2.setText("1");
 		textField_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_2.setColumns(4);
 		pnlTertiaryFirstBlur.add(textField_2);
@@ -1535,7 +1594,6 @@ public class OptimizeGUI extends JFrame {
 		
 		textField_3 = new JTextField();
 		textField_3.setEnabled(false);
-		textField_3.setText("1");
 		textField_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_3.setColumns(4);
 		pnlTertiaryFirstBlur.add(textField_3);
@@ -1549,7 +1607,6 @@ public class OptimizeGUI extends JFrame {
 		
 		textField_4 = new JTextField();
 		textField_4.setEnabled(false);
-		textField_4.setText("1");
 		textField_4.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_4.setColumns(4);
 		pnlTertiaryFirstBlur.add(textField_4);
@@ -1579,7 +1636,6 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_5_1);
 		
 		textField_13 = new JTextField();
-		textField_13.setText("1");
 		textField_13.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_13.setEnabled(false);
 		textField_13.setColumns(4);
@@ -1593,7 +1649,6 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_1_3_1);
 		
 		textField_14 = new JTextField();
-		textField_14.setText("1");
 		textField_14.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_14.setEnabled(false);
 		textField_14.setColumns(4);
@@ -1607,7 +1662,6 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_2_3_1);
 		
 		textField_15 = new JTextField();
-		textField_15.setText("1");
 		textField_15.setFont(new Font("Arial", Font.PLAIN, 14));
 		textField_15.setEnabled(false);
 		textField_15.setColumns(4);
@@ -1744,15 +1798,30 @@ public class OptimizeGUI extends JFrame {
 		gbc_cbTertiaryMethodThreshold.gridy = 10;
 		pnlTertiary.add(cbTertiaryMethodThreshold, gbc_cbTertiaryMethodThreshold);
 		
-		JButton btnNewButton_3 = new JButton("Process");
-		btnNewButton_3.setEnabled(false);
-		btnNewButton_3.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-		gbc_btnNewButton_3.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_3.gridx = 1;
-		gbc_btnNewButton_3.gridy = 11;
-		pnlTertiary.add(btnNewButton_3, gbc_btnNewButton_3);
+		JButton btnProcessTertiary = new JButton("Process");
+		btnProcessTertiary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int tertiaryIndex = cbTertiaryChannel.getSelectedIndex();
+				
+				terImg = channelArray[tertiaryIndex];
+				ImagePlus terDup =  terImg.duplicate();
+				
+				if(!terDup.isVisible()) {
+					terDup.show();
+					IJ.run("Tile", "");
+				}
+				
+			}
+		});
+		btnProcessTertiary.setToolTipText("Run tertiary object segmentation");
+		btnProcessTertiary.setEnabled(false);
+		btnProcessTertiary.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnProcessTertiary = new GridBagConstraints();
+		gbc_btnProcessTertiary.insets = new Insets(0, 0, 0, 5);
+		gbc_btnProcessTertiary.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnProcessTertiary.gridx = 1;
+		gbc_btnProcessTertiary.gridy = 11;
+		pnlTertiary.add(btnProcessTertiary, gbc_btnProcessTertiary);
 		
 		
 		JPanel pnlFooter = new JPanel();
@@ -1790,6 +1859,7 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnBackToMenu, gbc_btnBackToMenu);
 		
 		JButton btnLoadParameters = new JButton("Load Configuration");
+		btnLoadParameters.setToolTipText("Browse for a previously saved configuration.");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
 		gbc_btnLoadParameters.anchor = GridBagConstraints.WEST;
@@ -1842,6 +1912,7 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnUpdateOverlays, gbc_btnUpdateOverlays);
 		
 		JButton btnSaveConfiguration = new JButton("Save Configuration");
+		btnSaveConfiguration.setToolTipText("Save the current configuration.");
 		btnSaveConfiguration.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnSaveConfiguration = new GridBagConstraints();
 		gbc_btnSaveConfiguration.fill = GridBagConstraints.HORIZONTAL;
@@ -1866,6 +1937,11 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(verticalSeparator, gbc_verticalSeparator);
 		
 		JButton btnJumpToAnalysis = new JButton("Analysis");
+		btnJumpToAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnJumpToAnalysis.setToolTipText("Jump to the analysis interface with the current configuration.");
 		btnJumpToAnalysis.setHorizontalAlignment(SwingConstants.LEFT);
 		btnJumpToAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnJumpToAnalysis = new GridBagConstraints();
