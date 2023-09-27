@@ -2121,9 +2121,6 @@ public class OptimizeGUI extends JFrame {
 		
 	}
 
-	public void setMode(int index) {
-		cbAnalysisMode.setSelectedIndex(index);
-	}
 	
 	private static class __Tmp {
 		private static void __tmp() {
