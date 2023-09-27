@@ -450,17 +450,17 @@ public class AnalysisGUI extends JFrame {
 		pnlVariable.add(ckbSpeckleSkeletons, gbc_ckbSpeckleSkeletons);
 		ckbSpeckleSkeletons.setVisible(false);
 		
-		JCheckBox ckbCellsTertiaryOption = new JCheckBox("Tertiary = Secondary - Primary?");
-		ckbCellsTertiaryOption.setSelected(true);
-		ckbCellsTertiaryOption.setFont(new Font("Arial", Font.PLAIN, 14));
+		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
+		ckbTertiaryObjectOption.setSelected(true);
+		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbCellsTertiaryOption = new GridBagConstraints();
 		gbc_ckbCellsTertiaryOption.anchor = GridBagConstraints.WEST;
 		gbc_ckbCellsTertiaryOption.gridwidth = 2;
 		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 5, 0);
 		gbc_ckbCellsTertiaryOption.gridx = 0;
 		gbc_ckbCellsTertiaryOption.gridy = 6;
-		pnlVariable.add(ckbCellsTertiaryOption, gbc_ckbCellsTertiaryOption);
-		ckbCellsTertiaryOption.setVisible(false);
+		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
+		ckbTertiaryObjectOption.setVisible(false);
 		
 		JCheckBox ckbSpheroidCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
 		
@@ -2099,17 +2099,17 @@ public class AnalysisGUI extends JFrame {
 				if(analysisMode.equals("None")) {
 					ckbSpeckleSkeletons.setVisible(false);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
-					ckbCellsTertiaryOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
 				} 
 				if(analysisMode.equals("Spheroid")) {
 					ckbSpheroidCoreVsPeriphery.setVisible(true);
 					pnlCoreVolValue.setVisible(false);
 					ckbSpeckleSkeletons.setVisible(false);
-					ckbCellsTertiaryOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(true);
 				}
 				if(analysisMode.equals("Single Cells")) {
-					ckbCellsTertiaryOption.setVisible(true);
+					ckbTertiaryObjectOption.setVisible(true);
 					ckbSpeckleSkeletons.setVisible(false);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
@@ -2117,7 +2117,7 @@ public class AnalysisGUI extends JFrame {
 				if(analysisMode.equals("Speckles")) {
 					ckbSpeckleSkeletons.setVisible(true);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
-					ckbCellsTertiaryOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
 				}
 			}

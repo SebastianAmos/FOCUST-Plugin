@@ -1801,6 +1801,7 @@ public class OptimizeGUI extends JFrame {
 		JLabel lblNewLabel_3_1_4_2_1 = new JLabel("Combine Overlays:");
 		lblNewLabel_3_1_4_2_1.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_4_2_1 = new GridBagConstraints();
+		gbc_lblNewLabel_3_1_4_2_1.anchor = GridBagConstraints.WEST;
 		gbc_lblNewLabel_3_1_4_2_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_3_1_4_2_1.gridx = 3;
 		gbc_lblNewLabel_3_1_4_2_1.gridy = 1;
