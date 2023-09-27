@@ -328,4 +328,43 @@ public class LabelEditor {
 	
 	
 	
+	/**
+	 * Short gpu method for returning binary object outlines.
+	 * 
+	 * @param imp A labelled image to detect the edges of.
+	 * @return imp of binary label edges.
+	 */
+	
+	public ImagePlus detectEdgesBinary(ImagePlus imp) {
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		ClearCLBuffer input = clij2.push(imp);
+		ClearCLBuffer output = clij2.create(input);
+		clij2.detectLabelEdges(input, output);
+		ImagePlus binaryEdges = clij2.pull(output);
+		clij2.clear();
+		return binaryEdges;
+	}
+	
+	
+	
+	/**
+	 * Short gpu method for returning labelled object outlines.
+	 * 
+	 * @param imp A labelled image to detect the edges of.
+	 * @return imp of label edges.
+	 */
+	public ImagePlus detectEdgesLabelled(ImagePlus imp) {
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		ClearCLBuffer input = clij2.push(imp);
+		ClearCLBuffer output = clij2.create(input);
+		clij2.reduceLabelsToLabelEdges(input, output);
+		ImagePlus labelledEdges = clij2.pull(output);
+		clij2.clear();
+		return labelledEdges;
+	}
+	
+	
+	
 }// end of LabelEditor class
