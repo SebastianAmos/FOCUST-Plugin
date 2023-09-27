@@ -127,7 +127,7 @@ public class OptimizeGUI extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Optimization");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1102, 628);
+		setBounds(100, 100, 1159, 628);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 240, 240));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -230,132 +230,144 @@ public class OptimizeGUI extends JFrame {
 		JPanel pnlVariable = new JPanel();
 		pnlMain.add(pnlVariable);
 		GridBagLayout gbl_pnlVariable = new GridBagLayout();
-		gbl_pnlVariable.columnWidths = new int[]{100, 0, 0};
-		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 0, 30, 0, 35, 0, 0};
+		gbl_pnlVariable.columnWidths = new int[]{129, 0, 0};
+		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 30, 30, 0, 35, 0, 0};
 		gbl_pnlVariable.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlVariable.setLayout(gbl_pnlVariable);
 		
-		JButton btnNewButton_1 = new JButton("Previous");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1.insets = new Insets(0, 5, 5, 5);
-		gbc_btnNewButton_1.gridx = 0;
-		gbc_btnNewButton_1.gridy = 0;
-		pnlVariable.add(btnNewButton_1, gbc_btnNewButton_1);
-		btnNewButton_1.setFont(new Font("Arial", Font.BOLD, 14));
+		JButton btnPrevious = new JButton("Previous");
+		GridBagConstraints gbc_btnPrevious = new GridBagConstraints();
+		gbc_btnPrevious.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnPrevious.insets = new Insets(0, 5, 5, 5);
+		gbc_btnPrevious.gridx = 0;
+		gbc_btnPrevious.gridy = 0;
+		pnlVariable.add(btnPrevious, gbc_btnPrevious);
+		btnPrevious.setFont(new Font("Arial", Font.BOLD, 14));
 		
-		JButton btnNewButton_1_1 = new JButton("      Next      ");
-		btnNewButton_1_1.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_btnNewButton_1_1 = new GridBagConstraints();
-		gbc_btnNewButton_1_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnNewButton_1_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnNewButton_1_1.gridx = 1;
-		gbc_btnNewButton_1_1.gridy = 0;
-		pnlVariable.add(btnNewButton_1_1, gbc_btnNewButton_1_1);
+		JButton btnNext = new JButton("      Next      ");
+		btnNext.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_btnNext = new GridBagConstraints();
+		gbc_btnNext.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnNext.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNext.gridx = 1;
+		gbc_btnNext.gridy = 0;
+		pnlVariable.add(btnNext, gbc_btnNext);
 		
-		JLabel lblNewLabel_3_1_4 = new JLabel("Primary Objects:");
-		lblNewLabel_3_1_4.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_3_1_4.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_4.gridx = 0;
-		gbc_lblNewLabel_3_1_4.gridy = 1;
-		pnlVariable.add(lblNewLabel_3_1_4, gbc_lblNewLabel_3_1_4);
+		JLabel lblPrimaryOverlay = new JLabel("Primary Objects:");
+		lblPrimaryOverlay.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_lblPrimaryOverlay = new GridBagConstraints();
+		gbc_lblPrimaryOverlay.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblPrimaryOverlay.insets = new Insets(0, 5, 5, 5);
+		gbc_lblPrimaryOverlay.gridx = 0;
+		gbc_lblPrimaryOverlay.gridy = 1;
+		pnlVariable.add(lblPrimaryOverlay, gbc_lblPrimaryOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3 = new JCheckBox("Display original?");
-		lblNewLabel_3_1_4_3.setSelected(true);
-		lblNewLabel_3_1_4_3.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_3_1_4_3.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_4_3.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3.gridy = 2;
-		pnlVariable.add(lblNewLabel_3_1_4_3, gbc_lblNewLabel_3_1_4_3);
+		JCheckBox ckbPrimaryDisplay = new JCheckBox("Display original?");
+		ckbPrimaryDisplay.setSelected(true);
+		ckbPrimaryDisplay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbPrimaryDisplay = new GridBagConstraints();
+		gbc_ckbPrimaryDisplay.fill = GridBagConstraints.HORIZONTAL;
+		gbc_ckbPrimaryDisplay.insets = new Insets(0, 5, 5, 5);
+		gbc_ckbPrimaryDisplay.gridx = 0;
+		gbc_ckbPrimaryDisplay.gridy = 2;
+		pnlVariable.add(ckbPrimaryDisplay, gbc_ckbPrimaryDisplay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1 = new JCheckBox("With overlay?");
-		lblNewLabel_3_1_4_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_3_1_4_3_1.gridx = 1;
-		gbc_lblNewLabel_3_1_4_3_1.gridy = 2;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1, gbc_lblNewLabel_3_1_4_3_1);
+		JCheckBox ckbPrimaryDisplayOverlay = new JCheckBox("With overlay?");
+		ckbPrimaryDisplayOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbPrimaryDisplayOverlay = new GridBagConstraints();
+		gbc_ckbPrimaryDisplayOverlay.insets = new Insets(0, 0, 5, 0);
+		gbc_ckbPrimaryDisplayOverlay.gridx = 1;
+		gbc_ckbPrimaryDisplayOverlay.gridy = 2;
+		pnlVariable.add(ckbPrimaryDisplayOverlay, gbc_ckbPrimaryDisplayOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1_2 = new JCheckBox("Combine overlay");
-		lblNewLabel_3_1_4_3_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3_1_4_3_1_2.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3_1_2.gridy = 3;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1_2, gbc_lblNewLabel_3_1_4_3_1_2);
+		JSeparator horizontalSeparator_1 = new JSeparator();
+		horizontalSeparator_1.setForeground(new Color(169, 169, 169));
+		horizontalSeparator_1.setBackground(Color.WHITE);
+		GridBagConstraints gbc_horizontalSeparator_1 = new GridBagConstraints();
+		gbc_horizontalSeparator_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_horizontalSeparator_1.gridwidth = 2;
+		gbc_horizontalSeparator_1.insets = new Insets(0, 5, 5, 5);
+		gbc_horizontalSeparator_1.gridx = 0;
+		gbc_horizontalSeparator_1.gridy = 3;
+		pnlVariable.add(horizontalSeparator_1, gbc_horizontalSeparator_1);
 		
-		JLabel lblNewLabel_3_1_4_1 = new JLabel("Secondary Objects:");
-		lblNewLabel_3_1_4_1.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_3_1_4_1.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_4_1.gridx = 0;
-		gbc_lblNewLabel_3_1_4_1.gridy = 4;
-		pnlVariable.add(lblNewLabel_3_1_4_1, gbc_lblNewLabel_3_1_4_1);
+		JLabel lblSecondaryOverlay = new JLabel("Secondary Objects:");
+		lblSecondaryOverlay.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_lblSecondaryOverlay = new GridBagConstraints();
+		gbc_lblSecondaryOverlay.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblSecondaryOverlay.insets = new Insets(0, 5, 5, 5);
+		gbc_lblSecondaryOverlay.gridx = 0;
+		gbc_lblSecondaryOverlay.gridy = 4;
+		pnlVariable.add(lblSecondaryOverlay, gbc_lblSecondaryOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_2 = new JCheckBox("Display original?");
-		lblNewLabel_3_1_4_3_2.setSelected(true);
-		lblNewLabel_3_1_4_3_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3_1_4_3_2.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3_2.gridy = 5;
-		pnlVariable.add(lblNewLabel_3_1_4_3_2, gbc_lblNewLabel_3_1_4_3_2);
+		JCheckBox ckbSecondaryDisplay = new JCheckBox("Display original?");
+		ckbSecondaryDisplay.setSelected(true);
+		ckbSecondaryDisplay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSecondaryDisplay = new GridBagConstraints();
+		gbc_ckbSecondaryDisplay.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbSecondaryDisplay.gridx = 0;
+		gbc_ckbSecondaryDisplay.gridy = 5;
+		pnlVariable.add(ckbSecondaryDisplay, gbc_ckbSecondaryDisplay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1_1 = new JCheckBox("With overlay?");
-		lblNewLabel_3_1_4_3_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_3_1_4_3_1_1.gridx = 1;
-		gbc_lblNewLabel_3_1_4_3_1_1.gridy = 5;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1_1, gbc_lblNewLabel_3_1_4_3_1_1);
+		JCheckBox ckbSecondaryDisplayOverlay = new JCheckBox("With overlay?");
+		ckbSecondaryDisplayOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSecondaryDisplayOverlay = new GridBagConstraints();
+		gbc_ckbSecondaryDisplayOverlay.insets = new Insets(0, 0, 5, 0);
+		gbc_ckbSecondaryDisplayOverlay.gridx = 1;
+		gbc_ckbSecondaryDisplayOverlay.gridy = 5;
+		pnlVariable.add(ckbSecondaryDisplayOverlay, gbc_ckbSecondaryDisplayOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1_2_1 = new JCheckBox("Combine overlay");
-		lblNewLabel_3_1_4_3_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1_2_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1_2_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3_1_4_3_1_2_1.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3_1_2_1.gridy = 6;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1_2_1, gbc_lblNewLabel_3_1_4_3_1_2_1);
+		JSeparator horizontalSeparator_1_1 = new JSeparator();
+		horizontalSeparator_1_1.setForeground(new Color(169, 169, 169));
+		horizontalSeparator_1_1.setBackground(Color.WHITE);
+		GridBagConstraints gbc_horizontalSeparator_1_1 = new GridBagConstraints();
+		gbc_horizontalSeparator_1_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_horizontalSeparator_1_1.gridwidth = 2;
+		gbc_horizontalSeparator_1_1.insets = new Insets(0, 5, 5, 5);
+		gbc_horizontalSeparator_1_1.gridx = 0;
+		gbc_horizontalSeparator_1_1.gridy = 6;
+		pnlVariable.add(horizontalSeparator_1_1, gbc_horizontalSeparator_1_1);
 		
-		JLabel lblNewLabel_3_1_4_2 = new JLabel("Tertiary Objects:");
-		lblNewLabel_3_1_4_2.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_3_1_4_2.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_3_1_4_2.gridx = 0;
-		gbc_lblNewLabel_3_1_4_2.gridy = 7;
-		pnlVariable.add(lblNewLabel_3_1_4_2, gbc_lblNewLabel_3_1_4_2);
+		JLabel lblTertiaryOverlay = new JLabel("Tertiary Objects:");
+		lblTertiaryOverlay.setEnabled(false);
+		lblTertiaryOverlay.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_lblTertiaryOverlay = new GridBagConstraints();
+		gbc_lblTertiaryOverlay.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblTertiaryOverlay.insets = new Insets(0, 5, 5, 5);
+		gbc_lblTertiaryOverlay.gridx = 0;
+		gbc_lblTertiaryOverlay.gridy = 7;
+		pnlVariable.add(lblTertiaryOverlay, gbc_lblTertiaryOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_2_1 = new JCheckBox("Display original?");
-		lblNewLabel_3_1_4_3_2_1.setSelected(true);
-		lblNewLabel_3_1_4_3_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_2_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_2_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3_1_4_3_2_1.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3_2_1.gridy = 8;
-		pnlVariable.add(lblNewLabel_3_1_4_3_2_1, gbc_lblNewLabel_3_1_4_3_2_1);
+		JCheckBox ckbTertiaryDisplay = new JCheckBox("Display original?");
+		ckbTertiaryDisplay.setEnabled(false);
+		ckbTertiaryDisplay.setSelected(true);
+		ckbTertiaryDisplay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbTertiaryDisplay = new GridBagConstraints();
+		gbc_ckbTertiaryDisplay.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbTertiaryDisplay.gridx = 0;
+		gbc_ckbTertiaryDisplay.gridy = 8;
+		pnlVariable.add(ckbTertiaryDisplay, gbc_ckbTertiaryDisplay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1_1_1 = new JCheckBox("With overlay?");
-		lblNewLabel_3_1_4_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1_1_1 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1_1_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_3_1_4_3_1_1_1.gridx = 1;
-		gbc_lblNewLabel_3_1_4_3_1_1_1.gridy = 8;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1_1_1, gbc_lblNewLabel_3_1_4_3_1_1_1);
+		JCheckBox ckbTertiaryDisplayOverlay = new JCheckBox("With overlay?");
+		ckbTertiaryDisplayOverlay.setEnabled(false);
+		ckbTertiaryDisplayOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbTertiaryDisplayOverlay = new GridBagConstraints();
+		gbc_ckbTertiaryDisplayOverlay.insets = new Insets(0, 0, 5, 0);
+		gbc_ckbTertiaryDisplayOverlay.gridx = 1;
+		gbc_ckbTertiaryDisplayOverlay.gridy = 8;
+		pnlVariable.add(ckbTertiaryDisplayOverlay, gbc_ckbTertiaryDisplayOverlay);
 		
-		JCheckBox lblNewLabel_3_1_4_3_1_2_2 = new JCheckBox("Combine overlay");
-		lblNewLabel_3_1_4_3_1_2_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_3_1_4_3_1_2_2 = new GridBagConstraints();
-		gbc_lblNewLabel_3_1_4_3_1_2_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3_1_4_3_1_2_2.gridx = 0;
-		gbc_lblNewLabel_3_1_4_3_1_2_2.gridy = 9;
-		pnlVariable.add(lblNewLabel_3_1_4_3_1_2_2, gbc_lblNewLabel_3_1_4_3_1_2_2);
+		JSeparator horizontalSeparator_1_1_1 = new JSeparator();
+		horizontalSeparator_1_1_1.setForeground(new Color(169, 169, 169));
+		horizontalSeparator_1_1_1.setBackground(Color.WHITE);
+		GridBagConstraints gbc_horizontalSeparator_1_1_1 = new GridBagConstraints();
+		gbc_horizontalSeparator_1_1_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_horizontalSeparator_1_1_1.gridwidth = 2;
+		gbc_horizontalSeparator_1_1_1.insets = new Insets(0, 5, 5, 5);
+		gbc_horizontalSeparator_1_1_1.gridx = 0;
+		gbc_horizontalSeparator_1_1_1.gridy = 9;
+		pnlVariable.add(horizontalSeparator_1_1_1, gbc_horizontalSeparator_1_1_1);
 		
 		JPanel pnlKillBorders = new JPanel();
 		GridBagConstraints gbc_pnlKillBorders = new GridBagConstraints();
@@ -997,7 +1009,7 @@ public class OptimizeGUI extends JFrame {
 		cbSecondaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryFilter = new GridBagConstraints();
 		gbc_cbSecondaryFilter.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbSecondaryFilter.insets = new Insets(0, 0, 5, 0);
+		gbc_cbSecondaryFilter.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryFilter.gridx = 1;
 		gbc_cbSecondaryFilter.gridy = 5;
 		pnlSecondary.add(cbSecondaryFilter, gbc_cbSecondaryFilter);
@@ -1130,7 +1142,7 @@ public class OptimizeGUI extends JFrame {
 		txtSecondaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryClassiferDirectory.setColumns(4);
 		GridBagConstraints gbc_txtSecondaryClassiferDirectory = new GridBagConstraints();
-		gbc_txtSecondaryClassiferDirectory.insets = new Insets(0, 0, 5, 0);
+		gbc_txtSecondaryClassiferDirectory.insets = new Insets(0, 0, 5, 5);
 		gbc_txtSecondaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtSecondaryClassiferDirectory.gridx = 1;
 		gbc_txtSecondaryClassiferDirectory.gridy = 9;
@@ -1153,7 +1165,7 @@ public class OptimizeGUI extends JFrame {
 		cbSecondaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryMethod = new GridBagConstraints();
 		gbc_cbSecondaryMethod.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cbSecondaryMethod.insets = new Insets(0, 0, 5, 0);
+		gbc_cbSecondaryMethod.insets = new Insets(0, 0, 5, 5);
 		gbc_cbSecondaryMethod.gridx = 1;
 		gbc_cbSecondaryMethod.gridy = 8;
 		pnlSecondary.add(cbSecondaryMethod, gbc_cbSecondaryMethod);
@@ -1733,6 +1745,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiary.add(cbTertiaryMethodThreshold, gbc_cbTertiaryMethodThreshold);
 		
 		JButton btnNewButton_3 = new JButton("Process");
+		btnNewButton_3.setEnabled(false);
 		btnNewButton_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
 		gbc_btnNewButton_3.insets = new Insets(0, 0, 0, 5);
@@ -1744,18 +1757,28 @@ public class OptimizeGUI extends JFrame {
 		
 		JPanel pnlFooter = new JPanel();
 		GridBagConstraints gbc_pnlFooter = new GridBagConstraints();
-		gbc_pnlFooter.fill = GridBagConstraints.HORIZONTAL;
-		gbc_pnlFooter.anchor = GridBagConstraints.SOUTH;
+		gbc_pnlFooter.fill = GridBagConstraints.BOTH;
 		gbc_pnlFooter.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlFooter.gridx = 0;
 		gbc_pnlFooter.gridy = 2;
 		contentPane.add(pnlFooter, gbc_pnlFooter);
 		GridBagLayout gbl_pnlFooter = new GridBagLayout();
-		gbl_pnlFooter.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlFooter.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_pnlFooter.columnWeights = new double[]{0.0, 0.0, 0.0};
-		gbl_pnlFooter.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlFooter.columnWidths = new int[]{0, 140, 30, 30, 30, 30, 0, 0, 0, 0, 30};
+		gbl_pnlFooter.rowHeights = new int[] {0, 0};
+		gbl_pnlFooter.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0};
+		gbl_pnlFooter.rowWeights = new double[]{0.0, 0.0, 0.0};
 		pnlFooter.setLayout(gbl_pnlFooter);
+		
+		JSeparator horizontalSeparator = new JSeparator();
+		horizontalSeparator.setForeground(new Color(169, 169, 169));
+		horizontalSeparator.setBackground(new Color(255, 255, 255));
+		GridBagConstraints gbc_horizontalSeparator = new GridBagConstraints();
+		gbc_horizontalSeparator.fill = GridBagConstraints.HORIZONTAL;
+		gbc_horizontalSeparator.gridwidth = 11;
+		gbc_horizontalSeparator.insets = new Insets(0, 0, 5, 0);
+		gbc_horizontalSeparator.gridx = 0;
+		gbc_horizontalSeparator.gridy = 0;
+		pnlFooter.add(horizontalSeparator, gbc_horizontalSeparator);
 		
 		JButton btnBackToMenu = new JButton("Back to Menu");
 		btnBackToMenu.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1766,17 +1789,6 @@ public class OptimizeGUI extends JFrame {
 		gbc_btnBackToMenu.gridy = 1;
 		pnlFooter.add(btnBackToMenu, gbc_btnBackToMenu);
 		
-		JSeparator separator_1_1_1 = new JSeparator();
-		separator_1_1_1.setForeground(new Color(169, 169, 169));
-		separator_1_1_1.setBackground(Color.WHITE);
-		GridBagConstraints gbc_separator_1_1_1 = new GridBagConstraints();
-		gbc_separator_1_1_1.anchor = GridBagConstraints.WEST;
-		gbc_separator_1_1_1.gridwidth = 7;
-		gbc_separator_1_1_1.insets = new Insets(0, 0, 5, 0);
-		gbc_separator_1_1_1.gridx = 0;
-		gbc_separator_1_1_1.gridy = 0;
-		pnlFooter.add(separator_1_1_1, gbc_separator_1_1_1);
-		
 		JButton btnLoadParameters = new JButton("Load Configuration");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
@@ -1786,15 +1798,81 @@ public class OptimizeGUI extends JFrame {
 		gbc_btnLoadParameters.gridy = 1;
 		pnlFooter.add(btnLoadParameters, gbc_btnLoadParameters);
 		
-		JButton btnRunAnalysis = new JButton("Save Configuration");
-		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
-		gbc_btnRunAnalysis.gridwidth = 2;
-		gbc_btnRunAnalysis.anchor = GridBagConstraints.SOUTHWEST;
-		gbc_btnRunAnalysis.insets = new Insets(0, 0, 0, 5);
-		gbc_btnRunAnalysis.gridx = 0;
-		gbc_btnRunAnalysis.gridy = 2;
-		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
+		JLabel lblNewLabel_3_1_4_2_1 = new JLabel("Combine Overlays:");
+		lblNewLabel_3_1_4_2_1.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_lblNewLabel_3_1_4_2_1 = new GridBagConstraints();
+		gbc_lblNewLabel_3_1_4_2_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3_1_4_2_1.gridx = 3;
+		gbc_lblNewLabel_3_1_4_2_1.gridy = 1;
+		pnlFooter.add(lblNewLabel_3_1_4_2_1, gbc_lblNewLabel_3_1_4_2_1);
+		
+		JCheckBox ckbPrimaryOverlay = new JCheckBox("Primary Objects");
+		ckbPrimaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbPrimaryOverlay = new GridBagConstraints();
+		gbc_ckbPrimaryOverlay.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbPrimaryOverlay.gridx = 4;
+		gbc_ckbPrimaryOverlay.gridy = 1;
+		pnlFooter.add(ckbPrimaryOverlay, gbc_ckbPrimaryOverlay);
+		
+		JCheckBox ckbSecondaryOverlay = new JCheckBox("Secondary Objects");
+		ckbSecondaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSecondaryOverlay = new GridBagConstraints();
+		gbc_ckbSecondaryOverlay.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbSecondaryOverlay.gridx = 5;
+		gbc_ckbSecondaryOverlay.gridy = 1;
+		pnlFooter.add(ckbSecondaryOverlay, gbc_ckbSecondaryOverlay);
+		
+		JCheckBox ckbTertiaryOverlay = new JCheckBox("Tertiary Objects");
+		ckbTertiaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbTertiaryOverlay = new GridBagConstraints();
+		gbc_ckbTertiaryOverlay.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbTertiaryOverlay.gridx = 6;
+		gbc_ckbTertiaryOverlay.gridy = 1;
+		pnlFooter.add(ckbTertiaryOverlay, gbc_ckbTertiaryOverlay);
+		
+		JButton btnUpdateOverlays = new JButton("Update Overlays");
+		btnUpdateOverlays.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnUpdateOverlays = new GridBagConstraints();
+		gbc_btnUpdateOverlays.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnUpdateOverlays.gridwidth = 2;
+		gbc_btnUpdateOverlays.insets = new Insets(0, 0, 5, 5);
+		gbc_btnUpdateOverlays.gridx = 7;
+		gbc_btnUpdateOverlays.gridy = 1;
+		pnlFooter.add(btnUpdateOverlays, gbc_btnUpdateOverlays);
+		
+		JButton btnSaveConfiguration = new JButton("Save Configuration");
+		btnSaveConfiguration.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_btnSaveConfiguration = new GridBagConstraints();
+		gbc_btnSaveConfiguration.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnSaveConfiguration.gridwidth = 2;
+		gbc_btnSaveConfiguration.anchor = GridBagConstraints.SOUTH;
+		gbc_btnSaveConfiguration.insets = new Insets(0, 0, 0, 5);
+		gbc_btnSaveConfiguration.gridx = 0;
+		gbc_btnSaveConfiguration.gridy = 2;
+		pnlFooter.add(btnSaveConfiguration, gbc_btnSaveConfiguration);
+		
+		JSeparator verticalSeparator = new JSeparator();
+		verticalSeparator.setOrientation(SwingConstants.VERTICAL);
+		verticalSeparator.setForeground(new Color(169, 169, 169));
+		verticalSeparator.setBackground(Color.WHITE);
+		GridBagConstraints gbc_verticalSeparator = new GridBagConstraints();
+		gbc_verticalSeparator.anchor = GridBagConstraints.WEST;
+		gbc_verticalSeparator.fill = GridBagConstraints.VERTICAL;
+		gbc_verticalSeparator.gridheight = 2;
+		gbc_verticalSeparator.insets = new Insets(0, 0, 0, 5);
+		gbc_verticalSeparator.gridx = 2;
+		gbc_verticalSeparator.gridy = 1;
+		pnlFooter.add(verticalSeparator, gbc_verticalSeparator);
+		
+		JButton btnJumpToAnalysis = new JButton("Analysis");
+		btnJumpToAnalysis.setHorizontalAlignment(SwingConstants.LEFT);
+		btnJumpToAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_btnJumpToAnalysis = new GridBagConstraints();
+		gbc_btnJumpToAnalysis.anchor = GridBagConstraints.WEST;
+		gbc_btnJumpToAnalysis.insets = new Insets(0, 0, 0, 5);
+		gbc_btnJumpToAnalysis.gridx = 3;
+		gbc_btnJumpToAnalysis.gridy = 2;
+		pnlFooter.add(btnJumpToAnalysis, gbc_btnJumpToAnalysis);
 		
 		
 	
@@ -1832,11 +1910,19 @@ public class OptimizeGUI extends JFrame {
 						comp.setEnabled(false);
 					}
 					ckbTertiary.setEnabled(true);
+					lblTertiaryOverlay.setEnabled(false);
+					ckbTertiaryDisplay.setEnabled(false);
+					ckbTertiaryDisplayOverlay.setEnabled(false);
+
 				} else if(ckbTertiary.isSelected()) {
 					for(Component comp:guiHelper.getComponents(pnlTertiary)) {
 						comp.setEnabled(true);
 						txtTertiaryMethodThreshold.setEnabled(false);
 					}
+					lblTertiaryOverlay.setEnabled(true);
+					ckbTertiaryDisplay.setEnabled(true);
+					ckbTertiaryDisplayOverlay.setEnabled(true);
+
 				}
 			}
 		});
