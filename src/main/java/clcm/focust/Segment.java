@@ -552,7 +552,7 @@ public class Segment {
 						tertiaryFinalResults.setColumn("C3_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 						tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 						
-					
+						
 						
 						
 					} // end of single image loop!!
