@@ -37,6 +37,7 @@ public class OptimizeHelpers {
 	/**
 	 * Set the image index to the next image in the list then initialise that image.
 	 */
+	
 	public void loadNext() {
 		if(gui.currentIndex < gui.list.length - 1) {
 			gui.currentIndex = ++gui.currentIndex;
@@ -48,27 +49,61 @@ public class OptimizeHelpers {
 	/**
 	 * Set the image index to the previous image in the list then initialise that image.
 	 */
+	
 	public void loadPrevious() {
 		if(gui.currentIndex > 0 ) {
 			gui.currentIndex = --gui.currentIndex;
 			initialiseImage();
 		}
 	}
-
+	
+	
 	
 	/**
-	 * Combine the images provided together.
+	 * Merge the provided images together into a multichannel composite.
 	 * 
-	 * @param impArray An array of images to merge in order.
-	 * @return a composite image that contains multiple channels.
+	 * @param channels An array of images to combine in order.
+	 * @return Composite image of all images provided.
 	 */
 	
-	public ImagePlus mergeAndDisplay(ImagePlus[] impArray) {
+	public ImagePlus createComposite(ImagePlus[] channels) {
+
 		
-		
-		
-		return null;
+		ImagePlus img;
+
+		// display the image if array only contains a single element
+		if(channels.length == 1) {
+			img = channels[0];
+		} else {
+
+			// images must be open for merge to work.
+			for (ImagePlus imp : channels) {
+				imp.show();
+			}
+
+			StringBuilder channelNames = new StringBuilder();
+
+			for (int i = 0; i < channels.length; i++) {
+				if(i > 0 ) {
+					channelNames.append(",");
+				}
+				channelNames.append("c").append(i + 1).append("=[").append(channels[i].getTitle()).append("]");
+			}
+
+			img = new ImagePlus();
+
+			// "create" generates a composite, rather than a merge. "keep" duplicates the images to merge them nondestructively.
+			IJ.run(img,"Merge Channels...", channelNames.toString() + " create keep");
+
+			// close the open images.
+			for (ImagePlus imp : channels) {
+				imp.close();
+			}
+		}
+
+
+		return img;
+
 	}
-	
-	
+
 }
