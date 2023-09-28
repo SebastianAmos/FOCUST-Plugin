@@ -349,7 +349,7 @@ public class LabelEditor {
 	
 	
 	/**
-	 * Short gpu method for returning labelled object outlines.
+	 * GPU method for returning labelled object outlines.
 	 * 
 	 * @param imp A labelled image to detect the edges of.
 	 * @return imp of label edges.
