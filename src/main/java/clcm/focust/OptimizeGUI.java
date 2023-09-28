@@ -178,7 +178,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_pnlHeader.gridy = 0;
 		contentPane.add(pnlHeader, gbc_pnlHeader);
 		GridBagLayout gbl_pnlHeader = new GridBagLayout();
-		gbl_pnlHeader.columnWidths = new int[]{0, 0, 86, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_pnlHeader.columnWidths = new int[]{0, 0, 86, 0, 0, 0, 305, 0, 0, 0, 0, 0, 0};
 		gbl_pnlHeader.rowHeights = new int[]{0, 0, 19, 0};
 		gbl_pnlHeader.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_pnlHeader.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -194,11 +194,12 @@ public class OptimizeGUI extends JFrame {
 		pnlHeader.add(lblNewLabel, gbc_lblNewLabel);
 		
 		JButton btnHelp = new JButton("Help");
+		
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
 		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnHelp.gridwidth = 4;
-		gbc_btnHelp.insets = new Insets(5, 0, 5, 0);
+		gbc_btnHelp.insets = new Insets(5, 0, 5, 5);
 		gbc_btnHelp.gridx = 8;
 		gbc_btnHelp.gridy = 0;
 		pnlHeader.add(btnHelp, gbc_btnHelp);
@@ -240,7 +241,7 @@ public class OptimizeGUI extends JFrame {
 		txtInputDir = new JTextField();
 		txtInputDir.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_txtInputDir = new GridBagConstraints();
-		gbc_txtInputDir.gridwidth = 6;
+		gbc_txtInputDir.gridwidth = 5;
 		gbc_txtInputDir.fill = GridBagConstraints.BOTH;
 		gbc_txtInputDir.anchor = GridBagConstraints.WEST;
 		gbc_txtInputDir.insets = new Insets(0, 0, 5, 5);
@@ -251,6 +252,16 @@ public class OptimizeGUI extends JFrame {
 		
 		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
+		
+		JButton btnAnalysis = new JButton("Analysis");
+		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnAnalysis = new GridBagConstraints();
+		gbc_btnAnalysis.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnAnalysis.gridwidth = 4;
+		gbc_btnAnalysis.insets = new Insets(0, 0, 5, 5);
+		gbc_btnAnalysis.gridx = 8;
+		gbc_btnAnalysis.gridy = 1;
+		pnlHeader.add(btnAnalysis, gbc_btnAnalysis);
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setForeground(new Color(169, 169, 169));
@@ -1859,6 +1870,7 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnBackToMenu, gbc_btnBackToMenu);
 		
 		JButton btnLoadParameters = new JButton("Load Configuration");
+		
 		btnLoadParameters.setToolTipText("Browse for a previously saved configuration.");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
@@ -1868,7 +1880,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_btnLoadParameters.gridy = 1;
 		pnlFooter.add(btnLoadParameters, gbc_btnLoadParameters);
 		
-		JLabel lblNewLabel_3_1_4_2_1 = new JLabel("Combine Overlays:");
+		JLabel lblNewLabel_3_1_4_2_1 = new JLabel("Combine Outputs:");
 		lblNewLabel_3_1_4_2_1.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1_4_2_1 = new GridBagConstraints();
 		gbc_lblNewLabel_3_1_4_2_1.anchor = GridBagConstraints.WEST;
@@ -1877,25 +1889,28 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_3_1_4_2_1.gridy = 1;
 		pnlFooter.add(lblNewLabel_3_1_4_2_1, gbc_lblNewLabel_3_1_4_2_1);
 		
-		JCheckBox ckbPrimaryOverlay = new JCheckBox("Primary Objects");
+		JCheckBox ckbPrimaryOverlay = new JCheckBox("Primary Labels");
 		ckbPrimaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbPrimaryOverlay = new GridBagConstraints();
+		gbc_ckbPrimaryOverlay.anchor = GridBagConstraints.WEST;
 		gbc_ckbPrimaryOverlay.insets = new Insets(0, 0, 5, 5);
 		gbc_ckbPrimaryOverlay.gridx = 4;
 		gbc_ckbPrimaryOverlay.gridy = 1;
 		pnlFooter.add(ckbPrimaryOverlay, gbc_ckbPrimaryOverlay);
 		
-		JCheckBox ckbSecondaryOverlay = new JCheckBox("Secondary Objects");
+		JCheckBox ckbSecondaryOverlay = new JCheckBox("Secondary Labels");
 		ckbSecondaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbSecondaryOverlay = new GridBagConstraints();
+		gbc_ckbSecondaryOverlay.anchor = GridBagConstraints.WEST;
 		gbc_ckbSecondaryOverlay.insets = new Insets(0, 0, 5, 5);
 		gbc_ckbSecondaryOverlay.gridx = 5;
 		gbc_ckbSecondaryOverlay.gridy = 1;
 		pnlFooter.add(ckbSecondaryOverlay, gbc_ckbSecondaryOverlay);
 		
-		JCheckBox ckbTertiaryOverlay = new JCheckBox("Tertiary Objects");
+		JCheckBox ckbTertiaryOverlay = new JCheckBox("Tertiary Labels");
 		ckbTertiaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbTertiaryOverlay = new GridBagConstraints();
+		gbc_ckbTertiaryOverlay.anchor = GridBagConstraints.WEST;
 		gbc_ckbTertiaryOverlay.insets = new Insets(0, 0, 5, 5);
 		gbc_ckbTertiaryOverlay.gridx = 6;
 		gbc_ckbTertiaryOverlay.gridy = 1;
@@ -1936,20 +1951,32 @@ public class OptimizeGUI extends JFrame {
 		gbc_verticalSeparator.gridy = 1;
 		pnlFooter.add(verticalSeparator, gbc_verticalSeparator);
 		
-		JButton btnJumpToAnalysis = new JButton("Analysis");
-		btnJumpToAnalysis.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnJumpToAnalysis.setToolTipText("Jump to the analysis interface with the current configuration.");
-		btnJumpToAnalysis.setHorizontalAlignment(SwingConstants.LEFT);
-		btnJumpToAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
-		GridBagConstraints gbc_btnJumpToAnalysis = new GridBagConstraints();
-		gbc_btnJumpToAnalysis.anchor = GridBagConstraints.WEST;
-		gbc_btnJumpToAnalysis.insets = new Insets(0, 0, 0, 5);
-		gbc_btnJumpToAnalysis.gridx = 3;
-		gbc_btnJumpToAnalysis.gridy = 2;
-		pnlFooter.add(btnJumpToAnalysis, gbc_btnJumpToAnalysis);
+		JCheckBox chckbxPrimaryOutlines = new JCheckBox("Primary Outlines");
+		chckbxPrimaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_chckbxPrimaryOutlines = new GridBagConstraints();
+		gbc_chckbxPrimaryOutlines.anchor = GridBagConstraints.WEST;
+		gbc_chckbxPrimaryOutlines.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxPrimaryOutlines.gridx = 4;
+		gbc_chckbxPrimaryOutlines.gridy = 2;
+		pnlFooter.add(chckbxPrimaryOutlines, gbc_chckbxPrimaryOutlines);
+		
+		JCheckBox chckbxSecondaryOutlines = new JCheckBox("Secondary Outlines");
+		chckbxSecondaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_chckbxSecondaryOutlines = new GridBagConstraints();
+		gbc_chckbxSecondaryOutlines.anchor = GridBagConstraints.WEST;
+		gbc_chckbxSecondaryOutlines.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxSecondaryOutlines.gridx = 5;
+		gbc_chckbxSecondaryOutlines.gridy = 2;
+		pnlFooter.add(chckbxSecondaryOutlines, gbc_chckbxSecondaryOutlines);
+		
+		JCheckBox chckbxTertiaryOutlines = new JCheckBox("Tertiary Edges");
+		chckbxTertiaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_chckbxTertiaryOutlines = new GridBagConstraints();
+		gbc_chckbxTertiaryOutlines.anchor = GridBagConstraints.WEST;
+		gbc_chckbxTertiaryOutlines.insets = new Insets(0, 0, 0, 5);
+		gbc_chckbxTertiaryOutlines.gridx = 6;
+		gbc_chckbxTertiaryOutlines.gridy = 2;
+		pnlFooter.add(chckbxTertiaryOutlines, gbc_chckbxTertiaryOutlines);
 		
 		
 	
@@ -2281,6 +2308,53 @@ public class OptimizeGUI extends JFrame {
 				}
 			}
 		});
+		
+		
+		/*
+		 * Merge selected channel outlines together.
+		 */
+		
+		btnUpdateOverlays.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if(!ckbPrimaryOverlay.isSelected() && !ckbSecondaryOverlay.isSelected() && !ckbTertiaryOverlay.isSelected()) {
+					IJ.showMessage("Please select at least one outline to display.");
+				} else {
+
+					ArrayList<ImagePlus> selectedOutlines = new ArrayList<>();
+
+					int priIndex = cbPrimaryChannel.getSelectedIndex();
+					int secIndex = cbSecondaryChannel.getSelectedIndex();
+					int terIndex = cbTertiaryChannel.getSelectedIndex();
+
+					if(ckbPrimaryOverlay.isSelected()) {
+						selectedOutlines.add(channelArray[priIndex].duplicate());
+					}
+
+					if(ckbSecondaryOverlay.isSelected()) {
+						selectedOutlines.add(channelArray[secIndex].duplicate());
+					}
+
+					if(ckbTertiaryOverlay.isSelected()) {
+						selectedOutlines.add(channelArray[terIndex].duplicate());
+					}
+				
+					
+					ImagePlus[] selectedOutlinesArray = new ImagePlus[selectedOutlines.size()];
+					selectedOutlinesArray = selectedOutlines.toArray(selectedOutlinesArray);
+
+					ImagePlus compositeImage = optimize.createComposite(selectedOutlinesArray);
+
+					// display
+					compositeImage.show();
+
+					selectedOutlines.clear();
+				}
+			}
+		});
+	
+		
+		
 		
 	}
 
