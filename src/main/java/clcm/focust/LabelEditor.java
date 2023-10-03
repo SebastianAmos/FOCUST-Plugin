@@ -6,6 +6,7 @@ import java.util.Map;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
@@ -45,6 +46,35 @@ public class LabelEditor {
 		input.setSlice(input.getNSlices()+1);
 		input.getStack().addSlice(emptySlice);
 		
+	}
+	
+	
+	
+	/**
+	 * Generate a connected components image image, where all original labels are re-labelled.
+	 * Map the new, unique labels for each object in an image, to the old, potenitally duplicate labels of the original.
+	 * 
+	 * @param original
+	 * @return map 
+	 */
+	public Map<Double, Double> trackDuplicates(ImagePlus original) {
+		
+		Map<Double, Double> labels = new HashMap<>();
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+		ClearCLBuffer input = clij2.push(original);
+		ClearCLBuffer cc = clij2.create(input);
+		clij2.connectedComponentsLabelingBox(input, cc);
+		ResultsTable table = new ResultsTable();
+		clij2.statisticsOfLabelledPixels(input, cc, table);
+		
+		for (int i = 0; i < table.size(); i++) {
+			labels.put(table.getValue("IDENTIFER", i), table.getValue("MAX", i));
+		}
+		
+		clij2.clear();
+		return labels;
 	}
 	
 	
@@ -108,7 +138,7 @@ public class LabelEditor {
 							// shared value found, append an index to individualize the label 
 							int newIndex = labelMaps.get(lblMatched) + 1;
 							labelMaps.put(lblMatched, newIndex);
-							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "0" + newIndex));
+							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "0." + newIndex));
 							
 						} else {
 							// new label found, add to the map
@@ -126,7 +156,7 @@ public class LabelEditor {
 	
 	
 	public static ImagePlus reLabel(ImagePlus img) {
-		IJ.run(img, "16-bit", "");
+		IJ.run(img, "32-bit", "");
 		for (int z = 1; z <= img.getStackSize(); z++) {
 			ImageProcessor ipImg = img.getStack().getProcessor(z);
 			for (int y = 0; y < ipImg.getHeight(); y++) {
