@@ -31,7 +31,7 @@ import clcm.focust.speckle.service.SpeckleProcessor;
 import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
 
-public final class FOCUST{
+public final class FOCUST {
 
 	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
 	public static File[] imageFiles;
@@ -57,16 +57,19 @@ public final class FOCUST{
 	 */
 	private FOCUST() {
 		services = new ArrayList<>();
+		ExecutorService dataExecService = Executors.newSingleThreadExecutor();
+
 		/* Data managers. */
-		specklesManager = new DataMapManager<>();
-		speckleResultsManager = new DataMapManager<>();
-		expectedSpeckleResultsManager = new DatumManager<>();
-		configurationManager = new DatumManager<>();
+		specklesManager = new DataMapManager<>(dataExecService);
+		speckleResultsManager = new DataMapManager<>(dataExecService);
+		expectedSpeckleResultsManager = new DatumManager<>(dataExecService);
+		configurationManager = new DatumManager<>(dataExecService);
 
 		/* Services - Speckle. */
-		services.add(new SpeckleProcessor(configurationManager,specklesManager));
+		services.add(new SpeckleProcessor(configurationManager, specklesManager, expectedSpeckleResultsManager));
 		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
-		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager, configurationManager));
+		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager,
+				configurationManager));
 	}
 
 	/**
@@ -115,10 +118,10 @@ public final class FOCUST{
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;
 	}
-	
-	public final DatumManager<SpecklesConfiguration> specklesConfigurationManager(){
+
+	public final DatumManager<SpecklesConfiguration> specklesConfigurationManager() {
 		return configurationManager;
-	} 
+	}
 
 	public static void fileFinder() {
 		try {
@@ -142,5 +145,5 @@ public final class FOCUST{
 			return;
 		}
 	}
-	
+
 }

@@ -1,5 +1,7 @@
 package clcm.focust.speckle.service;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,12 +62,16 @@ public class SpeckleResultsHandlerService implements FOCUSTService {
 		@Override
 		public void dataUpdated(String key, SpeckleResult newData) {
 			if (!expectedKeys.contains(key)) {
+				ijLog("Not expecting this! [" + key);
 				/* We're not expecting this value. Ignore. */
 				return;
 			}
 			cachedValues.put(key, newData);
 			if (checkComplete()) {
 				processCompiledResults();
+			} else {
+				int missing = expectedKeys.size() - cachedValues.size();
+				ijLog(("Incomplete: missing " + missing + " Result(s)"));
 			}
 		}
 
@@ -83,6 +89,7 @@ public class SpeckleResultsHandlerService implements FOCUSTService {
 
 		@Override
 		public void dataUpdated(Datum key, ExpectedSpeckleResults newData) {
+			ijLog("New Expected Results! :" + newData.getResults().toString());
 			expectedKeys = newData.getResults();
 		}
 
@@ -93,9 +100,8 @@ public class SpeckleResultsHandlerService implements FOCUSTService {
 
 	}
 
-	/** TODO. Method checks if all keys of expectedKeys are done. */
 	private boolean checkComplete() {
-		return false;
+		return cachedValues.keySet().containsAll(expectedKeys);
 	}
 
 	/**
@@ -119,8 +125,8 @@ public class SpeckleResultsHandlerService implements FOCUSTService {
 		 * tertiary.forEach((k, v) -> tertiaryTable.setColumn(k, v.toArray(new
 		 * Variable[v.size()])));
 		 */
-		IJ.log("Saving Results Tables...");
-		IJ.log("-------------------------------------------------------");
+		ijLog("Saving Results Tables...");
+		ijLog("-------------------------------------------------------");
 
 		/* Doing this for each image until seb says otherwise. */
 		for (Map.Entry<String, SpeckleResult> entry : cachedValues.entrySet()) {
@@ -143,9 +149,8 @@ public class SpeckleResultsHandlerService implements FOCUSTService {
 
 		// long endTime = System.currentTimeMillis();
 		// double timeSec = (endTime - startTime) / 1000;
-		IJ.log("It took " + /* timeSec */ "NaN" + " seconds to process " + "Some " + " images.");
-		IJ.log("Speckle Batch Protocol Complete!");
-		IJ.getLog();
+		ijLog("It took " + /* timeSec */ "NaN" + " seconds to process " + "Some " + " images.");
+		ijLog("Speckle Batch Protocol Complete!");
 		IJ.saveString(IJ.getLog(), rtConf.getInputDirectory().toString() + "Log.txt");
 	}
 

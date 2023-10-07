@@ -1,10 +1,13 @@
 package clcm.focust.data;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
@@ -39,44 +42,50 @@ public class DataMapManager<K, T extends DataObject>
 	/** The registered data listeners for all keys. */
 	private Set<DataListener<K, T>> allKeyListeners;
 
+	private final ExecutorService updateExecutorService;
+
 	/**
 	 * Constructor.
 	 * 
-	 * @param the class of the key.
+	 * @param what to execute updates upon.
 	 */
-	public DataMapManager() {
+	public DataMapManager(final ExecutorService anExecutorService) {
 		listeners = new HashMap<>();
 		allKeyListeners = new HashSet<>();
+		updateExecutorService = anExecutorService;
 	}
 
 	@Override
 	public final void notifyUpdated(K key, T newData) {
 		/* Receives new piece of data: 1. Store it. 2. Update subscribed classes. */
 		LOGGER.fine(() -> String.format("Data received for key [%s] , Datum [%s]", key, newData));
-		SwingUtilities
-				.invokeLater(() -> IJ.log(String.format("Data received for key [%s] , Datum [%s]", key, newData)));
+		ijLog(String.format("Data received for key [%s] , Datum [%s]", key, newData));
 		objects.put(key, newData);
 		/* TODO Determine and handle overlap. */
-		listeners.getOrDefault(key, new HashSet<>()).forEach(listener -> listener.dataUpdated(key, newData));
-		SwingUtilities
-				.invokeLater(() -> IJ.log(String.format("Data received for key [%s] , Datum [%s]", key, newData)));
+		listeners.getOrDefault(key, new HashSet<>())
+				.forEach(listener -> updateExecutorService.submit(() -> listener.dataUpdated(key, newData)));
+		ijLog(String.format("Data received for key [%s] , Datum [%s]", key, newData));
 		allKeyListeners.forEach(listener -> {
-			SwingUtilities.invokeLater(() -> IJ.log(String.format("Notifying [%s] , Datum [%s]", listener, newData)));
-			listener.dataUpdated(key, newData);
+			updateExecutorService.submit(() -> {
+				ijLog(String.format("Notifying [%s] , Datum [%s]", listener, newData));
+				listener.dataUpdated(key, newData);
+			});
 		});
 
-		LOGGER.finer(() -> String.format("Listeners notified for key [%s], Datum [%s]", key, newData));
+		// LOGGER.finer(() -> String.format("Listeners notified for key [%s], Datum
+		// [%s]", key, newData));
 	}
 
 	@Override
 	public final void notifyDeleted(K key) {
 		LOGGER.fine(() -> String.format("Data deleted for key [%s] ", key));
-		SwingUtilities.invokeLater(() -> IJ.log(String.format("Data deleted for key [%s]", key)));
+		ijLog(String.format("Data deleted for key [%s]", key));
 		objects.remove(key);
 
-		listeners.getOrDefault(key, new HashSet<>()).forEach(listener -> listener.dataDeleted(key));
+		listeners.getOrDefault(key, new HashSet<>())
+				.forEach(listener -> updateExecutorService.submit(() -> listener.dataDeleted(key)));
 		/* TODO Determine and handle overlap. */
-		allKeyListeners.forEach(listener -> listener.dataDeleted(key));
+		allKeyListeners.forEach(listener -> updateExecutorService.submit(() -> listener.dataDeleted(key)));
 
 		LOGGER.finer(() -> String.format("Data delete notification sent for key [%s] by %s", key));
 	}
@@ -88,8 +97,7 @@ public class DataMapManager<K, T extends DataObject>
 
 	@Override
 	public final void registerListener(K key, DataListener<K, T> listener) {
-		SwingUtilities.invokeLater(
-				() -> IJ.log(String.format("Listener %s registered for key [%s]", listener.getClass().getName(), key)));
+		ijLog(String.format("Listener %s registered for key [%s]", listener.getClass().getName(), key));
 		LOGGER.fine(() -> String.format("Listener %s subscribing for [%s]", listener, key));
 		listeners.computeIfAbsent(key, k -> new HashSet<>());
 		listeners.get(key).add(listener);
@@ -97,24 +105,21 @@ public class DataMapManager<K, T extends DataObject>
 
 	@Override
 	public final void registerAllKeysListener(DataListener<K, T> listener) {
-		SwingUtilities.invokeLater(
-				() -> IJ.log(String.format("Listener %s registered for all keys", listener.getClass().getName())));
+		ijLog(String.format("Listener %s registered for all keys", listener.getClass().getName()));
 		LOGGER.fine(() -> String.format("Listener %s subscribing for [All Keys]", listener.getClass().getName()));
 		allKeyListeners.add(listener);
 	}
 
 	@Override
 	public final void deregisterListener(K key, DataListener<K, T> listener) {
-		SwingUtilities.invokeLater(() -> IJ
-				.log(String.format("Listener %s deregistered for key [%s]", listener.getClass().getName(), key)));
+		ijLog(String.format("Listener %s deregistered for key [%s]", listener.getClass().getName(), key));
 		LOGGER.fine(() -> String.format("Listener %s unsubscribing for [%s]", listener, key));
 		Optional.ofNullable(listeners.get(key)).ifPresent(set -> set.remove(listener));
 	}
 
 	@Override
 	public void deregisterAllKeysListener(DataListener<K, T> listener) {
-		SwingUtilities.invokeLater(
-				() -> IJ.log(String.format("Listener %s deregistered for all keys", listener.getClass().getName())));
+		ijLog(String.format("Listener %s deregistered for all keys", listener.getClass().getName()));
 		allKeyListeners.remove(listener);
 	}
 

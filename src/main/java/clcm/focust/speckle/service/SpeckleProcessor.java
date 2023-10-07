@@ -1,20 +1,28 @@
 package clcm.focust.speckle.service;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.swing.SwingUtilities;
 
 import clcm.focust.FOCUSTService;
 import clcm.focust.Segment;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.speckle.ExpectedSpeckleResults;
 import clcm.focust.speckle.SpeckleType;
 import clcm.focust.speckle.Speckles;
 import clcm.focust.speckle.SpecklesConfiguration;
@@ -28,6 +36,7 @@ import ij.plugin.ChannelSplitter;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumSubscriptionService;
+import clcm.focust.data.DatumUpdateService;
 import lombok.RequiredArgsConstructor;
 import net.haesleinhuepf.clij2.CLIJ2;
 
@@ -44,8 +53,13 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 	/** To update to. */
 	private final DataMapUpdateService<String, Speckles> specklesUpdateService;
 
+	/** To tell what we're waiting for! */
+	private final DatumUpdateService<ExpectedSpeckleResults> expectedSpeckleResultsUpdateService;
+
 	/** Runs speckle processing on this service. */
 	private final ExecutorService speckleExeService = Executors.newSingleThreadExecutor();
+	// private final ExecutorService speckleExeService =
+	// Executors.newFixedThreadPool(8);
 
 	@Override
 	public void init() {
@@ -117,9 +131,6 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 		 * tertiaryCount = new ArrayList<>(); }
 		 * 
 		 */
-		ImagePlus primaryObjectsSpeckles;
-		ImagePlus secondaryObjectsSpeckles;
-		ImagePlus tertiaryObjectsSpeckles;
 
 		// If analysis-only-mode, create a new list[] containing image names that DO NOT
 		// match the prefix expectations i.e. are the original images, not the segmented
@@ -129,7 +140,7 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 			for (String imgName : filesList) {
 				if (!imgName.startsWith(Segment.PRIMARYPREFIX) && !imgName.startsWith(Segment.SECONDARYPREFIX)
 						&& !imgName.startsWith(Segment.COREPREFIX) && !imgName.startsWith(Segment.OUTERPREFIX)
-						&& !imgName.startsWith(Segment.TERTIARYPREFIX)) {
+						&& !imgName.startsWith(Segment.TERTIARYPREFIX) && imgName.endsWith(".dv")) {
 					tempList.add(imgName);
 				}
 			}
@@ -146,11 +157,15 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 		Map<String, List<Variable>> secondary = new LinkedHashMap<>();
 		Map<String, List<Variable>> tertiary = new LinkedHashMap<>();
 
-		IJ.log("-------------------------------------------------------");
-		IJ.log("		FOCUST: Speckle Protocol		");
-
+		ijLog("-------------------------------------------------------");
+		ijLog("		FOCUST: Speckle Protocol		");
+		Set<String> expectedKeys = new HashSet<>();
+		Map<String, Speckles> specklesToProcess = new LinkedHashMap<String, Speckles>();
 		// iterate through each image in the list
 		for (String file : filesList) {
+			final ImagePlus primaryObjectsSpeckles;
+			final ImagePlus secondaryObjectsSpeckles;
+			final ImagePlus tertiaryObjectsSpeckles;
 			count++;
 
 			// reset the temp arrays
@@ -160,9 +175,9 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 
 			Path path = f.toPath().resolve(file);
 
-			IJ.log("Processing image " + count + " of " + filesList.length);
-			IJ.log("Current image name: " + file);
-			IJ.log("-------------------------------------------------------");
+			ijLog("Processing image " + count + " of " + filesList.length);
+			ijLog("Current image name: " + file);
+			ijLog("-------------------------------------------------------");
 			ImagePlus imp = IJ.openImage(path.toString());
 			int numberOfChannels = imp.getNChannels();
 
@@ -185,25 +200,23 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 			// NOT ALL DATA WILL BE .nd2 or .dv
 			// TODO lachlan extract analysis
 			if (analysisOnly) {
-				IJ.log("Analysis Only Mode Active: Finding Images...");
-				IJ.log("-------------------------------------------------------");
+				ijLog("Analysis Only Mode Active: Finding Images...");
+				ijLog("-------------------------------------------------------");
 				String fileName = file.replace(".dv", ".tif");
-				IJ.log("Opening:[" + speckleConf.getInputDirectory() + Segment.PRIMARYPREFIX + fileName + "]");
-				primaryObjectsSpeckles = IJ
-						.openImage(speckleConf.getInputDirectory() + Segment.PRIMARYPREFIX + fileName);
-				secondaryObjectsSpeckles = IJ
-						.openImage(speckleConf.getInputDirectory() + Segment.SECONDARYPREFIX + fileName);
-				tertiaryObjectsSpeckles = IJ
-						.openImage(speckleConf.getInputDirectory() + Segment.TERTIARYPREFIX + fileName);
-				IJ.log("Analysis Only Mode Active: Found Images...");
-				IJ.log("-------------------------------------------------------");
+				ijLog("Opening:[" + speckleConf.getInputDirectory() + File.separator + Segment.PRIMARYPREFIX + fileName
+						+ "]");
+				primaryObjectsSpeckles = IJ.openImage(
+						speckleConf.getInputDirectory().resolve(Segment.PRIMARYPREFIX + fileName).toString());
+				secondaryObjectsSpeckles = IJ.openImage(
+						speckleConf.getInputDirectory().resolve(Segment.SECONDARYPREFIX + fileName).toString());
+				tertiaryObjectsSpeckles = IJ.openImage(speckleConf.getInputDirectory()
+						.resolve(File.separator + Segment.TERTIARYPREFIX + fileName).toString());
+				ijLog("Analysis Only Mode Active: Found Images...");
+				ijLog("-------------------------------------------------------");
 			} else {
 				// if analysis mode is F, segment objects based on channel preferences
-				IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
-				IJ.log("-------------------------------------------------------");
-				IJ.log("CLIJ2 CLINFO: [" + CLIJ2.clinfo() + "]");
-				IJ.log("CLIJ2 GPU: [" + CLIJ2.getInstance().getGPUName() + "] OCL:["
-						+ CLIJ2.getInstance().getOpenCLVersion() + "]");
+				ijLog("Analysis Only Mode Not Active: Running Segmentation...");
+				ijLog("-------------------------------------------------------");
 				primaryObjectsSpeckles = Segment.gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice],
 						SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x,
 						SpeckleView.radius_y, SpeckleView.radius_z);
@@ -216,28 +229,46 @@ public class SpeckleProcessor implements DataListener<DataConstants.Datum, Speck
 						SpeckleView.sigma_x3, SpeckleView.sigma_y3, SpeckleView.sigma_z3,
 						SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3,
 						SpeckleView.radius_z3);
-				IJ.log("Analysis Only Mode Not Active: Finished Segmentation...");
-				IJ.log("-------------------------------------------------------");
+				ijLog("Analysis Only Mode Not Active: Finished Segmentation...");
+				ijLog("-------------------------------------------------------");
 			}
 
 			Map<SpeckleType, ImagePlus> speckles = new EnumMap<>(SpeckleType.class);
 
-			IJ.resetMinAndMax(primaryObjectsSpeckles);
-			primaryObjectsSpeckles.setCalibration(cal);
+			try {
+				SwingUtilities.invokeAndWait(() -> IJ.resetMinAndMax(primaryObjectsSpeckles));
+				primaryObjectsSpeckles.setCalibration(cal);
 
-			IJ.resetMinAndMax(secondaryObjectsSpeckles);
-			secondaryObjectsSpeckles.setCalibration(cal);
-
-			IJ.resetMinAndMax(tertiaryObjectsSpeckles);
-			tertiaryObjectsSpeckles.setCalibration(cal);
+				SwingUtilities.invokeAndWait(() -> IJ.resetMinAndMax(secondaryObjectsSpeckles));
+				secondaryObjectsSpeckles.setCalibration(cal);
+				if (tertiaryObjectsSpeckles != null) {
+					SwingUtilities.invokeAndWait(() -> IJ.resetMinAndMax(tertiaryObjectsSpeckles));
+					tertiaryObjectsSpeckles.setCalibration(cal);
+				}
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			speckles.put(SpeckleType.PRIMARY, primaryObjectsSpeckles);
 			speckles.put(SpeckleType.SECONDARY, primaryObjectsSpeckles);
 			speckles.put(SpeckleType.TERTIARY, primaryObjectsSpeckles);
 
-			/** Provide a new speckle for further analysis: */
-			specklesUpdateService.notifyUpdated(file, new Speckles(speckles, Arrays.asList(channelsSpeckle)));
+			/* Provide a new speckle for further analysis: */
+			expectedKeys.add(file);
+			ijLog("AddedExpectedKeys");
+
+			specklesToProcess.put(file, new Speckles(speckles, Arrays.asList(channelsSpeckle)));
+			ijLog("AddedSpecklesToProcess");
 		}
 		/* Await All of the speckles to be done. TODO Process results complete */
+		ijLog("notifying new expected results");
+		expectedSpeckleResultsUpdateService
+				.notifyUpdated(ExpectedSpeckleResults.builder().results(expectedKeys).build());
+		ijLog("notifying with speckles to process");
+		specklesToProcess.forEach(specklesUpdateService::notifyUpdated);
 	}
 }

@@ -1,5 +1,7 @@
 package clcm.focust;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
@@ -60,15 +62,6 @@ public class Segment {
 	public static final String TERTIARYPREFIX = "Tertiary_Objects_";
 	public static final String COREPREFIX = "Inner_Secondary_";
 	public static final String OUTERPREFIX = "Outer_Secondary_";
-
-	/**
-	 * IJ logs the provided string on the EDT.
-	 * 
-	 * @param log the string to log
-	 */
-	public static void threadLog(final String log) {
-		SwingUtilities.invokeLater(() -> IJ.log(log));
-	}
 
 	/**
 	 * Constructor.

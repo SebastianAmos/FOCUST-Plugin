@@ -1,10 +1,14 @@
 package clcm.focust.speckle.service;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.SwingUtilities;
 
 import clcm.focust.FOCUST;
 import clcm.focust.FOCUSTService;
@@ -47,12 +51,13 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 	/** Config manager service. Really this should be injected via constructor. */
 	private final DatumService<SpecklesConfiguration> configMgr;
-	
-	/** Register for speckle updates on this service. */
-	private final DataMapSubscriptionService<String,Speckles> specklesSubService;
 
+	/** Register for speckle updates on this service. */
+	private final DataMapSubscriptionService<String, Speckles> specklesSubService;
+
+	/** Submit results on this service. */
 	private final DataMapUpdateService<String, SpeckleResult> resultsUpdateService;
-	
+
 	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 
 	@Override
@@ -67,6 +72,8 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 	@Override
 	public void dataUpdated(String key, Speckles newData) {
+
+		ijLog("SpeckleService got : " + key);
 		/* LACHIE COMMENTED THIS OUT. (And replaced it ) */
 		// String imgName = "temp"; // TODO obtain this bad boi from data.
 		String imgName = key;
@@ -90,60 +97,60 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 		// If kill borders is selected, then apply the appropriate method
 		switch (rtConf.getKillBordersText()) {
-			case "No":
-				break;
-	
-			case "X + Y":
-				// add padding to Z for primary objects
-				LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
-				final Path saveAsPath = rtConf.getInputDirectory().resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName);
-	
-				IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
-	
-				ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
-				ClearCLBuffer removedBorders = clij2.create(primaryPadded);
-				ClearCLBuffer resetZ = null;
-	
-				// kill borders for primary object
-				clij2.excludeLabelsOnEdges(primaryPadded, removedBorders);
-	
-				// remove the z padding
-				clij2.subStack(removedBorders, resetZ, 1, (int) removedBorders.getDepth() - 1);
-	
-				primaryObjectsSpeckles = clij2.pull(resetZ);
-				clij2.clear();
-	
-				// mask secondary and tertiary objects by remaining primary objects.
-				// THIS CAN BE SENT TO GPU INSTEAD
-				secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-						MULTIPLY_CREATE_STACK_MODE);
-				tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-						MULTIPLY_CREATE_STACK_MODE);
-	
-				break;
-	
-			case "X + Y + Z":
-				// No padding required in Z
-				// Run kill borders on primary objects then mask other object channels
-				ClearCLBuffer primaryLabel = clij2.push(primaryObjectsSpeckles);
-				ClearCLBuffer removedBorder = clij2.create(primaryLabel);
-	
-				clij2.excludeLabelsOnEdges(primaryLabel, removedBorder);
-	
-				primaryObjectsSpeckles = clij2.pull(removedBorder);
-				clij2.clear();
-	
-				secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
-						MULTIPLY_CREATE_STACK_MODE);
-				tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
-						MULTIPLY_CREATE_STACK_MODE);
-	
-				break;
+		case "No":
+			break;
+
+		case "X + Y":
+			// add padding to Z for primary objects
+			LabelEditor.padTopAndBottom(primaryObjectsSpeckles);
+			final Path saveAsPath = rtConf.getInputDirectory().resolve(SpeckleType.PRIMARY.getPaddedPrefix() + imgName);
+
+			IJ.saveAs(primaryObjectsSpeckles, "TIF", saveAsPath.toString());
+
+			ClearCLBuffer primaryPadded = clij2.push(primaryObjectsSpeckles);
+			ClearCLBuffer removedBorders = clij2.create(primaryPadded);
+			ClearCLBuffer resetZ = null;
+
+			// kill borders for primary object
+			clij2.excludeLabelsOnEdges(primaryPadded, removedBorders);
+
+			// remove the z padding
+			clij2.subStack(removedBorders, resetZ, 1, (int) removedBorders.getDepth() - 1);
+
+			primaryObjectsSpeckles = clij2.pull(resetZ);
+			clij2.clear();
+
+			// mask secondary and tertiary objects by remaining primary objects.
+			// THIS CAN BE SENT TO GPU INSTEAD
+			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
+					MULTIPLY_CREATE_STACK_MODE);
+			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
+					MULTIPLY_CREATE_STACK_MODE);
+
+			break;
+
+		case "X + Y + Z":
+			// No padding required in Z
+			// Run kill borders on primary objects then mask other object channels
+			ClearCLBuffer primaryLabel = clij2.push(primaryObjectsSpeckles);
+			ClearCLBuffer removedBorder = clij2.create(primaryLabel);
+
+			clij2.excludeLabelsOnEdges(primaryLabel, removedBorder);
+
+			primaryObjectsSpeckles = clij2.pull(removedBorder);
+			clij2.clear();
+
+			secondaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, secondaryObjectsSpeckles,
+					MULTIPLY_CREATE_STACK_MODE);
+			tertiaryObjectsSpeckles = ImageCalculator.run(primaryObjectsSpeckles, tertiaryObjectsSpeckles,
+					MULTIPLY_CREATE_STACK_MODE);
+
+			break;
 		}
 
 		final boolean analysisOnly = rtConf.isAnalysisMode();
 
-		// TODO let's enum this XY crap. 
+		// TODO let's enum this XY crap.
 		if (!analysisOnly || rtConf.getKillBordersText() == "X + Y" || rtConf.getKillBordersText() == "X + Y + Z") {
 			IJ.saveAs(primaryObjectsSpeckles, "TIF",
 					rtConf.getInputDirectory().toString() + "Primary_Objects_" + imgName);
@@ -153,8 +160,8 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 					rtConf.getInputDirectory().toString() + "Tertiary_Objects_" + imgName);
 		}
 
-		IJ.log("Running Volumetric Analysis...");
-		IJ.log("-------------------------------------------------------");
+		ijLog("Running Volumetric Analysis...");
+		ijLog("-------------------------------------------------------");
 
 		// Make an array of all segmented objects --> MAKE CONDITIONAL ON HOW MANY
 		// EXIST! maybe an arraylist?
@@ -175,8 +182,8 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		TableUtility.collectColumns(secondaryResults, secondary);
 		TableUtility.collectColumns(tertiaryResults, tertiary);
 
-		IJ.log("Running Intensity Analysis...");
-		IJ.log("-------------------------------------------------------");
+		ijLog("Running Intensity Analysis...");
+		ijLog("-------------------------------------------------------");
 
 		// A map to store the intensity results for each segmented image.
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
@@ -184,7 +191,7 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		// Measure the intensity of each channel, within each segmented object.
 		/* For each speckle */
 		for (int j = 0; j < objectImages.length; j++) {
-			
+
 			List<ImagePlus> channelsSpeckle = newData.getChannelsSpeckles().orElseThrow(IllegalStateException::new);
 			ResultsTable result = new ResultsTable();
 			/* Make a new results table. */
@@ -192,12 +199,14 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 
 				ResultsTable temp = TableUtility.processIntensity(channelsSpeckle.get(k), objectImages[j]);
 				// result.setColumn("Label", temp.getColumnAsVariables("Label"));
-				result.setColumn(("C" + (k + 1) + "_Mean_Intensity"),
-						temp.getColumnAsVariables("Mean_Intensity"));
+				result.setColumn(("C" + (k + 1) + "_Mean_Intensity"), temp.getColumnAsVariables("Mean_Intensity"));
 				result.setColumn(("C" + (k + 1) + "_IntDen"), temp.getColumnAsVariables("IntDen"));
 			}
 			intensityTables.put(objectImages[j], result);
-			/* Each table has two columns for each channelsSpeckle : mean intensity and IntDen */
+			/*
+			 * Each table has two columns for each channelsSpeckle : mean intensity and
+			 * IntDen
+			 */
 		}
 
 		/*
@@ -210,20 +219,20 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		 * - make conditional on whether tertiary objects exist!!
 		 */
 
-		IJ.log("Generating Results Tables...");
-		IJ.log("-------------------------------------------------------");
+		ijLog("Generating Results Tables...");
+		ijLog("-------------------------------------------------------");
 
 		// Count secondary and tertiary objects per primary object.
 		ResultsTable c2Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 		ResultsTable c3Count = LabelEditor.countOverlappingLabels(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
 
-		c2Count.show("c2count");
-		c3Count.show("c2count");
+		SwingUtilities.invokeLater(() -> c2Count.show("c2count"));
+		SwingUtilities.invokeLater(() -> c3Count.show("c2count"));
 
 		// Calculate parent (primary) for each secondary and tertiary object.
 		ResultsTable c2Parent = TableUtility.processIntensity(primaryObjectsSpeckles, secondaryObjectsSpeckles);
 		ResultsTable c3Parent = TableUtility.processIntensity(primaryObjectsSpeckles, tertiaryObjectsSpeckles);
-		c2Parent.show("c2parent");
+		SwingUtilities.invokeLater(() -> c2Parent.show("c2parent"));
 
 		// Leave the table with just max value (which represents the count per primary
 		// object)
@@ -232,8 +241,8 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		ResultsTable c2ParentEdit = c2Parent;
 		ResultsTable c3ParentEdit = c3Parent;
 
-		c2CountEdit.show("c2countedit");
-		c2ParentEdit.show("c2parentshow");
+		SwingUtilities.invokeLater(() ->c2CountEdit.show("c2countedit"));
+		SwingUtilities.invokeLater(() ->c2ParentEdit.show("c2parentshow"));
 
 		// remove all columns by max
 		String[] colsToRemove = { "Label", "Mean_Intensity", "Volume", "IntDen" };
@@ -248,7 +257,7 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		c3CountEdit.renameColumn("Max", "C3_Object_Count");
 
 		// TODO what's this seb ?
-		c3CountEdit.show("thisbitch!");
+		SwingUtilities.invokeLater(() ->c3CountEdit.show("thisbitch!"));
 		// add the C2 and C3 counts to the primary map
 		TableUtility.collectColumns(c2CountEdit, primary);
 		TableUtility.collectColumns(c3CountEdit, primary);
@@ -321,7 +330,6 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 		 * 
 		 */
 
-		
 		/* Collects each column from the appropriate location. It's pretty weird. */
 		// Primary table
 		ResultsTable primaryFinalResults = new ResultsTable();
@@ -413,22 +421,22 @@ public class SpeckleService implements FOCUSTService, DataListener<String, Speck
 				tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 		tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 
-		
 		/* Collect up the above. */
 		Map<SpeckleType, ResultsTable> resultsMap = new HashMap<>();
 		resultsMap.put(SpeckleType.PRIMARY, primaryFinalResults);
 		resultsMap.put(SpeckleType.SECONDARY, secondaryFinalResults);
 		resultsMap.put(SpeckleType.TERTIARY, tertiaryFinalResults);
 		SpeckleResult results = SpeckleResult.builder().results(resultsMap).build();
-		
-		
+
+		ijLog("Notifying new results for key :" + key);
+
 		/* Submit these final results for the image to the data manager. */
-		resultsUpdateService.notifyUpdated(key, results);		
+		resultsUpdateService.notifyUpdated(key, results);
 	}
 
 	@Override
 	public void dataDeleted(String key) {
 		/* Nothing much for us to do. Just pass it on. */
 		resultsUpdateService.notifyDeleted(key);
-    }
+	}
 }
