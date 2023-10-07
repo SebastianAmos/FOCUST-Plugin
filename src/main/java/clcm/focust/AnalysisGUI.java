@@ -795,7 +795,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbPrimaryMethod = new JComboBox();
 		//cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
-		cbPrimaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
+		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Maxima", "Minima", "Trained Classifier"}));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
@@ -893,7 +893,8 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
 		
 		JComboBox cbPrimaryMethodThreshold = new JComboBox();
-		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel(new String[] {"Otsu", "G.C", "Huang", "Yen"}));
+		//cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel(new String[] {"Otsu", "G.C", "Huang", "Yen"}));
+		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbPrimaryMethodThreshold.setSelectedIndex(0);
 		cbPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethodThreshold = new GridBagConstraints();
@@ -1256,7 +1257,7 @@ public class AnalysisGUI extends JFrame {
 		
 		
 		//cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
-		cbSecondaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
+		cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Maxima", "Minima", "Trained Classifier"}));
 		cbSecondaryMethod.setSelectedIndex(0);
 		cbSecondaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryMethod = new GridBagConstraints();
@@ -1715,7 +1716,7 @@ public class AnalysisGUI extends JFrame {
 		cbTertiaryMethod.setEnabled(false);
 		
 		//cbTertiaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
-		cbTertiaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
+		cbTertiaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Maxima", "Minima", "Trained Classifier"}));
 		cbTertiaryMethod.setSelectedIndex(0);
 		cbTertiaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryMethod = new GridBagConstraints();
