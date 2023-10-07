@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.filter;
 
 public class Vector3D {
 

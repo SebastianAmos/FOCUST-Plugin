@@ -1,10 +1,10 @@
-package clcm.focust;
+package clcm.focust.threshold;
 
 
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 
 public interface Threshold {
 
-	ClearCLBuffer threshold(ClearCLBuffer input, double radius);
+	ClearCLBuffer apply(ClearCLBuffer input, double radius);
 
 }
