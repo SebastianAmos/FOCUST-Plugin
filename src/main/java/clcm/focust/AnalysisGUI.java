@@ -548,7 +548,8 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_3_1, gbc_lblNewLabel_5_3_1);
 		
 		JComboBox cbPrimaryBackground = new JComboBox();
-		cbPrimaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbPrimaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbPrimaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
@@ -670,7 +671,8 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
 		
 		JComboBox cbPrimaryFilter = new JComboBox();
-		cbPrimaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbPrimaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbPrimaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
@@ -792,7 +794,8 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
 		JComboBox cbPrimaryMethod = new JComboBox();
-		cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		//cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		cbPrimaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryMethod = new GridBagConstraints();
@@ -972,7 +975,8 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_3_1_1, gbc_lblNewLabel_5_3_1_1);
 		
 		JComboBox cbSecondaryBackground = new JComboBox();
-		cbSecondaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbSecondaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbSecondaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbSecondaryBackground.setSelectedIndex(0);
 		cbSecondaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryBackground = new GridBagConstraints();
@@ -1094,7 +1098,8 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_1_1_1, gbc_lblNewLabel_5_1_1_1);
 		
 		JComboBox cbSecondaryFilter = new JComboBox();
-		cbSecondaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbSecondaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbSecondaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbSecondaryFilter.setSelectedIndex(0);
 		cbSecondaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryFilter = new GridBagConstraints();
@@ -1250,7 +1255,8 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
 		
 		
-		cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		//cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		cbSecondaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
 		cbSecondaryMethod.setSelectedIndex(0);
 		cbSecondaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryMethod = new GridBagConstraints();
@@ -1544,7 +1550,8 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryBackground = new JComboBox();
 		cbTertiaryBackground.setEnabled(false);
-		cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbTertiaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbTertiaryBackground.setSelectedIndex(0);
 		cbTertiaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryBackground = new GridBagConstraints();
@@ -1566,7 +1573,8 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryFilter = new JComboBox();
 		cbTertiaryFilter.setEnabled(false);
-		cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbTertiaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbTertiaryFilter.setSelectedIndex(0);
 		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryFilter = new GridBagConstraints();
@@ -1706,7 +1714,8 @@ public class AnalysisGUI extends JFrame {
 		JComboBox cbTertiaryMethod = new JComboBox();
 		cbTertiaryMethod.setEnabled(false);
 		
-		cbTertiaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		//cbTertiaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
+		cbTertiaryMethod.setModel(new DefaultComboBoxModel<>(MethodType.values()));
 		cbTertiaryMethod.setSelectedIndex(0);
 		cbTertiaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryMethod = new GridBagConstraints();
@@ -1932,12 +1941,12 @@ public class AnalysisGUI extends JFrame {
 				
 				String primaryBackground = cbPrimaryBackground.getSelectedItem().toString();
 				
-				if(primaryBackground.equals("3D DoG")) {
+				if(primaryBackground.equals("DoG")) {
 					pnlPrimaryBGFirstBlur.setVisible(true);
 					pnlPrimaryBGSecondBlur.setVisible(true);
 					pnlPrimaryBGRadius.setVisible(false);
 				} 
-				if(primaryBackground.equals("3D Top Hat")) {
+				if(primaryBackground.equals("TopHat")) {
 					pnlPrimaryBGFirstBlur.setVisible(true);
 					pnlPrimaryBGSecondBlur.setVisible(false);
 					pnlPrimaryBGRadius.setVisible(false);
@@ -1960,12 +1969,12 @@ public class AnalysisGUI extends JFrame {
 				
 				String secondaryBackgroundMethod = cbSecondaryBackground.getSelectedItem().toString();
 				
-				if(secondaryBackgroundMethod.equals("3D DoG")) {
+				if(secondaryBackgroundMethod.equals("DoG")) {
 					pnlSecondaryBGFirstBlur.setVisible(true);
 					pnlSecondaryBGSecondBlur.setVisible(true);
 					pnlSecondaryBGRadius.setVisible(false);
 				} 
-				if(secondaryBackgroundMethod.equals("3D Top Hat")) {
+				if(secondaryBackgroundMethod.equals("Top Hat")) {
 					pnlSecondaryBGFirstBlur.setVisible(true);
 					pnlSecondaryBGSecondBlur.setVisible(false);
 					pnlSecondaryBGRadius.setVisible(false);
@@ -1988,12 +1997,12 @@ public class AnalysisGUI extends JFrame {
 				
 				String tertiaryBackgroundMethod = cbTertiaryBackground.getSelectedItem().toString();
 				
-				if(tertiaryBackgroundMethod.equals("3D DoG")) {
+				if(tertiaryBackgroundMethod.equals("DoG")) {
 					pnlTertiaryBGFirstBlur.setVisible(true);
 					pnlTertiaryBGSecondBlur.setVisible(true);
 					pnlTertiaryBGRadius.setVisible(false);
 				} 
-				if(tertiaryBackgroundMethod.equals("3D Top Hat")) {
+				if(tertiaryBackgroundMethod.equals("TopHat")) {
 					pnlTertiaryBGFirstBlur.setVisible(true);
 					pnlTertiaryBGSecondBlur.setVisible(false);
 					pnlTertiaryBGRadius.setVisible(false);
@@ -2021,7 +2030,7 @@ public class AnalysisGUI extends JFrame {
 				
 				String primaryMethod = cbPrimaryMethod.getSelectedItem().toString(); 
 				
-				if(primaryMethod.equals("Trained Classifer")) {
+				if(primaryMethod.equals("TrainedClassifer")) {
 					btnBrowsePrimaryClassifer.setVisible(true);
 					txtPrimaryClassiferDirectory.setVisible(true);
 					pnlPrimarySpotSize.setVisible(false);
@@ -2043,7 +2052,7 @@ public class AnalysisGUI extends JFrame {
 				
 				String secondaryMethod = cbSecondaryMethod.getSelectedItem().toString();
 				
-				if(secondaryMethod.equals("Trained Classifer")) {
+				if(secondaryMethod.equals("TrainedClassifer")) {
 					pnlSecondarySpotSize.setVisible(false);
 					pnlSecondaryThreshold.setVisible(false);
 					cbSecondaryMethodThreshold.setVisible(false);
@@ -2067,7 +2076,7 @@ public class AnalysisGUI extends JFrame {
 				
 				String tertiaryMethod = cbTertiaryMethod.getSelectedItem().toString();
 				
-				if(tertiaryMethod.equals("Trained Classifer")) {
+				if(tertiaryMethod.equals("TrainedClassifer")) {
 					pnlTertiarySpotSize.setVisible(false);
 					pnlTertiaryThreshold.setVisible(false);
 					cbTertiaryMethodThreshold.setVisible(false);
@@ -2108,7 +2117,7 @@ public class AnalysisGUI extends JFrame {
 					ckbSpeckleSkeletons.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(true);
 				}
-				if(analysisMode.equals("Single Cells")) {
+				if(analysisMode.equals("SingleCells")) {
 					ckbTertiaryObjectOption.setVisible(true);
 					ckbSpeckleSkeletons.setVisible(false);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
@@ -2138,11 +2147,11 @@ public class AnalysisGUI extends JFrame {
 					pnlPrimarySecondBlur.setVisible(false);
 					pnlPrimaryFirstBlur.setVisible(false);
 				} 
-				if(primaryFilterMethod.equals("3D DoG")) {
+				if(primaryFilterMethod.equals("DoG")) {
 					pnlPrimarySecondBlur.setVisible(true);
 					pnlPrimaryFirstBlur.setVisible(true);
 				}
-				if(primaryFilterMethod.equals("3D Gaussian Blur") || primaryFilterMethod.equals("3D Median") || primaryFilterMethod.equals("3D Mean")) {
+				if(primaryFilterMethod.equals("GaussianBlur") || primaryFilterMethod.equals("Median") || primaryFilterMethod.equals("Mean")) {
 					pnlPrimarySecondBlur.setVisible(false);
 					pnlPrimaryFirstBlur.setVisible(true);
 				}
@@ -2158,11 +2167,11 @@ public class AnalysisGUI extends JFrame {
 					pnlSecondarySecondBlur.setVisible(false);
 					pnlSecondaryFirstBlur.setVisible(false);
 				} 
-				if(secondaryFilterMethod.equals("3D DoG")) {
+				if(secondaryFilterMethod.equals("DoG")) {
 					pnlSecondarySecondBlur.setVisible(true);
 					pnlSecondaryFirstBlur.setVisible(true);
 				}
-				if(secondaryFilterMethod.equals("3D Gaussian Blur") || secondaryFilterMethod.equals("3D Median") || secondaryFilterMethod.equals("3D Mean")) {
+				if(secondaryFilterMethod.equals("GaussianBlur") || secondaryFilterMethod.equals("Median") || secondaryFilterMethod.equals("Mean")) {
 					pnlSecondarySecondBlur.setVisible(false);
 					pnlSecondaryFirstBlur.setVisible(true);
 				}
@@ -2178,11 +2187,11 @@ public class AnalysisGUI extends JFrame {
 					pnlTertiarySecondBlur.setVisible(false);
 					pnlTertiaryFirstBlur.setVisible(false);
 				} 
-				if(tertiaryFilterMethod.equals("3D DoG")) {
+				if(tertiaryFilterMethod.equals("DoG")) {
 					pnlTertiarySecondBlur.setVisible(true);
 					pnlTertiaryFirstBlur.setVisible(true);
 				}
-				if(tertiaryFilterMethod.equals("3D Gaussian Blur") || tertiaryFilterMethod.equals("3D Median") || tertiaryFilterMethod.equals("3D Mean")) {
+				if(tertiaryFilterMethod.equals("GaussianBlur") || tertiaryFilterMethod.equals("Median") || tertiaryFilterMethod.equals("Mean")) {
 					pnlTertiarySecondBlur.setVisible(false);
 					pnlTertiaryFirstBlur.setVisible(true);
 				}
