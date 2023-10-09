@@ -14,6 +14,4 @@ public class HuangThreshold implements Threshold{
 	}
 
 
-	
-
 }

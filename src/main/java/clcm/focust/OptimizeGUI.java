@@ -41,6 +41,8 @@ import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
+import clcm.focust.filter.BackgroundType;
+import clcm.focust.filter.FilterType;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -518,7 +520,8 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_3_1, gbc_lblNewLabel_5_3_1);
 		
 		JComboBox cbPrimaryBackground = new JComboBox();
-		cbPrimaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbPrimaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbPrimaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryBackground = new GridBagConstraints();
@@ -634,7 +637,8 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
 		
 		JComboBox cbPrimaryFilter = new JComboBox();
-		cbPrimaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbPrimaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbPrimaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbPrimaryFilter = new GridBagConstraints();
@@ -955,7 +959,8 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_3_1_1, gbc_lblNewLabel_5_3_1_1);
 		
 		JComboBox cbSecondaryBackground = new JComboBox();
-		cbSecondaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbSecondaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbSecondaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbSecondaryBackground.setSelectedIndex(0);
 		cbSecondaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryBackground = new GridBagConstraints();
@@ -1071,7 +1076,8 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_1_1_1, gbc_lblNewLabel_5_1_1_1);
 		
 		JComboBox cbSecondaryFilter = new JComboBox();
-		cbSecondaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbSecondaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbSecondaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbSecondaryFilter.setSelectedIndex(0);
 		cbSecondaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryFilter = new GridBagConstraints();
@@ -1535,7 +1541,8 @@ public class OptimizeGUI extends JFrame {
 		
 		JComboBox cbTertiaryBackground = new JComboBox();
 		cbTertiaryBackground.setEnabled(false);
-		cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		//cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
+		cbTertiaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbTertiaryBackground.setSelectedIndex(0);
 		cbTertiaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryBackground = new GridBagConstraints();
@@ -1557,7 +1564,8 @@ public class OptimizeGUI extends JFrame {
 		
 		JComboBox cbTertiaryFilter = new JComboBox();
 		cbTertiaryFilter.setEnabled(false);
-		cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		//cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
+		cbTertiaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbTertiaryFilter.setSelectedIndex(0);
 		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryFilter = new GridBagConstraints();

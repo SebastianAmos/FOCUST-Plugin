@@ -6,8 +6,8 @@ import java.util.Map;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.macro.Variable;
 import ij.measure.ResultsTable;
+import ij.plugin.ImageCalculator;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -49,6 +49,11 @@ public class LabelEditor {
 	}
 	
 	
+
+	
+	
+	
+
 	
 	/**
 	 * Generate a connected components image image, where all original labels are re-labelled.
@@ -57,7 +62,7 @@ public class LabelEditor {
 	 * @param original
 	 * @return map 
 	 */
-	public Map<Double, Double> trackDuplicates(ImagePlus original) {
+	public Map<Double, Double> recordDuplicates(ImagePlus original) {
 		
 		Map<Double, Double> labels = new HashMap<>();
 		
@@ -75,6 +80,28 @@ public class LabelEditor {
 		
 		clij2.clear();
 		return labels;
+	}
+	
+	@Deprecated
+	// SLATED FOR REMOVAL!!!
+	public static ImagePlus reLabel(ImagePlus img) {
+		IJ.run(img, "32-bit", "");
+		for (int z = 1; z <= img.getStackSize(); z++) {
+			ImageProcessor ipImg = img.getStack().getProcessor(z);
+			for (int y = 0; y < ipImg.getHeight(); y++) {
+				for (int x = 0; x < ipImg.getWidth(); x++) {
+					int lbl = (int) ipImg.getPixelValue(x, y);
+					
+					if (lbl > 0) {
+						double newLbl = Double.parseDouble(lbl + "0" + 1);
+						ipImg.putPixelValue(x, y, newLbl);
+					}
+				}
+			}
+			
+		}
+		ImagePlus output = img;
+		return output;
 	}
 	
 	
@@ -155,80 +182,6 @@ public class LabelEditor {
 	
 	
 	
-	public static ImagePlus reLabel(ImagePlus img) {
-		IJ.run(img, "32-bit", "");
-		for (int z = 1; z <= img.getStackSize(); z++) {
-			ImageProcessor ipImg = img.getStack().getProcessor(z);
-			for (int y = 0; y < ipImg.getHeight(); y++) {
-				for (int x = 0; x < ipImg.getWidth(); x++) {
-					int lbl = (int) ipImg.getPixelValue(x, y);
-					
-					if (lbl > 0) {
-						double newLbl = Double.parseDouble(lbl + "0" + 1);
-						ipImg.putPixelValue(x, y, newLbl);
-					}
-				}
-			}
-			
-		}
-		ImagePlus output = img;
-		return output;
-	}
-	
-	
-	
-	/**
-	 * A modified implementation of findAndRename(); 
-	 * 
-	 * @param matched
-	 * @param original
-	 * @return output The relabelled image where duplicate labels have been indexed. 
-	 */
-	
-	public static ImagePlus manageDuplicates(ImagePlus matched, ImagePlus original) {
-		
-		// Create a map to store label values from the original image. If a new value is encountered, initialise from 0 so the first repeat can index from 1. 
-		Map<Integer, Integer> labelMaps = new HashMap<>();
-		
-		// Iterate over the original image stack to map the labels, reassigning values in the matched image where required.
-		// For each z slice, at every x, y pixel position compare label values
-		for (int z = 1; z <= original.getStackSize(); z++) {
-			
-			ImageProcessor ipMatched = matched.getStack().getProcessor(z);
-			ImageProcessor ipOriginal = original.getStack().getProcessor(z);
-			
-			for (int y = 0; y < ipOriginal.getHeight(); y++) {
-				for (int x = 0; x < ipOriginal.getWidth(); x++) {
-					
-					int lblMatched = (int) ipMatched.getPixelValue(x, y);
-					int lblOriginal = (int) ipOriginal.getPixelValue(x, y);
-					
-					// If there is a label (i.e. not background which = 0), and it exists in the map, reassign the pixel value with the same label + index.
-					if (lblOriginal > 0) {
-						if (labelMaps.containsKey(lblOriginal)) {
-							
-							// Shared label exists, append an index to induvidualise the instance
-							int newIndex = labelMaps.get(lblOriginal) + 1;
-						
-							labelMaps.put(lblOriginal, newIndex);
-							ipMatched.putPixelValue(x, y, Double.parseDouble(lblMatched + "00" + newIndex));
-						
-						} else {
-							// Initialise new label keys with an index value of 0, so if found again, indexing for repeats can start at 1. 
-							labelMaps.put(lblOriginal, 0);
-							ipMatched.putPixelValue(x, y, lblMatched);
-						}
-					}
-				}
-			}
-		}
-		ImagePlus output = matched;
-		return output;
-	}
-	
-	
-	
-	
 	
 	
 	/**
@@ -237,7 +190,6 @@ public class LabelEditor {
 	 * @param input A labelled image.
 	 * 
 	 * @return output Binary equivalent of the input.
-	 *  
 	 */
 	public static ImagePlus makeBinary(ImagePlus input) {
 	    ImageStack stack = input.getStack();
@@ -260,7 +212,6 @@ public class LabelEditor {
 	 * @param input The labelled image to be re-indexed where labels are duplicated between objects.
 	 * @return output A re-labelled image where repeated values are indexed per instance. 
 	 */
-	
 	public static ImagePlus labelIndexAppender(ImagePlus input) {
 		IJ.run(input, "16-bit", "");
 		Map<Integer, Integer> labelCountMap = new HashMap<>();
@@ -354,7 +305,7 @@ public class LabelEditor {
 		}
 		renamedImage = original;
 		return renamedImage;
-	} // end of relativeRename method
+	} 
 	
 	
 	
@@ -364,7 +315,6 @@ public class LabelEditor {
 	 * @param imp A labelled image to detect the edges of.
 	 * @return imp of binary label edges.
 	 */
-	
 	public ImagePlus detectEdgesBinary(ImagePlus imp) {
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
