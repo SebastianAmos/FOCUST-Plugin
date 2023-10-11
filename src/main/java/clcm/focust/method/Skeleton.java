@@ -1,5 +1,7 @@
 package clcm.focust.method;
 
+
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
@@ -8,44 +10,46 @@ import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 
 
 public class Skeleton {
-
 	
 	/**
 	 * generate skeletons for distance and length calculations.
+	 * needs to be 8bit?
 	 * @param imp
-	 * @return
+	 * @return 
 	 */
-	public ImagePlus skeletonize(ImagePlus imp) {
-		
+	public ImagePlus createSkeletons(ImagePlus imp) {
 		Skeletonize3D_ sk = new Skeletonize3D_();
-	
-		sk.setup(null, imp);
-		
+		IJ.run(imp, "8-bit", "");
+		sk.setup("", imp);
 		ImageProcessor ip = imp.getProcessor();
-	
 		sk.run(ip);
-		
-		
-	
-		
-		return null;
+		ImagePlus img = new ImagePlus("skeleton", ip.duplicate());
+
+		return img;
 		
 	}
 	
-	
+
 	/**
 	 * analyse the skeletons and match with original labels.
 	 * @param skeletons
 	 * @param labels
 	 * @return
 	 */
-	public ResultsTable analyze(ImagePlus skeletons, ImagePlus labels) {
-		
+	public void analyzeSkeletons(ImagePlus skeletons, ImagePlus labels) {
+
 		AnalyzeSkeleton_ ak = new AnalyzeSkeleton_();
 		
-		ak.run();
-		return null;
+		ak.setup("", skeletons);
+		ImageProcessor ip = skeletons.getProcessor();
+		ak.run(ip);
+		
+		
+	
 		
 	}
+	
+	
+	
 	
 }

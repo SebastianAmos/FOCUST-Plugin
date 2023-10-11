@@ -43,6 +43,7 @@ import javax.swing.border.MatteBorder;
 
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.method.Skeleton;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -196,6 +197,16 @@ public class OptimizeGUI extends JFrame {
 		pnlHeader.add(lblNewLabel, gbc_lblNewLabel);
 		
 		JButton btnHelp = new JButton("Help");
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Skeleton sk = new Skeleton();
+				ImagePlus img = IJ.openImage();
+				sk.createSkeletons(img);
+				img.show();
+				
+			}
+		});
 		
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
@@ -256,6 +267,13 @@ public class OptimizeGUI extends JFrame {
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		
 		JButton btnAnalysis = new JButton("Analysis");
+		btnAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Skeleton sk = new Skeleton();
+				ImagePlus img = IJ.openImage();
+				sk.analyzeSkeletons(img, img );
+			}
+		});
 		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnAnalysis = new GridBagConstraints();
 		gbc_btnAnalysis.fill = GridBagConstraints.HORIZONTAL;
