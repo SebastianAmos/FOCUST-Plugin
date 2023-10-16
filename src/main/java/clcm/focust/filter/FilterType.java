@@ -6,7 +6,11 @@ public enum FilterType {
 	DOG(new DifferenceOfGaussian(), "3D DoG"),
 	GAUSSIAN(new GaussianBlur(), "3D Gaussian"),
 	MEDIAN(new MedianFilter(), "3D Median"),
-	MEAN(new MeanFilter(), "3D Mean");
+	MEAN(new MeanFilter(), "3D Mean"),
+	TENEGRAD(new Tenegrad(), "3D Tenegrad"),
+	TUBENESS(new Tubeness(), "3D Tubeness"),
+	INVERTEDTUBENESS(new InvertedTubeness(), "3D Inverted Tube.");
+	
 	
 	
 	private String displayName;
