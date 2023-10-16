@@ -25,7 +25,7 @@ public class MaximaSegmentation{
 		ClearCLBuffer labelled = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
 		
-		clij2.invert(filtered, inverted);		
+		clij2.invert(filtered, inverted);
 		clij2.detectMaxima3DBox(filtered, maxima, 0, 0, 0); 
 		
 		clij2.labelSpots(maxima, labelled);

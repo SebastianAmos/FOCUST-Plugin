@@ -533,7 +533,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbPrimaryChannel = new JComboBox();
 		cbPrimaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
-		cbPrimaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbPrimaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
 		cbPrimaryChannel.setSelectedIndex(0);
 		GridBagConstraints gbc_cbPrimaryChannel = new GridBagConstraints();
 		gbc_cbPrimaryChannel.insets = new Insets(0, 0, 5, 0);
@@ -960,7 +960,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_2, gbc_lblNewLabel_5_2);
 		
 		JComboBox cbSecondaryChannel = new JComboBox();
-		cbSecondaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbSecondaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
 		cbSecondaryChannel.setSelectedIndex(1);
 		cbSecondaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryChannel = new GridBagConstraints();
@@ -1394,7 +1394,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryChannel = new JComboBox();
 		cbTertiaryChannel.setEnabled(false);
-		cbTertiaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4"}));
+		cbTertiaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
 		cbTertiaryChannel.setSelectedIndex(2);
 		cbTertiaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryChannel = new GridBagConstraints();
@@ -1943,88 +1943,80 @@ public class AnalysisGUI extends JFrame {
 		/*
 		 * Display the correct input panels following background method selection.
 		 */
-		
+
 		cbPrimaryBackground.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String primaryBackgroundMethod = cbPrimaryBackground.getSelectedItem().toString();
-				
-				if(primaryBackgroundMethod.equals("3D DoG")) {
+
+				BackgroundType bg = (BackgroundType) cbPrimaryBackground.getSelectedItem();
+
+				switch (bg) {
+				case NONE:
+					pnlPrimaryBGFirstBlur.setVisible(false);
+					pnlPrimaryBGSecondBlur.setVisible(false);
+					pnlPrimaryBGRadius.setVisible(false);
+					break;
+				case DOG:
 					pnlPrimaryBGFirstBlur.setVisible(true);
 					pnlPrimaryBGSecondBlur.setVisible(true);
 					pnlPrimaryBGRadius.setVisible(false);
-				} 
-				if(primaryBackgroundMethod.equals("3D Top Hat") || primaryBackgroundMethod.equals("3D Gaussian")) {
+					break;
+				default:
 					pnlPrimaryBGFirstBlur.setVisible(true);
 					pnlPrimaryBGSecondBlur.setVisible(false);
 					pnlPrimaryBGRadius.setVisible(false);
-				}
-				if(primaryBackgroundMethod.equals("Default")) {
-					pnlPrimaryBGRadius.setVisible(true);
-					pnlPrimaryBGFirstBlur.setVisible(false);
-					pnlPrimaryBGSecondBlur.setVisible(false);
-				} 
-				if(primaryBackgroundMethod.equals("None")) {
-					pnlPrimaryBGRadius.setVisible(false);
-					pnlPrimaryBGFirstBlur.setVisible(false);
-					pnlPrimaryBGSecondBlur.setVisible(false);
+					break;
 				}
 			}
 		});
 		
 		cbSecondaryBackground.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String secondaryBackgroundMethod = cbSecondaryBackground.getSelectedItem().toString();
-				
-				if(secondaryBackgroundMethod.equals("3D DoG")) {
+
+				BackgroundType bg = (BackgroundType) cbSecondaryBackground.getSelectedItem();
+
+				switch (bg) {
+				case NONE:
+					pnlSecondaryBGFirstBlur.setVisible(false);
+					pnlSecondaryBGSecondBlur.setVisible(false);
+					pnlSecondaryBGRadius.setVisible(false);
+					break;
+				case DOG:
 					pnlSecondaryBGFirstBlur.setVisible(true);
 					pnlSecondaryBGSecondBlur.setVisible(true);
 					pnlSecondaryBGRadius.setVisible(false);
-				} 
-				if(secondaryBackgroundMethod.equals("3D Top Hat") || secondaryBackgroundMethod.equals("3D Gaussian")) {
+					break;
+				default:
 					pnlSecondaryBGFirstBlur.setVisible(true);
 					pnlSecondaryBGSecondBlur.setVisible(false);
 					pnlSecondaryBGRadius.setVisible(false);
-				}
-				if(secondaryBackgroundMethod.equals("Default")) {
-					pnlSecondaryBGRadius.setVisible(true);
-					pnlSecondaryBGFirstBlur.setVisible(false);
-					pnlSecondaryBGSecondBlur.setVisible(false);
-				} 
-				if(secondaryBackgroundMethod.equals("None")) {
-					pnlSecondaryBGRadius.setVisible(false);
-					pnlSecondaryBGFirstBlur.setVisible(false);
-					pnlSecondaryBGSecondBlur.setVisible(false);
+					break;
 				}
 			}
 		});
 		
 		cbTertiaryBackground.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String tertiaryBackgroundMethod = cbTertiaryBackground.getSelectedItem().toString();
-				
-				if(tertiaryBackgroundMethod.equals("3D DoG")) {
+
+				BackgroundType bg = (BackgroundType) cbTertiaryBackground.getSelectedItem();
+
+				switch (bg) {
+				case NONE:
+					pnlTertiaryBGFirstBlur.setVisible(false);
+					pnlTertiaryBGSecondBlur.setVisible(false);
+					pnlTertiaryBGRadius.setVisible(false);
+					break;
+				case DOG:
 					pnlTertiaryBGFirstBlur.setVisible(true);
 					pnlTertiaryBGSecondBlur.setVisible(true);
 					pnlTertiaryBGRadius.setVisible(false);
-				} 
-				if(tertiaryBackgroundMethod.equals("3D Top Hat") || tertiaryBackgroundMethod.equals("3D Gaussian")) {
+					break;
+				default:
 					pnlTertiaryBGFirstBlur.setVisible(true);
 					pnlTertiaryBGSecondBlur.setVisible(false);
 					pnlTertiaryBGRadius.setVisible(false);
+					break;
 				}
-				if(tertiaryBackgroundMethod.equals("Default")) {
-					pnlTertiaryBGRadius.setVisible(true);
-					pnlTertiaryBGFirstBlur.setVisible(false);
-					pnlTertiaryBGSecondBlur.setVisible(false);
-				} 
-				if(tertiaryBackgroundMethod.equals("None")) {
-					pnlTertiaryBGRadius.setVisible(false);
-					pnlTertiaryBGFirstBlur.setVisible(false);
-					pnlTertiaryBGSecondBlur.setVisible(false);
-				}
+
 			}
 		});
 		
@@ -2048,7 +2040,6 @@ public class AnalysisGUI extends JFrame {
 					btnBrowsePrimaryClassifer.setVisible(false);
 					txtPrimaryClassiferDirectory.setVisible(false);
 					pnlPrimarySpotSize.setVisible(true);
-					pnlPrimaryMethodThreshold.setVisible(true);
 					cbPrimaryMethodThreshold.setVisible(true);
 					
 				}
@@ -2145,64 +2136,72 @@ public class AnalysisGUI extends JFrame {
 		/* 
 		 * Display the correct input panels following filter method selection for primary, secondary and tertiary panels.
 		 */
-		
+
 		cbPrimaryFilter.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String primaryFilterMethod = cbPrimaryFilter.getSelectedItem().toString();
-				
-				if(primaryFilterMethod.equals("None")) {
+
+				FilterType ft = (FilterType) cbPrimaryFilter.getSelectedItem();
+
+				switch (ft) {
+				case NONE:
 					pnlPrimarySecondBlur.setVisible(false);
 					pnlPrimaryFirstBlur.setVisible(false);
-				} 
-				if(primaryFilterMethod.equals("3D DoG")) {
+					break;
+				case DOG:
 					pnlPrimarySecondBlur.setVisible(true);
 					pnlPrimaryFirstBlur.setVisible(true);
-				}
-				if(primaryFilterMethod.equals("3D Gaussian") || primaryFilterMethod.equals("3D Median") || primaryFilterMethod.equals("3D Mean")) {
+					break;
+				default:
 					pnlPrimarySecondBlur.setVisible(false);
 					pnlPrimaryFirstBlur.setVisible(true);
+					break;
 				}
+
 			}
 		});
 		
 		cbSecondaryFilter.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String secondaryFilterMethod = cbSecondaryFilter.getSelectedItem().toString();
-				
-				if(secondaryFilterMethod.equals("None")) {
+
+				FilterType ft = (FilterType) cbSecondaryFilter.getSelectedItem();
+
+				switch (ft) {
+				case NONE:
 					pnlSecondarySecondBlur.setVisible(false);
 					pnlSecondaryFirstBlur.setVisible(false);
-				} 
-				if(secondaryFilterMethod.equals("3D DoG")) {
+					break;
+				case DOG:
 					pnlSecondarySecondBlur.setVisible(true);
 					pnlSecondaryFirstBlur.setVisible(true);
-				}
-				if(secondaryFilterMethod.equals("3D Gaussian") || secondaryFilterMethod.equals("3D Median") || secondaryFilterMethod.equals("3D Mean")) {
+					break;
+				default:
 					pnlSecondarySecondBlur.setVisible(false);
 					pnlSecondaryFirstBlur.setVisible(true);
+					break;
 				}
 			}
 		});
-		
+
 		cbTertiaryFilter.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String tertiaryFilterMethod = cbTertiaryFilter.getSelectedItem().toString();
-				
-				if(tertiaryFilterMethod.equals("None")) {
+
+				FilterType ft = (FilterType) cbTertiaryFilter.getSelectedItem();
+
+				switch (ft) {
+				case NONE:
 					pnlTertiarySecondBlur.setVisible(false);
 					pnlTertiaryFirstBlur.setVisible(false);
-				} 
-				if(tertiaryFilterMethod.equals("3D DoG")) {
+					break;
+				case DOG:
 					pnlTertiarySecondBlur.setVisible(true);
 					pnlTertiaryFirstBlur.setVisible(true);
-				}
-				if(tertiaryFilterMethod.equals("3D Gaussian") || tertiaryFilterMethod.equals("3D Median") || tertiaryFilterMethod.equals("3D Mean")) {
+					break;
+				default:
 					pnlTertiarySecondBlur.setVisible(false);
 					pnlTertiaryFirstBlur.setVisible(true);
+					break;
 				}
+
 			}
 		});
 		
@@ -2214,61 +2213,70 @@ public class AnalysisGUI extends JFrame {
 		
 		cbPrimaryMethodThreshold.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String primaryMethodThreshold = cbPrimaryMethodThreshold.getSelectedItem().toString();
-				
-				if(primaryMethodThreshold.equals("G.Const.")){
+
+				ThresholdType tt = (ThresholdType) cbPrimaryMethodThreshold.getSelectedItem();
+
+				switch (tt) {
+				case GREATERCONSTANT:
 					txtPrimaryMethodThreshold.setEnabled(true);
-				} else {
+					break;
+				default:
 					txtPrimaryMethodThreshold.setEnabled(false);
+					break;
 				}
+
 			}
 		});
 		
-		
 		cbSecondaryMethodThreshold.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String secondaryMethodThreshold = cbSecondaryMethodThreshold.getSelectedItem().toString();
-				
-				if(secondaryMethodThreshold.equals("G.Const.")){
+
+				ThresholdType tt = (ThresholdType) cbSecondaryMethodThreshold.getSelectedItem();
+
+				switch (tt) {
+				case GREATERCONSTANT:
 					txtSecondaryMethodThreshold.setEnabled(true);
-				} else {
+					break;
+				default:
 					txtSecondaryMethodThreshold.setEnabled(false);
+					break;
 				}
+
 			}
 		});
 		
 		
 		cbTertiaryMethodThreshold.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				
-				String tertiaryMethodThreshold = cbTertiaryMethodThreshold.getSelectedItem().toString();
-				
-				if(tertiaryMethodThreshold.equals("G.Const.")){
+
+				ThresholdType tt = (ThresholdType) cbTertiaryMethodThreshold.getSelectedItem();
+
+				switch (tt) {
+				case GREATERCONSTANT:
 					txtTertiaryMethodThreshold.setEnabled(true);
-				} else {
+					break;
+				default:
 					txtTertiaryMethodThreshold.setEnabled(false);
+					break;
 				}
+
 			}
 		});
-		
-		
-		
+
 		/*
 		 * Display the core fraction input panel.
 		 */
-		
+
 		ckbSpheroidCoreVsPeriphery.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if(ckbSpheroidCoreVsPeriphery.isSelected()) {
+				if (ckbSpheroidCoreVsPeriphery.isSelected()) {
 					pnlCoreVolValue.setVisible(true);
 				} else {
 					pnlCoreVolValue.setVisible(false);
 				}
 			}
 		});
-		
+
 	}
 
 	public void setMode(int index) {
