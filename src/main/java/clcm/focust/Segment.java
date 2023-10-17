@@ -709,16 +709,16 @@ public class Segment {
 	 * @param analysisOnly Boolean from gui checkbox to determine if segmentation has already been done. 
 	 */
 	
-	public void processSingleCells(boolean analysisOnly) {
+	public void processSingleCells(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
-				File f = new File(SingleCellView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SingleCellView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 				
 				// Create the combined table outside of the image loop
@@ -743,7 +743,7 @@ public class Segment {
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
 						count++;
-						String path = SingleCellView.inputDir + list[i];
+						String path = inputDir + list[i];
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("---------------------------------------------");
@@ -763,7 +763,7 @@ public class Segment {
 						// if analysisMode is T, find the correct primary object file for the current image
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
-							primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+							primaryOriginalObjectsCells = IJ.openImage(inputDir + primaryPrefix + fileName);
 							/*if (primaryOriginalObjectsCells.getStackSize() != imp.getStackSize()) {
 								IJ.error("Error", "The raw image and primary object stack sizes do not match.");
 							}*/
@@ -788,7 +788,7 @@ public class Segment {
 						// If analysis-only-mode, find the right secondary object file for the current image.
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
-							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
+							secondaryObjectsCells = IJ.openImage(inputDir + secondaryPrefix + fileName);
 							/*if (secondaryObjectsCells.getStackSize() != imp.getStackSize()) {
 								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
 							}*/

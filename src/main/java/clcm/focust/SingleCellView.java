@@ -529,7 +529,7 @@ public class SingleCellView extends JFrame {
 				groupingInfo = txtSingleCellGroupName.getText();
 
 				Segment segment = new Segment(filterSpecs);
-				segment.processSingleCells(cbAnalysisMode.isSelected());
+				segment.processSingleCells(cbAnalysisMode.isSelected(), inputDir);
 
 			}
 		});
