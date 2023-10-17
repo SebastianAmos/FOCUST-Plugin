@@ -1367,15 +1367,15 @@ public class Segment {
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
 	 * -----------------------------------------------------------------------------------*/
-	public static void processSpheroid(boolean analysisOnly) {
+	public static void processSpheroid(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 
 				// grab the file names
-				File f = new File(SpheroidView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SpheroidView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 					
 				
@@ -1398,7 +1398,7 @@ public class Segment {
 				// Iterate through each image in the directory and segment the selected primary and secondary channels.
 				for (int i = 0; i < list.length; i++) {
 					count++;
-					String path = SpheroidView.inputDir + list[i];
+					String path = inputDir + list[i];
 					IJ.log("Processing image " + count + " of " + list.length);
 					IJ.log("Current image name: " + list[i]);
 					IJ.log("---------------------------------------------");
@@ -1418,7 +1418,7 @@ public class Segment {
 					// If analysis-only-mode, find the right primary object file for the current image.  
 					if(analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
+						primaryObjectSpheroid = IJ.openImage(inputDir + primaryPrefix + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
 						primaryObjectSpheroid = gpuSegmentOtsu(channelsSpheroid[primaryChannelChoice], SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
@@ -1456,7 +1456,7 @@ public class Segment {
 					// If analysis-only-mode, find the right secondary object file for the current image.   
 					if(analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
+						secondaryObjectSpheroid = IJ.openImage(inputDir + secondaryPrefix + fileName);
 					} else {
 						secondaryObjectSpheroid = gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}

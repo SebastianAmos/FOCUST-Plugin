@@ -130,7 +130,7 @@ public class SpheroidView extends JFrame {
 				primaryChannelChoice = cbChannelPrimary.getSelectedIndex();
 				secondaryChannelChoice = cbChannelSecondary.getSelectedIndex();
 				groupingInfo = txtSpheroidGroupName.getText();
-				Segment.processSpheroid(cbAnalysisMode.isSelected());
+				Segment.processSpheroid(cbAnalysisMode.isSelected(), inputDir);
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Gadugi", Font.BOLD, 14));
