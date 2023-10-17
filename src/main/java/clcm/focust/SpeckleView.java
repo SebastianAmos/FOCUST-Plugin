@@ -737,7 +737,7 @@ public class SpeckleView extends JFrame {
 				
 				
 				Segment segment = new Segment(filterSpecs);
-				segment.processSpeckles(cbAnalysisMode.isSelected());
+				segment.processSpeckles(cbAnalysisMode.isSelected(), inputDir);
 				
 			}
 		});

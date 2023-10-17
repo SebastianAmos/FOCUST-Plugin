@@ -85,7 +85,7 @@ public class Segment {
 	
 	
 	
-	public void processSpeckles(boolean analysisOnly) {
+	public void processSpeckles(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			
 			@Override
@@ -93,9 +93,9 @@ public class Segment {
 
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
-				File f = new File(SpeckleView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SpeckleView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 				
 				// make this conditional: link to the total number of objects set to create
@@ -166,7 +166,7 @@ public class Segment {
 						Variable[] vol = null;
 						
 						
-						String path = SpeckleView.inputDir + list[i];
+						String path = inputDir + list[i];
 					
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
@@ -196,9 +196,9 @@ public class Segment {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
 							IJ.log("-------------------------------------------------------");
 							String fileName = list[i].replace(".dv", ".tif");
-							primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
-							secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
-							tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
+							primaryObjectsSpeckles = IJ.openImage(inputDir + primaryPrefix + fileName);
+							secondaryObjectsSpeckles = IJ.openImage(inputDir + secondaryPrefix + fileName);
+							tertiaryObjectsSpeckles = IJ.openImage(inputDir + tertiaryPrefix + fileName);
 							
 						} else {
 							// if analysis mode is F, segment objects based on channel preferences
