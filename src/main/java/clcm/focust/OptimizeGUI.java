@@ -542,7 +542,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_3_1.gridy = 2;
 		pnlPrimary.add(lblNewLabel_5_3_1, gbc_lblNewLabel_5_3_1);
 		
-		JComboBox cbPrimaryBackground = new JComboBox();
+		JComboBox<BackgroundType> cbPrimaryBackground = new JComboBox<>();
 		cbPrimaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -658,7 +658,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_1_1.gridy = 5;
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
 		
-		JComboBox cbPrimaryFilter = new JComboBox();
+		JComboBox<FilterType> cbPrimaryFilter = new JComboBox<>();
 		cbPrimaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -774,8 +774,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_1.gridy = 8;
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
-		JComboBox cbPrimaryMethod = new JComboBox();
-		//cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Maxima", "Minima", "Trained Classifer"}));
+		JComboBox<MethodTypes> cbPrimaryMethod = new JComboBox<>();
 		cbPrimaryMethod.setModel(new DefaultComboBoxModel<>(MethodTypes.values()));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -870,7 +869,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_txtPrimaryClassiferDirectory.gridy = 9;
 		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
 		
-		JComboBox cbPrimaryMethodThreshold = new JComboBox();
+		JComboBox<ThresholdType> cbPrimaryMethodThreshold = new JComboBox<>();
 		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbPrimaryMethodThreshold.setSelectedIndex(0);
 		cbPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -913,7 +912,7 @@ public class OptimizeGUI extends JFrame {
 					priImg = channelArray[primaryIndex];
 					ImagePlus priDup = priImg.duplicate();
 
-					BackgroundType background = (BackgroundType) cbPrimaryBackground.getSelectedItem();
+					BackgroundType background = cbPrimaryBackground.getItemAt(cbPrimaryBackground.getSelectedIndex());
 					FilterType filter = (FilterType) cbPrimaryFilter.getSelectedItem();
 					ThresholdType threshold = (ThresholdType) cbPrimaryMethodThreshold.getSelectedItem();
 					MethodTypes mt = (MethodTypes) cbPrimaryMethod.getSelectedItem();
