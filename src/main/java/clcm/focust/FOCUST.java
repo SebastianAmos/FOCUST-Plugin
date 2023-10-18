@@ -39,6 +39,7 @@ public static Path inputPath;
 
 		SwingUtilities.invokeLater(() -> {
 			MainScreen MainGui = new MainScreen();
+			MainGui.setLocationRelativeTo(null);
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
@@ -50,6 +51,7 @@ public static Path inputPath;
 	public void run() {
 		SwingUtilities.invokeLater(() -> {
 			MainScreen MainGui = new MainScreen();
+			MainGui.setLocationRelativeTo(null);
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});

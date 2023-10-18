@@ -85,10 +85,7 @@ public class MainScreen extends JFrame{
 				
 				JButton btnHelp = new JButton("Help");
 				pnlHeader.add(btnHelp, "cell 3 0,growx,aligny top");
-				btnHelp.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-					}
-				});
+			
 				btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
 		
 		JPanel pnlModeSelect = new JPanel();
@@ -100,8 +97,9 @@ public class MainScreen extends JFrame{
 		btnOptimize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			SwingUtilities.invokeLater(() -> {
-				OptimizeModeSelector optimizeSelect = new OptimizeModeSelector();
-					optimizeSelect.setVisible(true);
+					OptimizeGUI optimizeGui = new OptimizeGUI();
+					optimizeGui.setLocationRelativeTo(null);
+					optimizeGui.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
@@ -114,8 +112,12 @@ public class MainScreen extends JFrame{
 		btnSpheroid_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SpheroidView SpheroidGui = new SpheroidView();
-					SpheroidGui.setVisible(true);
+					
+					// launch anaylsis with the spheroid analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(1);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
@@ -128,8 +130,13 @@ public class MainScreen extends JFrame{
 		btnSingleCell_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SingleCellView SingleCellGui = new SingleCellView();
-					SingleCellGui.setVisible(true);
+					
+					// launch anaylsis with the single cell analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(2);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
+					
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 					
@@ -144,8 +151,13 @@ public class MainScreen extends JFrame{
 		btnSpeckle_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					SpeckleView SpeckleGui = new SpeckleView();
-					SpeckleGui.setVisible(true);
+					
+					// launch anaylsis with the speckle analysis mode selected
+					AnalysisGUI gui = new AnalysisGUI();
+					gui.setMode(3);
+					gui.setLocationRelativeTo(null);
+					gui.setVisible(true);
+					
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
 					win.dispose();
 				});
@@ -179,6 +191,20 @@ public class MainScreen extends JFrame{
 		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/speckleIcon.png")));
 		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
 		
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(() -> {
+					
+					SpeckleView SpeckleGui = new SpeckleView();
+					SpeckleGui.setVisible(true);
+					SpeckleGUI speckleGUI = new SpeckleGUI();
+					speckleGUI.setVisible(true);
+					
+					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
+					win.dispose();
+				});
+			}
+		});
 		
 	}
 
