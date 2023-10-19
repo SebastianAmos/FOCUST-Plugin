@@ -18,6 +18,7 @@ import java.awt.Color;
 
 import javax.swing.border.MatteBorder;
 
+import clcm.focust.filter.Vector3D;
 import ij.IJ;
 
 import javax.swing.ButtonGroup;
@@ -504,22 +505,18 @@ public class SingleCellView extends JFrame {
 				FilterSpec[] filterSpecs = new FilterSpec[2];
 
 				if(!cbAnalysisMode.isSelected()) {
-					filterSpecs[0].sigma_x = Double.parseDouble(txtPriGBx.getText());
-					filterSpecs[0].sigma_y = Double.parseDouble(txtPriGBy.getText());
-					filterSpecs[0].sigma_z = Double.parseDouble(txtPriGBz.getText());
-					filterSpecs[1].sigma_x = Double.parseDouble(txtSecGBx.getText());
-					filterSpecs[1].sigma_y = Double.parseDouble(txtSecGBy.getText());
-					filterSpecs[1].sigma_z = Double.parseDouble(txtSecGBz.getText());
+					Vector3D tempSigma_0 = Vector3D.builder().x(Double.parseDouble(txtPriGBx.getText())).y(Double.parseDouble(txtPriGBy.getText())).z(Double.parseDouble(txtPriGBz.getText())).build();
+					Vector3D tempRadii_0 = Vector3D.builder().x(Double.parseDouble(txtPriDMx.getText())).y(Double.parseDouble(txtPriDMy.getText())).z(Double.parseDouble(txtPriDMz.getText())).build();
+					double tempGreaterConstant = Double.parseDouble(txtPriThreshold.getText());
 
-					filterSpecs[0].radius_x = Double.parseDouble(txtPriDMx.getText());
-					filterSpecs[0].radius_y = Double.parseDouble(txtPriDMy.getText());
-					filterSpecs[0].radius_z = Double.parseDouble(txtPriDMz.getText());
-					filterSpecs[1].radius_x = Double.parseDouble(txtSecDMx.getText());
-					filterSpecs[1].radius_y = Double.parseDouble(txtSecDMy.getText());
-					filterSpecs[1].radius_z = Double.parseDouble(txtSecDMz.getText());
+					filterSpecs[0] = FilterSpec.builder().sigma(tempSigma_0).radii(tempRadii_0).greaterConstant(tempGreaterConstant).build();
 
-					filterSpecs[0].greaterConstant = Double.parseDouble(txtPriThreshold.getText());
-					filterSpecs[1].greaterConstant = Double.parseDouble(txtSecThreshold.getText());
+					Vector3D tempSigma_1 = Vector3D.builder().x(Double.parseDouble(txtSecGBx.getText())).y(Double.parseDouble(txtSecGBy.getText())).z(Double.parseDouble(txtSecGBz.getText())).build();
+					Vector3D tempRadii_1 = Vector3D.builder().x(Double.parseDouble(txtSecDMx.getText())).y(Double.parseDouble(txtSecDMy.getText())).z(Double.parseDouble(txtSecDMz.getText())).build();
+					tempGreaterConstant = Double.parseDouble(txtSecThreshold.getText());
+
+					filterSpecs[1] = FilterSpec.builder().sigma(tempSigma_1).radii(tempRadii_1).greaterConstant(tempGreaterConstant).build();
+
 				}
 				channel2Name = txtSingleCellC2Name.getText();
 				channel3Name = txtSingleCellC3Name.getText();

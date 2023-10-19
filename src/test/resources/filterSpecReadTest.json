@@ -1,1 +1,1 @@
-[{"sigma_x":1.0,"sigma_y":2.0,"sigma_z":3.0,"radius_x":4.0,"radius_y":5.0,"radius_z":6.0,"greaterConstant":7.0}]
+[{"sigma":{"x":1.0,"y":2.0,"z":3.0},"radii":{"x":4.0,"y":5.0,"z":6.0},"greaterConstant":7.0}]

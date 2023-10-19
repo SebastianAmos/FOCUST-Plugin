@@ -17,6 +17,8 @@ import javax.swing.JComboBox;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
+
+import clcm.focust.filter.Vector3D;
 import ij.IJ;
 import javax.swing.border.EtchedBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -103,59 +105,53 @@ public class SpeckleView extends JFrame {
 	void setFilterParameterUIValues(){
 		// TODO: Remove the hard-coding
 		if(filterSpecs[0] != null){
-			txtPriGBx.setText(String.valueOf(filterSpecs[0].sigma_x));
-			txtPriGBy.setText(String.valueOf(filterSpecs[0].sigma_y));
-			txtPriGBz.setText(String.valueOf(filterSpecs[0].sigma_z));
-			txtPriDMx.setText(String.valueOf(filterSpecs[0].radius_x));
-			txtPriDMy.setText(String.valueOf(filterSpecs[0].radius_y));
-			txtPriDMz.setText(String.valueOf(filterSpecs[0].radius_z));
+			txtPriGBx.setText(String.valueOf(filterSpecs[0].sigma.getX()));
+			txtPriGBy.setText(String.valueOf(filterSpecs[0].sigma.getY()));
+			txtPriGBz.setText(String.valueOf(filterSpecs[0].sigma.getZ()));
+			txtPriDMx.setText(String.valueOf(filterSpecs[0].radii.getX()));
+			txtPriDMy.setText(String.valueOf(filterSpecs[0].radii.getY()));
+			txtPriDMz.setText(String.valueOf(filterSpecs[0].radii.getZ()));
 			txtPriThreshold.setText(String.valueOf(filterSpecs[0].greaterConstant));
 		}
 		if(filterSpecs[1] != null){
-			txtSecGBx.setText(String.valueOf(filterSpecs[1].sigma_x));
-			txtSecGBy.setText(String.valueOf(filterSpecs[1].sigma_y));
-			txtSecGBz.setText(String.valueOf(filterSpecs[1].sigma_z));
-			txtSecDMx.setText(String.valueOf(filterSpecs[1].radius_x));
-			txtSecDMy.setText(String.valueOf(filterSpecs[1].radius_y));
-			txtSecDMz.setText(String.valueOf(filterSpecs[1].radius_z));
+			txtSecGBx.setText(String.valueOf(filterSpecs[1].sigma.getX()));
+			txtSecGBy.setText(String.valueOf(filterSpecs[1].sigma.getY()));
+			txtSecGBz.setText(String.valueOf(filterSpecs[1].sigma.getZ()));
+			txtSecDMx.setText(String.valueOf(filterSpecs[1].radii.getX()));
+			txtSecDMy.setText(String.valueOf(filterSpecs[1].radii.getY()));
+			txtSecDMz.setText(String.valueOf(filterSpecs[1].radii.getZ()));
 			txtSecThreshold.setText(String.valueOf(filterSpecs[1].greaterConstant));
 		}
 		if(filterSpecs[2] != null){
-			txtTertGBx.setText(String.valueOf(filterSpecs[2].sigma_x));
-			txtTertGBy.setText(String.valueOf(filterSpecs[2].sigma_y));
-			txtTertGBz.setText(String.valueOf(filterSpecs[2].sigma_z));
-			txtTertDMx.setText(String.valueOf(filterSpecs[2].radius_x));
-			txtTertDMy.setText(String.valueOf(filterSpecs[2].radius_y));
-			txtTertDMz.setText(String.valueOf(filterSpecs[2].radius_z));
+			txtTertGBx.setText(String.valueOf(filterSpecs[2].sigma.getX()));
+			txtTertGBy.setText(String.valueOf(filterSpecs[2].sigma.getY()));
+			txtTertGBz.setText(String.valueOf(filterSpecs[2].sigma.getZ()));
+			txtTertDMx.setText(String.valueOf(filterSpecs[2].radii.getX()));
+			txtTertDMy.setText(String.valueOf(filterSpecs[2].radii.getY()));
+			txtTertDMz.setText(String.valueOf(filterSpecs[2].radii.getZ()));
 			txtTertThreshold.setText(String.valueOf(filterSpecs[2].greaterConstant));
 		}
 	}
 
 	void setFilterParameters(){
 		// TODO: Delcare textboxes programmatically
-		filterSpecs[0].sigma_x = Double.parseDouble(txtPriGBx.getText());
-		filterSpecs[0].sigma_y = Double.parseDouble(txtPriGBy.getText());
-		filterSpecs[0].sigma_z = Double.parseDouble(txtPriGBz.getText());
-		filterSpecs[1].sigma_x = Double.parseDouble(txtSecGBx.getText());
-		filterSpecs[1].sigma_y = Double.parseDouble(txtSecGBy.getText());
-		filterSpecs[1].sigma_z = Double.parseDouble(txtSecGBz.getText());
-		filterSpecs[2].sigma_x = Double.parseDouble(txtTertGBx.getText());
-		filterSpecs[2].sigma_y = Double.parseDouble(txtTertGBy.getText());
-		filterSpecs[2].sigma_z = Double.parseDouble(txtTertGBz.getText());
+		Vector3D tempSigma_0 = Vector3D.builder().x(Double.parseDouble(txtPriGBx.getText())).y(Double.parseDouble(txtPriGBy.getText())).z(Double.parseDouble(txtPriGBz.getText())).build();
+		Vector3D tempRadii_0 = Vector3D.builder().x(Double.parseDouble(txtPriDMx.getText())).y(Double.parseDouble(txtPriDMy.getText())).z(Double.parseDouble(txtPriDMz.getText())).build();
+		double tempGreaterConstant = Double.parseDouble(txtPriThreshold.getText());
 
-		filterSpecs[0].radius_x = Double.parseDouble(txtPriDMx.getText());
-		filterSpecs[0].radius_y = Double.parseDouble(txtPriDMy.getText());
-		filterSpecs[0].radius_z = Double.parseDouble(txtPriDMz.getText());
-		filterSpecs[1].radius_x = Double.parseDouble(txtSecDMx.getText());
-		filterSpecs[1].radius_y = Double.parseDouble(txtSecDMy.getText());
-		filterSpecs[1].radius_z = Double.parseDouble(txtSecDMz.getText());
-		filterSpecs[2].radius_x = Double.parseDouble(txtTertDMx.getText());
-		filterSpecs[2].radius_y = Double.parseDouble(txtTertDMy.getText());
-		filterSpecs[2].radius_z = Double.parseDouble(txtTertDMz.getText());
+		filterSpecs[0] = FilterSpec.builder().sigma(tempSigma_0).radii(tempRadii_0).greaterConstant(tempGreaterConstant).build();
 
-		filterSpecs[0].greaterConstant = Double.parseDouble(txtPriThreshold.getText());
-		filterSpecs[1].greaterConstant = Double.parseDouble(txtSecThreshold.getText());
-		filterSpecs[2].greaterConstant = Double.parseDouble(txtTertThreshold.getText());
+		Vector3D tempSigma_1 = Vector3D.builder().x(Double.parseDouble(txtSecGBx.getText())).y(Double.parseDouble(txtSecGBy.getText())).z(Double.parseDouble(txtSecGBz.getText())).build();
+		Vector3D tempRadii_1 = Vector3D.builder().x(Double.parseDouble(txtSecDMx.getText())).y(Double.parseDouble(txtSecDMy.getText())).z(Double.parseDouble(txtSecDMz.getText())).build();
+		tempGreaterConstant = Double.parseDouble(txtSecThreshold.getText());
+
+		filterSpecs[1] = FilterSpec.builder().sigma(tempSigma_1).radii(tempRadii_1).greaterConstant(tempGreaterConstant).build();
+
+		Vector3D tempSigma_2 = Vector3D.builder().x(Double.parseDouble(txtTertGBx.getText())).y(Double.parseDouble(txtTertGBy.getText())).z(Double.parseDouble(txtTertGBz.getText())).build();
+		Vector3D tempRadii_2 = Vector3D.builder().x(Double.parseDouble(txtTertDMx.getText())).y(Double.parseDouble(txtTertDMy.getText())).z(Double.parseDouble(txtTertDMz.getText())).build();
+		tempGreaterConstant = Double.parseDouble(txtTertThreshold.getText());
+
+		filterSpecs[2] = FilterSpec.builder().sigma(tempSigma_2).radii(tempRadii_2).greaterConstant(tempGreaterConstant).build();
 	}
 
 	/**
