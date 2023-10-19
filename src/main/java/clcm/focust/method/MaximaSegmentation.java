@@ -16,6 +16,8 @@ public class MaximaSegmentation implements Method{
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
 		
+		Vector3D.builder().x(0).y(0).z(0).build();
+		
 		ClearCLBuffer bg = background.getFilter().apply(input, new Vector3D(3,3,3), new Vector3D(0,0,0));
 		ClearCLBuffer filtered = filter.getFilter().apply(bg, new Vector3D(0,0,0), new Vector3D(0,0,0));
 		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, 0);
