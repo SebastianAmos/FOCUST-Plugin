@@ -44,9 +44,9 @@ import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
-import clcm.focust.method.Method;
-import clcm.focust.method.MethodTypes;
-import clcm.focust.method.Skeleton;
+import clcm.focust.segmentation.Method;
+import clcm.focust.segmentation.MethodTypes;
+import clcm.focust.segmentation.Skeleton;
 import clcm.focust.threshold.Threshold;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
@@ -1330,7 +1330,7 @@ public class OptimizeGUI extends JFrame {
 		txtSecondaryMethodZ.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecondaryMethodZ);
 		
-		JComboBox cbSecondaryMethodThreshold = new JComboBox();
+		JComboBox<ThresholdType> cbSecondaryMethodThreshold = new JComboBox<>();
 		cbSecondaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbSecondaryMethodThreshold.setSelectedIndex(0);
 		cbSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
