@@ -32,6 +32,8 @@ import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.segmentation.skeleton.Skeleton;
+import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
 import ij.ImagePlus;
@@ -1929,6 +1931,13 @@ public class AnalysisGUI extends JFrame {
 					//-----------------
 					// skeletons
 					//-----------------
+					Skeleton skeleton = new Skeleton();
+					ImagePlus skel = skeleton.createSkeletons(imp);
+					SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel);
+					skel.show();
+					
+					results.getStandard().show("Standard Results");
+					results.getExtra().show("Extra Results");
 					
 					
 					

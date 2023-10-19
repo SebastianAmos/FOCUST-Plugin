@@ -6,7 +6,7 @@ public enum BackgroundType {
 	DOG(new DifferenceOfGaussian(), "3D DoG"),
 	GAUSSIAN(new GaussianBlur(), "3D Gaussian"),
 	TOPHAT(new TopHat(), "3D Top Hat"),
-	BOTTOMHAT(new BottomHat(), "3D Bottom Hat"),
+		BOTTOMHAT(new BottomHat(), "3D Bottom Hat"),
 	MINIMUM(new Minimum(), "3D Minimum"),
 	INVERTEDMINIMUM(new InvertedMinimum(), "3D Inverted Min."),
 	INVERTEDTUBENESS(new InvertedTubeness(), "3D Inverted Tube.");
