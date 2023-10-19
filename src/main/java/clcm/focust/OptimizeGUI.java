@@ -46,7 +46,7 @@ import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
 import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
-import clcm.focust.segmentation.Skeleton;
+import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.threshold.Threshold;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
@@ -206,11 +206,6 @@ public class OptimizeGUI extends JFrame {
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Skeleton sk = new Skeleton();
-				ImagePlus img = IJ.openImage();
-				sk.createSkeletons(img);
-				img.show();
-				
 			}
 		});
 		
@@ -275,9 +270,7 @@ public class OptimizeGUI extends JFrame {
 		JButton btnAnalysis = new JButton("Analysis");
 		btnAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Skeleton sk = new Skeleton();
-				ImagePlus img = IJ.openImage();
-				sk.analyzeSkeletons(img, img );
+		
 			}
 		});
 		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
