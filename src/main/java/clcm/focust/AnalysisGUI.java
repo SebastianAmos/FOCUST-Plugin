@@ -76,7 +76,8 @@ public class AnalysisGUI extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup killBordersChoice = new ButtonGroup();
+	private KillBorderTypes selectedKillBorderOption;
 	private JTextField txtTertiaryMethodThreshold;
 	private JTextField txtPrimaryS1X;
 	private JTextField txtPrimaryS1Y;
@@ -332,21 +333,47 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
-		buttonGroup.add(rdbtnNewRadioButton);
-		rdbtnNewRadioButton.setSelected(true);
-		rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnNewRadioButton);
+		/*
+		 * JRadioButton rdbtnNewRadioButton = new
+		 * JRadioButton(KillBorderTypes.NO.toString());
+		 * killBordersChoice.add(rdbtnNewRadioButton);
+		 * rdbtnNewRadioButton.setSelected(true); rdbtnNewRadioButton.setFont(new
+		 * Font("Arial", Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnNewRadioButton);
+		 * 
+		 * JRadioButton rdbtnXY = new JRadioButton(KillBorderTypes.XY.toString());
+		 * killBordersChoice.add(rdbtnXY); rdbtnXY.setFont(new Font("Arial", Font.PLAIN,
+		 * 13)); //pnlKillBorders.add(rdbtnXY);
+		 * 
+		 * JRadioButton rdbtnXyz = new JRadioButton(KillBorderTypes.XYZ.toString());
+		 * killBordersChoice.add(rdbtnXyz); rdbtnXyz.setFont(new Font("Arial",
+		 * Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnXyz);
+		 */		
 		
-		JRadioButton rdbtnXY = new JRadioButton("X+Y");
-		buttonGroup.add(rdbtnXY);
-		rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXY);
 		
-		JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z");
-		buttonGroup.add(rdbtnXyz);
-		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXyz);
+		/*
+		 *  Build button group from kill border enum model.
+		 *  Default to NO.
+		 *  Each time the selected button within the button group is updated, selectedKillBorderOption updates.		 
+		 */
+		for(KillBorderTypes type : KillBorderTypes.values()) {
+			JRadioButton btn = new JRadioButton(type.toString());
+			btn.setFont(new Font("Arial", Font.PLAIN, 13));
+			btn.setActionCommand(type.name());
+			btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedKillBorderOption = KillBorderTypes.valueOf(e.getActionCommand());
+                    //System.out.println("Selected border mode: " + selectedKillBorderOption.toString());
+                }
+            });
+			killBordersChoice.add(btn);
+			if(type == KillBorderTypes.NO) {
+				btn.setSelected(true);
+			}
+			pnlKillBorders.add(btn);
+		}
+		
+		
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Name Channel 1:");
 		lblNewLabel_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1884,6 +1911,14 @@ public class AnalysisGUI extends JFrame {
 		pnlFooter.add(separator_1_1_1, gbc_separator_1_1_1);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				System.out.println(selectedKillBorderOption);
+				
+				
+			}
+		});
 		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
 		gbc_btnRunAnalysis.fill = GridBagConstraints.HORIZONTAL;
