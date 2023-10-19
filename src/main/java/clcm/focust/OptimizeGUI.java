@@ -79,7 +79,7 @@ public class OptimizeGUI extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup killBordersChoice = new ButtonGroup();
 	private JTextField txtTertiaryMethodThreshold;
 	private JTextField txtPrimaryS1X;
 	private JTextField txtPrimaryS1Y;
@@ -116,6 +116,7 @@ public class OptimizeGUI extends JFrame {
 	private JTextField textField_13;
 	private JTextField textField_14;
 	private JTextField textField_15;
+	private KillBorderTypes selectedKillBorderOption;
 	
 	public String inputDir;
 	public ImagePlus currentImage;
@@ -477,21 +478,39 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
-		buttonGroup.add(rdbtnNewRadioButton);
-		rdbtnNewRadioButton.setSelected(true);
-		rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnNewRadioButton);
+		/*
+		 * JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
+		 * buttonGroup.add(rdbtnNewRadioButton); rdbtnNewRadioButton.setSelected(true);
+		 * rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnNewRadioButton);
+		 * 
+		 * JRadioButton rdbtnXY = new JRadioButton("X+Y"); buttonGroup.add(rdbtnXY);
+		 * rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnXY);
+		 * 
+		 * JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z"); buttonGroup.add(rdbtnXyz);
+		 * rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnXyz);
+		 */
 		
-		JRadioButton rdbtnXY = new JRadioButton("X+Y");
-		buttonGroup.add(rdbtnXY);
-		rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXY);
+		for(KillBorderTypes type : KillBorderTypes.values()) {
+			JRadioButton btn = new JRadioButton(type.toString());
+			btn.setFont(new Font("Arial", Font.PLAIN, 13));
+			btn.setActionCommand(type.name());
+			btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedKillBorderOption = KillBorderTypes.valueOf(e.getActionCommand());
+                    //System.out.println("Selected border mode: " + selectedKillBorderOption.toString());
+                }
+            });
+			killBordersChoice.add(btn);
+			if(type == KillBorderTypes.NO) {
+				btn.setSelected(true);
+			}
+			pnlKillBorders.add(btn);
+		}
 		
-		JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z");
-		buttonGroup.add(rdbtnXyz);
-		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXyz);
 		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -1985,6 +2004,14 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnUpdateOverlays, gbc_btnUpdateOverlays);
 		
 		JButton btnSaveConfiguration = new JButton("Save Configuration");
+		btnSaveConfiguration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				IJ.getDir("Select an Input Directory");
+				
+				
+			}
+		});
 		btnSaveConfiguration.setToolTipText("Save the current configuration.");
 		btnSaveConfiguration.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnSaveConfiguration = new GridBagConstraints();

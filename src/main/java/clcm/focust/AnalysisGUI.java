@@ -1,19 +1,16 @@
 package clcm.focust;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
-import net.miginfocom.swing.MigLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Window;
-
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextField;
@@ -25,24 +22,19 @@ import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
-
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.threshold.ThresholdType;
+import ij.IJ;
+import ij.ImagePlus;
 
 import java.awt.Toolkit;
 
@@ -50,6 +42,7 @@ public class AnalysisGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtInputDir;
+	private String inputDir;
 	private final ButtonGroup rbtnOutputDir = new ButtonGroup();
 	private JTextField txtOutputDir;
 	private JTextField txtC1;
@@ -210,6 +203,12 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		JButton btnBrowseInput = new JButton("Browse");
+		btnBrowseInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				inputDir = IJ.getDir("Select an Input Directory");
+				txtInputDir.setText(inputDir.toString());
+			}
+		});
 		btnBrowseInput.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowseInput = new GridBagConstraints();
 		gbc_btnBrowseInput.fill = GridBagConstraints.HORIZONTAL;
@@ -1914,7 +1913,21 @@ public class AnalysisGUI extends JFrame {
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// testing kill borders methods
+				
 				System.out.println(selectedKillBorderOption);
+				
+				File f = new File(inputDir);
+				String[] list = f.list();
+				
+				for (int i = 0; i < list.length; i++) {
+					String path = inputDir + list[i];
+					ImagePlus imp = IJ.openImage(path);
+					
+					// Testing functionality below
+					
+				}
+				
 				
 				
 			}
