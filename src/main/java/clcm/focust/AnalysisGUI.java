@@ -269,7 +269,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_5_4.gridy = 3;
 		pnlHeader.add(lblNewLabel_5_4, gbc_lblNewLabel_5_4);
 		
-		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
+		String[] analysisOptions = {"None", "Basic", "Spheroid", "Single Cells", "Speckles"};
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		//cbAnalysisMode = new JComboBox<>(new String[] {"None", "Spheroid", "Single Cells", "Speckles"});
 		//cbAnalysisMode.setModel(new DefaultComboBoxModel(new String[] {"None", "Spheroid", "Single Cells", "Speckles"}));
