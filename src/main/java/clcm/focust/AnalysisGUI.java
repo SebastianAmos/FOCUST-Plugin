@@ -1943,11 +1943,9 @@ public class AnalysisGUI extends JFrame {
 					  results.getExtra().show("Extra Results");
 					  results.getLabelledSkeletons().show();
 					  results.getLabelMatched().show("Match Results");
-					  
 					 
 					
 				}
-				
 				
 				
 			}
