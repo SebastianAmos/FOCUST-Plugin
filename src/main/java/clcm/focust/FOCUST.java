@@ -49,6 +49,9 @@ public static Path inputPath;
 
 	@Override
 	public void run() {
+		// check required plugins are available.
+		CheckPlugins.areAvailable();
+		
 		SwingUtilities.invokeLater(() -> {
 			MainScreen MainGui = new MainScreen();
 			MainGui.setLocationRelativeTo(null);
