@@ -1930,29 +1930,21 @@ public class AnalysisGUI extends JFrame {
 					
 					// Testing functionality below
 					
-					
-					MaximaTest.apply(imp);
-					
-					
-					
-					
-					
-					
-					
 					//-----------------
 					// skeletons
 					//-----------------
 					
-					/*
-					 * Skeleton skeleton = new Skeleton(); ImagePlus skel =
-					 * skeleton.createSkeletons(imp); SkeletonResultsHolder results =
-					 * skeleton.analyzeSkeletons(skel); skel.show();
-					 * 
-					 * results.getStandard().show("Standard Results");
-					 * results.getExtra().show("Extra Results");
-					 */
-					
-					
+					  Skeleton skeleton = new Skeleton(); 
+					  ImagePlus skel = skeleton.createSkeletons(imp); 
+					  SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel, imp); 
+					  skel.show();
+					  
+					  results.getStandard().show("Standard Results");
+					  results.getExtra().show("Extra Results");
+					  results.getLabelledSkeletons().show();
+					  results.getLabelMatched().show("Match Results");
+					  
+					 
 					
 				}
 				
