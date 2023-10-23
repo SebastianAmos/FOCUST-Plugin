@@ -4,8 +4,11 @@ package clcm.focust.segmentation.skeleton;
 import java.util.ArrayList;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import inra.ijpb.measure.IntensityMeasures;
+import inra.ijpb.measure.ResultsBuilder;
 import sc.fiji.skeletonize3D.Skeletonize3D_;
 import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
@@ -48,7 +51,7 @@ public class Skeleton {
 		
 	}
 	
-
+	
 	/**
 	 * Analyse the skeletons and produce a results holder containing two tables:
 	 * 1 x standard and 1 x verbose results.
@@ -57,19 +60,28 @@ public class Skeleton {
 	 * @param labels
 	 * @return
 	 */
-	public SkeletonResultsHolder analyzeSkeletons(ImagePlus imp) {
+	public SkeletonResultsHolder analyzeSkeletons(ImagePlus skeletonOriginals, ImagePlus labels) {
 
 		final AnalyzeSkeleton_ analyseSkeletons = new AnalyzeSkeleton_();
-		final ImagePlus skeletons = imp.duplicate();
-		cal = skeletons.getCalibration();
+		final ImagePlus skeletons = skeletonOriginals.duplicate();
+		cal = skeletonOriginals.getCalibration();
 		IJ.log("Analyzing Skeletons...");
 		analyseSkeletons.setup("", skeletons);
 		IJ.log("Running skeleton analysis...");
 		//final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true);
 		final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true, null);
 		IJ.log("complete.");
+		
+		// get the tagged skeleton img
+		final ImageStack lblSkeletonStack = analyseSkeletons.getLabeledSkeletons();
+		ImagePlus labelledSkeletons = new ImagePlus("labelled_skeletons_" + skeletonOriginals.getTitle(), lblSkeletonStack);
+		
 		// pull data from SkeletonResults object
-		SkeletonResultsHolder results = buildResults(skeletonResults);
+		SkeletonResultsHolder results = new SkeletonResultsHolder(null, null, null, null);
+		results = buildResults(skeletonResults, results);
+		results.setLabelledSkeletons(labelledSkeletons);
+		results.setLabelMatched(matchSkeletonToLabels(labelledSkeletons, labels));
+		
 		
 		return results;
 	}
@@ -82,27 +94,26 @@ public class Skeleton {
 	 * @param skeletons
 	 * @param originaLabels
 	 */
-	public void matchSkeletonToLabels(ImagePlus skeletons, ImagePlus originaLabels) {
+	public ResultsTable matchSkeletonToLabels(ImagePlus skeletons, ImagePlus originalLabels) {
+	
+		ResultsBuilder rb = new ResultsBuilder();
+		final IntensityMeasures im = new IntensityMeasures(skeletons, originalLabels);
 		
-		// intensity match skeletons within label masks
+		rb.addResult(im.getMax());
 		
-		
-		
-		
+		ResultsTable rt = rb.getResultsTable();
+		return rt;
 	}
 	
 	
 	/**
 	 * Extracts the results from the standard and verbose results of a SkeletonResult object.
-	 * Returns another object that holds both results tables.
+	 * Returns an object that holds both results tables.
 	 * 
 	 * @param skel
 	 * @return
 	 */
-	private SkeletonResultsHolder buildResults(SkeletonResult skel) {
-
-		// init return object
-		SkeletonResultsHolder results = new SkeletonResultsHolder(null, null);
+	private SkeletonResultsHolder buildResults(SkeletonResult skel, SkeletonResultsHolder results) {
 
 		ResultsTable standard = new ResultsTable();
 		ResultsTable extra = new ResultsTable();
