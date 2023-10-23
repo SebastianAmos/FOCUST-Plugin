@@ -25,7 +25,7 @@ public class CheckPlugins {
 		try {
 			CLIJ2.class.getName();
 		} catch (final NoClassDefFoundError err) {
-			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites");
+			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites.");
 			return false;
 		}
 		return true;
@@ -36,7 +36,7 @@ public class CheckPlugins {
 		try {
 			AnalyzeRegions3D.class.getName();
 		} catch (final NoClassDefFoundError err) {
-			IJ.showMessage("Please activate the IJPB-plugins update site");
+			IJ.showMessage("Please activate the IJPB-plugins update site.");
 			return false;
 		}
 		return true;
@@ -47,7 +47,7 @@ public class CheckPlugins {
 		try {
 			MorphoLibJMarkerControlledWatershed.class.getName();
 		} catch (final NoClassDefFoundError err) {
-			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites");
+			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites.");
 			return false;
 		}
 		return true;
@@ -58,7 +58,7 @@ public class CheckPlugins {
 		try {
 			ClearCLBuffer.class.getName();
 		} catch (final NoClassDefFoundError err) {
-			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites");
+			IJ.showMessage("Please activate all CLIJ and CLIJ2 update sites.");
 			return false;
 		}
 		return true;
