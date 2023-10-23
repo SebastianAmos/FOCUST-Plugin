@@ -32,6 +32,7 @@ import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.segmentation.MaximaTest;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
@@ -1926,19 +1927,30 @@ public class AnalysisGUI extends JFrame {
 					String path = inputDir + list[i];
 					ImagePlus imp = IJ.openImage(path);
 					
+					
 					// Testing functionality below
+					
+					
+					MaximaTest.apply(imp);
+					
+					
+					
+					
+					
+					
 					
 					//-----------------
 					// skeletons
 					//-----------------
-					Skeleton skeleton = new Skeleton();
-					ImagePlus skel = skeleton.createSkeletons(imp);
-					SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel);
-					skel.show();
 					
-					results.getStandard().show("Standard Results");
-					results.getExtra().show("Extra Results");
-					
+					/*
+					 * Skeleton skeleton = new Skeleton(); ImagePlus skel =
+					 * skeleton.createSkeletons(imp); SkeletonResultsHolder results =
+					 * skeleton.analyzeSkeletons(skel); skel.show();
+					 * 
+					 * results.getStandard().show("Standard Results");
+					 * results.getExtra().show("Extra Results");
+					 */
 					
 					
 					
