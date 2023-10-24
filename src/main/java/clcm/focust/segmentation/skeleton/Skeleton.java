@@ -68,7 +68,10 @@ public class Skeleton {
 		IJ.log("Analyzing Skeletons...");
 		analyseSkeletons.setup("", skeletons);
 		IJ.log("Running skeleton analysis...");
+		
+		// Doesn't include ROI param.
 		//final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true);
+		
 		final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true, null);
 		IJ.log("complete.");
 		
