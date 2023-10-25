@@ -1,8 +1,5 @@
 package clcm.focust.parameters;
-import clcm.focust.filter.BackgroundType;
-import clcm.focust.filter.FilterType;
 
-import clcm.focust.segmentation.MethodTypes;
 import lombok.Data;
 import lombok.Builder;
 
@@ -10,11 +7,8 @@ import lombok.Builder;
 @Builder
 public class ObjectParameters {
     int channel;
-    BackgroundType backgroundType;
-    FilterParameters backgroundParameters;
-    FilterType filterType;
+    BackgroundParameters backgroundParameters;
     FilterParameters filterParameters;
-    MethodTypes methodType;
     MethodParameters methodParameters;
 
 }

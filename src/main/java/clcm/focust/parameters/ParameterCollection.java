@@ -24,7 +24,7 @@ public class ParameterCollection {
     String nameChannel4;
     Boolean tertiaryIsDifference;
     Boolean coreVPeriphery;
-    float coreVolume;
+    double coreVolume;
     // Optimize Parameters
     boolean primaryDisplayOriginal;
     boolean primaryOverlay;
