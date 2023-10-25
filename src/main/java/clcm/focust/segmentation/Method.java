@@ -1,4 +1,4 @@
-package clcm.focust.method;
+package clcm.focust.segmentation;
 
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
@@ -7,6 +7,6 @@ import ij.ImagePlus;
 
 public interface Method {
 
-	ImagePlus apply(ImagePlus input, BackgroundType background, FilterType filter, ThresholdType threshold);
+	ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold);
 	
 }

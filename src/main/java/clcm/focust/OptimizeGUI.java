@@ -44,9 +44,9 @@ import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
-import clcm.focust.method.Method;
-import clcm.focust.method.MethodTypes;
-import clcm.focust.method.Skeleton;
+import clcm.focust.segmentation.Method;
+import clcm.focust.segmentation.MethodTypes;
+import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.threshold.Threshold;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
@@ -79,7 +79,7 @@ public class OptimizeGUI extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup killBordersChoice = new ButtonGroup();
 	private JTextField txtTertiaryMethodThreshold;
 	private JTextField txtPrimaryS1X;
 	private JTextField txtPrimaryS1Y;
@@ -116,6 +116,7 @@ public class OptimizeGUI extends JFrame {
 	private JTextField textField_13;
 	private JTextField textField_14;
 	private JTextField textField_15;
+	private KillBorderTypes selectedKillBorderOption;
 	
 	public String inputDir;
 	public ImagePlus currentImage;
@@ -205,11 +206,6 @@ public class OptimizeGUI extends JFrame {
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Skeleton sk = new Skeleton();
-				ImagePlus img = IJ.openImage();
-				sk.createSkeletons(img);
-				img.show();
-				
 			}
 		});
 		
@@ -274,9 +270,7 @@ public class OptimizeGUI extends JFrame {
 		JButton btnAnalysis = new JButton("Analysis");
 		btnAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Skeleton sk = new Skeleton();
-				ImagePlus img = IJ.openImage();
-				sk.analyzeSkeletons(img, img );
+		
 			}
 		});
 		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -477,21 +471,39 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
-		buttonGroup.add(rdbtnNewRadioButton);
-		rdbtnNewRadioButton.setSelected(true);
-		rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnNewRadioButton);
+		/*
+		 * JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
+		 * buttonGroup.add(rdbtnNewRadioButton); rdbtnNewRadioButton.setSelected(true);
+		 * rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnNewRadioButton);
+		 * 
+		 * JRadioButton rdbtnXY = new JRadioButton("X+Y"); buttonGroup.add(rdbtnXY);
+		 * rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnXY);
+		 * 
+		 * JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z"); buttonGroup.add(rdbtnXyz);
+		 * rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
+		 * pnlKillBorders.add(rdbtnXyz);
+		 */
 		
-		JRadioButton rdbtnXY = new JRadioButton("X+Y");
-		buttonGroup.add(rdbtnXY);
-		rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXY);
+		for(KillBorderTypes type : KillBorderTypes.values()) {
+			JRadioButton btn = new JRadioButton(type.toString());
+			btn.setFont(new Font("Arial", Font.PLAIN, 13));
+			btn.setActionCommand(type.name());
+			btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedKillBorderOption = KillBorderTypes.valueOf(e.getActionCommand());
+                    //System.out.println("Selected border mode: " + selectedKillBorderOption.toString());
+                }
+            });
+			killBordersChoice.add(btn);
+			if(type == KillBorderTypes.NO) {
+				btn.setSelected(true);
+			}
+			pnlKillBorders.add(btn);
+		}
 		
-		JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z");
-		buttonGroup.add(rdbtnXyz);
-		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXyz);
 		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -542,7 +554,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_3_1.gridy = 2;
 		pnlPrimary.add(lblNewLabel_5_3_1, gbc_lblNewLabel_5_3_1);
 		
-		JComboBox cbPrimaryBackground = new JComboBox();
+		JComboBox<BackgroundType> cbPrimaryBackground = new JComboBox<>();
 		cbPrimaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbPrimaryBackground.setSelectedIndex(0);
 		cbPrimaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -658,7 +670,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_1_1.gridy = 5;
 		pnlPrimary.add(lblNewLabel_5_1_1, gbc_lblNewLabel_5_1_1);
 		
-		JComboBox cbPrimaryFilter = new JComboBox();
+		JComboBox<FilterType> cbPrimaryFilter = new JComboBox<>();
 		cbPrimaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbPrimaryFilter.setSelectedIndex(0);
 		cbPrimaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -774,8 +786,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_5_1.gridy = 8;
 		pnlPrimary.add(lblNewLabel_5_1, gbc_lblNewLabel_5_1);
 		
-		JComboBox cbPrimaryMethod = new JComboBox();
-		//cbPrimaryMethod.setModel(new DefaultComboBoxModel(new String[] {"Maxima", "Minima", "Trained Classifer"}));
+		JComboBox<MethodTypes> cbPrimaryMethod = new JComboBox<>();
 		cbPrimaryMethod.setModel(new DefaultComboBoxModel<>(MethodTypes.values()));
 		cbPrimaryMethod.setSelectedIndex(0);
 		cbPrimaryMethod.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -870,7 +881,7 @@ public class OptimizeGUI extends JFrame {
 		gbc_txtPrimaryClassiferDirectory.gridy = 9;
 		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
 		
-		JComboBox cbPrimaryMethodThreshold = new JComboBox();
+		JComboBox<ThresholdType> cbPrimaryMethodThreshold = new JComboBox<>();
 		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbPrimaryMethodThreshold.setSelectedIndex(0);
 		cbPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -913,7 +924,7 @@ public class OptimizeGUI extends JFrame {
 					priImg = channelArray[primaryIndex];
 					ImagePlus priDup = priImg.duplicate();
 
-					BackgroundType background = (BackgroundType) cbPrimaryBackground.getSelectedItem();
+					BackgroundType background = cbPrimaryBackground.getItemAt(cbPrimaryBackground.getSelectedIndex());
 					FilterType filter = (FilterType) cbPrimaryFilter.getSelectedItem();
 					ThresholdType threshold = (ThresholdType) cbPrimaryMethodThreshold.getSelectedItem();
 					MethodTypes mt = (MethodTypes) cbPrimaryMethod.getSelectedItem();
@@ -1331,7 +1342,7 @@ public class OptimizeGUI extends JFrame {
 		txtSecondaryMethodZ.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecondaryMethodZ);
 		
-		JComboBox cbSecondaryMethodThreshold = new JComboBox();
+		JComboBox<ThresholdType> cbSecondaryMethodThreshold = new JComboBox<>();
 		cbSecondaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbSecondaryMethodThreshold.setSelectedIndex(0);
 		cbSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1986,6 +1997,14 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnUpdateOverlays, gbc_btnUpdateOverlays);
 		
 		JButton btnSaveConfiguration = new JButton("Save Configuration");
+		btnSaveConfiguration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				IJ.getDir("Select an Input Directory");
+				
+				
+			}
+		});
 		btnSaveConfiguration.setToolTipText("Save the current configuration.");
 		btnSaveConfiguration.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnSaveConfiguration = new GridBagConstraints();

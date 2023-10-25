@@ -1,4 +1,4 @@
-package clcm.focust.method;
+package clcm.focust.segmentation;
 
 public enum MethodTypes {
 	

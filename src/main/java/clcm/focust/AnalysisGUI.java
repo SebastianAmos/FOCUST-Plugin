@@ -1,19 +1,16 @@
 package clcm.focust;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
-import net.miginfocom.swing.MigLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Window;
-
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextField;
@@ -25,24 +22,22 @@ import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
-
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.File;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
-
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.segmentation.MaximaTest;
+import clcm.focust.segmentation.skeleton.Skeleton;
+import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
+import ij.IJ;
+import ij.ImagePlus;
 
 import java.awt.Toolkit;
 
@@ -50,6 +45,7 @@ public class AnalysisGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtInputDir;
+	private String inputDir;
 	private final ButtonGroup rbtnOutputDir = new ButtonGroup();
 	private JTextField txtOutputDir;
 	private JTextField txtC1;
@@ -76,7 +72,8 @@ public class AnalysisGUI extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup killBordersChoice = new ButtonGroup();
+	private KillBorderTypes selectedKillBorderOption;
 	private JTextField txtTertiaryMethodThreshold;
 	private JTextField txtPrimaryS1X;
 	private JTextField txtPrimaryS1Y;
@@ -209,6 +206,12 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		JButton btnBrowseInput = new JButton("Browse");
+		btnBrowseInput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				inputDir = IJ.getDir("Select an Input Directory");
+				txtInputDir.setText(inputDir.toString());
+			}
+		});
 		btnBrowseInput.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowseInput = new GridBagConstraints();
 		gbc_btnBrowseInput.fill = GridBagConstraints.HORIZONTAL;
@@ -267,7 +270,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_5_4.gridy = 3;
 		pnlHeader.add(lblNewLabel_5_4, gbc_lblNewLabel_5_4);
 		
-		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
+		String[] analysisOptions = {"None", "Basic", "Spheroid", "Single Cells", "Speckles"};
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		//cbAnalysisMode = new JComboBox<>(new String[] {"None", "Spheroid", "Single Cells", "Speckles"});
 		//cbAnalysisMode.setModel(new DefaultComboBoxModel(new String[] {"None", "Spheroid", "Single Cells", "Speckles"}));
@@ -332,21 +335,47 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
-		buttonGroup.add(rdbtnNewRadioButton);
-		rdbtnNewRadioButton.setSelected(true);
-		rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnNewRadioButton);
+		/*
+		 * JRadioButton rdbtnNewRadioButton = new
+		 * JRadioButton(KillBorderTypes.NO.toString());
+		 * killBordersChoice.add(rdbtnNewRadioButton);
+		 * rdbtnNewRadioButton.setSelected(true); rdbtnNewRadioButton.setFont(new
+		 * Font("Arial", Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnNewRadioButton);
+		 * 
+		 * JRadioButton rdbtnXY = new JRadioButton(KillBorderTypes.XY.toString());
+		 * killBordersChoice.add(rdbtnXY); rdbtnXY.setFont(new Font("Arial", Font.PLAIN,
+		 * 13)); //pnlKillBorders.add(rdbtnXY);
+		 * 
+		 * JRadioButton rdbtnXyz = new JRadioButton(KillBorderTypes.XYZ.toString());
+		 * killBordersChoice.add(rdbtnXyz); rdbtnXyz.setFont(new Font("Arial",
+		 * Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnXyz);
+		 */		
 		
-		JRadioButton rdbtnXY = new JRadioButton("X+Y");
-		buttonGroup.add(rdbtnXY);
-		rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXY);
 		
-		JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z");
-		buttonGroup.add(rdbtnXyz);
-		rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
-		pnlKillBorders.add(rdbtnXyz);
+		/*
+		 *  Build button group from kill border enum model.
+		 *  Default to NO.
+		 *  Each time the selected button within the button group is updated, selectedKillBorderOption updates.		 
+		 */
+		for(KillBorderTypes type : KillBorderTypes.values()) {
+			JRadioButton btn = new JRadioButton(type.toString());
+			btn.setFont(new Font("Arial", Font.PLAIN, 13));
+			btn.setActionCommand(type.name());
+			btn.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedKillBorderOption = KillBorderTypes.valueOf(e.getActionCommand());
+                    //System.out.println("Selected border mode: " + selectedKillBorderOption.toString());
+                }
+            });
+			killBordersChoice.add(btn);
+			if(type == KillBorderTypes.NO) {
+				btn.setSelected(true);
+			}
+			pnlKillBorders.add(btn);
+		}
+		
+		
 		
 		JLabel lblNewLabel_3_1 = new JLabel("Name Channel 1:");
 		lblNewLabel_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1884,6 +1913,43 @@ public class AnalysisGUI extends JFrame {
 		pnlFooter.add(separator_1_1_1, gbc_separator_1_1_1);
 		
 		JButton btnRunAnalysis = new JButton("Run Analysis");
+		btnRunAnalysis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// testing kill borders methods
+				
+				System.out.println(selectedKillBorderOption);
+				
+				File f = new File(inputDir);
+				String[] list = f.list();
+				
+				for (int i = 0; i < list.length; i++) {
+					String path = inputDir + list[i];
+					ImagePlus imp = IJ.openImage(path);
+					
+					
+					// Testing functionality below
+					
+					//-----------------
+					// skeletons
+					//-----------------
+					
+					  Skeleton skeleton = new Skeleton(); 
+					  ImagePlus skel = skeleton.createSkeletons(imp); 
+					  SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel, imp); 
+					  skel.show();
+					  
+					  results.getStandard().show("Standard Results");
+					  results.getExtra().show("Extra Results");
+					  results.getLabelledSkeletons().show();
+					  results.getLabelMatched().show("Match Results");
+					 
+					
+				}
+				
+				
+			}
+		});
 		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
 		gbc_btnRunAnalysis.fill = GridBagConstraints.HORIZONTAL;

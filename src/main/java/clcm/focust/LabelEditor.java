@@ -47,12 +47,6 @@ public class LabelEditor {
 		input.getStack().addSlice(emptySlice);
 		
 	}
-	
-	
-
-	
-	
-	
 
 	
 	/**

@@ -1,4 +1,4 @@
-package clcm.focust.method;
+package clcm.focust.segmentation;
 
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
@@ -16,7 +16,7 @@ public class MaximaSegmentation implements Method{
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
 		
-		ClearCLBuffer bg = background.getFilter().apply(input, Vector3D.builder().x(2).y(2).z(2).build(), Vector3D.builder().x(0).y(0).z(0).build());
+		ClearCLBuffer bg = background.getFilter().apply(input, Vector3D.builder().x(3).y(3).z(3).build(), Vector3D.builder().x(0).y(0).z(0).build());
 		ClearCLBuffer filtered = filter.getFilter().apply(bg, Vector3D.builder().x(0).y(0).z(0).build(), Vector3D.builder().x(0).y(0).z(0).build());
 		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, 0);
 		
@@ -26,7 +26,7 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer segmented = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
-		clij2.detectMaxima3DBox(filtered, maxima, 10, 10, 10); 
+		clij2.detectMaxima3DBox(filtered, maxima, 30, 30, 30);
 		
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);
