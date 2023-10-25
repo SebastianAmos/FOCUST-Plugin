@@ -19,13 +19,13 @@ public class BinarySearch {
 	 *  
 	 * @param imp 
 	 * 			An ImagePlus to be eroded.
-	 * @param reductionPercentage
+	 * @param volumePercentageRemaining
 	 * 			The target percentage of volume reduction as a fraction of 1. i.e 0.5 for 50 %. 
 	 * 
 	 * @return The eroded image.
 	 */
 	
-	public static ImagePlus createSpheroidCore(ImagePlus imp, double reductionPercentage) {
+	public static ImagePlus createSpheroidCore(ImagePlus imp, double volumePercentageRemaining) {
 		ImagePlus img = LabelEditor.makeBinary(imp);
 		
 		// compute max number of iterations possible on current image.
@@ -36,11 +36,11 @@ public class BinarySearch {
 		int originalVoxNum = calculateVoxNum(img.duplicate());
 		
 		System.out.println("Original Voxel Count is: " + originalVoxNum); // testing!
-		int targetVoxNum = (int) (reductionPercentage * originalVoxNum);
+		int targetVoxNum = (int) (volumePercentageRemaining * originalVoxNum);
 		System.out.println("Target Voxel Count is: " + targetVoxNum); // testing!
 		
 		// compute optimal number of erosion iterations.
-		int optimalIterationNum = binarySearchIterationNumber(img.duplicate(), maxIterations, originalVoxNum, reductionPercentage);
+		int optimalIterationNum = binarySearchIterationNumber(img.duplicate(), maxIterations, originalVoxNum, volumePercentageRemaining);
 		
 		System.out.println("Optimal number of iterations is: " + optimalIterationNum);
 		

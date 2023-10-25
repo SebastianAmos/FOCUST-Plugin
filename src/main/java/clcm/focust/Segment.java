@@ -205,10 +205,10 @@ public class Segment {
 							IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
 							IJ.log("-------------------------------------------------------");
 							
-							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], filterSpecs[0].sigma_x, filterSpecs[0].sigma_y, filterSpecs[0].sigma_z, filterSpecs[0].radius_x, filterSpecs[0].radius_y, filterSpecs[0].radius_z);
-							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , filterSpecs[1].sigma_x, filterSpecs[1].sigma_y, filterSpecs[1].sigma_z, filterSpecs[1].greaterConstant, filterSpecs[1].radius_x, filterSpecs[1].radius_y, filterSpecs[1].radius_z);
+							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], filterSpecs[0].sigma.getX(), filterSpecs[0].sigma.getY(), filterSpecs[0].sigma.getZ(), filterSpecs[0].radii.getX(), filterSpecs[0].radii.getY(), filterSpecs[0].radii.getZ());
+							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , filterSpecs[1].sigma.getX(), filterSpecs[1].sigma.getY(), filterSpecs[1].sigma.getZ(), filterSpecs[1].greaterConstant, filterSpecs[1].radii.getX(), filterSpecs[1].radii.getY(), filterSpecs[1].radii.getZ());
 							// make tertiary processing conditional
-							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], filterSpecs[2].sigma_x, filterSpecs[2].sigma_y, filterSpecs[2].sigma_z, filterSpecs[2].greaterConstant, filterSpecs[2].radius_x, filterSpecs[2].radius_y, filterSpecs[2].radius_z);
+							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], filterSpecs[2].sigma.getX(), filterSpecs[2].sigma.getY(), filterSpecs[2].sigma.getZ(), filterSpecs[2].greaterConstant, filterSpecs[2].radii.getX(), filterSpecs[2].radii.getY(), filterSpecs[2].radii.getZ());
 						}
 						
 						// Calibrate segmented outputs
@@ -383,7 +383,7 @@ public class Segment {
 						c2CountEdit.renameColumn("Max", "C2_Object_Count");
 						c3CountEdit.renameColumn("Max", "C3_Object_Count");
 						
-						c3CountEdit.show("thisbitch!");
+						//c3CountEdit.show("thisbitch!");
 						// add the C2 and C3 counts to the primary map
 						TableUtility.collectColumns(c2CountEdit, primary);
 						TableUtility.collectColumns(c3CountEdit, primary);
@@ -557,7 +557,7 @@ public class Segment {
 						tertiaryFinalResults.setColumn("C3_Mean_Intensity", tertiaryIntensity.getColumnAsVariables("C3_Mean_Intensity"));
 						tertiaryFinalResults.setColumn("C3_IntDen", tertiaryIntensity.getColumnAsVariables("C3_IntDen"));
 						
-					
+						
 						
 						
 					} // end of single image loop!!
@@ -769,7 +769,7 @@ public class Segment {
 							}*/
 						} else {
 							// if analysis mode is F, segment primary channel based on user inputs
-							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], filterSpecs[0].sigma_x, filterSpecs[0].sigma_y, filterSpecs[0].sigma_z, filterSpecs[0].greaterConstant, filterSpecs[0].radius_x, filterSpecs[0].radius_y, filterSpecs[0].radius_z);
+							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], filterSpecs[0].sigma.getX(), filterSpecs[0].sigma.getY(), filterSpecs[0].sigma.getZ(), filterSpecs[0].greaterConstant, filterSpecs[0].radii.getX(), filterSpecs[0].radii.getY(), filterSpecs[0].radii.getZ());
 						}
 						
 						IJ.resetMinAndMax(primaryOriginalObjectsCells);
@@ -793,7 +793,7 @@ public class Segment {
 								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
 							}*/
 						} else {
-							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], filterSpecs[1].sigma_x, filterSpecs[1].sigma_y, filterSpecs[1].sigma_z, filterSpecs[1].greaterConstant, filterSpecs[1].radius_x, filterSpecs[1].radius_y, filterSpecs[1].radius_z);
+							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], filterSpecs[1].sigma.getX(), filterSpecs[1].sigma.getY(), filterSpecs[1].sigma.getZ(), filterSpecs[1].greaterConstant, filterSpecs[1].radii.getX(), filterSpecs[1].radii.getY(), filterSpecs[1].radii.getZ());
 						}
 						
 						IJ.resetMinAndMax(secondaryObjectsCells);

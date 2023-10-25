@@ -1,5 +1,7 @@
 package clcm.focust;
 
+import clcm.focust.filter.Vector3D;
+
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +16,7 @@ class FilterSpecTest {
     @org.junit.jupiter.api.Test
     void saveFilterSpecs() {
         FilterSpec[] specs = new FilterSpec[1];
-        specs[0] = new FilterSpec(1, 2, 3, 4, 5, 6, 7);
+        specs[0] = new FilterSpec(Vector3D.builder().x(1).y(2).z(3).build(), Vector3D.builder().x(4).y(5).z(6).build(), 7.0);
         FilterSpec.saveFilterSpecs(specs, getTestFileName("src/test/resources/filterSpecWriteTest.json"));
     }
 
@@ -23,12 +25,12 @@ class FilterSpecTest {
         String path = getTestFileName("src/test/resources/filterSpecReadTest.json");
         FilterSpec[] specs = FilterSpec.readFilterSpecJSON(path);
         assert specs != null;
-        assertEquals(specs[0].sigma_x, 1);
-        assertEquals(specs[0].sigma_y, 2);
-        assertEquals(specs[0].sigma_z, 3);
-        assertEquals(specs[0].radius_x, 4);
-        assertEquals(specs[0].radius_y, 5);
-        assertEquals(specs[0].radius_z, 6);
-        assertEquals(specs[0].greaterConstant, 7);
+        assertEquals(specs[0].sigma.getX(), 1);
+        assertEquals(specs[0].sigma.getY(), 2);
+        assertEquals(specs[0].sigma.getZ(), 3);
+        assertEquals(specs[0].radii.getX(), 4);
+        assertEquals(specs[0].radii.getY(), 5);
+        assertEquals(specs[0].radii.getZ(), 6);
+        assertEquals(specs[0].greaterConstant, 7.0);
     }
 }
