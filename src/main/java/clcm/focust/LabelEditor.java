@@ -7,7 +7,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
-import ij.plugin.ImageCalculator;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -76,30 +75,6 @@ public class LabelEditor {
 		return labels;
 	}
 	
-	@Deprecated
-	// SLATED FOR REMOVAL!!!
-	public static ImagePlus reLabel(ImagePlus img) {
-		IJ.run(img, "32-bit", "");
-		for (int z = 1; z <= img.getStackSize(); z++) {
-			ImageProcessor ipImg = img.getStack().getProcessor(z);
-			for (int y = 0; y < ipImg.getHeight(); y++) {
-				for (int x = 0; x < ipImg.getWidth(); x++) {
-					int lbl = (int) ipImg.getPixelValue(x, y);
-					
-					if (lbl > 0) {
-						double newLbl = Double.parseDouble(lbl + "0" + 1);
-						ipImg.putPixelValue(x, y, newLbl);
-					}
-				}
-			}
-			
-		}
-		ImagePlus output = img;
-		return output;
-	}
-	
-	
-	
 	
 
 	/**
@@ -121,61 +96,6 @@ public class LabelEditor {
 		ResultsTable labelCounts = TableUtility.processIntensity(impCountMap, mask);
 		return labelCounts;
 	}
-	
-	
-	/**
-	 * This method assesses labels matched with a secondary image for duplicates. 
-	 * Where identified, duplicate label values are indexed to preserve identity.
-	 * 
-	 * @param matched An image that has been label-matched to overlying labels from original image.
-	 * @param original An image containing the original label values.
-	 * 
-	 * @return an adjusted image with duplicate label value corrections.
-	 *
-	 * @TODO
-	 * - Test label duplicates compared to the same image > could just pass one image to de-duplicate? 
-	 * 
-	 */
-	
-	public static ImagePlus findAndRename(ImagePlus matched, ImagePlus original) {
-		
-		Map<Integer, Integer> labelMaps = new HashMap<>();
-		
-		// iterate over slices of matched image to map the labels
-		// for every z slice, at every x and y pixel position, compare the label values.
-		for (int z = 1; z <= matched.getStackSize(); z++) {
-			ImageProcessor ipMatched = matched.getStack().getProcessor(z);
-			ImageProcessor ipOriginal = original.getStack().getProcessor(z);
-			
-			for (int y = 0; y < ipMatched.getHeight(); y++) {
-				for (int x = 0; x < ipMatched.getWidth(); x++) {
-					int lblMatched = (int) ipMatched.getPixelValue(x, y);
-					int lblOriginal = (int) ipOriginal.getPixelValue(x, y);
-					
-					// where a pixel label exists, and the map contains that value, reassign the value.
-					if (lblMatched > 0 ) {
-						if (labelMaps.containsKey(lblMatched)) {
-							
-							// shared value found, append an index to individualize the label 
-							int newIndex = labelMaps.get(lblMatched) + 1;
-							labelMaps.put(lblMatched, newIndex);
-							ipOriginal.putPixelValue(x, y, Double.parseDouble( lblOriginal + "0." + newIndex));
-							
-						} else {
-							// new label found, add to the map
-							labelMaps.put(lblMatched, 0);
-							ipOriginal.putPixelValue(x, y, lblOriginal);
-						}
-					}
-				}
-			}
-		}
-		ImagePlus output = original;
-		return output;
-	} 
-	
-	
-	
 	
 	
 	/**
@@ -201,7 +121,7 @@ public class LabelEditor {
 	
 	
 	/**
-	 * A method to re-index label values where they are duplicated between spatially indenpdent objects.
+	 * A method to re-index label values where they are duplicated between spatially independent objects.
 	 * 
 	 * @param input The labelled image to be re-indexed where labels are duplicated between objects.
 	 * @return output A re-labelled image where repeated values are indexed per instance. 

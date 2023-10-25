@@ -12,9 +12,9 @@ public enum FilterType {
 	INVERTEDTUBENESS(new InvertedTubeness(), "3D Inverted Tube.");
 	
 	
-	
 	private String displayName;
 	private Filter filter;
+	
 	
 	FilterType(Filter filter, String displayName){
 		this.filter = filter;

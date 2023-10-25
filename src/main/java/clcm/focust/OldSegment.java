@@ -29,7 +29,7 @@ import javax.swing.SwingUtilities;
  *
  */
 
-public class Segment {
+public class OldSegment {
 
 	public static ImagePlus[] channelsSpheroid;
 	public static ImagePlus[] channelsSingleCell;

@@ -195,13 +195,7 @@ public class MainScreen extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					
-					SpeckleView SpeckleGui = new SpeckleView();
-					SpeckleGui.setVisible(true);
-					SpeckleGUI speckleGUI = new SpeckleGUI();
-					speckleGUI.setVisible(true);
 					
-					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
-					win.dispose();
 				});
 			}
 		});
