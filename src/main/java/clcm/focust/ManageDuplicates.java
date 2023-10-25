@@ -2,7 +2,6 @@ package clcm.focust;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
@@ -10,11 +9,31 @@ import ij.plugin.ImageCalculator;
 import ij.process.ImageProcessor;
 import inra.ijpb.measure.IntensityMeasures;
 
+
 /**
  * This class contains methods for dealing cases of duplicate smaller objects within larger objects. i.e. multiple nuclei labels within a single cell label
  */
 public class ManageDuplicates {
 
+	
+	public ImagePlus run(ImagePlus labels, ImagePlus toRelabel) {
+		
+		// impose labels of secondary object onto primary object (or tertiary) 
+		ImagePlus matched = imposeLabels(labels, toRelabel);
+		
+		// matched = primary or tertiary objects relabelled with secondary object values.
+
+		// for each original primary object
+		Map<Double, Double> map = matchLabels(toRelabel, matched);
+		
+		// for each repeated primary label, append an index.
+		Map<Double, Double> indexed = mapDuplicates(map);
+		
+		// CHANGE OUTPUT TYPE TO OBJECT THAT HOLDS A MAP AND THE RELABELLED IMAGE WITH INDICIES!!!
+		
+		return null;
+		
+	}
 	
 	
 	/**
@@ -23,26 +42,27 @@ public class ManageDuplicates {
 	 * 
 	 * @param labels   Imp with labels to impose on the orignal image. i.e.
 	 *                 secondary objects.
-	 * @param original Imp with labels that need to adopt the labelling from the
+	 * @param toRelabel Imp with labels that need to adopt the labelling from the
 	 *                 "labels" imp. i.e. primary objects.
 	 * @return
 	 */
-	public ImagePlus imposeLabels(ImagePlus labels, ImagePlus original) {
+	public ImagePlus imposeLabels(ImagePlus labels, ImagePlus toRelabel) {
 
-		ImagePlus binary = LabelEditor.makeBinary(original);
+		ImagePlus binary = LabelEditor.makeBinary(toRelabel);
 		IJ.run(binary, "Divide...", "value=" + binary.getDisplayRangeMax() + " stack");
 		ImagePlus matched = ImageCalculator.run(labels, binary, "Multiply create stack");
 
 		return matched;
 	}
-
+	
+	
 	/**
 	 * Compare the labels of two images and store in a map. keys = original labels
-	 * and values = relabelled labels (potentially duplicates)
+	 * and values = relabelled labels (potentially duplicates) 
 	 * 
-	 * @param original
-	 * @param relabelled
-	 * @return a map with original labels
+	 * @param original 
+	 * @param relabelled 
+	 * @return a map with original labels 
 	 */
 	public Map<Double, Double> matchLabels(ImagePlus original, ImagePlus relabelled) {
 
@@ -55,12 +75,13 @@ public class ManageDuplicates {
 		for (int i = 0; i < labels.size(); i++) {
 
 			labelComparisons.put(labels.getValue("Label", i), labels.getValue("Max", i));
+			
 		}
-
+		
 		return labelComparisons;
-
+		
 	}
-
+	
 	
 	/**
 	 * for each repeated value encountered, append 0.1.
@@ -82,17 +103,17 @@ public class ManageDuplicates {
 				val += counter * 0.1;
 			}
 
-			// update the counter and results map
-
 			results.put(key, val);
 
 		}
+		
 		System.out.println("Counter Map: " + labelTracker);
 
 		return results;
 
 	}
-
+	
+	
 	/**
 	 * Assign labels from a map where a key is discovered.
 	 * 
