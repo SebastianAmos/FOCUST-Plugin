@@ -378,7 +378,7 @@ public class OldSegment {
 						c2CountEdit.renameColumn("Max", "C2_Object_Count");
 						c3CountEdit.renameColumn("Max", "C3_Object_Count");
 						
-						//c3CountEdit.show("thisbitch!");
+
 						// add the C2 and C3 counts to the primary map
 						TableUtility.collectColumns(c2CountEdit, primary);
 						TableUtility.collectColumns(c3CountEdit, primary);

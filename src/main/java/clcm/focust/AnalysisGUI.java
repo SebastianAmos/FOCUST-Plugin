@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.util.Map;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
@@ -1918,34 +1919,48 @@ public class AnalysisGUI extends JFrame {
 				
 				// testing kill borders methods
 				
-				System.out.println(selectedKillBorderOption);
 				
 				File f = new File(inputDir);
 				String[] list = f.list();
+			
+				String path1 = inputDir + list[0];
+				String path2 = inputDir + list[1];
+				ImagePlus duplicates = IJ.openImage(path1);
+				ImagePlus labels = IJ.openImage(path2);
 				
-				for (int i = 0; i < list.length; i++) {
-					String path = inputDir + list[i];
-					ImagePlus imp = IJ.openImage(path);
+				
+				// testing manage duplicates
+				
+				ManageDuplicates md = new ManageDuplicates();
+				RelabelledObjects ro = md.run(labels, duplicates);
+				Map<Double, Double> map  = ro.getMap();
+				System.out.println(map);
 					
+				ro.getRelabelled().show();
 					
+				duplicates.setTitle("Duplicates");
+				duplicates.show();
+				
+				
 					// Testing functionality below
 					
 					//-----------------
 					// skeletons
 					//-----------------
 					
-					  Skeleton skeleton = new Skeleton(); 
-					  ImagePlus skel = skeleton.createSkeletons(imp); 
-					  SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel, imp); 
-					  skel.show();
-					  
-					  results.getStandard().show("Standard Results");
-					  results.getExtra().show("Extra Results");
-					  results.getLabelledSkeletons().show();
-					  results.getLabelMatched().show("Match Results");
+					/*
+					 * Skeleton skeleton = new Skeleton(); ImagePlus skel =
+					 * skeleton.createSkeletons(imp); SkeletonResultsHolder results =
+					 * skeleton.analyzeSkeletons(skel, imp); skel.show();
+					 * 
+					 * results.getStandard().show("Standard Results");
+					 * results.getExtra().show("Extra Results");
+					 * results.getLabelledSkeletons().show();
+					 * results.getLabelMatched().show("Match Results");
+					 */
 					 
 					
-				}
+				
 				
 				
 			}
