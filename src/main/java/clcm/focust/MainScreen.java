@@ -39,7 +39,7 @@ public class MainScreen extends JFrame{
 	 */
 	public MainScreen() {
 		setTitle("FOCUST");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 899, 476);
 		mainPane = new JPanel();
@@ -73,21 +73,18 @@ public class MainScreen extends JFrame{
 		JLabel lblBatchProcessSpeckle = new JLabel("Batch process a dataset that contains multiple secondary objects per primary object. ");
 		lblBatchProcessSpeckle.setFont(new Font("Gadugi", Font.PLAIN, 14));
 		pnlModeText.add(lblBatchProcessSpeckle, BorderLayout.EAST);
-				pnlHeader.setLayout(new MigLayout("", "[580px][100px][100][150,right]", "[114px]"));
-				
-				JLabel lblMasterIcon = new JLabel("");
-				lblMasterIcon.setHorizontalAlignment(SwingConstants.LEFT);
-				lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("FullLogo3.png")));
-				pnlHeader.add(lblMasterIcon, "cell 0 0,alignx left,growy");
-				
-				JLabel label = new JLabel("");
-				pnlHeader.add(label, "cell 0 0,grow");
-				
-				JButton btnHelp = new JButton("Help");
-				pnlHeader.add(btnHelp, "cell 3 0,growx,aligny top");
-			
-				btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
-		
+		pnlHeader.setLayout(new MigLayout("", "[580px][100px][100][150,right]", "[114px]"));
+
+		JLabel lblMasterIcon = new JLabel("");
+		lblMasterIcon.setHorizontalAlignment(SwingConstants.LEFT);
+		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo2.png")));
+		pnlHeader.add(lblMasterIcon, "cell 0 0,alignx left,growy");
+
+		JButton btnHelp = new JButton("Help");
+		pnlHeader.add(btnHelp, "cell 3 0,growx,aligny top");
+
+		btnHelp.setFont(new Font("Gadugi", Font.BOLD, 13));
+
 		JPanel pnlModeSelect = new JPanel();
 		mainPane.add(pnlModeSelect, BorderLayout.CENTER);
 		pnlModeSelect.setLayout(new GridLayout(0, 1, 0, 10));
@@ -173,22 +170,22 @@ public class MainScreen extends JFrame{
 		JLabel lblQMarkIcon = new JLabel("");
 		lblQMarkIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblQMarkIcon);
-		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("iconquestionmark.png")));
+		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/iconquestionmark.png")));
 		
 		JLabel lblSpheroidIcon = new JLabel("");
 		lblSpheroidIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSpheroidIcon);
-		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("spheroidIcon0.2.png")));
+		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
 		
 		JLabel lblSingleCellIcon = new JLabel("");
 		lblSingleCellIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSingleCellIcon);
-		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("singlecellicon.png")));
+		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/singlecellicon.png")));
 		
 		JLabel lblSpeckleIcon = new JLabel("");
 		lblSpeckleIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSpeckleIcon);
-		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("speckleIcon.png")));
+		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
 		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
 		
 		btnHelp.addActionListener(new ActionListener() {

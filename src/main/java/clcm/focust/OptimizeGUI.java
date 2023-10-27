@@ -162,7 +162,7 @@ public class OptimizeGUI extends JFrame {
 		optimize = new OptimizeHelpers();
 		optimize.setOptimizeGUI(this);
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Optimization");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1159, 628);
