@@ -44,6 +44,7 @@ import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
+import clcm.focust.filter.Vector3D;
 import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
@@ -918,8 +919,13 @@ public class OptimizeGUI extends JFrame {
 		btnProcessPrimary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				ParamTest params = ParamTest.builder().
+						backgroundS1(Vector3D.builder().x(Double.parseDouble(txtPrimaryS1X.getText())).y(Double.parseDouble(txtPrimaryS1Y.getText())).z(Double.parseDouble(txtPrimaryS1Z.getText())).build()).
+						backgroundS2(Vector3D.builder().x(Double.parseDouble(txtPrimaryS2X.getText())).y(Double.parseDouble(txtPrimaryS2Y.getText())).z(Double.parseDouble(txtPrimaryS2Z.getText())).build()).
+						build();
+				
 				try {
-
+					
 					int primaryIndex = cbPrimaryChannel.getSelectedIndex();
 					priImg = channelArray[primaryIndex];
 					ImagePlus priDup = priImg.duplicate();
@@ -931,7 +937,7 @@ public class OptimizeGUI extends JFrame {
 
 					Method method = mt.getMethod();
 
-					ImagePlus output = method.apply(priDup, background, filter, threshold);
+					ImagePlus output = method.apply(priDup, background, filter, threshold, params);
 
 					if (!output.isVisible()) {
 						output.show();
@@ -1376,7 +1382,12 @@ public class OptimizeGUI extends JFrame {
 		JButton btnProcessSecondary = new JButton("Process");
 		btnProcessSecondary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
+				ParamTest params = ParamTest.builder().
+						backgroundS1(Vector3D.builder().x(Double.parseDouble(txtSecondaryS1X.getText())).y(Double.parseDouble(txtSecondaryS1Y.getText())).z(Double.parseDouble(txtSecondaryS1Z.getText())).build()).
+						backgroundS2(Vector3D.builder().x(Double.parseDouble(txtSecondaryS2X.getText())).y(Double.parseDouble(txtSecondaryS2Y.getText())).z(Double.parseDouble(txtSecondaryS2Z.getText())).build()).
+						build();
+				
 				try {
 
 					int seocndaryIndex = cbSecondaryChannel.getSelectedIndex();
@@ -1390,7 +1401,7 @@ public class OptimizeGUI extends JFrame {
 
 					Method method = mt.getMethod();
 
-					ImagePlus output = method.apply(secDup, background, filter, threshold);
+					ImagePlus output = method.apply(secDup, background, filter, threshold, params);
 
 					if (!output.isVisible()) {
 						output.show();

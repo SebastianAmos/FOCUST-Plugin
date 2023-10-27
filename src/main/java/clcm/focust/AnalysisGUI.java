@@ -33,6 +33,7 @@ import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.mode.ModeType;
 import clcm.focust.segmentation.MaximaTest;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
@@ -73,6 +74,7 @@ public class AnalysisGUI extends JFrame {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
+	private JComboBox<ModeType> cbAnalysisMode = new JComboBox<>();
 	private final ButtonGroup killBordersChoice = new ButtonGroup();
 	private KillBorderTypes selectedKillBorderOption;
 	private JTextField txtTertiaryMethodThreshold;
@@ -100,7 +102,6 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtCoreVolValue;
 	private JTextField txtPrimaryClassiferDirectory;
 	private JTextField txtPrimaryMethodThreshold;
-	private JComboBox<String> cbAnalysisMode;
 	private JTextField textField_1;
 	private JTextField textField_8;
 	private JTextField textField_9;
@@ -271,11 +272,12 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_5_4.gridy = 3;
 		pnlHeader.add(lblNewLabel_5_4, gbc_lblNewLabel_5_4);
 		
-		String[] analysisOptions = {"None", "Basic", "Spheroid", "Single Cells", "Speckles"};
-		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
+		//String[] analysisOptions = {"None", "Basic", "Spheroid", "Single Cells", "Speckles"};
+		//DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		//cbAnalysisMode = new JComboBox<>(new String[] {"None", "Spheroid", "Single Cells", "Speckles"});
 		//cbAnalysisMode.setModel(new DefaultComboBoxModel(new String[] {"None", "Spheroid", "Single Cells", "Speckles"}));
-		cbAnalysisMode = new JComboBox<String>(analysisModel);
+		cbAnalysisMode.setModel(new DefaultComboBoxModel<>(ModeType.values()));
+		//cbPrimaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbAnalysisMode.setSelectedIndex(0);
 		cbAnalysisMode.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbAnalysisMode = new GridBagConstraints();
@@ -473,29 +475,16 @@ public class AnalysisGUI extends JFrame {
 		gbc_textField.gridy = 0;
 		pnlVariable.add(textField, gbc_textField);
 		
-		JCheckBox ckbSpeckleSkeletons = new JCheckBox("Skeleton-based elongation?");
-		ckbSpeckleSkeletons.setSelected(true);
-		ckbSpeckleSkeletons.setFont(new Font("Arial", Font.PLAIN, 14));
+		JCheckBox ckbSkeletonization = new JCheckBox("Skeletonization?");
+		ckbSkeletonization.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbSpeckleSkeletons = new GridBagConstraints();
 		gbc_ckbSpeckleSkeletons.anchor = GridBagConstraints.WEST;
 		gbc_ckbSpeckleSkeletons.gridwidth = 2;
 		gbc_ckbSpeckleSkeletons.insets = new Insets(0, 5, 5, 0);
 		gbc_ckbSpeckleSkeletons.gridx = 0;
 		gbc_ckbSpeckleSkeletons.gridy = 6;
-		pnlVariable.add(ckbSpeckleSkeletons, gbc_ckbSpeckleSkeletons);
-		ckbSpeckleSkeletons.setVisible(false);
-		
-		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
-		ckbTertiaryObjectOption.setSelected(true);
-		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbCellsTertiaryOption = new GridBagConstraints();
-		gbc_ckbCellsTertiaryOption.anchor = GridBagConstraints.WEST;
-		gbc_ckbCellsTertiaryOption.gridwidth = 2;
-		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 5, 0);
-		gbc_ckbCellsTertiaryOption.gridx = 0;
-		gbc_ckbCellsTertiaryOption.gridy = 6;
-		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
-		ckbTertiaryObjectOption.setVisible(false);
+		pnlVariable.add(ckbSkeletonization, gbc_ckbSpeckleSkeletons);
+		ckbSkeletonization.setVisible(false);
 		
 		JCheckBox ckbSpheroidCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
 		
@@ -512,10 +501,10 @@ public class AnalysisGUI extends JFrame {
 		
 		JPanel pnlCoreVolValue = new JPanel();
 		GridBagConstraints gbc_pnlCoreVolValue = new GridBagConstraints();
+		gbc_pnlCoreVolValue.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlCoreVolValue.anchor = GridBagConstraints.WEST;
 		gbc_pnlCoreVolValue.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlCoreVolValue.gridwidth = 2;
-		gbc_pnlCoreVolValue.insets = new Insets(0, 0, 0, 5);
 		gbc_pnlCoreVolValue.gridx = 0;
 		gbc_pnlCoreVolValue.gridy = 8;
 		pnlVariable.add(pnlCoreVolValue, gbc_pnlCoreVolValue);
@@ -532,6 +521,18 @@ public class AnalysisGUI extends JFrame {
 		txtCoreVolValue.setText("0.5");
 		txtCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtCoreVolValue.setColumns(5);
+		
+		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
+		ckbTertiaryObjectOption.setSelected(true);
+		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbCellsTertiaryOption = new GridBagConstraints();
+		gbc_ckbCellsTertiaryOption.anchor = GridBagConstraints.WEST;
+		gbc_ckbCellsTertiaryOption.gridwidth = 2;
+		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 0, 0);
+		gbc_ckbCellsTertiaryOption.gridx = 0;
+		gbc_ckbCellsTertiaryOption.gridy = 9;
+		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
+		ckbTertiaryObjectOption.setVisible(false);
 		
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -2183,31 +2184,45 @@ public class AnalysisGUI extends JFrame {
 		cbAnalysisMode.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				
-				String analysisMode = cbAnalysisMode.getSelectedItem().toString();
+				ModeType mode = (ModeType) cbAnalysisMode.getSelectedItem();
 				
-				if(analysisMode.equals("None")) {
-					ckbSpeckleSkeletons.setVisible(false);
+				switch (mode) {
+				case NONE:
+					ckbSkeletonization.setVisible(false);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
-				} 
-				if(analysisMode.equals("Spheroid")) {
+					break;
+				case BASIC:
+					ckbSkeletonization.setVisible(true);
+					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(false);
+					pnlCoreVolValue.setVisible(false);
+					break;
+				case SPHEROID:
 					ckbSpheroidCoreVsPeriphery.setVisible(true);
 					pnlCoreVolValue.setVisible(false);
-					ckbSpeckleSkeletons.setVisible(false);
+					ckbSkeletonization.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(true);
-				}
-				if(analysisMode.equals("SingleCells")) {
+					break;
+				case SINGLECELL:
 					ckbTertiaryObjectOption.setVisible(true);
-					ckbSpeckleSkeletons.setVisible(false);
+					ckbSkeletonization.setVisible(true);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
-				} 
-				if(analysisMode.equals("Speckles")) {
-					ckbSpeckleSkeletons.setVisible(true);
+					break;
+				case SPECKLE:
+					ckbSkeletonization.setVisible(true);
 					ckbSpheroidCoreVsPeriphery.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
 					pnlCoreVolValue.setVisible(false);
+					break;
+				default:
+					ckbSkeletonization.setVisible(false);
+					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(false);
+					pnlCoreVolValue.setVisible(false);
+					break;
 				}
 			}
 		});
@@ -2359,10 +2374,12 @@ public class AnalysisGUI extends JFrame {
 		});
 
 	}
-
+	
+	
 	public void setMode(int index) {
 		cbAnalysisMode.setSelectedIndex(index);
 	}
+
 	
 	private static class __Tmp {
 		private static void __tmp() {

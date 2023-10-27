@@ -1410,7 +1410,7 @@ public class OldSegment {
 					 */
 					
 					
-					// If analysis-only-mode, find the right primary object file for the current image.  
+					// If analysis-only-mode, find the right primary object file for the current image.
 					if(analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
 						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
@@ -1444,7 +1444,7 @@ public class OldSegment {
 					/*
 					 * create and measure secondary object
 					 */
-				
+					
 					IJ.log("Processing Secondary Object...");
 					
 					

@@ -115,7 +115,7 @@ public class MainScreen extends JFrame{
 					
 					// launch anaylsis with the spheroid analysis mode selected
 					AnalysisGUI gui = new AnalysisGUI();
-					gui.setMode(1);
+					gui.setMode(2);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
 					Window win = SwingUtilities.getWindowAncestor(pnlModeSelect);
@@ -133,7 +133,7 @@ public class MainScreen extends JFrame{
 					
 					// launch anaylsis with the single cell analysis mode selected
 					AnalysisGUI gui = new AnalysisGUI();
-					gui.setMode(2);
+					gui.setMode(3);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
 					
@@ -154,7 +154,7 @@ public class MainScreen extends JFrame{
 					
 					// launch anaylsis with the speckle analysis mode selected
 					AnalysisGUI gui = new AnalysisGUI();
-					gui.setMode(3);
+					gui.setMode(4);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
 					

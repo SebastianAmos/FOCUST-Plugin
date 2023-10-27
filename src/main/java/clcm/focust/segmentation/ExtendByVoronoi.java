@@ -1,5 +1,6 @@
 package clcm.focust.segmentation;
 
+import clcm.focust.ParamTest;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.threshold.ThresholdType;
@@ -10,7 +11,7 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class ExtendByVoronoi implements Method {
 
 	@Override
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold) {
+	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ParamTest params) {
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
 		ClearCLBuffer input = clij2.push(imp);
