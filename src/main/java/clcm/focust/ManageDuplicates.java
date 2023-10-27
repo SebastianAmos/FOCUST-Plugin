@@ -7,7 +7,6 @@ import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import ij.plugin.ImageCalculator;
 import ij.process.ImageProcessor;
-import inra.ijpb.label.select.LabelSizeFiltering;
 import inra.ijpb.measure.IntensityMeasures;
 
 
