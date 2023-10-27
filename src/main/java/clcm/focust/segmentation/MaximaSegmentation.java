@@ -26,7 +26,7 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer segmented = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
-		clij2.detectMaxima3DBox(filtered, maxima, params.getSigmaMethod().getX(), params.getSigmaMethod().getY(), params.getSigmaMethod().getZ()); 
+		clij2.detectMaxima3DBox(filtered, maxima, params.getSigmaMethod().getX(), params.getSigmaMethod().getY(), params.getSigmaMethod().getZ());
 		
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);

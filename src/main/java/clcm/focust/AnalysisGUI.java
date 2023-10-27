@@ -35,6 +35,9 @@ import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.ModeType;
 import clcm.focust.segmentation.MaximaTest;
+import clcm.focust.filter.Vector3D;
+import clcm.focust.parameters.*;
+import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
@@ -54,7 +57,7 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtC2;
 	private JTextField txtC3;
 	private JTextField txtC4;
-	private JTextField textField;
+	private JTextField txtGroupingInfo;
 	private JTextField txtPriFilterX;
 	private JTextField txtPriFilterY;
 	private JTextField txtPriFilterZ;
@@ -68,12 +71,12 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtSecondaryMethodY;
 	private JTextField txtSecondaryMethodZ;
 	private JTextField txtSecondaryMethodThreshold;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
+	private JTextField txtTertFilterX;
+	private JTextField txtTertFilterY;
+	private JTextField txtTertFilterZ;
+	private JTextField txtTertiaryMethodX;
+	private JTextField txtTertiaryMethodY;
+	private JTextField txtTertiaryMethodZ;
 	private JComboBox<ModeType> cbAnalysisMode = new JComboBox<>();
 	private final ButtonGroup killBordersChoice = new ButtonGroup();
 	private KillBorderTypes selectedKillBorderOption;
@@ -102,18 +105,18 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtCoreVolValue;
 	private JTextField txtPrimaryClassiferDirectory;
 	private JTextField txtPrimaryMethodThreshold;
-	private JTextField textField_1;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JTextField textField_11;
-	private JTextField textField_12;
+	private JTextField txtPriFilter2X;
+	private JTextField txtPriFilter2Y;
+	private JTextField txtPriFilter2Z;
+	private JTextField txtSecFilter2X;
+	private JTextField txtSecFilter2Y;
+	private JTextField txtSecFilter2Z;
 	private JTextField txtSecondaryClassiferDirectory;
 	private JTextField txtTertiaryClassiferDirectory;
 	private JButton btnBrowseTertiaryClassifer;
-	private JTextField textField_13;
-	private JTextField textField_14;
-	private JTextField textField_15;
+	private JTextField txtTertFilter2X;
+	private JTextField txtTertFilter2Y;
+	private JTextField txtTertFilter2Z;
 
 	/**
 	 * Launch the application.
@@ -136,7 +139,7 @@ public class AnalysisGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public AnalysisGUI() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("icon2.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1102, 638);
@@ -465,15 +468,15 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_3_1_4.gridy = 0;
 		pnlVariable.add(lblNewLabel_3_1_4, gbc_lblNewLabel_3_1_4);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField.setColumns(10);
+		txtGroupingInfo = new JTextField();
+		txtGroupingInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtGroupingInfo.setColumns(10);
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
 		gbc_textField.fill = GridBagConstraints.BOTH;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 0;
-		pnlVariable.add(textField, gbc_textField);
+		pnlVariable.add(txtGroupingInfo, gbc_textField);
 		
 		JCheckBox ckbSkeletonization = new JCheckBox("Skeletonization?");
 		ckbSkeletonization.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -533,7 +536,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_ckbCellsTertiaryOption.gridy = 9;
 		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
 		ckbTertiaryObjectOption.setVisible(false);
-		
+
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
@@ -790,11 +793,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_7);
 		
-		textField_1 = new JTextField();
-		textField_1.setText("1");
-		textField_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_1.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_1);
+		txtPriFilter2X = new JTextField();
+		txtPriFilter2X.setText("1");
+		txtPriFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2X.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2X);
 		
 		JLabel lblNewLabel_6_1_5 = new JLabel("Y");
 		lblNewLabel_6_1_5.setVerticalAlignment(SwingConstants.TOP);
@@ -802,11 +805,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_1_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_1_5);
 		
-		textField_8 = new JTextField();
-		textField_8.setText("1");
-		textField_8.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_8.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_8);
+		txtPriFilter2Y = new JTextField();
+		txtPriFilter2Y.setText("3");
+		txtPriFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2Y.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2Y);
 		
 		JLabel lblNewLabel_6_2_5 = new JLabel("Z");
 		lblNewLabel_6_2_5.setVerticalAlignment(SwingConstants.TOP);
@@ -814,11 +817,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_2_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_2_5);
 		
-		textField_9 = new JTextField();
-		textField_9.setText("1");
-		textField_9.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_9.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_9);
+		txtPriFilter2Z = new JTextField();
+		txtPriFilter2Z.setText("1");
+		txtPriFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2Z.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2Z);
 		
 		JLabel lblNewLabel_5_1 = new JLabel("Method:");
 		lblNewLabel_5_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -956,7 +959,7 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		txtPrimaryMethodThreshold = new JTextField();
-		txtPrimaryMethodThreshold.setEnabled(false);
+		txtPrimaryMethodThreshold.setEnabled(true);
 		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold);
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryMethodThreshold.setColumns(6);
@@ -1218,11 +1221,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_4_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_4_3);
 		
-		textField_10 = new JTextField();
-		textField_10.setText("1");
-		textField_10.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_10.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_10);
+		txtSecFilter2X = new JTextField();
+		txtSecFilter2X.setText("2");
+		txtSecFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2X.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2X);
 		
 		JLabel lblNewLabel_6_1_2_3 = new JLabel("Y");
 		lblNewLabel_6_1_2_3.setVerticalAlignment(SwingConstants.TOP);
@@ -1230,11 +1233,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_1_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_1_2_3);
 		
-		textField_11 = new JTextField();
-		textField_11.setText("1");
-		textField_11.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_11.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_11);
+		txtSecFilter2Y = new JTextField();
+		txtSecFilter2Y.setText("1");
+		txtSecFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2Y.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2Y);
 		
 		JLabel lblNewLabel_6_2_2_3 = new JLabel("Z");
 		lblNewLabel_6_2_2_3.setVerticalAlignment(SwingConstants.TOP);
@@ -1242,11 +1245,11 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_2_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_2_2_3);
 		
-		textField_12 = new JTextField();
-		textField_12.setText("1");
-		textField_12.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_12.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_12);
+		txtSecFilter2Z = new JTextField();
+		txtSecFilter2Z.setText("1");
+		txtSecFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2Z.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2Z);
 		
 		JLabel lblNewLabel_5_1_2 = new JLabel("Method:");
 		lblNewLabel_5_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1388,7 +1391,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondaryThreshold.add(lblNewLabel_6_3_1_1);
 		
 		txtSecondaryMethodThreshold = new JTextField();
-		txtSecondaryMethodThreshold.setEnabled(false);
+		txtSecondaryMethodThreshold.setEnabled(true);
 		txtSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodThreshold.setColumns(6);
 		pnlSecondaryThreshold.add(txtSecondaryMethodThreshold);
@@ -1645,12 +1648,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_5);
 		
-		textField_2 = new JTextField();
-		textField_2.setEnabled(false);
-		textField_2.setText("1");
-		textField_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_2.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_2);
+		txtTertFilterX = new JTextField();
+		txtTertFilterX.setEnabled(false);
+		txtTertFilterX.setText("1");
+		txtTertFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterX.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterX);
 		
 		JLabel lblNewLabel_6_1_3 = new JLabel("Y");
 		lblNewLabel_6_1_3.setEnabled(false);
@@ -1659,12 +1662,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_1_3);
 		
-		textField_3 = new JTextField();
-		textField_3.setEnabled(false);
-		textField_3.setText("1");
-		textField_3.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_3.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_3);
+		txtTertFilterY = new JTextField();
+		txtTertFilterY.setEnabled(false);
+		txtTertFilterY.setText("1");
+		txtTertFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterY.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterY);
 		
 		JLabel lblNewLabel_6_2_3 = new JLabel("Z");
 		lblNewLabel_6_2_3.setEnabled(false);
@@ -1673,12 +1676,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_2_3);
 		
-		textField_4 = new JTextField();
-		textField_4.setEnabled(false);
-		textField_4.setText("1");
-		textField_4.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_4.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_4);
+		txtTertFilterZ = new JTextField();
+		txtTertFilterZ.setEnabled(false);
+		txtTertFilterZ.setText("1");
+		txtTertFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterZ.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterZ);
 		
 		JPanel pnlTertiarySecondBlur = new JPanel();
 		GridBagConstraints gbc_pnlTertiarySecondBlur = new GridBagConstraints();
@@ -1704,12 +1707,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_5_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_5_1);
 		
-		textField_13 = new JTextField();
-		textField_13.setText("1");
-		textField_13.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_13.setEnabled(false);
-		textField_13.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_13);
+		txtTertFilter2X = new JTextField();
+		txtTertFilter2X.setText("1");
+		txtTertFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2X.setEnabled(false);
+		txtTertFilter2X.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2X);
 		
 		JLabel lblNewLabel_6_1_3_1 = new JLabel("Y");
 		lblNewLabel_6_1_3_1.setVerticalAlignment(SwingConstants.TOP);
@@ -1718,12 +1721,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_1_3_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_1_3_1);
 		
-		textField_14 = new JTextField();
-		textField_14.setText("1");
-		textField_14.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_14.setEnabled(false);
-		textField_14.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_14);
+		txtTertFilter2Y = new JTextField();
+		txtTertFilter2Y.setText("1");
+		txtTertFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2Y.setEnabled(false);
+		txtTertFilter2Y.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2Y);
 		
 		JLabel lblNewLabel_6_2_3_1 = new JLabel("Z");
 		lblNewLabel_6_2_3_1.setVerticalAlignment(SwingConstants.TOP);
@@ -1732,12 +1735,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_2_3_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_2_3_1);
 		
-		textField_15 = new JTextField();
-		textField_15.setText("1");
-		textField_15.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_15.setEnabled(false);
-		textField_15.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_15);
+		txtTertFilter2Z = new JTextField();
+		txtTertFilter2Z.setText("1");
+		txtTertFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2Z.setEnabled(false);
+		txtTertFilter2Z.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2Z);
 		
 		JLabel lblNewLabel_5_1_3 = new JLabel("Method:");
 		lblNewLabel_5_1_3.setEnabled(false);
@@ -1774,7 +1777,7 @@ public class AnalysisGUI extends JFrame {
 		btnBrowseTertiaryClassifer.setVisible(false);
 		
 		txtTertiaryClassiferDirectory = new JTextField();
-		txtTertiaryClassiferDirectory.setEnabled(false);
+		txtTertiaryClassiferDirectory.setEnabled(true);
 		txtTertiaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryClassiferDirectory.setColumns(10);
 		GridBagConstraints gbc_txtTertiaryClassiferDirectory = new GridBagConstraints();
@@ -1802,12 +1805,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_3_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_3_2);
 		
-		textField_5 = new JTextField();
-		textField_5.setEnabled(false);
-		textField_5.setText("1");
-		textField_5.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_5.setColumns(4);
-		pnlTertiarySpotSize.add(textField_5);
+		txtTertiaryMethodX = new JTextField();
+		txtTertiaryMethodX.setEnabled(false);
+		txtTertiaryMethodX.setText("1");
+		txtTertiaryMethodX.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodX.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodX);
 		
 		JLabel lblNewLabel_6_1_1_2 = new JLabel("Y");
 		lblNewLabel_6_1_1_2.setEnabled(false);
@@ -1816,12 +1819,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_1_1_2);
 		
-		textField_6 = new JTextField();
-		textField_6.setEnabled(false);
-		textField_6.setText("1");
-		textField_6.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_6.setColumns(4);
-		pnlTertiarySpotSize.add(textField_6);
+		txtTertiaryMethodY = new JTextField();
+		txtTertiaryMethodY.setEnabled(false);
+		txtTertiaryMethodY.setText("1");
+		txtTertiaryMethodY.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodY.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodY);
 		
 		JLabel lblNewLabel_6_2_1_2 = new JLabel("Z");
 		lblNewLabel_6_2_1_2.setEnabled(false);
@@ -1830,12 +1833,12 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_2_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_2_1_2);
 		
-		textField_7 = new JTextField();
-		textField_7.setEnabled(false);
-		textField_7.setText("1");
-		textField_7.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_7.setColumns(4);
-		pnlTertiarySpotSize.add(textField_7);
+		txtTertiaryMethodZ = new JTextField();
+		txtTertiaryMethodZ.setEnabled(false);
+		txtTertiaryMethodZ.setText("1");
+		txtTertiaryMethodZ.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodZ.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodZ);
 		
 		JPanel pnlTertiaryThreshold = new JPanel();
 		GridBagConstraints gbc_pnlTertiaryThreshold = new GridBagConstraints();
@@ -1846,7 +1849,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(pnlTertiaryThreshold, gbc_pnlTertiaryThreshold);
 		
 		JLabel lblNewLabel_6_3_1_1_1 = new JLabel("Threshold:");
-		lblNewLabel_6_3_1_1_1.setEnabled(false);
+		lblNewLabel_6_3_1_1_1.setEnabled(true);
 		lblNewLabel_6_3_1_1_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_3_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1917,32 +1920,130 @@ public class AnalysisGUI extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
+				// Collect parameters from GUI
+				String inputDir = txtInputDir.getText();
+				// Primary Object
+				ObjectParameters primaryObject = ObjectParameters.builder().
+						channel(cbPrimaryChannel.getSelectedIndex() + 1).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbPrimaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPrimaryS1X.getText())).y(Double.parseDouble(txtPrimaryS1Y.getText())).z(Double.parseDouble(txtPrimaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPrimaryS2X.getText())).y(Double.parseDouble(txtPrimaryS2Y.getText())).z(Double.parseDouble(txtPrimaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbPrimaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPriFilterX.getText())).y(Double.parseDouble(txtPriFilterY.getText())).z(Double.parseDouble(txtPriFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPriFilter2X.getText())).y(Double.parseDouble(txtPriFilter2Y.getText())).z(Double.parseDouble(txtPriFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType(MethodTypes.MAXIMA).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
+										threshold(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
+										classifierFilename(txtPrimaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+
+				// Secondary Object
+				ObjectParameters secondaryObject = ObjectParameters.builder().
+						channel(cbSecondaryChannel.getSelectedIndex() + 1).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbSecondaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecondaryS1X.getText())).y(Double.parseDouble(txtSecondaryS1Y.getText())).z(Double.parseDouble(txtSecondaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecondaryS2X.getText())).y(Double.parseDouble(txtSecondaryS2Y.getText())).z(Double.parseDouble(txtSecondaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbSecondaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecFilterX.getText())).y(Double.parseDouble(txtSecFilterY.getText())).z(Double.parseDouble(txtSecFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecFilter2X.getText())).y(Double.parseDouble(txtSecFilter2Y.getText())).z(Double.parseDouble(txtSecFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType(MethodTypes.MAXIMA).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
+										threshold(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
+										classifierFilename(txtSecondaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+
+				//Tertiary Object
+				ObjectParameters tertiaryObject = ObjectParameters.builder().
+						channel(cbTertiaryChannel.getSelectedIndex() + 1).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbTertiaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertiaryS1X.getText())).y(Double.parseDouble(txtTertiaryS1Y.getText())).z(Double.parseDouble(txtTertiaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertiaryS2X.getText())).y(Double.parseDouble(txtTertiaryS2Y.getText())).z(Double.parseDouble(txtTertiaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbTertiaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertFilterX.getText())).y(Double.parseDouble(txtTertFilterY.getText())).z(Double.parseDouble(txtTertFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertFilter2X.getText())).y(Double.parseDouble(txtTertFilter2Y.getText())).z(Double.parseDouble(txtTertFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType(MethodTypes.MAXIMA).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
+										threshold(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
+										classifierFilename(txtTertiaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+
+				ParameterCollection parameterCollection = ParameterCollection.builder().
+						inputDir(inputDir).
+						primaryObject(primaryObject).
+						secondaryObject(secondaryObject).
+						tertiaryObject(tertiaryObject).
+						killBorderType(selectedKillBorderOption).
+						groupingInfo(txtGroupingInfo.getText()).
+						nameChannel1(txtC1.getText()).
+						nameChannel2(txtC2.getText()).
+						nameChannel3(txtC3.getText()).
+						nameChannel4(txtC4.getText()).
+						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
+						coreVPeriphery(ckbSpheroidCoreVsPeriphery.isSelected()).
+						coreVolume(Double.parseDouble(txtCoreVolValue.getText())).
+						build();
 				// testing kill borders methods
-				
+
 				
 				File f = new File(inputDir);
 				String[] list = f.list();
-			
+
 				String path1 = inputDir + list[0];
 				String path2 = inputDir + list[1];
 				ImagePlus duplicates = IJ.openImage(path1);
 				ImagePlus labels = IJ.openImage(path2);
-				
-				
+
+
 				// testing manage duplicates
-				
+
 				ManageDuplicates md = new ManageDuplicates();
 				RelabelledObjects ro = md.run(labels, duplicates);
 				Map<Double, Double> map  = ro.getMap();
 				System.out.println(map);
 					
 				ro.getRelabelled().show();
-					
+
 				duplicates.setTitle("Duplicates");
 				duplicates.show();
-				
-				
+
+
 					// Testing functionality below
 					
 					//-----------------
@@ -1953,15 +2054,15 @@ public class AnalysisGUI extends JFrame {
 					 * Skeleton skeleton = new Skeleton(); ImagePlus skel =
 					 * skeleton.createSkeletons(imp); SkeletonResultsHolder results =
 					 * skeleton.analyzeSkeletons(skel, imp); skel.show();
-					 * 
+					 *
 					 * results.getStandard().show("Standard Results");
 					 * results.getExtra().show("Extra Results");
 					 * results.getLabelledSkeletons().show();
 					 * results.getLabelMatched().show("Match Results");
 					 */
-					 
-					
-				
+
+
+
 				
 				
 			}
@@ -2010,11 +2111,11 @@ public class AnalysisGUI extends JFrame {
 					for(Component comp:guiHelper.getComponents(pnlTertiary)) {
 						comp.setEnabled(false);
 					}
-					ckbTertiary.setEnabled(true);
+					ckbTertiary.setEnabled(false);
 				} else if(ckbTertiary.isSelected()) {
 					for(Component comp:guiHelper.getComponents(pnlTertiary)) {
 						comp.setEnabled(true);
-						txtTertiaryMethodThreshold.setEnabled(false);
+						txtTertiaryMethodThreshold.setEnabled(true);
 					}
 				}
 			}
@@ -2374,19 +2475,17 @@ public class AnalysisGUI extends JFrame {
 		});
 
 	}
-	
-	
+
+
 	public void setMode(int index) {
 		cbAnalysisMode.setSelectedIndex(index);
 	}
 
-	
+
 	private static class __Tmp {
 		private static void __tmp() {
 			  javax.swing.JPanel __wbp_panel = new javax.swing.JPanel();
 		}
 	}
-	
-	
-	
+
 }

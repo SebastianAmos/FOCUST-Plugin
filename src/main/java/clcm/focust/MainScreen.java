@@ -39,7 +39,7 @@ public class MainScreen extends JFrame{
 	 */
 	public MainScreen() {
 		setTitle("FOCUST");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 899, 476);
 		mainPane = new JPanel();
@@ -77,7 +77,7 @@ public class MainScreen extends JFrame{
 				
 				JLabel lblMasterIcon = new JLabel("");
 				lblMasterIcon.setHorizontalAlignment(SwingConstants.LEFT);
-				lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo3.png")));
+				lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("FullLogo3.png")));
 				pnlHeader.add(lblMasterIcon, "cell 0 0,alignx left,growy");
 				
 				JLabel label = new JLabel("");
@@ -173,22 +173,22 @@ public class MainScreen extends JFrame{
 		JLabel lblQMarkIcon = new JLabel("");
 		lblQMarkIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblQMarkIcon);
-		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/iconquestionmark.png")));
+		lblQMarkIcon.setIcon(new ImageIcon(MainScreen.class.getResource("iconquestionmark.png")));
 		
 		JLabel lblSpheroidIcon = new JLabel("");
 		lblSpheroidIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSpheroidIcon);
-		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/spheroidIcon0.2.png")));
+		lblSpheroidIcon.setIcon(new ImageIcon(MainScreen.class.getResource("spheroidIcon0.2.png")));
 		
 		JLabel lblSingleCellIcon = new JLabel("");
 		lblSingleCellIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSingleCellIcon);
-		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/singlecellicon.png")));
+		lblSingleCellIcon.setIcon(new ImageIcon(MainScreen.class.getResource("singlecellicon.png")));
 		
 		JLabel lblSpeckleIcon = new JLabel("");
 		lblSpeckleIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		pnlIconHolder.add(lblSpeckleIcon);
-		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/speckleIcon.png")));
+		lblSpeckleIcon.setIcon(new ImageIcon(MainScreen.class.getResource("speckleIcon.png")));
 		pnlFooter.setLayout(new BoxLayout(pnlFooter, BoxLayout.X_AXIS));
 		
 		btnHelp.addActionListener(new ActionListener() {

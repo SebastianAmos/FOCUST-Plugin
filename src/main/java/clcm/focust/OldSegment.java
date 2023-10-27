@@ -50,7 +50,12 @@ public class OldSegment {
 	private static String tertiaryPrefix = "Tertiary_Objects_";
 	private static String corePrefix = "Inner_Secondary_";
 	private static String outerPrefix = "Outer_Secondary_";
-	
+
+	private final FilterSpec[] filterSpecs;
+
+	public Segment(FilterSpec[] filterSpecs) {
+		this.filterSpecs = filterSpecs;
+	}
 
 	public static void threadLog(final String log) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -80,7 +85,7 @@ public class OldSegment {
 	
 	
 	
-	public void processSpeckles(boolean analysisOnly) {
+	public void processSpeckles(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			
 			@Override
@@ -88,9 +93,9 @@ public class OldSegment {
 
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
-				File f = new File(SpeckleView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SpeckleView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 				
 				// make this conditional: link to the total number of objects set to create
@@ -161,7 +166,7 @@ public class OldSegment {
 						Variable[] vol = null;
 						
 						
-						String path = SpeckleView.inputDir + list[i];
+						String path = inputDir + list[i];
 					
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
@@ -191,19 +196,19 @@ public class OldSegment {
 							IJ.log("Analysis Only Mode Active: Finding Images...");
 							IJ.log("-------------------------------------------------------");
 							String fileName = list[i].replace(".dv", ".tif");
-							primaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + primaryPrefix + fileName);
-							secondaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + secondaryPrefix + fileName);
-							tertiaryObjectsSpeckles = IJ.openImage(SpeckleView.inputDir + tertiaryPrefix + fileName);
+							primaryObjectsSpeckles = IJ.openImage(inputDir + primaryPrefix + fileName);
+							secondaryObjectsSpeckles = IJ.openImage(inputDir + secondaryPrefix + fileName);
+							tertiaryObjectsSpeckles = IJ.openImage(inputDir + tertiaryPrefix + fileName);
 							
 						} else {
 							// if analysis mode is F, segment objects based on channel preferences
 							IJ.log("Analysis Only Mode Not Active: Running Segmentation...");
 							IJ.log("-------------------------------------------------------");
 							
-							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], SpeckleView.sigma_x, SpeckleView.sigma_y, SpeckleView.sigma_z, SpeckleView.radius_x, SpeckleView.radius_y, SpeckleView.radius_z);
-							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , SpeckleView.sigma_x2, SpeckleView.sigma_y2, SpeckleView.sigma_z2, SpeckleView.greaterConstantSecondary, SpeckleView.radius_x2, SpeckleView.radius_y2, SpeckleView.radius_z2);
+							primaryObjectsSpeckles = gpuSegmentOtsu(channelsSpeckle[primaryChannelChoice], filterSpecs[0].sigma.getX(), filterSpecs[0].sigma.getY(), filterSpecs[0].sigma.getZ(), filterSpecs[0].radii.getX(), filterSpecs[0].radii.getY(), filterSpecs[0].radii.getZ());
+							secondaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[secondaryChannelChoice] , filterSpecs[1].sigma.getX(), filterSpecs[1].sigma.getY(), filterSpecs[1].sigma.getZ(), filterSpecs[1].greaterConstant, filterSpecs[1].radii.getX(), filterSpecs[1].radii.getY(), filterSpecs[1].radii.getZ());
 							// make tertiary processing conditional
-							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], SpeckleView.sigma_x3, SpeckleView.sigma_y3, SpeckleView.sigma_z3, SpeckleView.greaterConstantTertiary, SpeckleView.radius_x3, SpeckleView.radius_y3, SpeckleView.radius_z3);
+							tertiaryObjectsSpeckles = gpuSegmentGreaterConstant(channelsSpeckle[tertiaryChannelChoice], filterSpecs[2].sigma.getX(), filterSpecs[2].sigma.getY(), filterSpecs[2].sigma.getZ(), filterSpecs[2].greaterConstant, filterSpecs[2].radii.getX(), filterSpecs[2].radii.getY(), filterSpecs[2].radii.getZ());
 						}
 						
 						// Calibrate segmented outputs
@@ -704,16 +709,16 @@ public class OldSegment {
 	 * @param analysisOnly Boolean from gui checkbox to determine if segmentation has already been done. 
 	 */
 	
-	public void processSingleCells(boolean analysisOnly) {
+	public void processSingleCells(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 
 				// grab the file names and start a timer
 				long startTime = System.currentTimeMillis();
-				File f = new File(SingleCellView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SingleCellView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 				
 				// Create the combined table outside of the image loop
@@ -738,7 +743,7 @@ public class OldSegment {
 					// iterate through each image in the list
 					for (int i = 0; i < list.length; i++) {
 						count++;
-						String path = SingleCellView.inputDir + list[i];
+						String path = inputDir + list[i];
 						IJ.log("Processing image " + count + " of " + list.length);
 						IJ.log("Current image name: " + list[i]);
 						IJ.log("---------------------------------------------");
@@ -758,13 +763,13 @@ public class OldSegment {
 						// if analysisMode is T, find the correct primary object file for the current image
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
-							primaryOriginalObjectsCells = IJ.openImage(SingleCellView.inputDir + primaryPrefix + fileName);
+							primaryOriginalObjectsCells = IJ.openImage(inputDir + primaryPrefix + fileName);
 							/*if (primaryOriginalObjectsCells.getStackSize() != imp.getStackSize()) {
 								IJ.error("Error", "The raw image and primary object stack sizes do not match.");
 							}*/
 						} else {
 							// if analysis mode is F, segment primary channel based on user inputs
-							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], SingleCellView.sigma_x, SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary, SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
+							primaryOriginalObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[primaryChannelChoice], filterSpecs[0].sigma.getX(), filterSpecs[0].sigma.getY(), filterSpecs[0].sigma.getZ(), filterSpecs[0].greaterConstant, filterSpecs[0].radii.getX(), filterSpecs[0].radii.getY(), filterSpecs[0].radii.getZ());
 						}
 						
 						IJ.resetMinAndMax(primaryOriginalObjectsCells);
@@ -783,12 +788,12 @@ public class OldSegment {
 						// If analysis-only-mode, find the right secondary object file for the current image.
 						if(analysisOnly) {
 							String fileName = list[i].replace(".nd2", ".tif");
-							secondaryObjectsCells = IJ.openImage(SingleCellView.inputDir + secondaryPrefix + fileName);
+							secondaryObjectsCells = IJ.openImage(inputDir + secondaryPrefix + fileName);
 							/*if (secondaryObjectsCells.getStackSize() != imp.getStackSize()) {
 								IJ.error("Error", "The raw image and secondary object stack sizes do not match.");
 							}*/
 						} else {
-							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], SingleCellView.sigma_x2, SingleCellView.sigma_y2, SingleCellView.sigma_z2, SingleCellView.greaterConstantSecondary, SingleCellView.radius_x2, SingleCellView.radius_y2, SingleCellView.radius_z2);
+							secondaryObjectsCells = gpuSegmentGreaterConstant(channelsSingleCell[secondaryChannelChoice], filterSpecs[1].sigma.getX(), filterSpecs[1].sigma.getY(), filterSpecs[1].sigma.getZ(), filterSpecs[1].greaterConstant, filterSpecs[1].radii.getX(), filterSpecs[1].radii.getY(), filterSpecs[1].radii.getZ());
 						}
 						
 						IJ.resetMinAndMax(secondaryObjectsCells);
@@ -1362,15 +1367,15 @@ public class OldSegment {
 	 * This method segments primary and secondary objects based on user-defined parameters.
 	 * Objects are then used for region-restricted intensity analysis and 3D measurements. 
 	 * -----------------------------------------------------------------------------------*/
-	public static void processSpheroid(boolean analysisOnly) {
+	public static void processSpheroid(boolean analysisOnly, String inputDir) {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
 
 				// grab the file names
-				File f = new File(SpheroidView.inputDir);
+				File f = new File(inputDir);
 				String[] list = f.list();
-				String dir = SpheroidView.inputDir;
+				String dir = inputDir;
 				int count = 0;
 					
 				
@@ -1393,7 +1398,7 @@ public class OldSegment {
 				// Iterate through each image in the directory and segment the selected primary and secondary channels.
 				for (int i = 0; i < list.length; i++) {
 					count++;
-					String path = SpheroidView.inputDir + list[i];
+					String path = inputDir + list[i];
 					IJ.log("Processing image " + count + " of " + list.length);
 					IJ.log("Current image name: " + list[i]);
 					IJ.log("---------------------------------------------");
@@ -1413,7 +1418,7 @@ public class OldSegment {
 					// If analysis-only-mode, find the right primary object file for the current image.
 					if(analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						primaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + primaryPrefix + fileName);
+						primaryObjectSpheroid = IJ.openImage(inputDir + primaryPrefix + fileName);
 					} else {
 						IJ.log("Primary object segmention:");
 						primaryObjectSpheroid = gpuSegmentOtsu(channelsSpheroid[primaryChannelChoice], SpheroidView.sigma_x, SpheroidView.sigma_y, SpheroidView.sigma_z, SpheroidView.radius_x, SpheroidView.radius_y, SpheroidView.radius_z);
@@ -1451,7 +1456,7 @@ public class OldSegment {
 					// If analysis-only-mode, find the right secondary object file for the current image.   
 					if(analysisOnly) {
 						String fileName = list[i].replace(".nd2", ".tif");
-						secondaryObjectSpheroid = IJ.openImage(SpheroidView.inputDir + secondaryPrefix + fileName);
+						secondaryObjectSpheroid = IJ.openImage(inputDir + secondaryPrefix + fileName);
 					} else {
 						secondaryObjectSpheroid = gpuSpheroidSecondaryObject(secondaryChannelChoice);
 					}
