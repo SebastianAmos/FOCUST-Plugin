@@ -2,13 +2,13 @@ package clcm.focust.mode;
 
 import java.util.ArrayList;
 
-import clcm.focust.ParamTest;
+import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 
 public class ModeSingleCell implements Mode {
 
 	@Override
-	public void run(ParamTest params, ArrayList<ImagePlus> channels) {
+	public void run(ParameterCollection parameters, ArrayList<ImagePlus> channels) {
 		// TODO Auto-generated method stub
 		
 	}

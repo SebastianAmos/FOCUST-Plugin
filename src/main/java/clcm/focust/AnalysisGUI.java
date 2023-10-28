@@ -341,22 +341,8 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		/*
-		 * JRadioButton rdbtnNewRadioButton = new
-		 * JRadioButton(KillBorderTypes.NO.toString());
-		 * killBordersChoice.add(rdbtnNewRadioButton);
-		 * rdbtnNewRadioButton.setSelected(true); rdbtnNewRadioButton.setFont(new
-		 * Font("Arial", Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnNewRadioButton);
-		 * 
-		 * JRadioButton rdbtnXY = new JRadioButton(KillBorderTypes.XY.toString());
-		 * killBordersChoice.add(rdbtnXY); rdbtnXY.setFont(new Font("Arial", Font.PLAIN,
-		 * 13)); //pnlKillBorders.add(rdbtnXY);
-		 * 
-		 * JRadioButton rdbtnXyz = new JRadioButton(KillBorderTypes.XYZ.toString());
-		 * killBordersChoice.add(rdbtnXyz); rdbtnXyz.setFont(new Font("Arial",
-		 * Font.PLAIN, 13)); //pnlKillBorders.add(rdbtnXyz);
-		 */		
-		
+		// init as no
+		selectedKillBorderOption = KillBorderTypes.NO;
 		
 		/*
 		 *  Build button group from kill border enum model.
@@ -375,14 +361,12 @@ public class AnalysisGUI extends JFrame {
                 }
             });
 			killBordersChoice.add(btn);
-			if(type == KillBorderTypes.NO) {
+			if (type == KillBorderTypes.NO) {
 				btn.setSelected(true);
 			}
 			pnlKillBorders.add(btn);
 		}
-		
-		
-		
+
 		JLabel lblNewLabel_3_1 = new JLabel("Name Channel 1:");
 		lblNewLabel_3_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblNewLabel_3_1 = new GridBagConstraints();
@@ -391,7 +375,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_3_1.gridx = 0;
 		gbc_lblNewLabel_3_1.gridy = 1;
 		pnlVariable.add(lblNewLabel_3_1, gbc_lblNewLabel_3_1);
-		
+
 		txtC1 = new JTextField();
 		txtC1.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_txtC1 = new GridBagConstraints();
@@ -1944,7 +1928,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType(MethodTypes.MAXIMA).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
-										threshold(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
+										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
 										classifierFilename(txtPrimaryClassiferDirectory.getText()).
 										build()
 						).
@@ -1971,7 +1955,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType(MethodTypes.MAXIMA).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
-										threshold(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
+										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
 										classifierFilename(txtSecondaryClassiferDirectory.getText()).
 										build()
 						).
@@ -1998,7 +1982,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType(MethodTypes.MAXIMA).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
-										threshold(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
+										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
 										classifierFilename(txtTertiaryClassiferDirectory.getText()).
 										build()
 						).
@@ -2019,8 +2003,8 @@ public class AnalysisGUI extends JFrame {
 						coreVPeriphery(ckbSpheroidCoreVsPeriphery.isSelected()).
 						coreVolume(Double.parseDouble(txtCoreVolValue.getText())).
 						build();
+				
 				// testing kill borders methods
-
 				
 				File f = new File(inputDir);
 				String[] list = f.list();

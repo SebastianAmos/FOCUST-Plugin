@@ -1,8 +1,7 @@
 package clcm.focust.mode;
 
 import java.util.ArrayList;
-
-import clcm.focust.ParamTest;
+import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 
 public class ModeNone implements Mode {
@@ -12,7 +11,7 @@ public class ModeNone implements Mode {
 	 * Segmentation only. No analysis conducted.
 	 */
 	@Override
-	public void run(ParamTest params, ArrayList<ImagePlus> channels) {
+	public void run(ParameterCollection parameters, ArrayList<ImagePlus> channels) {
 		
 		// Get the channels 
 		

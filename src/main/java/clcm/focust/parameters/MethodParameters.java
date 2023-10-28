@@ -1,6 +1,7 @@
 package clcm.focust.parameters;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.segmentation.MethodTypes;
+import clcm.focust.threshold.ThresholdType;
 import lombok.Data;
 import lombok.Builder;
 
@@ -8,7 +9,8 @@ import lombok.Builder;
 @Builder
 public class MethodParameters {
     MethodTypes methodType;
+    ThresholdType thresholdType; 
     Vector3D sigma;
     String classifierFilename;
-    double threshold;
+    double thresholdSize;
 }

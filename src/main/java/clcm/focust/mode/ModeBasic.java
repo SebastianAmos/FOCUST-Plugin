@@ -3,6 +3,7 @@ package clcm.focust.mode;
 import java.util.ArrayList;
 
 import clcm.focust.ParamTest;
+import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 
 public class ModeBasic implements Mode {
@@ -12,7 +13,7 @@ public class ModeBasic implements Mode {
 	 * Each object is treated independently and one results table per object type is generated. 
 	 */
 	@Override
-	public void run(ParamTest params, ArrayList<ImagePlus> channels) {
+	public void run(ParameterCollection parameters, ArrayList<ImagePlus> channels) {
 		// TODO Auto-generated method stub
 		
 	}

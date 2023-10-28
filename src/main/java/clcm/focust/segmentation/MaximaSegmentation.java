@@ -1,8 +1,8 @@
 package clcm.focust.segmentation;
 
-import clcm.focust.ParamTest;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.threshold.ThresholdType;
 import ij.ImagePlus;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -11,14 +11,14 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 public class MaximaSegmentation implements Method{
 
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ParamTest params) {
+	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
 		
-		ClearCLBuffer bg = background.getFilter().apply(input, params.getBackgroundS1(), params.getBackgroundS2());
-		ClearCLBuffer filtered = filter.getFilter().apply(bg, params.getFilterS1(), params.getFilterS2());
-		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, params.getThresholdSize());
+		ClearCLBuffer bg = background.getFilter().apply(input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
+		ClearCLBuffer filtered = filter.getFilter().apply(bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
+		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, parameters.getMethodParameters().getThresholdSize());
 		
 		ClearCLBuffer inverted = clij2.create(input);
 		ClearCLBuffer maxima = clij2.create(input);
@@ -26,13 +26,17 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer segmented = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
-		clij2.detectMaxima3DBox(filtered, maxima, params.getSigmaMethod().getX(), params.getSigmaMethod().getY(), params.getSigmaMethod().getZ());
+		clij2.detectMaxima3DBox(filtered, maxima, 
+				parameters.getMethodParameters().getSigma().getX(), 
+				parameters.getMethodParameters().getSigma().getY(), 
+				parameters.getMethodParameters().getSigma().getZ());
 		
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);
 		ImagePlus output = clij2.pull(segmented);
 		
 		// clean up GPU without using clij2.clear() - as this will interrupt optimisation workflow and prevent multiple instances.
+		input.close();
 		bg.close();
 		filtered.close();
 		thresholdImg.close();

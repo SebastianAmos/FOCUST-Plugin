@@ -2,12 +2,12 @@ package clcm.focust.mode;
 
 import java.util.ArrayList;
 
-import clcm.focust.ParamTest;
+import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 
 public interface Mode {
 	
-	void run(ParamTest params, ArrayList<ImagePlus> channels);
+	void run(ParameterCollection parameters, ArrayList<ImagePlus> channels);
 	
 
 }
