@@ -44,7 +44,7 @@ import clcm.focust.speckle.SpecklesConfiguration;
  * @author SebastianAmos
  *
  */
-public class Segment {
+public class OldSegment {
 
 	public static ImagePlus[] channelsSpheroid;
 	public static ImagePlus[] channelsSingleCell;
@@ -67,7 +67,7 @@ public class Segment {
 
 	private final FilterSpec[] filterSpecs;
 
-	public Segment(FilterSpec[] filterSpecs) {
+	public OldSegment(FilterSpec[] filterSpecs) {
 		this.filterSpecs = filterSpecs;
 	}
 
@@ -84,7 +84,7 @@ public class Segment {
 	/**
 	 * Constructor.
 	 */
-	public Segment() {
+	public OldSegment() {
 	}
 
 	// (list[i].endsWith(".tif")||list[i].endsWith(".nd2")||list[i].endsWith("_D3D"));

@@ -5,6 +5,7 @@ import clcm.focust.Segmentation;
 import clcm.focust.parameters.ParameterCollection;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
 
@@ -29,6 +30,7 @@ public class ModeNone implements Mode {
 			// TODO add a listener for new images and log the image name? 
 			ImagePlus imp = IJ.openImage(path);
 			String imgName = imp.getTitle();
+			Calibration cal = imp.getCalibration();
 
 			int numOfChannels = imp.getNChannels();
 
@@ -50,6 +52,16 @@ public class ModeNone implements Mode {
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = ImageCalculator.run(secondary, primary, "Subtract create stack");
 			}
+			
+			// set cals
+			primary.setCalibration(cal);
+			secondary.setCalibration(cal);
+			
+			if(tertiary != null) {
+				tertiary.setCalibration(cal);
+			}
+			
+			
 
 			// save images to output directory if available, if not, save to input directory
 			// TODO add a listener for image saving a log saved names.

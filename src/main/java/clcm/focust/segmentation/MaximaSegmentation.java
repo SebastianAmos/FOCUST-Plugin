@@ -3,6 +3,7 @@ package clcm.focust.segmentation;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.parameters.ObjectParameters;
+import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.threshold.ThresholdType;
 import ij.ImagePlus;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -11,7 +12,7 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 public class MaximaSegmentation implements Method{
 
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters) {
+	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
@@ -24,6 +25,7 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer maxima = clij2.create(input);
 		ClearCLBuffer labelled = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
+		ClearCLBuffer killBorders = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
 		clij2.detectMaxima3DBox(filtered, maxima, 
@@ -33,7 +35,11 @@ public class MaximaSegmentation implements Method{
 		
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);
-		ImagePlus output = clij2.pull(segmented);
+		
+		// Kill borders
+		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
+		
+		ImagePlus output = clij2.pull(killBorders);
 		
 		// clean up GPU without using clij2.clear() - as this will interrupt optimisation workflow and prevent multiple instances.
 		input.close();
@@ -44,6 +50,7 @@ public class MaximaSegmentation implements Method{
 		maxima.close();
 		labelled.close();
 		segmented.close();
+		killBorders.close();
 		
 		return output;
 	}
