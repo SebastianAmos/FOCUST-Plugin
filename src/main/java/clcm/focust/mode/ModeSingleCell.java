@@ -8,7 +8,7 @@ import ij.ImagePlus;
 public class ModeSingleCell implements Mode {
 
 	@Override
-	public void run(ParameterCollection parameters, ArrayList<ImagePlus> channels) {
+	public void run(ParameterCollection parameters) {
 		// TODO Auto-generated method stub
 		
 	}

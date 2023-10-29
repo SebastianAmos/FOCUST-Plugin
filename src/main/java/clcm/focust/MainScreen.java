@@ -7,8 +7,9 @@ import javax.swing.border.EmptyBorder;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DatumManager;
+import clcm.focust.data.DatumUpdateService;
+import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.speckle.SpecklesConfiguration;
-import clcm.focust.speckle.view.SpeckleView;
 import ij.gui.GenericDialog;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -43,7 +44,7 @@ public class MainScreen extends JFrame{
 	/**
 	 * construct the main menu gui. 
 	 */
-	public MainScreen() {
+	public MainScreen(DatumUpdateService<ParameterCollection> paramManager ) {
 		setTitle("FOCUST");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -117,7 +118,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					
 					// launch anaylsis with the spheroid analysis mode selected
-					AnalysisGUI gui = new AnalysisGUI();
+					AnalysisGUI gui = new AnalysisGUI(paramManager);
 					gui.setMode(2);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
@@ -135,7 +136,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					
 					// launch anaylsis with the single cell analysis mode selected
-					AnalysisGUI gui = new AnalysisGUI();
+					AnalysisGUI gui = new AnalysisGUI(paramManager);
 					gui.setMode(3);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
@@ -156,7 +157,7 @@ public class MainScreen extends JFrame{
 				SwingUtilities.invokeLater(() -> {
 					
 					// launch anaylsis with the speckle analysis mode selected
-					AnalysisGUI gui = new AnalysisGUI();
+					AnalysisGUI gui = new AnalysisGUI(paramManager);
 					gui.setMode(4);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);

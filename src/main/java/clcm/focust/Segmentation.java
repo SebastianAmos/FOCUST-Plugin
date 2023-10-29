@@ -8,7 +8,7 @@ import ij.ImagePlus;
 
 public class Segmentation {
 	
-	public ImagePlus run(ImagePlus input, ObjectParameters parameters) {
+	public static ImagePlus run(ImagePlus input, ObjectParameters parameters) {
 	
 		// collect parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
@@ -23,8 +23,7 @@ public class Segmentation {
 				method.getThresholdType(), 
 				parameters);
 		
-		
-		return null;
+		return output;
 		
 	}
 	

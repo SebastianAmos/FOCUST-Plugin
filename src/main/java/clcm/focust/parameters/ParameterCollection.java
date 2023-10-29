@@ -1,37 +1,42 @@
 package clcm.focust.parameters;
 import clcm.focust.KillBorderTypes;
+import clcm.focust.data.DataObject;
+import clcm.focust.mode.ModeType;
 import lombok.Data;
 import lombok.Builder;
 
 @Data
 @Builder
-public class ParameterCollection {
-    String inputDir;
-    String outputDir;
+public class ParameterCollection implements DataObject{
+    final String inputDir;
+    final String outputDir;
+    final ModeType mode;
     // Primary Object
-    ObjectParameters primaryObject;
+    final ObjectParameters primaryObject;
     // Secondary Object
-    ObjectParameters secondaryObject;
+    final ObjectParameters secondaryObject;
     // Tertiary Object
-    ObjectParameters tertiaryObject;
+    final ObjectParameters tertiaryObject;
 
     // Common Paramters
-    KillBorderTypes killBorderType;
+    final KillBorderTypes killBorderType;
     // Analysis Parameters
-    String groupingInfo;
-    String nameChannel1;
-    String nameChannel2;
-    String nameChannel3;
-    String nameChannel4;
-    Boolean tertiaryIsDifference;
-    Boolean coreVPeriphery;
-    double coreVolume;
+    final String groupingInfo;
+    final String nameChannel1;
+    final String nameChannel2;
+    final String nameChannel3;
+    final String nameChannel4;
+    final Boolean tertiaryIsDifference;
+    final Boolean coreVPeriphery;
+    final Boolean processTertiary;
+    final double coreVolume;
+
     // Optimize Parameters
-    boolean primaryDisplayOriginal;
-    boolean primaryOverlay;
-    boolean secondaryDisplayOriginal;
-    boolean secondaryOverlay;
-    boolean tertiaryDisplayOriginal;
-    boolean tertiaryOverlay;
+    final boolean primaryDisplayOriginal;
+    final boolean primaryOverlay;
+    final boolean secondaryDisplayOriginal;
+    final boolean secondaryOverlay;
+    final boolean tertiaryDisplayOriginal;
+    final boolean tertiaryOverlay;
 
 }

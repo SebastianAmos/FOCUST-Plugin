@@ -31,6 +31,8 @@ import java.io.File;
 import java.util.Map;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
+
+import clcm.focust.data.DatumUpdateService;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.ModeType;
@@ -118,27 +120,11 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AnalysisGUI frame = new AnalysisGUI();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public AnalysisGUI() {
+	public AnalysisGUI(DatumUpdateService<ParameterCollection> paramManager) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon2.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1998,6 +1984,7 @@ public class AnalysisGUI extends JFrame {
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
 						outputDir(outputDir).
+						mode((ModeType) cbAnalysisMode.getSelectedItem()).
 						primaryObject(primaryObject).
 						secondaryObject(secondaryObject).
 						tertiaryObject(tertiaryObject).
@@ -2007,10 +1994,13 @@ public class AnalysisGUI extends JFrame {
 						nameChannel2(txtC2.getText()).
 						nameChannel3(txtC3.getText()).
 						nameChannel4(txtC4.getText()).
+						processTertiary(ckbTertiary.isSelected()).
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
 						coreVPeriphery(ckbSpheroidCoreVsPeriphery.isSelected()).
 						coreVolume(Double.parseDouble(txtCoreVolValue.getText())).
 						build();
+				
+				paramManager.notifyUpdated(parameterCollection);
 				
 				// testing kill borders methods
 				
@@ -2021,7 +2011,7 @@ public class AnalysisGUI extends JFrame {
 				String path2 = inputDir + list[1];
 				ImagePlus duplicates = IJ.openImage(path1);
 				ImagePlus labels = IJ.openImage(path2);
-
+				
 
 				// testing manage duplicates
 
@@ -2083,7 +2073,7 @@ public class AnalysisGUI extends JFrame {
 		
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainScreen MainGui = new MainScreen();
+				MainScreen MainGui = new MainScreen(paramManager);
 				MainGui.setLocationRelativeTo(null);
 				MainGui.setVisible(true);
 				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);

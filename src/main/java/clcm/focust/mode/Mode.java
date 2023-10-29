@@ -7,7 +7,7 @@ import ij.ImagePlus;
 
 public interface Mode {
 	
-	void run(ParameterCollection parameters, ArrayList<ImagePlus> channels);
+	void run(ParameterCollection parameters);
 	
 
 }

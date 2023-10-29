@@ -23,6 +23,7 @@ import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
+import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.speckle.ExpectedSpeckleResults;
 import clcm.focust.speckle.SpeckleResult;
 import clcm.focust.speckle.Speckles;
@@ -48,6 +49,8 @@ public final class FOCUST {
 	private DataMapManager<String, SpeckleResult> speckleResultsManager;
 
 	private final DatumManager<ExpectedSpeckleResults> expectedSpeckleResultsManager;
+	
+	private final DatumManager<ParameterCollection> paramManager; 
 
 	/** Data manager for runtime configuration. */
 	private DatumManager<SpecklesConfiguration> configurationManager;
@@ -64,12 +67,22 @@ public final class FOCUST {
 		speckleResultsManager = new DataMapManager<>(dataExecService);
 		expectedSpeckleResultsManager = new DatumManager<>(dataExecService);
 		configurationManager = new DatumManager<>(dataExecService);
+		
+		paramManager = new DatumManager<>(dataExecService);
+		
+		
+		
+		
 
 		/* Services - Speckle. */
 		services.add(new SpeckleProcessor(configurationManager, specklesManager, expectedSpeckleResultsManager));
 		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
 		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager,
 				configurationManager));
+		
+		
+		
+		
 	}
 
 	/**
@@ -102,7 +115,7 @@ public final class FOCUST {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> services.forEach(FOCUSTService::shutdown)));
 		CheckPlugins.areAvailable();
 		SwingUtilities.invokeLater(() -> {
-			MainScreen MainGui = new MainScreen();
+			MainScreen MainGui = new MainScreen(paramManager);
 			MainGui.setLocationRelativeTo(null);
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

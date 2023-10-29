@@ -7,7 +7,7 @@ import ij.ImagePlus;
 public class ModeSpheroid implements Mode {
 
 	@Override
-	public void run(ParameterCollection parameters, ArrayList<ImagePlus> channels) {
+	public void run(ParameterCollection parameters) {
 		// TODO Auto-generated method stub
 		
 	}
