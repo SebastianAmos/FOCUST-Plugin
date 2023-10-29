@@ -169,23 +169,34 @@ public class ModeBasic implements Mode {
 			 * Build the final results tables
 			 */
 			
+			// Final results tables
+			ResultsTable f1 = null;
+			ResultsTable f2 = null;
+			ResultsTable f3 = null;
+			
 			// Primary 
 			rb1.addResult(rt1Info);
 			rb1.addResult(rt1);
 			rb1.addResult(intensityTables.get(primary));
+			f1 = rb1.getResultsTable();
 			
 			// Secondary
 			rb2.addResult(rt2Info);
 			rb2.addResult(rt2);
 			rb2.addResult(intensityTables.get(secondary));
+			f2 = rb2.getResultsTable();
 			
 			// Tertiary
 			if(tertiary != null) {
 				rb3.addResult(rt3Info);
 				rb3.addResult(rt3);
 				rb3.addResult(intensityTables.get(tertiary));
+				f3 = rb3.getResultsTable();
 			}
 			
+			
+			// TODO -> Save results tables to disk - stacking results by column header if they already exist
+			// this will allow batch saving between images processed.
 			
 			}// end of single image loop
 		} 
