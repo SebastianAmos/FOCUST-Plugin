@@ -51,7 +51,7 @@ public class AnalysisGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtInputDir;
 	private String inputDir;
-	private final ButtonGroup rbtnOutputDir = new ButtonGroup();
+	private String outputDir;
 	private JTextField txtOutputDir;
 	private JTextField txtC1;
 	private JTextField txtC2;
@@ -247,6 +247,12 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_3, gbc_lblNewLabel_3);
 		
 		JButton btnBrowseOutput = new JButton("Browse");
+		btnBrowseOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				outputDir = IJ.getDir("Select an Input Directory");
+				txtOutputDir.setText(outputDir.toString());
+			}
+		});
 		btnBrowseOutput.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowseOutput = new GridBagConstraints();
 		gbc_btnBrowseOutput.fill = GridBagConstraints.HORIZONTAL;
@@ -1907,6 +1913,7 @@ public class AnalysisGUI extends JFrame {
 
 				// Collect parameters from GUI
 				String inputDir = txtInputDir.getText();
+				String outputDir = txtOutputDir.getText();
 				// Primary Object
 				ObjectParameters primaryObject = ObjectParameters.builder().
 						channel(cbPrimaryChannel.getSelectedIndex() + 1).
@@ -1990,6 +1997,7 @@ public class AnalysisGUI extends JFrame {
 
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
+						outputDir(outputDir).
 						primaryObject(primaryObject).
 						secondaryObject(secondaryObject).
 						tertiaryObject(tertiaryObject).

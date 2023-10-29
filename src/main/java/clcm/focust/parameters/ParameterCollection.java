@@ -7,6 +7,7 @@ import lombok.Builder;
 @Builder
 public class ParameterCollection {
     String inputDir;
+    String outputDir;
     // Primary Object
     ObjectParameters primaryObject;
     // Secondary Object
