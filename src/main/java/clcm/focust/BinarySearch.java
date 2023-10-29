@@ -8,6 +8,7 @@ import ij.measure.ResultsTable;
 
 
 public class BinarySearch {
+	
 
 	public static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D(); // from MorphoLibJ
 	public static Erode_ erode3D = new Erode_(); // from VIB_ FIJI library
@@ -104,8 +105,7 @@ public class BinarySearch {
 	 * 			The original volume of imp. 
 	 * 			
 	 * @return The number of iterations that erode the ip to approximately 50 % of it's original volume. 
-	 */
-	
+	 */	
 	private static int binarySearchIterationNumber(ImagePlus imp, int maxIterations, int originalVoxNum, double reductionPercentage) {
 		
 		int lower = 0;

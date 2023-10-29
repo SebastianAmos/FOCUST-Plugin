@@ -140,7 +140,28 @@ public class TableUtility {
 		ResultsTable rt = rb.getResultsTable();
 		
 		return rt;
-		
+	}
+/**
+	 * Collects the columns from RT and puts them into a Map of columns. 
+	 * @param rt
+	 * @param columnDataMap
+	 */
+	public static void collectColumns(ResultsTable rt, Map<String, List<Variable>> columnDataMap) {		
+
+		for (String name : columnNames) {
+			
+			// returns the list for that column header, or makes a new one if it doesn't exist yet.
+			List<Variable> columnData = columnDataMap.getOrDefault(name, new ArrayList<>());
+			
+			// grab the entire column
+			Variable[] columnVariables = rt.getColumnAsVariables(name);
+			
+			// add the array to the list	
+			columnData.addAll(Arrays.asList(columnVariables));
+			
+			// update the map
+			columnDataMap.put(name, columnData);
+		}
 	}
 
 
