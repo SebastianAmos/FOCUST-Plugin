@@ -1,8 +1,9 @@
 package clcm.focust.mode;
 
 import java.io.File;
-import clcm.focust.Segmentation;
+
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;

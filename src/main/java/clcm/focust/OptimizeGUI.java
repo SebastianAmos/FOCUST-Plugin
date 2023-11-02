@@ -53,6 +53,7 @@ import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
+import clcm.focust.segmentation.Segmentation;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.threshold.Threshold;
 import clcm.focust.threshold.ThresholdType;
@@ -150,7 +151,7 @@ public class OptimizeGUI extends JFrame {
 		optimize = new OptimizeHelpers();
 		optimize.setOptimizeGUI(this);
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(OptimizeGUI.class.getResource("/clcm/focust/resources/icon.png")));
 		setTitle("FOCUST: Optimization");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1159, 628);
@@ -460,20 +461,8 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlKillBorders.add(lblNewLabel_7);
 		
-		/*
-		 * JRadioButton rdbtnNewRadioButton = new JRadioButton("No");
-		 * buttonGroup.add(rdbtnNewRadioButton); rdbtnNewRadioButton.setSelected(true);
-		 * rdbtnNewRadioButton.setFont(new Font("Arial", Font.PLAIN, 13));
-		 * pnlKillBorders.add(rdbtnNewRadioButton);
-		 * 
-		 * JRadioButton rdbtnXY = new JRadioButton("X+Y"); buttonGroup.add(rdbtnXY);
-		 * rdbtnXY.setFont(new Font("Arial", Font.PLAIN, 13));
-		 * pnlKillBorders.add(rdbtnXY);
-		 * 
-		 * JRadioButton rdbtnXyz = new JRadioButton("X+Y+Z"); buttonGroup.add(rdbtnXyz);
-		 * rdbtnXyz.setFont(new Font("Arial", Font.PLAIN, 13));
-		 * pnlKillBorders.add(rdbtnXyz);
-		 */
+		// init as no
+		selectedKillBorderOption = KillBorderTypes.NO;
 		
 		for(KillBorderTypes type : KillBorderTypes.values()) {
 			JRadioButton btn = new JRadioButton(type.toString());
@@ -576,6 +565,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_6);
 		
 		txtPrimaryS1X = new JTextField();
+		txtPrimaryS1X.setText("0");
 		txtPrimaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1X.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1X);
@@ -587,6 +577,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_1_4);
 		
 		txtPrimaryS1Y = new JTextField();
+		txtPrimaryS1Y.setText("0");
 		txtPrimaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1Y.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Y);
@@ -598,6 +589,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGFirstBlur.add(lblNewLabel_6_2_4);
 		
 		txtPrimaryS1Z = new JTextField();
+		txtPrimaryS1Z.setText("0");
 		txtPrimaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS1Z.setColumns(4);
 		pnlPrimaryBGFirstBlur.add(txtPrimaryS1Z);
@@ -624,6 +616,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_6_1);
 		
 		txtPrimaryS2X = new JTextField();
+		txtPrimaryS2X.setText("0");
 		txtPrimaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2X.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2X);
@@ -635,6 +628,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_1_4_1);
 		
 		txtPrimaryS2Y = new JTextField();
+		txtPrimaryS2Y.setText("0");
 		txtPrimaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2Y.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Y);
@@ -646,6 +640,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryBGSecondBlur.add(lblNewLabel_6_2_4_1);
 		
 		txtPrimaryS2Z = new JTextField();
+		txtPrimaryS2Z.setText("0");
 		txtPrimaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryS2Z.setColumns(4);
 		pnlPrimaryBGSecondBlur.add(txtPrimaryS2Z);
@@ -692,6 +687,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6);
 		
 		txtPriFilterX = new JTextField();
+		txtPriFilterX.setText("0");
 		txtPriFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterX.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterX);
@@ -703,6 +699,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6_1);
 		
 		txtPriFilterY = new JTextField();
+		txtPriFilterY.setText("0");
 		txtPriFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterY.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterY);
@@ -714,6 +711,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimaryFirstBlur.add(lblNewLabel_6_2);
 		
 		txtPriFilterZ = new JTextField();
+		txtPriFilterZ.setText("0");
 		txtPriFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilterZ.setColumns(4);
 		pnlPrimaryFirstBlur.add(txtPriFilterZ);
@@ -740,6 +738,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_7);
 		
 		txtPriFilter2X = new JTextField();
+		txtPriFilter2X.setText("0");
 		txtPriFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilter2X.setColumns(4);
 		pnlPrimarySecondBlur.add(txtPriFilter2X);
@@ -751,6 +750,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_1_5);
 		
 		txtPriFilter2Y = new JTextField();
+		txtPriFilter2Y.setText("0");
 		txtPriFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilter2Y.setColumns(4);
 		pnlPrimarySecondBlur.add(txtPriFilter2Y);
@@ -762,6 +762,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_2_5);
 		
 		txtPriFilter2Z = new JTextField();
+		txtPriFilter2Z.setText("0");
 		txtPriFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilter2Z.setColumns(4);
 		pnlPrimarySecondBlur.add(txtPriFilter2Z);
@@ -803,6 +804,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_3);
 		
 		txtPriSpotX = new JTextField();
+		txtPriSpotX.setText("0");
 		txtPriSpotX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotX.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotX);
@@ -814,6 +816,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_1_1);
 		
 		txtPriSpotY = new JTextField();
+		txtPriSpotY.setText("0");
 		txtPriSpotY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotY.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotY);
@@ -825,6 +828,7 @@ public class OptimizeGUI extends JFrame {
 		pnlPrimarySpotSize.add(lblNewLabel_6_2_1);
 		
 		txtPriSpotZ = new JTextField();
+		txtPriSpotZ.setText("0");
 		txtPriSpotZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriSpotZ.setColumns(4);
 		pnlPrimarySpotSize.add(txtPriSpotZ);
@@ -898,6 +902,7 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		txtPrimaryMethodThreshold = new JTextField();
+		txtPrimaryMethodThreshold.setText("0");
 		txtPrimaryMethodThreshold.setEnabled(false);
 		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold);
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -930,11 +935,15 @@ public class OptimizeGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
 										classifierFilename(txtPrimaryClassiferDirectory.getText()).
+										thresholdType((ThresholdType) cbPrimaryMethodThreshold.getSelectedItem()).
 										build()
 						).
 						build();
 				
-				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(primaryParams).build();
+				ParameterCollection parameterCollection = ParameterCollection.builder().
+						primaryObject(primaryParams).
+						killBorderType(selectedKillBorderOption).
+						build();
 				
 				
 				
@@ -1052,6 +1061,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_4_1);
 		
 		txtSecondaryS1X = new JTextField();
+		txtSecondaryS1X.setText("0");
 		txtSecondaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1X.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1X);
@@ -1063,6 +1073,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_1_2_1);
 		
 		txtSecondaryS1Y = new JTextField();
+		txtSecondaryS1Y.setText("0");
 		txtSecondaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1Y.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Y);
@@ -1074,6 +1085,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGFirstBlur.add(lblNewLabel_6_2_2_1);
 		
 		txtSecondaryS1Z = new JTextField();
+		txtSecondaryS1Z.setText("0");
 		txtSecondaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS1Z.setColumns(4);
 		pnlSecondaryBGFirstBlur.add(txtSecondaryS1Z);
@@ -1100,6 +1112,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_4_2);
 		
 		txtSecondaryS2X = new JTextField();
+		txtSecondaryS2X.setText("0");
 		txtSecondaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2X.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2X);
@@ -1111,6 +1124,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_1_2_2);
 		
 		txtSecondaryS2Y = new JTextField();
+		txtSecondaryS2Y.setText("0");
 		txtSecondaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2Y.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Y);
@@ -1122,6 +1136,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryBGSecondBlur.add(lblNewLabel_6_2_2_2);
 		
 		txtSecondaryS2Z = new JTextField();
+		txtSecondaryS2Z.setText("0");
 		txtSecondaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryS2Z.setColumns(4);
 		pnlSecondaryBGSecondBlur.add(txtSecondaryS2Z);
@@ -1168,6 +1183,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_4);
 		
 		txtSecFilterX = new JTextField();
+		txtSecFilterX.setText("0");
 		txtSecFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterX.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterX);
@@ -1179,6 +1195,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_1_2);
 		
 		txtSecFilterY = new JTextField();
+		txtSecFilterY.setText("0");
 		txtSecFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterY.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterY);
@@ -1190,6 +1207,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryFirstBlur.add(lblNewLabel_6_2_2);
 		
 		txtSecFilterZ = new JTextField();
+		txtSecFilterZ.setText("0");
 		txtSecFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilterZ.setColumns(4);
 		pnlSecondaryFirstBlur.add(txtSecFilterZ);
@@ -1216,6 +1234,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_4_3);
 		
 		txtSecFilter2X = new JTextField();
+		txtSecFilter2X.setText("0");
 		txtSecFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilter2X.setColumns(4);
 		pnlSecondarySecondBlur.add(txtSecFilter2X);
@@ -1227,6 +1246,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_1_2_3);
 		
 		txtSecFilter2Y = new JTextField();
+		txtSecFilter2Y.setText("0");
 		txtSecFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilter2Y.setColumns(4);
 		pnlSecondarySecondBlur.add(txtSecFilter2Y);
@@ -1238,6 +1258,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_2_2_3);
 		
 		txtSecFilter2Z = new JTextField();
+		txtSecFilter2Z.setText("0");
 		txtSecFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilter2Z.setColumns(4);
 		pnlSecondarySecondBlur.add(txtSecFilter2Z);
@@ -1327,7 +1348,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySpotSize.add(lblNewLabel_6_3_1);
 		
 		txtSecondaryMethodX = new JTextField();
-		txtSecondaryMethodX.setText("1");
+		txtSecondaryMethodX.setText("0");
 		txtSecondaryMethodX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodX.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecondaryMethodX);
@@ -1339,7 +1360,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySpotSize.add(lblNewLabel_6_1_1_1);
 		
 		txtSecondaryMethodY = new JTextField();
-		txtSecondaryMethodY.setText("1");
+		txtSecondaryMethodY.setText("0");
 		txtSecondaryMethodY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodY.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecondaryMethodY);
@@ -1351,7 +1372,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondarySpotSize.add(lblNewLabel_6_2_1_1);
 		
 		txtSecondaryMethodZ = new JTextField();
-		txtSecondaryMethodZ.setText("1");
+		txtSecondaryMethodZ.setText("0");
 		txtSecondaryMethodZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodZ.setColumns(4);
 		pnlSecondarySpotSize.add(txtSecondaryMethodZ);
@@ -1382,6 +1403,7 @@ public class OptimizeGUI extends JFrame {
 		pnlSecondaryThreshold.add(lblNewLabel_6_3_1_1);
 		
 		txtSecondaryMethodThreshold = new JTextField();
+		txtSecondaryMethodThreshold.setText("0");
 		txtSecondaryMethodThreshold.setEnabled(false);
 		txtSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodThreshold.setColumns(6);
@@ -1414,11 +1436,15 @@ public class OptimizeGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
 										classifierFilename(txtSecondaryClassiferDirectory.getText()).
+										thresholdType((ThresholdType) cbSecondaryMethodThreshold.getSelectedItem()).
 										build()
 						).
 						build();
 				
-				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(secondaryParams).build();
+				ParameterCollection parameterCollection = ParameterCollection.builder().
+						primaryObject(secondaryParams).
+						killBorderType(selectedKillBorderOption).
+						build();
 				
 				try {
 
@@ -1527,6 +1553,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_4_1_1);
 		
 		txtTertiaryS1X = new JTextField();
+		txtTertiaryS1X.setText("0");
 		txtTertiaryS1X.setEnabled(false);
 		txtTertiaryS1X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1X.setColumns(4);
@@ -1540,6 +1567,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_1_2_1_1);
 		
 		txtTertiaryS1Y = new JTextField();
+		txtTertiaryS1Y.setText("0");
 		txtTertiaryS1Y.setEnabled(false);
 		txtTertiaryS1Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Y.setColumns(4);
@@ -1553,6 +1581,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGFirstBlur.add(lblNewLabel_6_2_2_1_1);
 		
 		txtTertiaryS1Z = new JTextField();
+		txtTertiaryS1Z.setText("0");
 		txtTertiaryS1Z.setEnabled(false);
 		txtTertiaryS1Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS1Z.setColumns(4);
@@ -1582,6 +1611,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_4_2_1);
 		
 		txtTertiaryS2X = new JTextField();
+		txtTertiaryS2X.setText("0");
 		txtTertiaryS2X.setEnabled(false);
 		txtTertiaryS2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2X.setColumns(4);
@@ -1595,6 +1625,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_1_2_2_1);
 		
 		txtTertiaryS2Y = new JTextField();
+		txtTertiaryS2Y.setText("0");
 		txtTertiaryS2Y.setEnabled(false);
 		txtTertiaryS2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Y.setColumns(4);
@@ -1608,6 +1639,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryBGSecondBlur.add(lblNewLabel_6_2_2_2_1);
 		
 		txtTertiaryS2Z = new JTextField();
+		txtTertiaryS2Z.setText("0");
 		txtTertiaryS2Z.setEnabled(false);
 		txtTertiaryS2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryS2Z.setColumns(4);
@@ -1695,6 +1727,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_5);
 		
 		txtTertFilterX = new JTextField();
+		txtTertFilterX.setText("0");
 		txtTertFilterX.setEnabled(false);
 		txtTertFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilterX.setColumns(4);
@@ -1708,6 +1741,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_1_3);
 		
 		txtTertFilterY = new JTextField();
+		txtTertFilterY.setText("0");
 		txtTertFilterY.setEnabled(false);
 		txtTertFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilterY.setColumns(4);
@@ -1721,6 +1755,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_2_3);
 		
 		txtTertFilterZ = new JTextField();
+		txtTertFilterZ.setText("0");
 		txtTertFilterZ.setEnabled(false);
 		txtTertFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilterZ.setColumns(4);
@@ -1751,6 +1786,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_5_1);
 		
 		txtTertFilter2X = new JTextField();
+		txtTertFilter2X.setText("0");
 		txtTertFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilter2X.setEnabled(false);
 		txtTertFilter2X.setColumns(4);
@@ -1764,6 +1800,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_1_3_1);
 		
 		txtTertFilter2Y = new JTextField();
+		txtTertFilter2Y.setText("0");
 		txtTertFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilter2Y.setEnabled(false);
 		txtTertFilter2Y.setColumns(4);
@@ -1777,6 +1814,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiarySecondBlur.add(lblNewLabel_6_2_3_1);
 		
 		txtTertFilter2Z = new JTextField();
+		txtTertFilter2Z.setText("0");
 		txtTertFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertFilter2Z.setEnabled(false);
 		txtTertFilter2Z.setColumns(4);
@@ -1847,7 +1885,7 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryMethodX = new JTextField();
 		txtTertiaryMethodX.setEnabled(false);
-		txtTertiaryMethodX.setText("1");
+		txtTertiaryMethodX.setText("0");
 		txtTertiaryMethodX.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryMethodX.setColumns(4);
 		pnlTertiarySpotSize.add(txtTertiaryMethodX);
@@ -1861,7 +1899,7 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryMethodY = new JTextField();
 		txtTertiaryMethodY.setEnabled(false);
-		txtTertiaryMethodY.setText("1");
+		txtTertiaryMethodY.setText("0");
 		txtTertiaryMethodY.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryMethodY.setColumns(4);
 		pnlTertiarySpotSize.add(txtTertiaryMethodY);
@@ -1875,7 +1913,7 @@ public class OptimizeGUI extends JFrame {
 		
 		txtTertiaryMethodZ = new JTextField();
 		txtTertiaryMethodZ.setEnabled(false);
-		txtTertiaryMethodZ.setText("1");
+		txtTertiaryMethodZ.setText("0");
 		txtTertiaryMethodZ.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryMethodZ.setColumns(4);
 		pnlTertiarySpotSize.add(txtTertiaryMethodZ);
@@ -1897,6 +1935,7 @@ public class OptimizeGUI extends JFrame {
 		pnlTertiaryThreshold.add(lblNewLabel_6_3_1_1_1);
 		
 		txtTertiaryMethodThreshold = new JTextField();
+		txtTertiaryMethodThreshold.setText("0");
 		txtTertiaryMethodThreshold.setEnabled(false);
 		txtTertiaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryMethodThreshold.setColumns(6);
@@ -1941,11 +1980,15 @@ public class OptimizeGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
 										classifierFilename(txtTertiaryClassiferDirectory.getText()).
+										thresholdType((ThresholdType) cbTertiaryMethodThreshold.getSelectedItem()).
 										build()
 						).
 						build();
 				
-				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(tertiaryParams).build();
+				ParameterCollection parameterCollection = ParameterCollection.builder().
+						primaryObject(tertiaryParams).
+						killBorderType(selectedKillBorderOption).
+						build();
 				
 				try {
 
@@ -1957,6 +2000,9 @@ public class OptimizeGUI extends JFrame {
 					if (!tertiaryOutput.isVisible()) {
 						tertiaryOutput.show();
 						IJ.run("Tile", "");
+					} else {
+						tertiaryOutput.close();
+						
 					}
 
 				} catch (Exception e1) {

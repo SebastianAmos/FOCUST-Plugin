@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.segmentation;
 
 import clcm.focust.parameters.BackgroundParameters;
 import clcm.focust.parameters.FilterParameters;

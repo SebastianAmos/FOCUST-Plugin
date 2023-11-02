@@ -133,7 +133,7 @@ public class AnalysisGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public AnalysisGUI(DatumUpdateService<ParameterCollection> paramManager) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1102, 638);

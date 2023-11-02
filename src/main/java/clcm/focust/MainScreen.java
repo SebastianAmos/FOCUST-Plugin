@@ -46,7 +46,7 @@ public class MainScreen extends JFrame{
 	 */
 	public MainScreen(DatumUpdateService<ParameterCollection> paramManager ) {
 		setTitle("FOCUST");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon2.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainScreen.class.getResource("/clcm/focust/resources/icon.png")));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 899, 476);
 		mainPane = new JPanel();
@@ -84,7 +84,7 @@ public class MainScreen extends JFrame{
 
 		JLabel lblMasterIcon = new JLabel("");
 		lblMasterIcon.setHorizontalAlignment(SwingConstants.LEFT);
-		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/FullLogo2.png")));
+		lblMasterIcon.setIcon(new ImageIcon(MainScreen.class.getResource("/clcm/focust/resources/fullLogo.png")));
 		pnlHeader.add(lblMasterIcon, "cell 0 0,alignx left,growy");
 
 		JButton btnHelp = new JButton("Help");

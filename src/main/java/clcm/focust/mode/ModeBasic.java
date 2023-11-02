@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import clcm.focust.Segmentation;
 import clcm.focust.TableUtility;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
