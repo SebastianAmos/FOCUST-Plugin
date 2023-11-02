@@ -198,6 +198,16 @@ public class ModeBasic implements Mode {
 			// TODO -> Save results tables to disk - stacking results by column header if they already exist
 			// this will allow batch saving between images processed.
 			
+			if (!parameters.getOutputDir().isEmpty()) {
+				TableUtility.saveTable(f1, parameters.getOutputDir(), "Primary_Results.csv");
+				TableUtility.saveTable(f2, parameters.getOutputDir(), "Secondary_Results.csv");
+				TableUtility.saveTable(f3, parameters.getOutputDir(), "Tertiary_Results.csv");
+			} else {
+				TableUtility.saveTable(f1, parameters.getInputDir(), "Primary_Results.csv");
+				TableUtility.saveTable(f2, parameters.getInputDir(), "Secondary_Results.csv");
+				TableUtility.saveTable(f3, parameters.getInputDir(), "Tertiary_Results.csv");
+			}
+
 			}// end of single image loop
 		} 
 	}
