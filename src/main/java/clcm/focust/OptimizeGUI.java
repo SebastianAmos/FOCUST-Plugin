@@ -41,10 +41,16 @@ import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
+import clcm.focust.data.DatumUpdateService;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
 import clcm.focust.filter.Vector3D;
+import clcm.focust.parameters.BackgroundParameters;
+import clcm.focust.parameters.FilterParameters;
+import clcm.focust.parameters.MethodParameters;
+import clcm.focust.parameters.ObjectParameters;
+import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
@@ -74,12 +80,12 @@ public class OptimizeGUI extends JFrame {
 	private JTextField txtSecondaryMethodY;
 	private JTextField txtSecondaryMethodZ;
 	private JTextField txtSecondaryMethodThreshold;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
+	private JTextField txtTertFilterX;
+	private JTextField txtTertFilterY;
+	private JTextField txtTertFilterZ;
+	private JTextField txtTertiaryMethodX;
+	private JTextField txtTertiaryMethodY;
+	private JTextField txtTertiaryMethodZ;
 	private final ButtonGroup killBordersChoice = new ButtonGroup();
 	private JTextField txtTertiaryMethodThreshold;
 	private JTextField txtPrimaryS1X;
@@ -105,18 +111,18 @@ public class OptimizeGUI extends JFrame {
 	private JTextField txtTertiaryS1Z;
 	private JTextField txtPrimaryClassiferDirectory;
 	private JTextField txtPrimaryMethodThreshold;
-	private JTextField textField_1;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JTextField textField_11;
-	private JTextField textField_12;
+	private JTextField txtPriFilter2X;
+	private JTextField txtPriFilter2Y;
+	private JTextField txtPriFilter2Z;
+	private JTextField txtSecFilter2X;
+	private JTextField txtSecFilter2Y;
+	private JTextField txtSecFilter2Z;
 	private JTextField txtSecondaryClassiferDirectory;
 	private JTextField txtTertiaryClassiferDirectory;
 	private JButton btnBrowseTertiaryClassifer;
-	private JTextField textField_13;
-	private JTextField textField_14;
-	private JTextField textField_15;
+	private JTextField txtTertFilter2X;
+	private JTextField txtTertFilter2Y;
+	private JTextField txtTertFilter2Z;
 	private KillBorderTypes selectedKillBorderOption;
 	
 	public String inputDir;
@@ -125,31 +131,13 @@ public class OptimizeGUI extends JFrame {
 	
 	public String[] list;
 	public ImagePlus[] channelArray;
-	private ImagePlus priImg;
-	private ImagePlus secImg;
-	private ImagePlus terImg;
+	private ImagePlus primaryImg;
+	private ImagePlus secondaryImg;
+	private ImagePlus tertiaryImg;
 	
 
 	OptimizeHelpers optimize;
 	
-	
-	
-	/**
-	 * Launch for testing
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					OptimizeGUI frame = new OptimizeGUI();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	
 	//OptimizeHelpers optimize = new OptimizeHelpers();
@@ -157,7 +145,7 @@ public class OptimizeGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public OptimizeGUI() {
+	public OptimizeGUI(DatumUpdateService<ParameterCollection> paramManager) {
 		
 		optimize = new OptimizeHelpers();
 		optimize.setOptimizeGUI(this);
@@ -751,10 +739,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_7.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_7);
 		
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_1.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_1);
+		txtPriFilter2X = new JTextField();
+		txtPriFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2X.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2X);
 		
 		JLabel lblNewLabel_6_1_5 = new JLabel("Y");
 		lblNewLabel_6_1_5.setVerticalAlignment(SwingConstants.TOP);
@@ -762,10 +750,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_1_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_1_5);
 		
-		textField_8 = new JTextField();
-		textField_8.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_8.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_8);
+		txtPriFilter2Y = new JTextField();
+		txtPriFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2Y.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2Y);
 		
 		JLabel lblNewLabel_6_2_5 = new JLabel("Z");
 		lblNewLabel_6_2_5.setVerticalAlignment(SwingConstants.TOP);
@@ -773,10 +761,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_2_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlPrimarySecondBlur.add(lblNewLabel_6_2_5);
 		
-		textField_9 = new JTextField();
-		textField_9.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_9.setColumns(4);
-		pnlPrimarySecondBlur.add(textField_9);
+		txtPriFilter2Z = new JTextField();
+		txtPriFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtPriFilter2Z.setColumns(4);
+		pnlPrimarySecondBlur.add(txtPriFilter2Z);
 		
 		JLabel lblNewLabel_5_1 = new JLabel("Method:");
 		lblNewLabel_5_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -918,29 +906,49 @@ public class OptimizeGUI extends JFrame {
 		JButton btnProcessPrimary = new JButton("Process");
 		btnProcessPrimary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				ParamTest params = ParamTest.builder().
-						backgroundS1(Vector3D.builder().x(Double.parseDouble(txtPrimaryS1X.getText())).y(Double.parseDouble(txtPrimaryS1Y.getText())).z(Double.parseDouble(txtPrimaryS1Z.getText())).build()).
-						backgroundS2(Vector3D.builder().x(Double.parseDouble(txtPrimaryS2X.getText())).y(Double.parseDouble(txtPrimaryS2Y.getText())).z(Double.parseDouble(txtPrimaryS2Z.getText())).build()).
+				
+				// Build the primary parameter object
+				ObjectParameters primaryParams = ObjectParameters.builder().
+						channel(cbPrimaryChannel.getSelectedIndex()).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbPrimaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPrimaryS1X.getText())).y(Double.parseDouble(txtPrimaryS1Y.getText())).z(Double.parseDouble(txtPrimaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPrimaryS2X.getText())).y(Double.parseDouble(txtPrimaryS2Y.getText())).z(Double.parseDouble(txtPrimaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbPrimaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPriFilterX.getText())).y(Double.parseDouble(txtPriFilterY.getText())).z(Double.parseDouble(txtPriFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPriFilter2X.getText())).y(Double.parseDouble(txtPriFilter2Y.getText())).z(Double.parseDouble(txtPriFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbPrimaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
+										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
+										classifierFilename(txtPrimaryClassiferDirectory.getText()).
+										build()
+						).
 						build();
+				
+				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(primaryParams).build();
+				
+				
 				
 				try {
 					
-					int primaryIndex = cbPrimaryChannel.getSelectedIndex();
-					priImg = channelArray[primaryIndex];
-					ImagePlus priDup = priImg.duplicate();
-
-					BackgroundType background = cbPrimaryBackground.getItemAt(cbPrimaryBackground.getSelectedIndex());
-					FilterType filter = (FilterType) cbPrimaryFilter.getSelectedItem();
-					ThresholdType threshold = (ThresholdType) cbPrimaryMethodThreshold.getSelectedItem();
-					MethodTypes mt = (MethodTypes) cbPrimaryMethod.getSelectedItem();
-
-					Method method = mt.getMethod();
-
-					ImagePlus output = method.apply(priDup, background, filter, threshold, params);
-
-					if (!output.isVisible()) {
-						output.show();
+					primaryImg = channelArray[primaryParams.getChannel()];
+					ImagePlus priDup = primaryImg.duplicate();			
+					
+					ImagePlus primaryOutput = Segmentation.run(priDup, primaryParams, parameterCollection);
+					
+					primaryOutput.setTitle("Primary Objects");
+					
+					if (!primaryOutput.isVisible()) {
+						primaryOutput.show();
 						IJ.run("Tile", "");
 					}
 
@@ -1207,10 +1215,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_4_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_4_3);
 		
-		textField_10 = new JTextField();
-		textField_10.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_10.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_10);
+		txtSecFilter2X = new JTextField();
+		txtSecFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2X.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2X);
 		
 		JLabel lblNewLabel_6_1_2_3 = new JLabel("Y");
 		lblNewLabel_6_1_2_3.setVerticalAlignment(SwingConstants.TOP);
@@ -1218,10 +1226,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_1_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_1_2_3);
 		
-		textField_11 = new JTextField();
-		textField_11.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_11.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_11);
+		txtSecFilter2Y = new JTextField();
+		txtSecFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2Y.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2Y);
 		
 		JLabel lblNewLabel_6_2_2_3 = new JLabel("Z");
 		lblNewLabel_6_2_2_3.setVerticalAlignment(SwingConstants.TOP);
@@ -1229,10 +1237,10 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_2_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlSecondarySecondBlur.add(lblNewLabel_6_2_2_3);
 		
-		textField_12 = new JTextField();
-		textField_12.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_12.setColumns(4);
-		pnlSecondarySecondBlur.add(textField_12);
+		txtSecFilter2Z = new JTextField();
+		txtSecFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtSecFilter2Z.setColumns(4);
+		pnlSecondarySecondBlur.add(txtSecFilter2Z);
 		
 		JLabel lblNewLabel_5_1_2 = new JLabel("Method:");
 		lblNewLabel_5_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1383,28 +1391,44 @@ public class OptimizeGUI extends JFrame {
 		btnProcessSecondary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				ParamTest params = ParamTest.builder().
-						backgroundS1(Vector3D.builder().x(Double.parseDouble(txtSecondaryS1X.getText())).y(Double.parseDouble(txtSecondaryS1Y.getText())).z(Double.parseDouble(txtSecondaryS1Z.getText())).build()).
-						backgroundS2(Vector3D.builder().x(Double.parseDouble(txtSecondaryS2X.getText())).y(Double.parseDouble(txtSecondaryS2Y.getText())).z(Double.parseDouble(txtSecondaryS2Z.getText())).build()).
+				// Build the primary parameter object
+				ObjectParameters secondaryParams = ObjectParameters.builder().
+						channel(cbSecondaryChannel.getSelectedIndex() + 1).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbSecondaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecondaryS1X.getText())).y(Double.parseDouble(txtSecondaryS1Y.getText())).z(Double.parseDouble(txtSecondaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecondaryS2X.getText())).y(Double.parseDouble(txtSecondaryS2Y.getText())).z(Double.parseDouble(txtSecondaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbSecondaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecFilterX.getText())).y(Double.parseDouble(txtSecFilterY.getText())).z(Double.parseDouble(txtSecFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecFilter2X.getText())).y(Double.parseDouble(txtSecFilter2Y.getText())).z(Double.parseDouble(txtSecFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbSecondaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
+										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
+										classifierFilename(txtSecondaryClassiferDirectory.getText()).
+										build()
+						).
 						build();
+				
+				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(secondaryParams).build();
 				
 				try {
 
-					int seocndaryIndex = cbSecondaryChannel.getSelectedIndex();
-					secImg = channelArray[seocndaryIndex];
-					ImagePlus secDup = secImg.duplicate();
-
-					BackgroundType background = (BackgroundType) cbSecondaryBackground.getSelectedItem();
-					FilterType filter = (FilterType) cbSecondaryFilter.getSelectedItem();
-					ThresholdType threshold = (ThresholdType) cbSecondaryMethodThreshold.getSelectedItem();
-					MethodTypes mt = (MethodTypes) cbSecondaryMethod.getSelectedItem();
-
-					Method method = mt.getMethod();
-
-					ImagePlus output = method.apply(secDup, background, filter, threshold, params);
-
-					if (!output.isVisible()) {
-						output.show();
+					secondaryImg = channelArray[secondaryParams.getChannel()];
+					ImagePlus secondaryDuplicate = secondaryImg.duplicate();
+					
+					ImagePlus secondaryOutput = Segmentation.run(secondaryDuplicate, secondaryParams, parameterCollection);
+					secondaryOutput.setTitle("Secondary Objects");
+					if (!secondaryOutput.isVisible()) {
+						secondaryOutput.show();
 						IJ.run("Tile", "");
 					}
 
@@ -1670,11 +1694,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_5.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_5);
 		
-		textField_2 = new JTextField();
-		textField_2.setEnabled(false);
-		textField_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_2.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_2);
+		txtTertFilterX = new JTextField();
+		txtTertFilterX.setEnabled(false);
+		txtTertFilterX.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterX.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterX);
 		
 		JLabel lblNewLabel_6_1_3 = new JLabel("Y");
 		lblNewLabel_6_1_3.setEnabled(false);
@@ -1683,11 +1707,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_1_3);
 		
-		textField_3 = new JTextField();
-		textField_3.setEnabled(false);
-		textField_3.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_3.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_3);
+		txtTertFilterY = new JTextField();
+		txtTertFilterY.setEnabled(false);
+		txtTertFilterY.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterY.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterY);
 		
 		JLabel lblNewLabel_6_2_3 = new JLabel("Z");
 		lblNewLabel_6_2_3.setEnabled(false);
@@ -1696,11 +1720,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_2_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiaryFirstBlur.add(lblNewLabel_6_2_3);
 		
-		textField_4 = new JTextField();
-		textField_4.setEnabled(false);
-		textField_4.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_4.setColumns(4);
-		pnlTertiaryFirstBlur.add(textField_4);
+		txtTertFilterZ = new JTextField();
+		txtTertFilterZ.setEnabled(false);
+		txtTertFilterZ.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilterZ.setColumns(4);
+		pnlTertiaryFirstBlur.add(txtTertFilterZ);
 		
 		JPanel pnlTertiarySecondBlur = new JPanel();
 		GridBagConstraints gbc_pnlTertiarySecondBlur = new GridBagConstraints();
@@ -1726,11 +1750,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_5_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_5_1);
 		
-		textField_13 = new JTextField();
-		textField_13.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_13.setEnabled(false);
-		textField_13.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_13);
+		txtTertFilter2X = new JTextField();
+		txtTertFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2X.setEnabled(false);
+		txtTertFilter2X.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2X);
 		
 		JLabel lblNewLabel_6_1_3_1 = new JLabel("Y");
 		lblNewLabel_6_1_3_1.setVerticalAlignment(SwingConstants.TOP);
@@ -1739,11 +1763,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_1_3_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_1_3_1);
 		
-		textField_14 = new JTextField();
-		textField_14.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_14.setEnabled(false);
-		textField_14.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_14);
+		txtTertFilter2Y = new JTextField();
+		txtTertFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2Y.setEnabled(false);
+		txtTertFilter2Y.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2Y);
 		
 		JLabel lblNewLabel_6_2_3_1 = new JLabel("Z");
 		lblNewLabel_6_2_3_1.setVerticalAlignment(SwingConstants.TOP);
@@ -1752,11 +1776,11 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_2_3_1.setEnabled(false);
 		pnlTertiarySecondBlur.add(lblNewLabel_6_2_3_1);
 		
-		textField_15 = new JTextField();
-		textField_15.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_15.setEnabled(false);
-		textField_15.setColumns(4);
-		pnlTertiarySecondBlur.add(textField_15);
+		txtTertFilter2Z = new JTextField();
+		txtTertFilter2Z.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertFilter2Z.setEnabled(false);
+		txtTertFilter2Z.setColumns(4);
+		pnlTertiarySecondBlur.add(txtTertFilter2Z);
 		
 		JLabel lblNewLabel_5_1_3 = new JLabel("Method:");
 		lblNewLabel_5_1_3.setEnabled(false);
@@ -1821,12 +1845,12 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_3_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_3_2);
 		
-		textField_5 = new JTextField();
-		textField_5.setEnabled(false);
-		textField_5.setText("1");
-		textField_5.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_5.setColumns(4);
-		pnlTertiarySpotSize.add(textField_5);
+		txtTertiaryMethodX = new JTextField();
+		txtTertiaryMethodX.setEnabled(false);
+		txtTertiaryMethodX.setText("1");
+		txtTertiaryMethodX.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodX.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodX);
 		
 		JLabel lblNewLabel_6_1_1_2 = new JLabel("Y");
 		lblNewLabel_6_1_1_2.setEnabled(false);
@@ -1835,12 +1859,12 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_1_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_1_1_2);
 		
-		textField_6 = new JTextField();
-		textField_6.setEnabled(false);
-		textField_6.setText("1");
-		textField_6.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_6.setColumns(4);
-		pnlTertiarySpotSize.add(textField_6);
+		txtTertiaryMethodY = new JTextField();
+		txtTertiaryMethodY.setEnabled(false);
+		txtTertiaryMethodY.setText("1");
+		txtTertiaryMethodY.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodY.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodY);
 		
 		JLabel lblNewLabel_6_2_1_2 = new JLabel("Z");
 		lblNewLabel_6_2_1_2.setEnabled(false);
@@ -1849,12 +1873,12 @@ public class OptimizeGUI extends JFrame {
 		lblNewLabel_6_2_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
 		pnlTertiarySpotSize.add(lblNewLabel_6_2_1_2);
 		
-		textField_7 = new JTextField();
-		textField_7.setEnabled(false);
-		textField_7.setText("1");
-		textField_7.setFont(new Font("Arial", Font.PLAIN, 14));
-		textField_7.setColumns(4);
-		pnlTertiarySpotSize.add(textField_7);
+		txtTertiaryMethodZ = new JTextField();
+		txtTertiaryMethodZ.setEnabled(false);
+		txtTertiaryMethodZ.setText("1");
+		txtTertiaryMethodZ.setFont(new Font("Arial", Font.PLAIN, 14));
+		txtTertiaryMethodZ.setColumns(4);
+		pnlTertiarySpotSize.add(txtTertiaryMethodZ);
 		
 		JPanel pnlTertiaryThreshold = new JPanel();
 		GridBagConstraints gbc_pnlTertiaryThreshold = new GridBagConstraints();
@@ -1893,15 +1917,55 @@ public class OptimizeGUI extends JFrame {
 		JButton btnProcessTertiary = new JButton("Process");
 		btnProcessTertiary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int tertiaryIndex = cbTertiaryChannel.getSelectedIndex();
 				
-				terImg = channelArray[tertiaryIndex];
-				ImagePlus terDup =  terImg.duplicate();
+				// Build the primary parameter object
+				ObjectParameters tertiaryParams = ObjectParameters.builder().
+						channel(cbTertiaryChannel.getSelectedIndex() + 1).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbTertiaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertiaryS1X.getText())).y(Double.parseDouble(txtTertiaryS1Y.getText())).z(Double.parseDouble(txtTertiaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertiaryS2X.getText())).y(Double.parseDouble(txtTertiaryS2Y.getText())).z(Double.parseDouble(txtTertiaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbTertiaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertFilterX.getText())).y(Double.parseDouble(txtTertFilterY.getText())).z(Double.parseDouble(txtTertFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertFilter2X.getText())).y(Double.parseDouble(txtTertFilter2Y.getText())).z(Double.parseDouble(txtTertFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbTertiaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
+										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
+										classifierFilename(txtTertiaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
 				
-				if(!terDup.isVisible()) {
-					terDup.show();
-					IJ.run("Tile", "");
+				ParameterCollection parameterCollection = ParameterCollection.builder().primaryObject(tertiaryParams).build();
+				
+				try {
+
+					tertiaryImg = channelArray[tertiaryParams.getChannel()];
+					ImagePlus tertiaryDuplicate = tertiaryImg.duplicate();
+					
+					ImagePlus tertiaryOutput = Segmentation.run(tertiaryDuplicate, tertiaryParams, parameterCollection);
+					tertiaryOutput.setTitle("Tertiary Objects");
+					if (!tertiaryOutput.isVisible()) {
+						tertiaryOutput.show();
+						IJ.run("Tile", "");
+					}
+
+				} catch (Exception e1) {
+					IJ.showMessage("No images to process. Select a directory and try again.");
+					e1.printStackTrace();
 				}
+				
+				
+				
 				
 			}
 		});
@@ -2082,7 +2146,7 @@ public class OptimizeGUI extends JFrame {
 		
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainScreen MainGui = new MainScreen();
+				MainScreen MainGui = new MainScreen(paramManager);
 				MainGui.setLocationRelativeTo(null);
 				MainGui.setVisible(true);
 				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);

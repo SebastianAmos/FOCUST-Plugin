@@ -4,11 +4,12 @@ import clcm.focust.parameters.BackgroundParameters;
 import clcm.focust.parameters.FilterParameters;
 import clcm.focust.parameters.MethodParameters;
 import clcm.focust.parameters.ObjectParameters;
+import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 
 public class Segmentation {
 	
-	public static ImagePlus run(ImagePlus input, ObjectParameters parameters) {
+	public static ImagePlus run(ImagePlus input, ObjectParameters parameters, ParameterCollection parameterCollection) {
 	
 		// collect parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
@@ -21,7 +22,8 @@ public class Segmentation {
 				background.getBackgroundType(), 
 				filter.getFilterType(), 
 				method.getThresholdType(), 
-				parameters);
+				parameters,
+				parameterCollection);
 		
 		return output;
 		

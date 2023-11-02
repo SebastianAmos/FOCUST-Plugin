@@ -39,16 +39,19 @@ public class ModeNone implements Mode {
 
 			// run user-defined segmentation on the correct channel
 			ImagePlus primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
-					parameters.getPrimaryObject());
+					parameters.getPrimaryObject(),
+					parameters);
 			ImagePlus secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
-					parameters.getSecondaryObject());
+					parameters.getSecondaryObject(),
+					parameters);
 			ImagePlus tertiary = null;
 
 			// if tertiary should be processed, run segmentation, otherwise generate by
 			// subtraction if selected.
 			if (parameters.getProcessTertiary()) {
 				tertiary = Segmentation.run(channels[parameters.getTertiaryObject().getChannel()],
-						parameters.getTertiaryObject());
+						parameters.getTertiaryObject(),
+						parameters);
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = ImageCalculator.run(secondary, primary, "Subtract create stack");
 			}
