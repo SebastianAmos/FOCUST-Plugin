@@ -13,6 +13,7 @@ import java.awt.Insets;
 import java.awt.Window;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Font;
@@ -120,6 +121,13 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
 
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			AnalysisGUI gui = new AnalysisGUI(null);
+			gui.setVisible(true);
+			gui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		});
+	}
 
 	/**
 	 * Create the frame.
@@ -935,11 +943,10 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		txtPrimaryMethodThreshold = new JTextField();
-		txtPrimaryMethodThreshold.setEnabled(true);
+		txtPrimaryMethodThreshold.setEnabled(false);
 		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold);
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPrimaryMethodThreshold.setColumns(6);
-		pnlPrimaryMethodThreshold.setVisible(true);
 		txtPrimaryClassiferDirectory.setVisible(false);
 		
 		JPanel pnlSecondary = new JPanel();
@@ -1367,7 +1374,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondaryThreshold.add(lblNewLabel_6_3_1_1);
 		
 		txtSecondaryMethodThreshold = new JTextField();
-		txtSecondaryMethodThreshold.setEnabled(true);
+		txtSecondaryMethodThreshold.setEnabled(false);
 		txtSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodThreshold.setColumns(6);
 		pnlSecondaryThreshold.add(txtSecondaryMethodThreshold);

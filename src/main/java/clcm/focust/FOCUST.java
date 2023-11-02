@@ -32,6 +32,8 @@ import clcm.focust.speckle.service.SpeckleProcessor;
 import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
 
+@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
+
 public final class FOCUST {
 
 	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
