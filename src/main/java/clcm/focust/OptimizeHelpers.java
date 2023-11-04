@@ -1,8 +1,12 @@
 package clcm.focust;
 
+import java.util.ArrayList;
+
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 public class OptimizeHelpers {
 	
@@ -105,5 +109,40 @@ public class OptimizeHelpers {
 		return img;
 
 	}
+	
+	
+	
+	/**
+	 * creates a composite image with or without an edges overlay of segmented objects.
+	 * @param original
+	 * @param segmented
+	 * @param withOverlay
+	 * @return
+	 */
+	public ImagePlus processDisplay(ImagePlus original, ImagePlus segmented, Boolean withOverlay) {
+		
+		ArrayList<ImagePlus> images = new ArrayList<>();
+		images.add(original);
+		
+		if (withOverlay) {
+			ImagePlus edges = LabelEditor.detectEdgesLabelled(segmented);
+			images.add(edges);
+			
+		}
+		
+		ImagePlus[] imagesArray = new ImagePlus[images.size()];
+		imagesArray = images.toArray(imagesArray);
+		
+		ImagePlus output = createComposite(imagesArray);
+		
+		return output;
+	}
+	
+	
+	
+	
+	
+	
+
 
 }

@@ -186,6 +186,10 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		JButton btnHelp = new JButton("Help");
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
 		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;

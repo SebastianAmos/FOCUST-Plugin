@@ -5,6 +5,7 @@ import clcm.focust.filter.FilterType;
 import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.threshold.ThresholdType;
+import ij.IJ;
 import ij.ImagePlus;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -40,6 +41,7 @@ public class MaximaSegmentation implements Method{
 		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
 		
 		ImagePlus output = clij2.pull(killBorders);
+		IJ.run(output, "glasbey inverted", "");
 		
 		// clean up GPU without using clij2.clear() - as this will interrupt optimisation workflow and prevent multiple instances.
 		input.close();

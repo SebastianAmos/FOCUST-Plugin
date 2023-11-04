@@ -132,9 +132,16 @@ public class OptimizeGUI extends JFrame {
 	
 	public String[] list;
 	public ImagePlus[] channelArray;
-	private ImagePlus primaryImg;
-	private ImagePlus secondaryImg;
-	private ImagePlus tertiaryImg;
+	
+	// original images
+	private ImagePlus primaryImg = null;
+	private ImagePlus secondaryImg = null;
+	private ImagePlus tertiaryImg = null;
+	
+	// gpu outputs
+	private ImagePlus primaryOutput = null;
+	private ImagePlus secondaryOutput = null;
+	private ImagePlus tertiaryOutput = null;
 	
 
 	OptimizeHelpers optimize;
@@ -306,6 +313,14 @@ public class OptimizeGUI extends JFrame {
 				
 				optimize.loadPrevious();
 				
+				// reset image outputs
+				primaryImg = null;
+				secondaryImg = null;
+				tertiaryImg = null;
+
+				primaryOutput = null;
+				secondaryOutput = null;
+				tertiaryOutput = null;
 			}
 		});
 		GridBagConstraints gbc_btnPrevious = new GridBagConstraints();
@@ -321,6 +336,15 @@ public class OptimizeGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				optimize.loadNext();
+				
+				// reset image outputs
+				primaryImg = null;
+				secondaryImg = null;
+				tertiaryImg = null;
+				
+				primaryOutput = null;
+				secondaryOutput = null;
+				tertiaryOutput = null;
 				
 			}
 		});
@@ -909,8 +933,17 @@ public class OptimizeGUI extends JFrame {
 		txtPrimaryMethodThreshold.setColumns(6);
 
 		JButton btnProcessPrimary = new JButton("Process");
+		
+		OptimizeHelpers optimize = new OptimizeHelpers();
+		
 		btnProcessPrimary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				// Get display options
+				Boolean displayOriginal = ckbPrimaryDisplay.isSelected();
+				Boolean withOverlay = ckbPrimaryDisplayOverlay.isSelected();
+
+				
 				
 				// Build the primary parameter object
 				ObjectParameters primaryParams = ObjectParameters.builder().
@@ -941,30 +974,37 @@ public class OptimizeGUI extends JFrame {
 						build();
 				
 				ParameterCollection parameterCollection = ParameterCollection.builder().
-						primaryObject(primaryParams).
 						killBorderType(selectedKillBorderOption).
 						build();
 				
-				
+				primaryImg = channelArray[primaryParams.getChannel()];	
 				
 				try {
+					ImagePlus primaryDuplicate = primaryImg.duplicate();
 					
-					primaryImg = channelArray[primaryParams.getChannel()];
-					ImagePlus priDup = primaryImg.duplicate();			
-					
-					ImagePlus primaryOutput = Segmentation.run(priDup, primaryParams, parameterCollection);
-					
+					primaryOutput = Segmentation.run(primaryDuplicate, primaryParams, parameterCollection);
+					IJ.resetMinAndMax(primaryOutput);
 					primaryOutput.setTitle("Primary Objects");
 					
-					if (!primaryOutput.isVisible()) {
-						primaryOutput.show();
-						IJ.run("Tile", "");
+					if (displayOriginal) {
+						ImagePlus primaryDisplayOverlay = optimize.processDisplay(primaryDuplicate, primaryOutput, withOverlay);
+						primaryDisplayOverlay.setTitle("Primary Display");
+						IJ.resetMinAndMax(primaryDisplayOverlay);
+						primaryDisplayOverlay.show();
 					}
+					
+					primaryOutput.show();
+					IJ.run("Tile", ""); // Arranges the windows so all visible images can be seen.
 
 				} catch (Exception e1) {
-					IJ.showMessage("No images to process. Select a directory and try again.");
+					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
 					e1.printStackTrace();
 				}
+				
+				// once processed - display original +- outlines as per user request
+				
+				
+			
 
 			}
 		});
@@ -1413,6 +1453,9 @@ public class OptimizeGUI extends JFrame {
 		btnProcessSecondary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				Boolean displayOriginal = ckbSecondaryDisplay.isSelected();
+				Boolean withOverlay = ckbSecondaryDisplayOverlay.isSelected();
+				
 				// Build the primary parameter object
 				ObjectParameters secondaryParams = ObjectParameters.builder().
 						channel(cbSecondaryChannel.getSelectedIndex() + 1).
@@ -1442,24 +1485,32 @@ public class OptimizeGUI extends JFrame {
 						build();
 				
 				ParameterCollection parameterCollection = ParameterCollection.builder().
-						primaryObject(secondaryParams).
 						killBorderType(selectedKillBorderOption).
 						build();
 				
+				
+				secondaryImg = channelArray[secondaryParams.getChannel()];
+				
 				try {
-
-					secondaryImg = channelArray[secondaryParams.getChannel()];
 					ImagePlus secondaryDuplicate = secondaryImg.duplicate();
 					
-					ImagePlus secondaryOutput = Segmentation.run(secondaryDuplicate, secondaryParams, parameterCollection);
+					secondaryOutput = Segmentation.run(secondaryDuplicate, secondaryParams, parameterCollection);
+					IJ.resetMinAndMax(secondaryOutput);
 					secondaryOutput.setTitle("Secondary Objects");
-					if (!secondaryOutput.isVisible()) {
-						secondaryOutput.show();
-						IJ.run("Tile", "");
+					
+					if (displayOriginal) {
+						ImagePlus secondaryDisplayOverlay = optimize.processDisplay(secondaryDuplicate, secondaryOutput, withOverlay);
+						secondaryDisplayOverlay.setTitle("Secondary Display");
+						IJ.resetMinAndMax(secondaryDisplayOverlay);
+						secondaryDisplayOverlay.show();
 					}
+					
+					
+					secondaryOutput.show();
+					IJ.run("Tile", "");
 
 				} catch (Exception e1) {
-					IJ.showMessage("No images to process. Select a directory and try again.");
+					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
 					e1.printStackTrace();
 				}
 
@@ -1957,6 +2008,10 @@ public class OptimizeGUI extends JFrame {
 		btnProcessTertiary.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				
+				Boolean displayOriginal = ckbTertiaryDisplay.isSelected();
+				Boolean withOverlay = ckbTertiaryDisplayOverlay.isSelected();
+				
 				// Build the primary parameter object
 				ObjectParameters tertiaryParams = ObjectParameters.builder().
 						channel(cbTertiaryChannel.getSelectedIndex() + 1).
@@ -1986,29 +2041,36 @@ public class OptimizeGUI extends JFrame {
 						build();
 				
 				ParameterCollection parameterCollection = ParameterCollection.builder().
-						primaryObject(tertiaryParams).
 						killBorderType(selectedKillBorderOption).
 						build();
 				
+
+				tertiaryImg = channelArray[tertiaryParams.getChannel()];
+				
 				try {
 
-					tertiaryImg = channelArray[tertiaryParams.getChannel()];
 					ImagePlus tertiaryDuplicate = tertiaryImg.duplicate();
 					
-					ImagePlus tertiaryOutput = Segmentation.run(tertiaryDuplicate, tertiaryParams, parameterCollection);
+					tertiaryOutput = Segmentation.run(tertiaryDuplicate, tertiaryParams, parameterCollection);
+					IJ.resetMinAndMax(tertiaryOutput);
 					tertiaryOutput.setTitle("Tertiary Objects");
-					if (!tertiaryOutput.isVisible()) {
-						tertiaryOutput.show();
-						IJ.run("Tile", "");
-					} else {
-						tertiaryOutput.close();
-						
+					
+					if (displayOriginal) {
+						ImagePlus tertiaryDisplayOverlay = optimize.processDisplay(tertiaryDuplicate, tertiaryOutput, withOverlay);
+						tertiaryDisplayOverlay.setTitle("Tertiary Display");
+						IJ.resetMinAndMax(tertiaryDisplayOverlay);
+						tertiaryDisplayOverlay.show();
 					}
+					
+					
+					tertiaryOutput.show();
+					IJ.run("Tile", "");
 
 				} catch (Exception e1) {
-					IJ.showMessage("No images to process. Select a directory and try again.");
+					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
 					e1.printStackTrace();
 				}
+				
 				
 				
 				
