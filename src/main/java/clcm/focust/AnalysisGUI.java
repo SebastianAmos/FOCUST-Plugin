@@ -1911,9 +1911,10 @@ public class AnalysisGUI extends JFrame {
 				// Collect parameters from GUI
 				String inputDir = txtInputDir.getText();
 				String outputDir = txtOutputDir.getText();
+				
 				// Primary Object
 				ObjectParameters primaryObject = ObjectParameters.builder().
-						channel(cbPrimaryChannel.getSelectedIndex() + 1).
+						channel(cbPrimaryChannel.getSelectedIndex()).
 						backgroundParameters(
 								BackgroundParameters.builder().
 										backgroundType((BackgroundType) cbPrimaryBackground.getSelectedItem()).
@@ -1940,7 +1941,7 @@ public class AnalysisGUI extends JFrame {
 
 				// Secondary Object
 				ObjectParameters secondaryObject = ObjectParameters.builder().
-						channel(cbSecondaryChannel.getSelectedIndex() + 1).
+						channel(cbSecondaryChannel.getSelectedIndex()).
 						backgroundParameters(
 								BackgroundParameters.builder().
 										backgroundType((BackgroundType) cbSecondaryBackground.getSelectedItem()).
@@ -1967,7 +1968,7 @@ public class AnalysisGUI extends JFrame {
 
 				//Tertiary Object
 				ObjectParameters tertiaryObject = ObjectParameters.builder().
-						channel(cbTertiaryChannel.getSelectedIndex() + 1).
+						channel(cbTertiaryChannel.getSelectedIndex()).
 						backgroundParameters(
 								BackgroundParameters.builder().
 										backgroundType((BackgroundType) cbTertiaryBackground.getSelectedItem()).
@@ -2009,8 +2010,10 @@ public class AnalysisGUI extends JFrame {
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
 						coreVPeriphery(ckbSpheroidCoreVsPeriphery.isSelected()).
 						coreVolume(Double.parseDouble(txtCoreVolValue.getText())).
+						skeletonize(ckbSkeletonization.isSelected()).
 						build();
 				
+				// Hand off to DatumUpdateService
 				paramManager.notifyUpdated(parameterCollection);
 				
 				// testing kill borders methods

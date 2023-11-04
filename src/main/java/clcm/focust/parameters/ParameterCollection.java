@@ -30,6 +30,7 @@ public class ParameterCollection implements DataObject{
     final Boolean coreVPeriphery;
     final Boolean processTertiary;
     final double coreVolume;
+    final Boolean skeletonize;
 
     // Optimize Parameters
     final boolean primaryDisplayOriginal;
