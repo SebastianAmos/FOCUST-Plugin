@@ -139,7 +139,19 @@ public class OptimizeHelpers {
 	}
 	
 	
-	
+	public ImagePlus setSliceMiddle(ImagePlus imp) {
+		int nChannels = imp.getNChannels();
+		int nSlices = imp.getStackSize();
+		int middle = (nSlices + 1) / 2;
+		
+		for (int i = 1; i <= nChannels; i++) {
+			imp.setPosition(i, 1, 1);
+			imp.setSlice(middle);
+			//IJ.resetMinAndMax(imp);
+		}
+		
+		return imp;
+	}
 	
 	
 	

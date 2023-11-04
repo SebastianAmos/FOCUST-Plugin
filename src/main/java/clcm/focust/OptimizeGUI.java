@@ -987,24 +987,19 @@ public class OptimizeGUI extends JFrame {
 					primaryOutput.setTitle("Primary Objects");
 					
 					if (displayOriginal) {
-						ImagePlus primaryDisplayOverlay = optimize.processDisplay(primaryDuplicate, primaryOutput, withOverlay);
+						ImagePlus outputDuplicate = primaryOutput.duplicate();
+						ImagePlus primaryDisplayOverlay = optimize.processDisplay(primaryDuplicate, outputDuplicate, withOverlay);
 						primaryDisplayOverlay.setTitle("Primary Display");
-						IJ.resetMinAndMax(primaryDisplayOverlay);
 						primaryDisplayOverlay.show();
 					}
 					
 					primaryOutput.show();
-					IJ.run("Tile", ""); // Arranges the windows so all visible images can be seen.
+					IJ.run("Tile", ""); // Arranges the windows so all visible images can be seen on the screen at once.
 
 				} catch (Exception e1) {
 					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
 					e1.printStackTrace();
 				}
-				
-				// once processed - display original +- outlines as per user request
-				
-				
-			
 
 			}
 		});
@@ -1027,7 +1022,7 @@ public class OptimizeGUI extends JFrame {
 		gbl_pnlSecondary.rowHeights = new int[] {30, 0, 0, 0, 0, 30, 0, 0, 37, 0, 0, 0, 0};
 		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0};
 		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		pnlSecondary.setLayout(gbl_pnlSecondary);
+		pnlSecondary.setLayout(gbl_pnlSecondary); 
 		
 		JLabel lblNewLabel_4_1 = new JLabel("Secondary Objects");
 		lblNewLabel_4_1.setFont(new Font("Arial", Font.BOLD, 14));
@@ -1458,7 +1453,7 @@ public class OptimizeGUI extends JFrame {
 				
 				// Build the primary parameter object
 				ObjectParameters secondaryParams = ObjectParameters.builder().
-						channel(cbSecondaryChannel.getSelectedIndex() + 1).
+						channel(cbSecondaryChannel.getSelectedIndex()).
 						backgroundParameters(
 								BackgroundParameters.builder().
 										backgroundType((BackgroundType) cbSecondaryBackground.getSelectedItem()).
@@ -1499,9 +1494,9 @@ public class OptimizeGUI extends JFrame {
 					secondaryOutput.setTitle("Secondary Objects");
 					
 					if (displayOriginal) {
-						ImagePlus secondaryDisplayOverlay = optimize.processDisplay(secondaryDuplicate, secondaryOutput, withOverlay);
+						ImagePlus outputDuplicate = secondaryOutput.duplicate();
+						ImagePlus secondaryDisplayOverlay = optimize.processDisplay(secondaryDuplicate, outputDuplicate, withOverlay);
 						secondaryDisplayOverlay.setTitle("Secondary Display");
-						IJ.resetMinAndMax(secondaryDisplayOverlay);
 						secondaryDisplayOverlay.show();
 					}
 					
@@ -2014,7 +2009,7 @@ public class OptimizeGUI extends JFrame {
 				
 				// Build the primary parameter object
 				ObjectParameters tertiaryParams = ObjectParameters.builder().
-						channel(cbTertiaryChannel.getSelectedIndex() + 1).
+						channel(cbTertiaryChannel.getSelectedIndex()).
 						backgroundParameters(
 								BackgroundParameters.builder().
 										backgroundType((BackgroundType) cbTertiaryBackground.getSelectedItem()).
@@ -2056,9 +2051,9 @@ public class OptimizeGUI extends JFrame {
 					tertiaryOutput.setTitle("Tertiary Objects");
 					
 					if (displayOriginal) {
-						ImagePlus tertiaryDisplayOverlay = optimize.processDisplay(tertiaryDuplicate, tertiaryOutput, withOverlay);
+						ImagePlus outputDuplicate = tertiaryOutput.duplicate();
+						ImagePlus tertiaryDisplayOverlay = optimize.processDisplay(tertiaryDuplicate, outputDuplicate, withOverlay);
 						tertiaryDisplayOverlay.setTitle("Tertiary Display");
-						IJ.resetMinAndMax(tertiaryDisplayOverlay);
 						tertiaryDisplayOverlay.show();
 					}
 					
@@ -2142,32 +2137,32 @@ public class OptimizeGUI extends JFrame {
 		gbc_lblNewLabel_3_1_4_2_1.gridy = 1;
 		pnlFooter.add(lblNewLabel_3_1_4_2_1, gbc_lblNewLabel_3_1_4_2_1);
 		
-		JCheckBox ckbPrimaryOverlay = new JCheckBox("Primary Labels");
-		ckbPrimaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbPrimaryOverlay = new GridBagConstraints();
-		gbc_ckbPrimaryOverlay.anchor = GridBagConstraints.WEST;
-		gbc_ckbPrimaryOverlay.insets = new Insets(0, 0, 5, 5);
-		gbc_ckbPrimaryOverlay.gridx = 4;
-		gbc_ckbPrimaryOverlay.gridy = 1;
-		pnlFooter.add(ckbPrimaryOverlay, gbc_ckbPrimaryOverlay);
+		JCheckBox ckbPrimaryLabel = new JCheckBox("Primary Labels");
+		ckbPrimaryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbPrimaryLabel = new GridBagConstraints();
+		gbc_ckbPrimaryLabel.anchor = GridBagConstraints.WEST;
+		gbc_ckbPrimaryLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbPrimaryLabel.gridx = 4;
+		gbc_ckbPrimaryLabel.gridy = 1;
+		pnlFooter.add(ckbPrimaryLabel, gbc_ckbPrimaryLabel);
 		
-		JCheckBox ckbSecondaryOverlay = new JCheckBox("Secondary Labels");
-		ckbSecondaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbSecondaryOverlay = new GridBagConstraints();
-		gbc_ckbSecondaryOverlay.anchor = GridBagConstraints.WEST;
-		gbc_ckbSecondaryOverlay.insets = new Insets(0, 0, 5, 5);
-		gbc_ckbSecondaryOverlay.gridx = 5;
-		gbc_ckbSecondaryOverlay.gridy = 1;
-		pnlFooter.add(ckbSecondaryOverlay, gbc_ckbSecondaryOverlay);
+		JCheckBox ckbSecondaryLabel = new JCheckBox("Secondary Labels");
+		ckbSecondaryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSecondaryLabel = new GridBagConstraints();
+		gbc_ckbSecondaryLabel.anchor = GridBagConstraints.WEST;
+		gbc_ckbSecondaryLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbSecondaryLabel.gridx = 5;
+		gbc_ckbSecondaryLabel.gridy = 1;
+		pnlFooter.add(ckbSecondaryLabel, gbc_ckbSecondaryLabel);
 		
-		JCheckBox ckbTertiaryOverlay = new JCheckBox("Tertiary Labels");
-		ckbTertiaryOverlay.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbTertiaryOverlay = new GridBagConstraints();
-		gbc_ckbTertiaryOverlay.anchor = GridBagConstraints.WEST;
-		gbc_ckbTertiaryOverlay.insets = new Insets(0, 0, 5, 5);
-		gbc_ckbTertiaryOverlay.gridx = 6;
-		gbc_ckbTertiaryOverlay.gridy = 1;
-		pnlFooter.add(ckbTertiaryOverlay, gbc_ckbTertiaryOverlay);
+		JCheckBox ckbTertiaryLabel = new JCheckBox("Tertiary Labels");
+		ckbTertiaryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbTertiaryLabel = new GridBagConstraints();
+		gbc_ckbTertiaryLabel.anchor = GridBagConstraints.WEST;
+		gbc_ckbTertiaryLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_ckbTertiaryLabel.gridx = 6;
+		gbc_ckbTertiaryLabel.gridy = 1;
+		pnlFooter.add(ckbTertiaryLabel, gbc_ckbTertiaryLabel);
 		
 		JButton btnUpdateOverlays = new JButton("Update Overlays");
 		btnUpdateOverlays.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -2212,32 +2207,32 @@ public class OptimizeGUI extends JFrame {
 		gbc_verticalSeparator.gridy = 1;
 		pnlFooter.add(verticalSeparator, gbc_verticalSeparator);
 		
-		JCheckBox chckbxPrimaryOutlines = new JCheckBox("Primary Outlines");
-		chckbxPrimaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_chckbxPrimaryOutlines = new GridBagConstraints();
-		gbc_chckbxPrimaryOutlines.anchor = GridBagConstraints.WEST;
-		gbc_chckbxPrimaryOutlines.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxPrimaryOutlines.gridx = 4;
-		gbc_chckbxPrimaryOutlines.gridy = 2;
-		pnlFooter.add(chckbxPrimaryOutlines, gbc_chckbxPrimaryOutlines);
+		JCheckBox ckbPrimaryEdge = new JCheckBox("Primary Outlines");
+		ckbPrimaryEdge.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbPrimaryEdge = new GridBagConstraints();
+		gbc_ckbPrimaryEdge.anchor = GridBagConstraints.WEST;
+		gbc_ckbPrimaryEdge.insets = new Insets(0, 0, 0, 5);
+		gbc_ckbPrimaryEdge.gridx = 4;
+		gbc_ckbPrimaryEdge.gridy = 2;
+		pnlFooter.add(ckbPrimaryEdge, gbc_ckbPrimaryEdge);
 		
-		JCheckBox chckbxSecondaryOutlines = new JCheckBox("Secondary Outlines");
-		chckbxSecondaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_chckbxSecondaryOutlines = new GridBagConstraints();
-		gbc_chckbxSecondaryOutlines.anchor = GridBagConstraints.WEST;
-		gbc_chckbxSecondaryOutlines.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxSecondaryOutlines.gridx = 5;
-		gbc_chckbxSecondaryOutlines.gridy = 2;
-		pnlFooter.add(chckbxSecondaryOutlines, gbc_chckbxSecondaryOutlines);
+		JCheckBox ckbSecondaryEdge = new JCheckBox("Secondary Outlines");
+		ckbSecondaryEdge.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSecondaryEdge = new GridBagConstraints();
+		gbc_ckbSecondaryEdge.anchor = GridBagConstraints.WEST;
+		gbc_ckbSecondaryEdge.insets = new Insets(0, 0, 0, 5);
+		gbc_ckbSecondaryEdge.gridx = 5;
+		gbc_ckbSecondaryEdge.gridy = 2;
+		pnlFooter.add(ckbSecondaryEdge, gbc_ckbSecondaryEdge);
 		
-		JCheckBox chckbxTertiaryOutlines = new JCheckBox("Tertiary Edges");
-		chckbxTertiaryOutlines.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_chckbxTertiaryOutlines = new GridBagConstraints();
-		gbc_chckbxTertiaryOutlines.anchor = GridBagConstraints.WEST;
-		gbc_chckbxTertiaryOutlines.insets = new Insets(0, 0, 0, 5);
-		gbc_chckbxTertiaryOutlines.gridx = 6;
-		gbc_chckbxTertiaryOutlines.gridy = 2;
-		pnlFooter.add(chckbxTertiaryOutlines, gbc_chckbxTertiaryOutlines);
+		JCheckBox ckbTertiaryEdge = new JCheckBox("Tertiary Outlines");
+		ckbTertiaryEdge.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbTertiaryEdge = new GridBagConstraints();
+		gbc_ckbTertiaryEdge.anchor = GridBagConstraints.WEST;
+		gbc_ckbTertiaryEdge.insets = new Insets(0, 0, 0, 5);
+		gbc_ckbTertiaryEdge.gridx = 6;
+		gbc_ckbTertiaryEdge.gridy = 2;
+		pnlFooter.add(ckbTertiaryEdge, gbc_ckbTertiaryEdge);
 		
 		
 	
@@ -2587,39 +2582,86 @@ public class OptimizeGUI extends JFrame {
 		
 		btnUpdateOverlays.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				if(!ckbPrimaryOverlay.isSelected() && !ckbSecondaryOverlay.isSelected() && !ckbTertiaryOverlay.isSelected()) {
+				
+				Boolean primary = ckbPrimaryLabel.isSelected();
+				Boolean primaryEdge = ckbPrimaryEdge.isSelected();
+				
+				Boolean secondary = ckbSecondaryLabel.isSelected();
+				Boolean secondaryEdge = ckbSecondaryEdge.isSelected();
+				
+				Boolean tertiary = ckbTertiaryLabel.isSelected();
+				Boolean tertiaryEdge = ckbTertiaryEdge.isSelected();
+				
+				if(!primary && !primaryEdge && !secondary && !secondaryEdge && !tertiary && !tertiaryEdge) {
 					IJ.showMessage("Please select at least one outline to display.");
 				} else {
-
-					ArrayList<ImagePlus> selectedOutlines = new ArrayList<>();
-
-					int priIndex = cbPrimaryChannel.getSelectedIndex();
-					int secIndex = cbSecondaryChannel.getSelectedIndex();
-					int terIndex = cbTertiaryChannel.getSelectedIndex();
-
-					if(ckbPrimaryOverlay.isSelected()) {
-						selectedOutlines.add(channelArray[priIndex].duplicate());
-					}
-
-					if(ckbSecondaryOverlay.isSelected()) {
-						selectedOutlines.add(channelArray[secIndex].duplicate());
-					}
-
-					if(ckbTertiaryOverlay.isSelected()) {
-						selectedOutlines.add(channelArray[terIndex].duplicate());
-					}
-				
 					
-					ImagePlus[] selectedOutlinesArray = new ImagePlus[selectedOutlines.size()];
-					selectedOutlinesArray = selectedOutlines.toArray(selectedOutlinesArray);
+					try {
+						ArrayList<ImagePlus> labels = new ArrayList<>();
+						
+						// Primary
+						if (primary) {
+							if (primaryOutput != null) {
+								ImagePlus primaryLab = primaryOutput.duplicate();
+								labels.add(primaryLab);
+							} 
+						}
+						
+						if (primaryEdge) {
+							if(primaryOutput != null) {
+								ImagePlus primaryLab = primaryOutput.duplicate();
+								ImagePlus primaryOutlines = LabelEditor.detectEdgesLabelled(primaryLab);
+								labels.add(primaryOutlines);
+							}
+						}
+						
+						// Secondary
+						if (secondary) {
+							if (secondaryOutput != null) {
+								ImagePlus secondaryLab = secondaryOutput.duplicate();
+								labels.add(secondaryLab);
+							} 
+						}
+						
+						if (secondaryEdge) {
+							if(secondaryOutput != null) {
+								ImagePlus secondaryLab = secondaryOutput.duplicate();
+								ImagePlus secondaryOutlines = LabelEditor.detectEdgesLabelled(secondaryLab);
+								labels.add(secondaryOutlines);
+							}
+						}
+						
+						// Tertiary
+						if (tertiary) {
+							if (tertiaryOutput != null) {
+								ImagePlus tertiaryLab = tertiaryOutput.duplicate();
+								labels.add(tertiaryLab);
+							} 
+						}
+						
+						if (tertiaryEdge) {
+							if(tertiaryOutput != null) {
+								ImagePlus tertiaryLab = tertiaryOutput.duplicate();
+								ImagePlus tertiaryOutlines = LabelEditor.detectEdgesLabelled(tertiaryLab);
+								labels.add(tertiaryOutlines);
+							}
+						}
+						
 
-					ImagePlus compositeImage = optimize.createComposite(selectedOutlinesArray);
+						ImagePlus[] selectedLabelsArray = new ImagePlus[labels.size()];
+						selectedLabelsArray = labels.toArray(selectedLabelsArray);
 
-					// display
-					compositeImage.show();
+						ImagePlus compositeImage = optimize.createComposite(selectedLabelsArray);
 
-					selectedOutlines.clear();
+						// display
+						compositeImage.setTitle("Label Overlays");
+						compositeImage.show();
+
+						labels.clear();
+					} catch (Exception e1) {
+						IJ.showMessage("Process all selected channel before combining their outputs.");
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
