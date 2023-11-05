@@ -5,21 +5,27 @@ import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataConstants.Datum;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DatumSubscriptionService;
+import clcm.focust.data.DatumUpdateService;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 
 public class ParameterModeService implements FOCUSTService, DataListener<DataConstants.Datum, ParameterCollection> {
 
+	
+	private DatumUpdateService<SegmentedChannels> segmentedUpdateService;
 	private DatumSubscriptionService<ParameterCollection> parameterSubService;
 	
-	public ParameterModeService(DatumSubscriptionService<ParameterCollection> parameterSubService) {
+	public ParameterModeService(DatumSubscriptionService<ParameterCollection> parameterSubService, DatumUpdateService<SegmentedChannels> segmentedChannelsService) {
 		super();
 		this.parameterSubService = parameterSubService;
+		this.segmentedUpdateService = segmentedUpdateService;
 	}
 
 	@Override
 	public void init() {
 
 		parameterSubService.registerListener(this); 
+		
 	}
 
 	@Override
@@ -30,8 +36,9 @@ public class ParameterModeService implements FOCUSTService, DataListener<DataCon
 
 	@Override
 	public void dataUpdated(Datum key, ParameterCollection newData) {
-		// TODO Auto-generated method stub
-		newData.getMode().getMode().run(newData);
+	
+		segmentedUpdateService.notifyUpdated(newData.getMode().getMode().run(newData));
+		
 	}
 
 	@Override

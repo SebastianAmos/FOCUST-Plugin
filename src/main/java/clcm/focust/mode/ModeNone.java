@@ -2,6 +2,7 @@ package clcm.focust.mode;
 
 import java.io.File;
 
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
@@ -18,7 +19,7 @@ public class ModeNone implements Mode {
 	 * Segmentation only. No analysis conducted.
 	 */
 	@Override
-	public void run(ParameterCollection parameters) {
+	public SegmentedChannels run(ParameterCollection parameters) {
 
 		File f = new File(parameters.getInputDir());
 		String[] list = f.list();
@@ -65,7 +66,7 @@ public class ModeNone implements Mode {
 				tertiary.setCalibration(cal);
 			}
 			
-			
+				
 
 			// save images to output directory if available, if not, save to input directory
 			// TODO add a listener for image saving a log saved names.

@@ -23,7 +23,9 @@ import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.service.ParameterModeService;
 import clcm.focust.speckle.ExpectedSpeckleResults;
 import clcm.focust.speckle.SpeckleResult;
 import clcm.focust.speckle.Speckles;
@@ -53,6 +55,7 @@ public final class FOCUST {
 	private final DatumManager<ExpectedSpeckleResults> expectedSpeckleResultsManager;
 	
 	private final DatumManager<ParameterCollection> paramManager; 
+	private final DatumManager<SegmentedChannels> segmentedChannelsManager;
 
 	/** Data manager for runtime configuration. */
 	private DatumManager<SpecklesConfiguration> configurationManager;
@@ -71,16 +74,17 @@ public final class FOCUST {
 		configurationManager = new DatumManager<>(dataExecService);
 		
 		paramManager = new DatumManager<>(dataExecService);
+		segmentedChannelsManager = new DatumManager<>(dataExecService);
 		
 		
 		
 		
-
 		/* Services - Speckle. */
 		services.add(new SpeckleProcessor(configurationManager, specklesManager, expectedSpeckleResultsManager));
 		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
 		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager,
 				configurationManager));
+		services.add(new ParameterModeService(paramManager, segmentedChannelsManager));
 		
 		
 		
@@ -161,6 +165,10 @@ public final class FOCUST {
 		} else {
 			return;
 		}
+	}
+
+	public DatumManager<SegmentedChannels> getSegmentedChannelsManager() {
+		return segmentedChannelsManager;
 	}
 
 }

@@ -2,12 +2,15 @@ package clcm.focust.mode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import clcm.focust.TableUtility;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
@@ -34,7 +37,7 @@ public class ModeBasic implements Mode {
 	 * Each object is treated independently and one results table per object type is generated. 
 	 */
 	@Override
-	public void run(ParameterCollection parameters) {
+	public SegmentedChannels run(ParameterCollection parameters) {
 
 		File f = new File(parameters.getInputDir());
 		String[] list = f.list();
@@ -60,21 +63,41 @@ public class ModeBasic implements Mode {
 			ImagePlus secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
 					parameters.getSecondaryObject(),
 					parameters);
-			ImagePlus tertiary = null;
+			Optional<ImagePlus> tertiary = Optional.empty();
 
 			// if tertiary should be processed, run segmentation, otherwise generate by
 			// subtraction if selected.
 			if (parameters.getProcessTertiary()) {
-				tertiary = Segmentation.run(channels[parameters.getTertiaryObject().getChannel()],
+				tertiary = Optional.ofNullable(Segmentation.run(channels[parameters.getTertiaryObject().getChannel()],
 						parameters.getTertiaryObject(),
-						parameters);
+						parameters));
 			} else if (parameters.getTertiaryIsDifference()) {
-				tertiary = ImageCalculator.run(secondary, primary, "Subtract create stack");
+				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			}
 
 			// set cals
 			primary.setCalibration(cal);
 			secondary.setCalibration(cal);
+			tertiary.ifPresent(t -> t.setCalibration(cal));
+			
+			// build data object
+			
+			SegmentedChannels segChannels = SegmentedChannels.builder().
+					parameterCollection(parameters).
+					primary(primary).
+					secondary(secondary).
+					tertiary(tertiary).
+					channels(Arrays.asList(channels)).build();
+			
+			return segChannels;
+			
+			/*
+			 * MODE EVERYTHING TO A NEW METHOD
+			 */
+			
+			
+			
+			
 			
 			// save images to output directory if available, if not, save to input directory
 			// TODO add a listener for image saving a log saved names.
@@ -83,7 +106,6 @@ public class ModeBasic implements Mode {
 				IJ.saveAs(secondary, "TIF", parameters.getOutputDir() + "Secondary_Objects" + imgName);
 
 				if (tertiary != null) {
-					tertiary.setCalibration(cal);
 					IJ.saveAs(tertiary, "TIF", parameters.getOutputDir() + "Tertiary_Objects" + imgName);
 				}
 			} else {
@@ -96,8 +118,8 @@ public class ModeBasic implements Mode {
 				}
 			}
 			
-			// add segmeneted objects to array
-		
+			// add segmented objects to array
+			
 			segmentedObjects.add(primary);
 			segmentedObjects.add(secondary);
 			if(tertiary != null) {

@@ -2014,6 +2014,9 @@ public class AnalysisGUI extends JFrame {
 				// Hand off to DatumUpdateService
 				paramManager.notifyUpdated(parameterCollection);
 				
+				
+				
+				
 				// testing kill borders methods
 				
 				File f = new File(inputDir);
