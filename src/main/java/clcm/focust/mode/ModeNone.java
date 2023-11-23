@@ -86,5 +86,9 @@ public class ModeNone implements Mode {
 				}
 			}
 		}
+		
+		
+		// set to segchannels object - build with lombok
+		return null;
 	}
 }
