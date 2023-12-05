@@ -36,9 +36,8 @@ public class ModeProcess{
 			// Run the selected mode 
 			parameters.getMode().getMode().run(parameters);
 			
-			
 			// Results handling? 
-		
+			// Method for saving results in an appended fashion
 		
 		}
 		
