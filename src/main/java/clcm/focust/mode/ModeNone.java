@@ -47,7 +47,8 @@ public class ModeNone implements Mode {
 					parameters.getSecondaryObject(),
 					parameters);
 			ImagePlus tertiary = null;
-
+			
+			
 			// if tertiary should be processed, run segmentation, otherwise generate by
 			// subtraction if selected.
 			if (parameters.getProcessTertiary()) {
@@ -57,6 +58,7 @@ public class ModeNone implements Mode {
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = ImageCalculator.run(secondary, primary, "Subtract create stack");
 			}
+			
 			
 			// set cals
 			primary.setCalibration(cal);
