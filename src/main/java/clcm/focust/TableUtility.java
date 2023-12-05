@@ -250,29 +250,7 @@ public class TableUtility {
 	
 	
 	
-	// TODO a method to save results tables to xlsx -> If a results table of the same name exists, stack the results by column header
-	public void saveAndStackResults(ResultsTable rt, ParameterCollection parameters, String tabelTitle) {
-		
-		String dir = null;
-		
-		if(!parameters.getOutputDir().isEmpty()) {
-			dir = parameters.getOutputDir();
-		} else {
-			dir = parameters.getInputDir();
-		}
-		
-		String path = dir + "/" + rt.getTitle() + ".csv";
-		
-		File csv = new File(path);
-		
-		
-		// USE APACHE COMMONS CSV FOR THIS!!!!!!!!
-		if(csv.exists()) { 
-			
-		}
-		
-		
-	}
+
 
 
 }
