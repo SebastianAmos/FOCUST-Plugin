@@ -3,14 +3,17 @@ package clcm.focust;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 
 import clcm.focust.parameters.ParameterCollection;
 import ij.measure.ResultsTable;
@@ -36,24 +39,50 @@ public class ResultsTableUtility {
 		
 		
 		if(csv.exists()) { 
-			// csv exists - stack current data
+			// csv exists - exclude headers, stack current data and write.
 			List<String> existingHeaders = readCSVHeaders(csv);
 			List<List<String>> existingData = readCSV(csv);
 			
 			if(headersCheck(rt, existingHeaders)) {
-				existingData.add(existingHeaders)
+				existingData.addAll(convertResultsTableData(rt));
+				writeCSV(csv, existingData, existingHeaders);
+			} else {
+				System.out.println("Headers don't match when stacking results. Cannot append data.");
 			}
 			
-			
-			
-			
+		} else {
+			// csv doesn't exist
+			List<List<String>> rtData = convertResultsTableData(rt);
+			writeCSV(csv, rtData, getResultsTableHeaders(rt));
 		}
-		
 		
 	}
 	
 	
-	
+	/**
+	 * Write a table 
+	 * @param csv
+	 * @param data
+	 */
+	private void writeCSV(File csv, List<List<String>> data, List<String> headers) {
+		
+		try {
+			
+			Writer writer = new FileWriter(csv, true);
+			CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build());
+			
+			for (List<String> record : data) {
+				printer.printRecord(record);
+			}
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to print csv records.");
+		}
+			
+		
+	}
+
 	// get csv headers
 	private List<String> readCSVHeaders(File file){
 			try {
@@ -72,8 +101,8 @@ public class ResultsTableUtility {
 	}
 	
 	
-	// get records
-	private List<List<String>> readCSV(File file){
+	// get csv as nested list
+	public List<List<String>> readCSV(File file){
 		
 		try {
 			Reader in = new FileReader(file);
@@ -96,18 +125,40 @@ public class ResultsTableUtility {
 		
 	}
 
-	private void writeCSV(File file, ResultsTable rt) {
+	
+	private boolean headersCheck(ResultsTable rt, List<String> existingHeaders) {
+		List<String> rtHeaders = getResultsTableHeaders(rt); 
+		return rtHeaders.equals(existingHeaders);
+	}
+	
+	
+	private List<String> getResultsTableHeaders(ResultsTable rt){
+		return Arrays.asList(rt.getHeadings());
+	}
+	
+	
+	/**
+	 * For each row and col, get the data.
+	 * Could use row to string, but would need to pull values out again anyway.
+	 * @param rt
+	 * @return
+	 */
+	private List<List<String>> convertResultsTableData(ResultsTable rt){
+		
+		List<List<String>> results = new ArrayList<>();
+		
+		for (int i = 0; i < rt.size(); i++) {
+			List<String> rowDat = new ArrayList<>();
+			for (int j = 0; j < rt.getLastColumn()+1; j++) {
+				rowDat.add(rt.getStringValue(j, i));
+			}
+			results.add(rowDat);
+		}
+		
+		return results;
 		
 	}
 	
 	
-	private boolean headersCheck(ResultsTable rt, List<String> existingHeaders) {
-		List<String> rtHeaders = getRTHeaders(rt); 
-		return rtHeaders.equals(existingHeaders);
-	}
-	
-	private List<String> getRTHeaders(ResultsTable rt){
-		return Arrays.asList(rt.getHeadings());
-	}
 	
 }
