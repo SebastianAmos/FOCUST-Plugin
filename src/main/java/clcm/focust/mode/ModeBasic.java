@@ -54,6 +54,8 @@ public class ModeBasic implements Mode {
 			ResultsTable rt2 = null; // secondary
 			ResultsTable rt3 = null; // tertiary
 			
+			
+			
 			// grabs the columns as a variable array
 			TableUtility.collectColumns(analyze3D.process(primary), primaryMap);
 			TableUtility.collectColumns(analyze3D.process(secondary), secondaryMap);
