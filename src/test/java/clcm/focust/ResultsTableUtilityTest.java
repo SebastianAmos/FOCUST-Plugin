@@ -39,8 +39,6 @@ class ResultsTableUtilityTest {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-		
 	}
 	
 	

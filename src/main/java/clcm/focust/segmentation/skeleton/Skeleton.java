@@ -18,6 +18,7 @@ import sc.fiji.analyzeSkeleton.SkeletonResult;
 import org.apache.commons.math3.util.MathArrays;
 
 import clcm.focust.LabelEditor;
+import clcm.focust.parameters.ParameterCollection;
 
 
 /**
@@ -60,7 +61,7 @@ public class Skeleton {
 	 * @param labels
 	 * @return
 	 */
-	public SkeletonResultsHolder analyzeSkeletons(ImagePlus skeletonOriginals, ImagePlus labels) {
+	public SkeletonResultsHolder analyzeSkeletons(ImagePlus skeletonOriginals, ImagePlus labels, String imgName) {
 
 		final AnalyzeSkeleton_ analyseSkeletons = new AnalyzeSkeleton_();
 		final ImagePlus skeletons = skeletonOriginals.duplicate();
@@ -81,7 +82,7 @@ public class Skeleton {
 		
 		// pull data from SkeletonResults object
 		SkeletonResultsHolder results = new SkeletonResultsHolder(null, null, null, null);
-		results = buildResults(skeletonResults, results);
+		results = buildResults(skeletonResults, results, imgName);
 		results.setLabelledSkeletons(labelledSkeletons);
 		results.setLabelMatched(matchSkeletonToLabels(labelledSkeletons, labels));
 		
@@ -116,13 +117,14 @@ public class Skeleton {
 	 * @param skel
 	 * @return
 	 */
-	private SkeletonResultsHolder buildResults(SkeletonResult skel, SkeletonResultsHolder results) {
+	private SkeletonResultsHolder buildResults(SkeletonResult skel, SkeletonResultsHolder results, String imgName) {
 
 		ResultsTable standard = new ResultsTable();
 		ResultsTable extra = new ResultsTable();
 
 		// collect the standard results
-		final String[] headers = { "# Skeleton", 
+		final String[] headers = {"ImageID",
+				"# Skeleton", 
 				"# Branches", 
 				"# Junctions", 
 				"# End-point voxels", 
@@ -135,21 +137,23 @@ public class Skeleton {
 
 		for (int i = 0; i < skel.getNumOfTrees(); i++) {
 			standard.addRow();
-			standard.addValue(headers[0], i + 1);
-			standard.addValue(headers[1], skel.getBranches()[i]);
-			standard.addValue(headers[2], skel.getJunctions()[i]);
-			standard.addValue(headers[3], skel.getEndPoints()[i]);
-			standard.addValue(headers[4], skel.getJunctionVoxels()[i]);
-			standard.addValue(headers[5], skel.getSlabs()[i]);
-			standard.addValue(headers[6], skel.getAverageBranchLength()[i]);
-			standard.addValue(headers[7], skel.getTriples()[i]);
-			standard.addValue(headers[8], skel.getQuadruples()[i]);
-			standard.addValue(headers[9], skel.getMaximumBranchLength()[i]);
+			standard.addValue(headers[0], imgName);
+			standard.addValue(headers[1], i + 1);
+			standard.addValue(headers[2], skel.getBranches()[i]);
+			standard.addValue(headers[3], skel.getJunctions()[i]);
+			standard.addValue(headers[4], skel.getEndPoints()[i]);
+			standard.addValue(headers[5], skel.getJunctionVoxels()[i]);
+			standard.addValue(headers[6], skel.getSlabs()[i]);
+			standard.addValue(headers[7], skel.getAverageBranchLength()[i]);
+			standard.addValue(headers[8], skel.getTriples()[i]);
+			standard.addValue(headers[9], skel.getQuadruples()[i]);
+			standard.addValue(headers[10], skel.getMaximumBranchLength()[i]);
 		}
 		
 		
 		// collect the extra results
-		final String[] xtHeaders = {"# Skeleton", 
+		final String[] xtHeaders = {"ImageID",
+				"# Skeleton", 
 				"# Branch", 
 				"Branch Length", 
 				"V1x",
@@ -170,21 +174,22 @@ public class Skeleton {
 			for (int k = 0; k < edges.size(); k++) {
 				final Edge edge = edges.get(k);
 				extra.addRow();
-				extra.addValue(xtHeaders[0], j + 1); // skeleton
-				extra.addValue(xtHeaders[1], k + 1); // branch 
-				extra.addValue(xtHeaders[2], edge.getLength()); // length of branch (j)
+				extra.addValue(xtHeaders[0], imgName);
+				extra.addValue(xtHeaders[1], j + 1); // skeleton
+				extra.addValue(xtHeaders[2], k + 1); // branch 
+				extra.addValue(xtHeaders[3], edge.getLength()); // length of branch (j)
 				
 				// first point
 				final Point pt = edge.getV1().getPoints().get(0);
-				extra.addValue(xtHeaders[3], (pt.x * cal.pixelWidth));
-				extra.addValue(xtHeaders[4], (pt.y * cal.pixelHeight));
-				extra.addValue(xtHeaders[5], (pt.z * cal.pixelDepth));
+				extra.addValue(xtHeaders[4], (pt.x * cal.pixelWidth));
+				extra.addValue(xtHeaders[5], (pt.y * cal.pixelHeight));
+				extra.addValue(xtHeaders[6], (pt.z * cal.pixelDepth));
 				
 				// last point
 				final Point pt2 = edge.getV2().getPoints().get(0);
-				extra.addValue(xtHeaders[6], (pt2.x * cal.pixelWidth));
-				extra.addValue(xtHeaders[7], (pt2.y * cal.pixelHeight));
-				extra.addValue(xtHeaders[8], (pt2.z * cal.pixelDepth));
+				extra.addValue(xtHeaders[7], (pt2.x * cal.pixelWidth));
+				extra.addValue(xtHeaders[8], (pt2.y * cal.pixelHeight));
+				extra.addValue(xtHeaders[9], (pt2.z * cal.pixelDepth));
 				
 				// calculate euclidean dist
 				final double dist = MathArrays.distance(
@@ -194,8 +199,8 @@ public class Skeleton {
 						new double[] {pt2.x * cal.pixelWidth,
 								pt2.y * cal.pixelHeight,
 								pt2.z * cal.pixelDepth});
-				extra.addValue(xtHeaders[9], dist);
-				extra.addValue(xtHeaders[10], edge.getLength_ra());
+				extra.addValue(xtHeaders[10], dist);
+				extra.addValue(xtHeaders[11], edge.getLength_ra());
 			}
 		}
 		
