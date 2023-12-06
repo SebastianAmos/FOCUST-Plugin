@@ -14,6 +14,6 @@ public class CompiledImageData {
 
 	SegmentedChannels images;
 	Optional<SkeletonResultsHolder> secondarySkeletons;
-	SkeletonResultsHolder tertiarySkeletons;
+	Optional<SkeletonResultsHolder> tertiarySkeletons;
 	
 }

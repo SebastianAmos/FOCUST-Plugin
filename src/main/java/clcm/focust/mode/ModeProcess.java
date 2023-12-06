@@ -1,6 +1,7 @@
 package clcm.focust.mode;
 
 import java.io.File;
+import java.util.Optional;
 
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
@@ -38,20 +39,21 @@ public class ModeProcess{
 			// run skeletons for secondary and tertiary objects
 			// TODO: add gui options to pick sec or ter or both - maybe even primary???
 			
-			SkeletonResultsHolder tertiarySkeletonResults = null;
+			// init both optionals.
+			Optional<SkeletonResultsHolder> secondarySkeletonResults = Optional.empty();
+			Optional<SkeletonResultsHolder> tertiarySkeletonResults = Optional.empty();
+			
 			
 			if(parameters.getSkeletonize()) {
 				Skeleton skeleton = new Skeleton();
 				
-				// secondary
+				// Secondary
 				ImagePlus secondarySkeleton = skeleton.createSkeletons(objects.getSecondary());
-				SkeletonResultsHolder secondarySkeletonResults = skeleton.analyzeSkeletons(secondarySkeleton, objects.getSecondary(), imgName);
+				secondarySkeletonResults = Optional.ofNullable(skeleton.analyzeSkeletons(secondarySkeleton, objects.getSecondary(), imgName));
 				
-				// tertiary
-				objects.getTertiary().ifPresent(t -> {
-					ImagePlus tertiarySkeleton = skeleton.createSkeletons(t);
-					tertiarySkeletonResults = skeleton.analyzeSkeletons(tertiarySkeleton, t, imgName);
-				});
+				// Tertiary - optional
+				ImagePlus tertiarySkeleton = objects.getTertiary().map(t -> skeleton.createSkeletons(t)).orElse(null);
+				tertiarySkeletonResults = objects.getTertiary().map(t -> skeleton.analyzeSkeletons(tertiarySkeleton, t, imgName));
 				
 			}
 			
@@ -59,17 +61,17 @@ public class ModeProcess{
 			// Build compiledImageData object.
 			CompiledImageData imgData = CompiledImageData.builder()
 					.images(objects)
-					.secondarySkeletons(null)
+					.secondarySkeletons(secondarySkeletonResults)
 					.tertiarySkeletons(tertiarySkeletonResults)
 					.build();
 			
 			
 			// Run the selected mode
-			// Each analysis method called within a mode should check for empty results tables and mark with na to improve data awareness. 
+			// Each analysis method called within a mode should check for empty results tables and mark with na to improve data awareness.
 			parameters.getMode().getMode().run(parameters, imgData, imgName);
 			
 			
-			// Use ResultsTableUtility.saveAndStackResults(); to save results tables. 
+
 	
 			
 			

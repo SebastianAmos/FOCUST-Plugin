@@ -151,14 +151,14 @@ public class TableUtility {
 
 		// A map for intensity cals
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
-		
+			
 		/*
 		 * calculate the intensity of every channel in the input image (channels) 
 		 */
 		for (int j = 0; j < segmentedObjects.size(); j++) {
-			
+				
 			ResultsTable rt = new ResultsTable();
-			
+				
 			for (int k = 0; k < channels.length; k++) {
 				
 				ResultsTable temp = TableUtility.processIntensity(channels[k], segmentedObjects.get(j));
@@ -189,7 +189,6 @@ public class TableUtility {
 						rt.setColumn(c2Name, temp.getColumnAsVariables(head));
 					}
 				}
-				
 				
 				// if channel 3
 				if ((k + 1) == 3) {
@@ -249,7 +248,14 @@ public class TableUtility {
 	}
 	
 	
-	
+	// TODO: Method for running analysis on all objects if present and storing results tables
+	public Map<ImagePlus, ResultsTable> compileVolumetricResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
+		
+		
+		
+		
+		return null;
+	}
 
 
 
