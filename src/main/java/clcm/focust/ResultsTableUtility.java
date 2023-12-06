@@ -21,70 +21,104 @@ import ij.measure.ResultsTable;
 public class ResultsTableUtility {
 	
 	
-	// TODO a method to save results tables to csv -> If a results table of the same name exists, stack the results by column header
-	// Use apache commons csv
-	public void saveAndStackResults(ResultsTable rt, String rtName, ParameterCollection parameters, String tabelTitle) {
+	/**
+	 * 
+	 * @param rt The date that needs to be saved.
+	 * @param rtName The name of the csv file. Ensure it is the same if the csv already exists and you want to append data.
+	 * @param parameters Used to determine the path. 
+	 */
+	public void saveAndStackResults(ResultsTable rt, String rtName, ParameterCollection parameters) {
 		
 		String dir = null;
+		File csv = null;
 		
+		// set directory
 		if(!parameters.getOutputDir().isEmpty()) {
 			dir = parameters.getOutputDir();
 		} else {
 			dir = parameters.getInputDir();
 		}
 		
+		File directory = new File(dir);
 		String path = dir + "/" + rtName + ".csv";
+		File[] dirContents = directory.listFiles();
+ 		String csvName = rtName + ".csv";
+ 		
 		
-		File csv = new File(path);
-		
-		
-		if(csv.exists()) { 
-			// csv exists - exclude headers, stack current data and write.
-			List<String> existingHeaders = readCSVHeaders(csv);
-			List<List<String>> existingData = readCSV(csv);
+ 		// Check if the csv already exists.
+		if(containsFile(dirContents, csvName)) { 
 			
+			// .csv exists
+			csv = new File(directory + "/" + csvName);
+			List<String> existingHeaders = readCSVHeaders(csv);
+			
+			// Check ResultsTable and .csv headers are the same before appending.
 			if(headersCheck(rt, existingHeaders)) {
-				existingData.addAll(convertResultsTableData(rt));
-				writeCSV(csv, existingData, existingHeaders);
+				appendCSV(csv, convertResultsTableData(rt));
 			} else {
-				System.out.println("Headers don't match when stacking results. Cannot append data.");
+				System.out.println("Headers don't match - Cannot append new data to existing .csv file.");
 			}
 			
 		} else {
-			// csv doesn't exist
-			List<List<String>> rtData = convertResultsTableData(rt);
-			writeCSV(csv, rtData, getResultsTableHeaders(rt));
+			// .csv doesn't exist: Write a new one, populating it with data.
+			csv = new File(path);
+			writeCSV(csv, convertResultsTableData(rt), getResultsTableHeaders(rt));
 		}
 		
 	}
 	
 	
 	/**
-	 * Write a table 
-	 * @param csv
-	 * @param data
+	 * Create a new csv and populate with data. The headers to be written must be supplied.
+	 * 
+	 * @param csv The new file (path) to be written.
+	 * @param data The data to write. 
+	 * @param headers The headers from the ResultsTable.
 	 */
 	private void writeCSV(File csv, List<List<String>> data, List<String> headers) {
 		
 		try {
 			
-			Writer writer = new FileWriter(csv, true);
-			CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build());
-			
-			for (List<String> record : data) {
-				printer.printRecord(record);
+			Writer writer = new FileWriter(csv, false);
+			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build())) {
+				for (List<String> record : data) {
+					printer.printRecord(record);
+				}
 			}
 		
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Failed to print csv records.");
+			System.out.println("Failed to write new csv records.");
 		}
+		
+	}
+	
+	
+	/**
+	 * If a csv by the same name exists, append new data by stacking columns.
+	 * 
+	 * @param csv The existing csv file that data should be appended to.
+	 * @param data The data to be appended.
+	 */
+	private void appendCSV(File csv, List<List<String>> data) {
+		
+		try {
+			Writer writer = new FileWriter(csv, true);
+			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().build())) {
+				for (List<String> record : data) {
+					printer.printRecord(record);
+				}
+			}
 			
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to append csv reocrds.");
+		}
 		
 	}
 
-	// get csv headers
-	private List<String> readCSVHeaders(File file){
+	// Get csv headers for cross-check.
+	public List<String> readCSVHeaders(File file){
 			try {
 				Reader in = new FileReader(file);
 				CSVFormat format = CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(false).build();
@@ -101,7 +135,7 @@ public class ResultsTableUtility {
 	}
 	
 	
-	// get csv as nested list
+	// Get .csv as nested list
 	public List<List<String>> readCSV(File file){
 		
 		try {
@@ -138,15 +172,13 @@ public class ResultsTableUtility {
 	
 	
 	/**
-	 * For each row and col, get the data.
+	 * For each row and col of a ResultsTable, add to a list.
 	 * Could use row to string, but would need to pull values out again anyway.
 	 * @param rt
 	 * @return
 	 */
-	private List<List<String>> convertResultsTableData(ResultsTable rt){
-		
+	public List<List<String>> convertResultsTableData(ResultsTable rt){
 		List<List<String>> results = new ArrayList<>();
-		
 		for (int i = 0; i < rt.size(); i++) {
 			List<String> rowDat = new ArrayList<>();
 			for (int j = 0; j < rt.getLastColumn()+1; j++) {
@@ -154,11 +186,25 @@ public class ResultsTableUtility {
 			}
 			results.add(rowDat);
 		}
-		
 		return results;
-		
 	}
 	
+	
+	/**
+	 * Check if a directory contains a given file.
+	 * 
+	 * @param contents The contents of a directory.
+	 * @param csv The file name to look for.
+	 * @return
+	 */
+	public boolean containsFile(File[] contents, String csv) {
+		for (File file : contents) {
+			if(file.isFile() && file.getName().equals(csv)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	
 }
