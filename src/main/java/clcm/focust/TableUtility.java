@@ -138,6 +138,27 @@ public class TableUtility {
 		}
 	}
 	
+
+	public List<List<ResultsTable>> calculateAllIntensities(ArrayList<ImagePlus> labels, ArrayList<ImagePlus> channels, ParameterCollection params){
+		
+		List<ResultsTable> primary = new ArrayList<>();
+		List<ResultsTable> secondary = new ArrayList<>();
+		List<ResultsTable> tertiary = new ArrayList<>();
+		
+		/*
+		 * Calcualte the grey values of every channel in the input image within each segmented object/label
+		 */
+		
+		for (int i = 0; i < labels.size(); i++) {
+			
+		}
+		
+		
+		
+		
+		return null;
+	}
+	
 	
 	/**
 	 * Calculate the intensity of every channel in the input image (channels) within
@@ -249,12 +270,16 @@ public class TableUtility {
 	
 	
 	// TODO: Method for running analysis on all objects if present and storing results tables
-	public Map<ImagePlus, ResultsTable> compileVolumetricResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
+	public ResultsTable compileAllResults(List<ResultsTable> list){
+		
+		ResultsBuilder rb = new ResultsBuilder();
+		
+		for (ResultsTable rt : list) {
+			rb.addResult(rt);
+		}
 		
 		
-		
-		
-		return null;
+		return rb.getResultsTable();
 	}
 
 

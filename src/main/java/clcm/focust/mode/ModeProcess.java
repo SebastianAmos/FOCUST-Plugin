@@ -39,7 +39,7 @@ public class ModeProcess{
 			// run skeletons for secondary and tertiary objects
 			// TODO: add gui options to pick sec or ter or both - maybe even primary???
 			
-			// init both optionals.
+			// Init both optionals.
 			Optional<SkeletonResultsHolder> secondarySkeletonResults = Optional.empty();
 			Optional<SkeletonResultsHolder> tertiarySkeletonResults = Optional.empty();
 			

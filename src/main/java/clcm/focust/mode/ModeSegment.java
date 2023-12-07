@@ -60,7 +60,6 @@ public class ModeSegment{
 			tertiary.ifPresent(t -> t.setCalibration(cal));
 			
 			
-			
 			// Save the segmented images
 			if (!parameters.getOutputDir().isEmpty()) {
 				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + "Primary_Objects" + imgName);
@@ -78,8 +77,7 @@ public class ModeSegment{
 			}
 			
 			
-			// build data object
-			
+			// Build return data object
 			SegmentedChannels segChannels = SegmentedChannels.builder().
 					parameterCollection(parameters).
 					primary(primary).

@@ -36,6 +36,7 @@ import javax.swing.border.MatteBorder;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
 import clcm.focust.segmentation.MaximaTest;
 import clcm.focust.filter.Vector3D;
@@ -2011,35 +2012,35 @@ public class AnalysisGUI extends JFrame {
 						skeletonize(ckbSkeletonization.isSelected()).
 						build();
 				
+				
+				ModeProcess process = new ModeProcess();
+				process.run(parameterCollection);
+				
 				// Hand off to DatumUpdateService
-				paramManager.notifyUpdated(parameterCollection);
+				//paramManager.notifyUpdated(parameterCollection);
 				
 				
 				
 				
 				// testing kill borders methods
-				
-				File f = new File(inputDir);
-				String[] list = f.list();
-
-				String path1 = inputDir + list[0];
-				String path2 = inputDir + list[1];
-				ImagePlus duplicates = IJ.openImage(path1);
-				ImagePlus labels = IJ.openImage(path2);
-				
-
-				// testing manage duplicates
-
-				ManageDuplicates md = new ManageDuplicates();
-				RelabelledObjects ro = md.run(labels, duplicates);
-				Map<Double, Double> map  = ro.getMap();
-				System.out.println(map);
-					
-				ro.getRelabelled().show();
-
-				duplicates.setTitle("Duplicates");
-				duplicates.show();
-
+				/*
+				 * File f = new File(inputDir); String[] list = f.list();
+				 * 
+				 * String path1 = inputDir + list[0]; String path2 = inputDir + list[1];
+				 * ImagePlus duplicates = IJ.openImage(path1); ImagePlus labels =
+				 * IJ.openImage(path2);
+				 * 
+				 * 
+				 * // testing manage duplicates
+				 * 
+				 * ManageDuplicates md = new ManageDuplicates(); RelabelledObjects ro =
+				 * md.run(labels, duplicates); Map<Double, Double> map = ro.getMap();
+				 * System.out.println(map);
+				 * 
+				 * ro.getRelabelled().show();
+				 * 
+				 * duplicates.setTitle("Duplicates"); duplicates.show();
+				 */
 
 					// Testing functionality below
 					
