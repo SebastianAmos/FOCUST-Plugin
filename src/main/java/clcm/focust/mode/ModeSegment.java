@@ -32,7 +32,9 @@ public class ModeSegment{
 
 			// Split channels
 			ImagePlus[] channels = ChannelSplitter.split(imp);
-
+			
+			IJ.log("Number of channels: " + channels.length);
+			
 			// Run user-defined segmentation on the correct channel
 			ImagePlus primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
 					parameters.getPrimaryObject(),

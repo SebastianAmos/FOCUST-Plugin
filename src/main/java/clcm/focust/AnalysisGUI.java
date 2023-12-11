@@ -2016,6 +2016,7 @@ public class AnalysisGUI extends JFrame {
 				ModeProcess process = new ModeProcess();
 				process.run(parameterCollection);
 				
+				
 				// Hand off to DatumUpdateService
 				//paramManager.notifyUpdated(parameterCollection);
 				
