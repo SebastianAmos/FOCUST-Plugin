@@ -1930,7 +1930,7 @@ public class AnalysisGUI extends JFrame {
 						).
 						methodParameters(
 								MethodParameters.builder().
-										methodType(MethodTypes.MAXIMA).
+										methodType((MethodTypes) cbPrimaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
 										classifierFilename(txtPrimaryClassiferDirectory.getText()).
@@ -1957,7 +1957,7 @@ public class AnalysisGUI extends JFrame {
 						).
 						methodParameters(
 								MethodParameters.builder().
-										methodType(MethodTypes.MAXIMA).
+										methodType((MethodTypes) cbSecondaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
 										classifierFilename(txtSecondaryClassiferDirectory.getText()).
@@ -1984,7 +1984,7 @@ public class AnalysisGUI extends JFrame {
 						).
 						methodParameters(
 								MethodParameters.builder().
-										methodType(MethodTypes.MAXIMA).
+										methodType((MethodTypes) cbTertiaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
 										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
 										classifierFilename(txtTertiaryClassiferDirectory.getText()).

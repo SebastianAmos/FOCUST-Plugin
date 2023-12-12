@@ -11,13 +11,13 @@ public class Segmentation {
 	
 	public static ImagePlus run(ImagePlus input, ObjectParameters parameters, ParameterCollection parameterCollection) {
 	
-		// collect parameter data
+		// Collect parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
 		FilterParameters filter = parameters.getFilterParameters();
 		MethodParameters method = parameters.getMethodParameters();
 		
 		
-		// run selected method with respective parameters
+		// Run selected method with respective parameters
 		ImagePlus output = method.getMethodType().getMethod().apply(input, 
 				background.getBackgroundType(), 
 				filter.getFilterType(), 
