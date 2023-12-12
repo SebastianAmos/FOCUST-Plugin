@@ -10,11 +10,12 @@ import clcm.focust.parameters.ParameterCollection;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeBasic implements Mode {
 
 	private AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	ArrayList<ImagePlus> segmentedObjects = null;
+	ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
 	ArrayList<ResultsTable> measureResults = null;
 
 	List<ResultsTable> primaryResults = new ArrayList<>();
@@ -35,6 +36,7 @@ public class ModeBasic implements Mode {
 		
 
 		// Quantify primary and secondary, then optional tertiary.
+		ijLog("Analysing objects...");
 		primaryResults.add(analyze3D.process(imgData.images.getPrimary()));
 		secondaryResults.add(analyze3D.process(imgData.images.getSecondary()));
 		imgData.images.getTertiary().ifPresent(t -> tertiaryResults.add(analyze3D.process(t)));
@@ -45,7 +47,8 @@ public class ModeBasic implements Mode {
 		segmentedObjects.add(imgData.images.getSecondary());
 		imgData.images.getTertiary().ifPresent(t -> {segmentedObjects.add(t);});
 
-
+		
+		ijLog("Measuring channel intensities...");
 		// Map intensity calcs to each object type
 		Map<ImagePlus, ResultsTable> intensityTables = TableUtility.compileIntensityResults(segmentedObjects, 
 				imgData.images.getChannels().toArray(new ImagePlus[imgData.images.getChannels().size()]), 
@@ -71,10 +74,12 @@ public class ModeBasic implements Mode {
 		/*
 		 * Build and save the final results tables
 		 */
-
+		
 		ResultsTableUtility rtSave = new ResultsTableUtility();
 		TableUtility tu = new TableUtility();
-
+		
+		ijLog("Saving results tables...");
+		
 		// Primary results
 		rtSave.saveAndStackResults(tu.compileAllResults(primaryResults), "primary_objects", parameters);
 

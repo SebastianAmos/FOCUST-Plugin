@@ -1,7 +1,6 @@
 package clcm.focust;
 
 import javax.swing.SwingUtilities;
-
 import ij.IJ;
 
 /**

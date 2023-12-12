@@ -9,6 +9,7 @@ import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeProcess{
 
@@ -23,14 +24,14 @@ public class ModeProcess{
 	
 		File f = new File(parameters.getInputDir());
 		String[] list = f.list();
-		IJ.log("Number of images to process: " + list.length);
+		ijLog("Number of images to process: " + list.length);
 
 		for (int i = 0; i < list.length; i++) {
 			
 			String path = parameters.getInputDir() + list[i];
 
 			// open image.
-			IJ.log("Opening image path: " + path);
+			ijLog("Opening image path: " + path);
 			ImagePlus imp = IJ.openImage(path);
 			String imgName = imp.getTitle();
 			
@@ -72,9 +73,6 @@ public class ModeProcess{
 			// Each analysis method called within a mode should check for empty results tables and mark with na to improve data awareness.
 			parameters.getMode().getMode().run(parameters, imgData, imgName);
 			
-			
-
-	
 			
 			
 		

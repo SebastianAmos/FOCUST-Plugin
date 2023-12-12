@@ -11,6 +11,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeSegment{
 
@@ -33,7 +34,7 @@ public class ModeSegment{
 			// Split channels
 			ImagePlus[] channels = ChannelSplitter.split(imp);
 			
-			IJ.log("Number of channels: " + channels.length);
+			ijLog("Number of channels: " + channels.length);
 			
 			// Run user-defined segmentation on the correct channel
 			ImagePlus primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
@@ -86,6 +87,8 @@ public class ModeSegment{
 					secondary(secondary).
 					tertiary(tertiary).
 					channels(Arrays.asList(channels)).build();
+			
+			ijLog("Segmentation Complete.");
 			
 			return segChannels;
 

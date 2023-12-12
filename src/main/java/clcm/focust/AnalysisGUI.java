@@ -45,6 +45,7 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
 import ij.ImagePlus;
 
@@ -948,6 +949,7 @@ public class AnalysisGUI extends JFrame {
 		lblNewLabel_6_3_1_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		txtPrimaryMethodThreshold = new JTextField();
+		txtPrimaryMethodThreshold.setText("1");
 		txtPrimaryMethodThreshold.setEnabled(false);
 		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold);
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1378,6 +1380,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondaryThreshold.add(lblNewLabel_6_3_1_1);
 		
 		txtSecondaryMethodThreshold = new JTextField();
+		txtSecondaryMethodThreshold.setText("1");
 		txtSecondaryMethodThreshold.setEnabled(false);
 		txtSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecondaryMethodThreshold.setColumns(6);
@@ -1842,6 +1845,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiaryThreshold.add(lblNewLabel_6_3_1_1_1);
 		
 		txtTertiaryMethodThreshold = new JTextField();
+		txtTertiaryMethodThreshold.setText("1");
 		txtTertiaryMethodThreshold.setEnabled(false);
 		txtTertiaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtTertiaryMethodThreshold.setColumns(6);
@@ -1932,6 +1936,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType((MethodTypes) cbPrimaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
+										thresholdType((ThresholdType) cbPrimaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
 										classifierFilename(txtPrimaryClassiferDirectory.getText()).
 										build()
@@ -1959,6 +1964,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType((MethodTypes) cbSecondaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
+										thresholdType((ThresholdType) cbSecondaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
 										classifierFilename(txtSecondaryClassiferDirectory.getText()).
 										build()
@@ -1986,6 +1992,7 @@ public class AnalysisGUI extends JFrame {
 								MethodParameters.builder().
 										methodType((MethodTypes) cbTertiaryMethod.getSelectedItem()).
 										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
+										thresholdType((ThresholdType) cbTertiaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
 										classifierFilename(txtTertiaryClassiferDirectory.getText()).
 										build()
@@ -2012,6 +2019,8 @@ public class AnalysisGUI extends JFrame {
 						skeletonize(ckbSkeletonization.isSelected()).
 						build();
 				
+				
+				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
 				
 				ModeProcess process = new ModeProcess();
 				process.run(parameterCollection);
