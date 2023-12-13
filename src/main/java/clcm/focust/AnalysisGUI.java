@@ -1,6 +1,5 @@
 package clcm.focust;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -28,8 +27,6 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.util.Map;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
@@ -38,16 +35,13 @@ import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
-import clcm.focust.segmentation.MaximaTest;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
 import clcm.focust.segmentation.MethodTypes;
-import clcm.focust.segmentation.skeleton.Skeleton;
-import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
+
 import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
-import ij.ImagePlus;
 
 import java.awt.Toolkit;
 
@@ -2022,53 +2016,19 @@ public class AnalysisGUI extends JFrame {
 				
 				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
 				
-				ModeProcess process = new ModeProcess();
-				process.run(parameterCollection);
+				
+				// Testing new distance-based label stratification
+				
+				
+				
+				
+				//ModeProcess process = new ModeProcess();
+				//process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService
 				//paramManager.notifyUpdated(parameterCollection);
 				
-				
-				
-				
-				// testing kill borders methods
-				/*
-				 * File f = new File(inputDir); String[] list = f.list();
-				 * 
-				 * String path1 = inputDir + list[0]; String path2 = inputDir + list[1];
-				 * ImagePlus duplicates = IJ.openImage(path1); ImagePlus labels =
-				 * IJ.openImage(path2);
-				 * 
-				 * 
-				 * // testing manage duplicates
-				 * 
-				 * ManageDuplicates md = new ManageDuplicates(); RelabelledObjects ro =
-				 * md.run(labels, duplicates); Map<Double, Double> map = ro.getMap();
-				 * System.out.println(map);
-				 * 
-				 * ro.getRelabelled().show();
-				 * 
-				 * duplicates.setTitle("Duplicates"); duplicates.show();
-				 */
-
-					// Testing functionality below
-					
-					//-----------------
-					// skeletons
-					//-----------------
-					
-					/*
-					 * Skeleton skeleton = new Skeleton(); ImagePlus skel =
-					 * skeleton.createSkeletons(imp); SkeletonResultsHolder results =
-					 * skeleton.analyzeSkeletons(skel, imp); skel.show();
-					 *
-					 * results.getStandard().show("Standard Results");
-					 * results.getExtra().show("Extra Results");
-					 * results.getLabelledSkeletons().show();
-					 * results.getLabelMatched().show("Match Results");
-					 */
-
 
 
 				

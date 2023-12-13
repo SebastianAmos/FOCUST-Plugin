@@ -28,6 +28,7 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer labelled = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
 		ClearCLBuffer killBorders = clij2.create(input);
+		ClearCLBuffer ordered = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
 		clij2.detectMaxima3DBox(filtered, maxima, 
@@ -41,10 +42,14 @@ public class MaximaSegmentation implements Method{
 		// Kill borders
 		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
 		
-		ImagePlus output = clij2.pull(killBorders);
+		// close label gaps
+		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
+		
+		
+		ImagePlus output = clij2.pull(ordered);
 		IJ.run(output, "glasbey inverted", "");
 		
-		// clean up GPU without using clij2.clear() - as this will interrupt optimisation workflow and prevent multiple instances.
+		// clean up GPU without using clij2.clear() - as this will interrupt optimization workflow.
 		input.close();
 		bg.close();
 		filtered.close();
@@ -54,6 +59,7 @@ public class MaximaSegmentation implements Method{
 		labelled.close();
 		segmented.close();
 		killBorders.close();
+		ordered.close();
 		
 		return output;
 	}
