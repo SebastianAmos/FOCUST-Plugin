@@ -2,6 +2,7 @@ package clcm.focust.segmentation.labels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import clcm.focust.mode.CompiledImageData;
 import ij.ImagePlus;
@@ -44,8 +45,13 @@ public class StratifyAndQuantifyLabels {
 		// Mask each label and add it to a list.
 		ArrayList<ImagePlus> masks = new ArrayList<>();;
 		
+		
+		// for each label and then each channel
+		// generate the label masks
 		for (int i = 0; i < length.size(); i++) {
-			masks.add(maskLabel(imgData.getImages().getPrimary(), i));
+			for (int j = 0; j < imgData.getImages().getChannels().size(); j++) {
+				masks.add(maskLabel(imgData.getImages().getPrimary(), imgData.getImages().getChannels().get(j), i));
+			}
 		}
 		
 		// new list to collect stream outputs then do for each
@@ -57,12 +63,22 @@ public class StratifyAndQuantifyLabels {
 		});
 		
 		
-		
 		// Generate distance bands for each label via it's distance map. 
+		List<List<ImagePlus>> labelBands = new ArrayList<>();
+		
+		distanceMaps.stream().forEach(e -> {
+			labelBands.add(generateDistanceBands(e));
+		});
+		
+		
+		// mask each channel by each original label.
 		
 		
 		
+		// compute intensities
 		
+		
+		// -> write to resultsBuilder
 		
 		return rt;
 	}
@@ -74,14 +90,59 @@ public class StratifyAndQuantifyLabels {
 	 * @param index The label ID of the label to mask.
 	 * @return
 	 */
-	private ImagePlus maskLabel(ImagePlus label, int index) {
+	private List<Map<ImagePlus, List<ImagePlus>>> maskLabel(ImagePlus label, ArrayList<ImagePlus> channels, int index) {
+		
+		// maybe use a hashmap to relate 
+		
+		// for each channel mask, store in a map to a list of label bands.
+		List<Map<ImagePlus, List<ImagePlus>>> maskCollection = new ArrayList<>();
+		
+		// hold the channel masks for each image channel IN A LOOP
+		List<ImagePlus> channelMask = new ArrayList<>();
+		
+		
+		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(label);
 		ClearCLBuffer masked = clij2.create(input);
+		
+		// new method to mask original img by the selected label
+		for (ImagePlus img : channels) {
+			ClearCLBuffer imgBuffer = clij2.push(img);
+			ImagePlus maskedOriginal = maskOriginal(input, imgBuffer, index);
+			
+		}
+		
+		
+		
 		clij2.labelToMask(input, masked, index);
 		ImagePlus output = clij2.pull(masked);
 		input.close();
 		masked.close();
+		
+		
+		return maskCollection;
+	}
+	
+	
+	/**
+	 * Masks the original image by the selected label.
+	 * 
+	 * @param label
+	 * @param img
+	 * @param index
+	 * @return An image that has been masked by the current label.
+	 */
+	private ImagePlus maskOriginal(ClearCLBuffer label, ClearCLBuffer img, int index) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		ClearCLBuffer maskedImg = clij2.create(img);
+		
+		clij2.maskLabel(img, label, maskedImg, index);
+		
+		ImagePlus output = clij2.pull(maskedImg);
+		
 		return output;
 	}
 	
