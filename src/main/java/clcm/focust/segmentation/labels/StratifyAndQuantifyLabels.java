@@ -35,15 +35,13 @@ public class StratifyAndQuantifyLabels {
 	public ResultsTable process(CompiledImageData imgData) {
 		
 		
-		
 		ResultsTable length = analyze3D.process(imgData.getImages().getPrimary());
 		
 		ResultsTable rt = new ResultsTable();
 		
 		
-		
 		// Mask each label and add it to a list.
-		ArrayList<ImagePlus> masks = new ArrayList<>();;
+		ArrayList<ImagePlus> masks = new ArrayList<>();
 		
 		
 		// for each label and then each channel
@@ -189,7 +187,7 @@ public class StratifyAndQuantifyLabels {
 	/**
 	 * Segment 25% label distance bands from a distance map.
 	 * @param distances A 3D chamfer distance map.
-	 * @return A list of all generate bands from the disance map.
+	 * @return A list of all bands generated from the distance map.
 	 */
 	private ArrayList<ImagePlus> generateDistanceBands(ImagePlus distances){
 		
