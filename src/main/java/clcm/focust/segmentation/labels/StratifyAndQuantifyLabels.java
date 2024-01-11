@@ -1,6 +1,7 @@
 package clcm.focust.segmentation.labels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,18 +12,17 @@ import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
+import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
 import inra.ijpb.binary.distmap.ChamferMask3D;
 import inra.ijpb.binary.distmap.ChamferMasks3D;
 import inra.ijpb.data.image.Images3D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
-import inra.ijpb.plugins.AnalyzeRegions3D;
+import net.haesleinhuepf.clijx.morpholibj.MorphoLibJChamferDistanceMap;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class StratifyAndQuantifyLabels {
-
-	private AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
 	// TODO: For each label within an image 
 	// > Isolate/mask 
@@ -32,95 +32,167 @@ public class StratifyAndQuantifyLabels {
 	// > Measure channel intensities within those stratified labels
 	// > Compile results
 	// >> Run parallel? 
+	
+	/**
+	 * @param imgData Labelled image must be re-indexed to ensure no gaps.
+	 * @return
+	 */
 	public ResultsTable process(CompiledImageData imgData) {
 		
+		// lists to store each band type
+		List<ClearCLBuffer> b1 = new ArrayList<>(); // outer 25%
+		List<ClearCLBuffer> b2 = new ArrayList<>(); // outer-middle 25%
+		List<ClearCLBuffer> b3 = new ArrayList<>(); // inner-middle 25%
+		List<ClearCLBuffer> b4 = new ArrayList<>(); // inner 25%
 		
-		ResultsTable length = analyze3D.process(imgData.getImages().getPrimary());
+		imgData.getImages().getPrimary().show();
+		// test with primary
+
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ClearCLBuffer labs = clij2.push(imgData.getImages().getPrimary());
 		
-		ResultsTable rt = new ResultsTable();
+		// Generate the bands 
+		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs);
 		
-		
-		// Mask each label and add it to a list.
-		ArrayList<ImagePlus> masks = new ArrayList<>();
-		
-		
-		// for each label and then each channel
-		// generate the label masks
-		for (int i = 0; i < length.size(); i++) {
-			for (int j = 0; j < imgData.getImages().getChannels().size(); j++) {
-				masks.add(maskLabel(imgData.getImages().getPrimary(), imgData.getImages().getChannels().get(j), i));
+
+		// Give all of the bands the correct label ID
+		for (Map.Entry<Integer, List<ClearCLBuffer>> entry : bands.entrySet()) {
+			Integer label = entry.getKey();
+			List<ClearCLBuffer> stratifiedBands = entry.getValue();
+			
+			// impose the original label IDs onto each band set.
+			for (ClearCLBuffer band : stratifiedBands) {
+				clij2.set(band, label);
 			}
+			
+			// collect the bands into lists so they can be joined back into one image per band time for intensity analysis.
+			b1.add(stratifiedBands.get(0));
+			b2.add(stratifiedBands.get(1));
+			b3.add(stratifiedBands.get(2));
+			b4.add(stratifiedBands.get(3));
 		}
 		
-		// new list to collect stream outputs then do for each
+		ClearCLBuffer b1Buffer = clij2.create(labs);
+		ClearCLBuffer b2Buffer = clij2.create(labs);
+		ClearCLBuffer b3Buffer = clij2.create(labs);
+		ClearCLBuffer b4Buffer = clij2.create(labs);
 		
-		ArrayList<ImagePlus> distanceMaps = new ArrayList<>();
+		b1Buffer = combineBuffers(b1, b1Buffer);
 		
-		masks.stream().forEach(e -> {
-			distanceMaps.add(computeChamferDistanceMap(e, masks.indexOf(e)));
-		});
+		ImagePlus b1Imp = clij2.pull(b1Buffer);
+		ImagePlus b1Lab = clij2.pull(b1.get(0));
 		
+		b1Imp.setTitle("combinedBuffer");
+		b1Lab.setTitle("Label");
+		b1Lab.show();
+		b1Imp.show();
 		
-		// Generate distance bands for each label via it's distance map. 
-		List<List<ImagePlus>> labelBands = new ArrayList<>();
-		
-		distanceMaps.stream().forEach(e -> {
-			labelBands.add(generateDistanceBands(e));
-		});
-		
-		
-		// mask each channel by each original label.
-		
-		
-		
-		// compute intensities
-		
+		// gather/write the data in a meaningful way
+		// [c1_band1, c1_band2, c1_band3, c1_band4]
 		
 		// -> write to resultsBuilder
 		
-		return rt;
+		return null;
+	}
+	
+	
+	
+	/**
+	 * Combine all labels bands of the same type back into a single buffer object ready for intensity analysis.
+	 * 
+	 * @param buffers
+	 * @param result
+	 * @return
+	 */
+	private ClearCLBuffer combineBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer result) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		buffers.stream().forEach(e -> {
+			clij2.copy(e, result);
+		});
+		
+		return result;
 	}
 	
 	
 	/**
-	 * Returns an individual label for processing.
-	 * @param label A in image containing labels.
-	 * @param index The label ID of the label to mask.
+	 * Add all bands back into a single buffer object.
+	 * @param buffers
+	 * @param result
 	 * @return
 	 */
-	private List<Map<ImagePlus, List<ImagePlus>>> maskLabel(ImagePlus label, ArrayList<ImagePlus> channels, int index) {
-		
-		// maybe use a hashmap to relate 
-		
-		// for each channel mask, store in a map to a list of label bands.
-		List<Map<ImagePlus, List<ImagePlus>>> maskCollection = new ArrayList<>();
-		
-		// hold the channel masks for each image channel IN A LOOP
-		List<ImagePlus> channelMask = new ArrayList<>();
-		
-		
+	private ClearCLBuffer addBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer result) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-		ClearCLBuffer input = clij2.push(label);
-		ClearCLBuffer masked = clij2.create(input);
 		
-		// new method to mask original img by the selected label
-		for (ImagePlus img : channels) {
-			ClearCLBuffer imgBuffer = clij2.push(img);
-			ImagePlus maskedOriginal = maskOriginal(input, imgBuffer, index);
+		buffers.stream().forEach(e -> {
+			clij2.addImages(e, result, result);
+		});
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Extracts each label from an image and stratifies it into 25% distance bands.
+	 * @param labels
+	 * @return a map of label IDs to stored bands
+	 */
+	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs){
+		
+		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+
+		
+		ResultsTable stats = new ResultsTable();
+		
+		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
+		clij2.statisticsOfLabelledPixels(labs, labs, stats);
+		stats.show("Image Stats");
+		
+		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
+		// add the whole label and the stratified bands into the map.
+		// label IDs will ascend without gaps - so using i as label ID is fine.
+		
+		for (int i = 0; i < stats.size(); i++) {
+			ClearCLBuffer mask = clij2.create(labs);
+			//ClearCLBuffer dMap = clij2.create(labs);
+			ClearCLBuffer binary = clij2.create(labs);
 			
+			// extract single label
+			clij2.labelToMask(labs, mask, i);
+			
+			
+			
+			// generate the distance map
+			//MorphoLibJChamferDistanceMap.morphoLibJChamferDistanceMap(clij2, mask, dMap); // pulls to cpu anyway
+			ClearCLBuffer dMap = computeChamferDistanceMap(mask, i);
+			
+			
+			// generate the stratified bands from the distance map
+			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(dMap);
+			
+			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
+			stratifiedLabels.put(i, bands);
+			
+			
+			// debugging - delete when functional
+			ImagePlus buffMask = clij2.pull(mask);
+			ImagePlus distMap = clij2.pull(dMap);
+			distMap.setTitle("DistanceMap" + i);
+			distMap.show();
+			buffMask.setTitle("Mask" + i);
+			buffMask.show();
 		}
 		
 		
 		
-		clij2.labelToMask(input, masked, index);
-		ImagePlus output = clij2.pull(masked);
-		input.close();
-		masked.close();
-		
-		
-		return maskCollection;
+		return stratifiedLabels;
 	}
+	
+	
 	
 	
 	/**
@@ -154,7 +226,10 @@ public class StratifyAndQuantifyLabels {
 	 * 
 	 * Chamfer weight set to MorpholibJ default: Svensson
 	 */
-	private ImagePlus computeChamferDistanceMap(ImagePlus label, int index) {
+	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input, int index) {
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		ImagePlus label = clij2.pull(input);
 		
 		// Create 3D chamfer map of label - set to default Svensson
 		ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
@@ -163,11 +238,16 @@ public class StratifyAndQuantifyLabels {
 		
 		DistanceTransform3D algo = new ChamferDistanceTransform3DFloat(weights, true);
 		
+		ChamferDistanceTransform3DShort cdist = new ChamferDistanceTransform3DShort(weights);
+		
+		
+		
 		DefaultAlgoListener.monitor(algo);
 		
 		ImageStack img = label.getStack();
 		
-		ImageStack result = algo.distanceMap(img);
+		//ImageStack result = algo.distanceMap(img);
+		ImageStack result = cdist.distanceMap(img);
 		
 		if (result == null){
 			ijLog("Unable to generate chamfer distace map 3D for label: " + index);
@@ -178,10 +258,38 @@ public class StratifyAndQuantifyLabels {
 		resultPlus.setDisplayRange(0, distExtent[1]);
 		
 		resultPlus.copyScale(label);
+		ClearCLBuffer output = clij2.push(resultPlus);
 		
-		return resultPlus;
+		return output;
 	}
 	
+	
+	/**
+	 * Stratifies a distance map into 4 bands by 25% histogram bin increments.
+	 *
+	 * @param dMap
+	 * @return an orderd list of bands from outer to inner. [outer 25%, outer-middle 25%, inner-middle 25%, inner 25%]
+	 */
+	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap){
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		// get the min and max pixel values for the the distance map
+		double max = clij2.getMaximumOfAllPixels(dMap);
+		double min = clij2.getMinimumOfAllPixels(dMap);
+		
+		List<ClearCLBuffer> bands = new ArrayList<>();
+		
+		// set thresholds and mask, incrementing the histogram bin by 25% for each iteration. 
+		for (int i = 0; i < 4; i++) {
+			ClearCLBuffer result = clij2.create(dMap);
+			float thresholdMin = (float) (min + i * 0.25 * (max-min));
+			float thresholdMax = (float) (min + (i + 1) * 0.25 * (max-min));
+			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
+			bands.add(result);
+		}
+		return bands;
+	}
 	
 	
 	/**
@@ -189,7 +297,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param distances A 3D chamfer distance map.
 	 * @return A list of all bands generated from the distance map.
 	 */
-	private ArrayList<ImagePlus> generateDistanceBands(ImagePlus distances){
+	private ArrayList<ImagePlus> generateDistanceMapBands(ImagePlus distances){
 		
 		ArrayList<ImagePlus> bands = new ArrayList<>();
 		
@@ -214,6 +322,10 @@ public class StratifyAndQuantifyLabels {
 
 		return bands;
 	}
+	
+	
+	
+	
 	
 	
 	

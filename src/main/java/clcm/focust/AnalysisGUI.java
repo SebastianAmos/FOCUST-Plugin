@@ -31,17 +31,21 @@ import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
 import clcm.focust.data.DatumUpdateService;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
+import clcm.focust.mode.CompiledImageData;
 import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
 import clcm.focust.segmentation.MethodTypes;
-
+import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
+import ij.ImagePlus;
+import clcm.focust.data.object.SegmentedChannels;
 
 import java.awt.Toolkit;
 
@@ -2018,8 +2022,20 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				// Testing new distance-based label stratification
+				ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
 				
 				
+				// Build compiledImageData object.
+				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
+				
+				CompiledImageData imgData = CompiledImageData.builder()
+						.images(images)
+						.secondarySkeletons(null)
+						.tertiarySkeletons(null)
+						.build();
+				
+				StratifyAndQuantifyLabels strat = new StratifyAndQuantifyLabels();
+				strat.process(imgData);
 				
 				
 				//ModeProcess process = new ModeProcess();
