@@ -244,6 +244,8 @@ public class TableUtility {
 				ResultsTable temp = TableUtility.processIntensity(clij2.pull(channels[j]), clij2.pull(bands.get(i)));
 				String[] headers = temp.getHeadings();
 				
+				temp.show("Band " + (i+1) + " Results" );
+				
 				// channel 1
 				if ((j + 1) == 1) {
 					String c1Name = ("c1_band" + (i + 1)).toString();
@@ -281,6 +283,8 @@ public class TableUtility {
 				}
 				
 			}
+			
+			rt.show("FINAL BAND " + (i+1) + " TABLE");
 			
 			rtList.add(rt);
 			
