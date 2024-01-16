@@ -15,6 +15,8 @@ import ij.macro.Variable;
 import ij.measure.ResultsTable;
 import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 /**
  * This helper class contains helper methods for calculating intensities and saving results tables. 
@@ -138,27 +140,6 @@ public class TableUtility {
 		}
 	}
 	
-
-	public List<List<ResultsTable>> calculateAllIntensities(ArrayList<ImagePlus> labels, ArrayList<ImagePlus> channels, ParameterCollection params){
-		
-		List<ResultsTable> primary = new ArrayList<>();
-		List<ResultsTable> secondary = new ArrayList<>();
-		List<ResultsTable> tertiary = new ArrayList<>();
-		
-		/*
-		 * Calcualte the grey values of every channel in the input image within each segmented object/label
-		 */
-		
-		for (int i = 0; i < labels.size(); i++) {
-			
-		}
-		
-		
-		
-		
-		return null;
-	}
-	
 	
 	/**
 	 * Calculate the intensity of every channel in the input image (channels) within
@@ -247,6 +228,73 @@ public class TableUtility {
 		
 	}
 
+	
+	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ClearCLBuffer[] channels) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		List<ResultsTable> rtList = new ArrayList<>();
+	
+		for (int i = 0; i < bands.size(); i++) {
+			
+			ResultsTable rt = new ResultsTable();
+				
+			for (int j = 0; j < channels.length; j++) {
+				
+				ResultsTable temp = TableUtility.processIntensity(clij2.pull(channels[j]), clij2.pull(bands.get(i)));
+				String[] headers = temp.getHeadings();
+				
+				// channel 1
+				if ((j + 1) == 1) {
+					String c1Name = ("c1_band" + (i + 1)).toString();
+					
+					for (String head : headers) {
+						rt.setColumn(c1Name, temp.getColumnAsVariables(head));
+					}
+				}
+				
+				// channel 2
+				if ((j + 1) == 2) {
+					String c2Name = ("c2_band" + (i + 1)).toString();
+					
+					for (String head : headers) {
+						rt.setColumn(c2Name, temp.getColumnAsVariables(head));
+					}
+				}
+				
+				// channel 3
+				if ((j + 1) == 3) {
+					String c3Name = ("c3_band" + (i + 1)).toString();
+			
+					for (String head : headers) {
+						rt.setColumn(c3Name, temp.getColumnAsVariables(head));
+					}
+				}
+				
+				// channel 4
+				if ((j + 1) == 4) {
+					String c4Name = ("c4_band" + (i + 1)).toString();
+					
+					for (String head : headers) {
+						rt.setColumn(c4Name, temp.getColumnAsVariables(head));
+					}
+				}
+				
+			}
+			
+			rtList.add(rt);
+			
+		}
+		
+		ResultsBuilder rb = new ResultsBuilder();
+		
+		rtList.forEach(e -> rb.addResult(e));
+		
+		
+		return rb.getResultsTable();
+	}
+
+	
 	
 	public static ResultsTable extractGroupAndTitle(ResultsTable rt, ParameterCollection parameters, String imgName) {
 		
