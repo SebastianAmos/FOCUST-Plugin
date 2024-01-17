@@ -266,7 +266,6 @@ public class TableUtility {
 				}
 				
 				
-				
 				// channel 2
 				if ((j + 1) == 2) {
 					String c2Name = ("band" + (i + 1) + "_c2").toString();
@@ -310,7 +309,8 @@ public class TableUtility {
 		
 		return output;
 	}
-
+	
+	
 	
 	
 	public static ResultsTable extractGroupAndTitle(ResultsTable rt, ParameterCollection parameters, String imgName) {

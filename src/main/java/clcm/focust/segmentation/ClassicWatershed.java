@@ -26,6 +26,7 @@ public class ClassicWatershed implements Method {
 		
 		ClearCLBuffer segmented = clij2.create(input);
 		ClearCLBuffer killBorders = clij2.create(input);
+		ClearCLBuffer ordered = clij2.create(input);
 		
 		// method - casting doubles to float.
 		/*
@@ -42,8 +43,11 @@ public class ClassicWatershed implements Method {
 		// kill borders
 		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
 	
+		// close label gaps
+		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
+				
 		// pull output
-		ImagePlus output = clij2.pull(killBorders);
+		ImagePlus output = clij2.pull(ordered);
 		IJ.run(output, "glasey inverted", "");
 		
 	

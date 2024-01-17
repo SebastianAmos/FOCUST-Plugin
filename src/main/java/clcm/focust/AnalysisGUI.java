@@ -48,6 +48,7 @@ import ij.ImagePlus;
 import clcm.focust.data.object.SegmentedChannels;
 
 import java.awt.Toolkit;
+import javax.swing.JTabbedPane;
 
 public class AnalysisGUI extends JFrame {
 
@@ -327,9 +328,9 @@ public class AnalysisGUI extends JFrame {
 		pnlMain.add(pnlVariable);
 		GridBagLayout gbl_pnlVariable = new GridBagLayout();
 		gbl_pnlVariable.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 0, 0, 0, 35, 0};
+		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 0, 0, 0, 35, 0, 0};
 		gbl_pnlVariable.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		pnlVariable.setLayout(gbl_pnlVariable);
 		
 		JPanel pnlKillBorders = new JPanel();
@@ -477,7 +478,7 @@ public class AnalysisGUI extends JFrame {
 		pnlVariable.add(ckbSkeletonization, gbc_ckbSpeckleSkeletons);
 		ckbSkeletonization.setVisible(false);
 		
-		JCheckBox ckbSpheroidCoreVsPeriphery = new JCheckBox("Core vs Periphery?");
+		JCheckBox ckbSpheroidCoreVsPeriphery = new JCheckBox("Stratify Labels?");
 		
 		ckbSpheroidCoreVsPeriphery.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
 		ckbSpheroidCoreVsPeriphery.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -519,10 +520,19 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_ckbCellsTertiaryOption = new GridBagConstraints();
 		gbc_ckbCellsTertiaryOption.anchor = GridBagConstraints.WEST;
 		gbc_ckbCellsTertiaryOption.gridwidth = 2;
-		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 0, 0);
+		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 5, 0);
 		gbc_ckbCellsTertiaryOption.gridx = 0;
 		gbc_ckbCellsTertiaryOption.gridy = 9;
 		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+		gbc_tabbedPane.gridwidth = 2;
+		gbc_tabbedPane.insets = new Insets(0, 0, 0, 5);
+		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
+		gbc_tabbedPane.gridx = 0;
+		gbc_tabbedPane.gridy = 10;
+		pnlVariable.add(tabbedPane, gbc_tabbedPane);
 		ckbTertiaryObjectOption.setVisible(false);
 
 		JPanel pnlPrimary = new JPanel();

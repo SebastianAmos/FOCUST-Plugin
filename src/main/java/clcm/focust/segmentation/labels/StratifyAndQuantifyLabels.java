@@ -1,6 +1,7 @@
 package clcm.focust.segmentation.labels;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
-import ij.process.ImageProcessor;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
@@ -19,22 +19,14 @@ import inra.ijpb.binary.distmap.ChamferMask3D;
 import inra.ijpb.binary.distmap.ChamferMasks3D;
 import inra.ijpb.data.image.Images3D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
+import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
-
-
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class StratifyAndQuantifyLabels {
 	
-	// TODO: For each label within an image 
-	// > Isolate/mask 
-	// > Chamfer distance 3D
-	// > Threshold in 25% increments to create stratified labels
-	// > Impose original label ID onto new labels
-	// > Measure channel intensities within those stratified labels
-	// > Compile results
-	// >> Run parallel? 
+	private AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	
 	/**
 	 * @param imgData Labelled image must be re-indexed to ensure no gaps.
@@ -201,23 +193,6 @@ public class StratifyAndQuantifyLabels {
 	}
 	
 	
-	/**
-	 * Add all bands back into a single buffer object.
-	 * @param buffers
-	 * @param result
-	 * @return
-	 */
-	private ClearCLBuffer addBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer result) {
-		
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		
-		buffers.stream().forEach(e -> {
-			clij2.addImages(e, result, result);
-		});
-		
-		return result;
-	}
-	
 	
 	/**
 	 * Extracts each label from an image and stratifies it into 25% distance bands.
@@ -229,19 +204,15 @@ public class StratifyAndQuantifyLabels {
 		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-
 		
 		ResultsTable stats = new ResultsTable();
 		
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
-		stats.show("Image Stats");
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
 		// label IDs will ascend without gaps - so using i as label ID is fine - just start from 1 to avoid processing the background(0).
-		IJ.log("number of objects = " + stats.size());
-		
 		for (int i = 1; i <= stats.size(); i++) {
 			ClearCLBuffer mask = clij2.create(labs);
 			//ClearCLBuffer dMap = clij2.create(labs);
@@ -249,8 +220,6 @@ public class StratifyAndQuantifyLabels {
 			
 			// extract a single label
 			clij2.labelToMask(labs, mask, i);
-			IJ.log("Getting mask: " + i);
-			
 			
 			// generate the distance map
 			//MorphoLibJChamferDistanceMap.morphoLibJChamferDistanceMap(clij2, mask, dMap); // pulls to cpu anyway
@@ -279,29 +248,6 @@ public class StratifyAndQuantifyLabels {
 		return stratifiedLabels;
 	}
 	
-	
-	
-	
-	/**
-	 * Masks the original image by the selected label.
-	 * 
-	 * @param label
-	 * @param img
-	 * @param index
-	 * @return An image that has been masked by the current label.
-	 */
-	private ImagePlus maskOriginal(ClearCLBuffer label, ClearCLBuffer img, int index) {
-		
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		
-		ClearCLBuffer maskedImg = clij2.create(img);
-		
-		clij2.maskLabel(img, label, maskedImg, index);
-		
-		ImagePlus output = clij2.pull(maskedImg);
-		
-		return output;
-	}
 	
 	
 	/**
@@ -350,19 +296,6 @@ public class StratifyAndQuantifyLabels {
 	}
 	
 	
-	
-	/**
-	 * TESTING
-	 * Generate a combined distance map for testing purposes!
-	 * @param input
-	 * @return
-	 */
-	private ClearCLBuffer testDistanceMap(ClearCLBuffer input) {
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		ClearCLBuffer output = clij2.create(input);
-		return output; 
-	}
-	
 	/**
 	 * Stratifies a distance map into 4 bands by 25% histogram bin increments.
 	 *
@@ -387,47 +320,12 @@ public class StratifyAndQuantifyLabels {
 			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
 			bands.add(result);
 		}
+		
+		// flip the list so 1 = core.
+		Collections.reverse(bands);
+		
 		return bands;
 	}
-	
-	
-	/**
-	 * Segment 25% label distance bands from a distance map.
-	 * @param distances A 3D chamfer distance map.
-	 * @return A list of all bands generated from the distance map.
-	 */
-	private ArrayList<ImagePlus> generateDistanceMapBands(ImagePlus distances){
-		
-		ArrayList<ImagePlus> bands = new ArrayList<>();
-		
-		// get histogram extremes 
-		double min = distances.getDisplayRangeMin();
-		double max = distances.getDisplayRangeMax();
-		
-		// set thresholds and mask, incrementing the histogram bin by 25% each time.
-		for (int i = 0; i < 4; i++) {
-			
-			ImagePlus temp = distances.duplicate();
-			
-			double thresholdMin = min + i * 0.25 * (max-min);
-			double thresholdMax = min + (i + 1) * 0.25 * (max-min);
-			
-			ImageProcessor ip = temp.getProcessor();
-			ip.setThreshold(thresholdMin, thresholdMax, ImageProcessor.NO_LUT_UPDATE);
-			bands.add(new ImagePlus("", ip.createMask()));
-			
-			temp.close();
-		}
-
-		return bands;
-	}
-	
-	
-
-	
-	
-	
-	
 	
 	
 }
