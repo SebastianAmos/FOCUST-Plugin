@@ -140,17 +140,7 @@ public class StratifyAndQuantifyLabels {
 		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, TestDists);
 	
 		rt.show("BAND RESULTS");
-		
-		// clij2 statistics methods are done on cpu - so using morpholibj methods
-		//ResultsTable b1Results = TableUtility.processIntensity(clij2.pull(testDist), clij2.pull(band1));
-		//ResultsTable b2Results = TableUtility.processIntensity(clij2.pull(testDist), clij2.pull(band2));
-		//ResultsTable b3Results = TableUtility.processIntensity(clij2.pull(testDist), clij2.pull(band3));
-		//ResultsTable b4Results = TableUtility.processIntensity(clij2.pull(testDist), clij2.pull(band4));
-		
-		//b1Results.show("b1");
-		//b2Results.show("b2");
-		//b3Results.show("b3");
-		//b4Results.show("b4");
+	
 		
 		ImagePlus b1TypeImg = clij2.pull(band1);
 		ImagePlus b2TypeImg = clij2.pull(band2);
@@ -183,8 +173,7 @@ public class StratifyAndQuantifyLabels {
 		b1Lab.show();
 		b1Imp.show();
 		
-		// gather/write the data in a meaningful way
-		// [c1_band1, c1_band2, c1_band3, c1_band4]
+		
 		
 		// -> write to resultsBuilder
 		

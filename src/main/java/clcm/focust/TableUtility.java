@@ -242,43 +242,58 @@ public class TableUtility {
 			for (int j = 0; j < channels.length; j++) {
 				
 				ResultsTable temp = TableUtility.processIntensity(clij2.pull(channels[j]), clij2.pull(bands.get(i)));
-				String[] headers = temp.getHeadings();
+				
+				// get col headers without Label
+				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
+				
+				
+				// get the labelID values + remove them from the current rt
+				ResultsTable rtLab = new ResultsTable();
+				rtLab.setColumn("Label", temp.getColumnAsVariables("Label"));
+				rtList.add(rtLab);
+				
 				
 				temp.show("Band " + (i+1) + " Results" );
 				
 				// channel 1
 				if ((j + 1) == 1) {
-					String c1Name = ("c1_band" + (i + 1)).toString();
+					String c1Name = ("band" + (i + 1) + "_c1").toString();
 					
 					for (String head : headers) {
-						rt.setColumn(c1Name, temp.getColumnAsVariables(head));
+						String headerName = (c1Name + "_" + head).toString();
+						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
+				
+				
 				// channel 2
 				if ((j + 1) == 2) {
-					String c2Name = ("c2_band" + (i + 1)).toString();
+					String c2Name = ("band" + (i + 1) + "_c2").toString();
 					
 					for (String head : headers) {
-						rt.setColumn(c2Name, temp.getColumnAsVariables(head));
+						String headerName = (c2Name + "_" + head).toString();
+						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
 				// channel 3
 				if ((j + 1) == 3) {
-					String c3Name = ("c3_band" + (i + 1)).toString();
+					String c3Name = ("band" + (i + 1) + "_c3").toString();
 			
 					for (String head : headers) {
-						rt.setColumn(c3Name, temp.getColumnAsVariables(head));
+						String headerName = (c3Name + "_" + head).toString();
+						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
 				// channel 4
 				if ((j + 1) == 4) {
-					String c4Name = ("c4_band" + (i + 1)).toString();
+					String c4Name = ("band" + (i + 1) + "_c4").toString();
 					
 					for (String head : headers) {
-						rt.setColumn(c4Name, temp.getColumnAsVariables(head));
+						String headerName = (c4Name + "_" + head).toString();
+						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -290,12 +305,10 @@ public class TableUtility {
 			
 		}
 		
-		ResultsBuilder rb = new ResultsBuilder();
 		
-		rtList.forEach(e -> rb.addResult(e));
+		ResultsTable output = compileAllResults(rtList);
 		
-		
-		return rb.getResultsTable();
+		return output;
 	}
 
 	
@@ -322,18 +335,18 @@ public class TableUtility {
 	
 	
 	// TODO: Method for running analysis on all objects if present and storing results tables
-	public ResultsTable compileAllResults(List<ResultsTable> list){
+	public static ResultsTable compileAllResults(List<ResultsTable> list){
 		
 		ResultsBuilder rb = new ResultsBuilder();
 		
 		for (ResultsTable rt : list) {
 			rb.addResult(rt);
 		}
-		
-		
+	
+	
 		return rb.getResultsTable();
 	}
-
-
-
+	
+	
+	
 }
