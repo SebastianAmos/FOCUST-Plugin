@@ -27,6 +27,8 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.security.Policy.Parameters;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
@@ -45,6 +47,7 @@ import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.ResultsTable;
 import clcm.focust.data.object.SegmentedChannels;
 
 import java.awt.Toolkit;
@@ -106,7 +109,6 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertiaryS1X;
 	private JTextField txtTertiaryS1Y;
 	private JTextField txtTertiaryS1Z;
-	private JTextField txtCoreVolValue;
 	private JTextField txtPrimaryClassiferDirectory;
 	private JTextField txtPrimaryMethodThreshold;
 	private JTextField txtPriFilter2X;
@@ -478,42 +480,6 @@ public class AnalysisGUI extends JFrame {
 		pnlVariable.add(ckbSkeletonization, gbc_ckbSpeckleSkeletons);
 		ckbSkeletonization.setVisible(false);
 		
-		JCheckBox ckbSpheroidCoreVsPeriphery = new JCheckBox("Stratify Labels?");
-		
-		ckbSpheroidCoreVsPeriphery.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
-		ckbSpheroidCoreVsPeriphery.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbSpheroidCoreVsPeriphery = new GridBagConstraints();
-		gbc_ckbSpheroidCoreVsPeriphery.anchor = GridBagConstraints.WEST;
-		gbc_ckbSpheroidCoreVsPeriphery.gridwidth = 2;
-		gbc_ckbSpheroidCoreVsPeriphery.insets = new Insets(0, 5, 5, 0);
-		gbc_ckbSpheroidCoreVsPeriphery.gridx = 0;
-		gbc_ckbSpheroidCoreVsPeriphery.gridy = 7;
-		pnlVariable.add(ckbSpheroidCoreVsPeriphery, gbc_ckbSpheroidCoreVsPeriphery);
-		ckbSpheroidCoreVsPeriphery.setVisible(false);
-		
-		JPanel pnlCoreVolValue = new JPanel();
-		GridBagConstraints gbc_pnlCoreVolValue = new GridBagConstraints();
-		gbc_pnlCoreVolValue.insets = new Insets(0, 0, 5, 0);
-		gbc_pnlCoreVolValue.anchor = GridBagConstraints.WEST;
-		gbc_pnlCoreVolValue.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlCoreVolValue.gridwidth = 2;
-		gbc_pnlCoreVolValue.gridx = 0;
-		gbc_pnlCoreVolValue.gridy = 8;
-		pnlVariable.add(pnlCoreVolValue, gbc_pnlCoreVolValue);
-		pnlCoreVolValue.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		pnlCoreVolValue.setVisible(false);
-		
-		JLabel lblCoreVolValue = new JLabel("Core Volume % (0:1)");
-		pnlCoreVolValue.add(lblCoreVolValue);
-		lblCoreVolValue.setToolTipText("Provide the volume % to reduce the \"core\" of the spheroid to. i.e 0.5 = 50 %.");
-		lblCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
-		
-		txtCoreVolValue = new JTextField();
-		pnlCoreVolValue.add(txtCoreVolValue);
-		txtCoreVolValue.setText("0.5");
-		txtCoreVolValue.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtCoreVolValue.setColumns(5);
-		
 		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
 		ckbTertiaryObjectOption.setSelected(true);
 		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -522,18 +488,74 @@ public class AnalysisGUI extends JFrame {
 		gbc_ckbCellsTertiaryOption.gridwidth = 2;
 		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 5, 0);
 		gbc_ckbCellsTertiaryOption.gridx = 0;
-		gbc_ckbCellsTertiaryOption.gridy = 9;
+		gbc_ckbCellsTertiaryOption.gridy = 7;
 		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
-		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
-		gbc_tabbedPane.gridwidth = 2;
-		gbc_tabbedPane.insets = new Insets(0, 0, 0, 5);
-		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
-		gbc_tabbedPane.gridx = 0;
-		gbc_tabbedPane.gridy = 10;
-		pnlVariable.add(tabbedPane, gbc_tabbedPane);
 		ckbTertiaryObjectOption.setVisible(false);
+		
+		JCheckBox ckbStratifyLabels = new JCheckBox("Stratify Labels?");
+		
+		ckbStratifyLabels.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
+		ckbStratifyLabels.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ckbSpheroidCoreVsPeriphery = new GridBagConstraints();
+		gbc_ckbSpheroidCoreVsPeriphery.anchor = GridBagConstraints.WEST;
+		gbc_ckbSpheroidCoreVsPeriphery.insets = new Insets(0, 5, 5, 5);
+		gbc_ckbSpheroidCoreVsPeriphery.gridx = 0;
+		gbc_ckbSpheroidCoreVsPeriphery.gridy = 8;
+		pnlVariable.add(ckbStratifyLabels, gbc_ckbSpheroidCoreVsPeriphery);
+		ckbStratifyLabels.setVisible(false);
+		
+		JCheckBox ckbStratifyAll = new JCheckBox("Process all");
+		ckbStratifyAll.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
+		gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 0);
+		gbc_chckbxNewCheckBox.gridx = 1;
+		gbc_chckbxNewCheckBox.gridy = 8;
+		pnlVariable.add(ckbStratifyAll, gbc_chckbxNewCheckBox);
+		ckbStratifyAll.setVisible(false);
+		
+		JTabbedPane pnlStratify = new JTabbedPane(JTabbedPane.TOP);
+		pnlStratify.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_pnlStratify = new GridBagConstraints();
+		gbc_pnlStratify.gridheight = 2;
+		gbc_pnlStratify.gridwidth = 2;
+		gbc_pnlStratify.fill = GridBagConstraints.BOTH;
+		gbc_pnlStratify.gridx = 0;
+		gbc_pnlStratify.gridy = 9;
+		pnlVariable.add(pnlStratify, gbc_pnlStratify);
+		pnlStratify.setVisible(false);
+		
+		JPanel pnlStratifyPri = new JPanel();
+		pnlStratify.addTab("Primary", null, pnlStratifyPri, null);
+		
+		JCheckBox ckbPri25Bands = new JCheckBox("25 % Bands");
+		ckbPri25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlStratifyPri.add(ckbPri25Bands);
+		
+		JCheckBox ckbPri50Bands = new JCheckBox("50 % Bands");
+		ckbPri50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlStratifyPri.add(ckbPri50Bands);
+		
+		JPanel panel_1 = new JPanel();
+		pnlStratify.addTab("Secondary", null, panel_1, null);
+		
+		JCheckBox ckbSec25Bands = new JCheckBox("25 % Bands");
+		ckbSec25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		panel_1.add(ckbSec25Bands);
+		
+		JCheckBox ckbSec50Bands = new JCheckBox("50 % Bands");
+		ckbSec50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		panel_1.add(ckbSec50Bands);
+		
+		JPanel panel = new JPanel();
+		pnlStratify.addTab("Tertiary", null, panel, null);
+		
+		JCheckBox ckbTer25Bands = new JCheckBox("25 % Bands");
+		ckbTer25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		panel.add(ckbTer25Bands);
+		
+		JCheckBox ckbTer50Bands = new JCheckBox("50 % Bands");
+		ckbTer50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
+		panel.add(ckbTer50Bands);
 
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -2022,8 +2044,8 @@ public class AnalysisGUI extends JFrame {
 						nameChannel4(txtC4.getText()).
 						processTertiary(ckbTertiary.isSelected()).
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
-						coreVPeriphery(ckbSpheroidCoreVsPeriphery.isSelected()).
-						coreVolume(Double.parseDouble(txtCoreVolValue.getText())).
+						coreVPeriphery(ckbStratifyLabels.isSelected()).
+						coreVolume(Double.parseDouble("0.5")).
 						skeletonize(ckbSkeletonization.isSelected()).
 						build();
 				
@@ -2032,8 +2054,12 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				// Testing new distance-based label stratification
-				ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
+				//ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
 				
+				File f = new File(parameterCollection.getInputDir());
+				String[] list = f.list();
+				String path = parameterCollection.getInputDir() + list[0];
+				ImagePlus imp = IJ.openImage(path);
 				
 				// Build compiledImageData object.
 				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
@@ -2045,7 +2071,10 @@ public class AnalysisGUI extends JFrame {
 						.build();
 				
 				StratifyAndQuantifyLabels strat = new StratifyAndQuantifyLabels();
-				strat.process(imgData);
+				ResultsTable output = strat.process(imgData, 0.25);
+				
+				ResultsTableUtility rtu = new ResultsTableUtility();
+				rtu.saveAndStackResults(output, "Test", parameterCollection);
 				
 				
 				//ModeProcess process = new ModeProcess();
@@ -2065,7 +2094,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_btnRunAnalysis = new GridBagConstraints();
 		gbc_btnRunAnalysis.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnRunAnalysis.gridwidth = 2;
-		gbc_btnRunAnalysis.insets = new Insets(0, 0, 5, 5);
+		gbc_btnRunAnalysis.insets = new Insets(0, 0, 0, 5);
 		gbc_btnRunAnalysis.gridx = 0;
 		gbc_btnRunAnalysis.gridy = 2;
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
@@ -2284,39 +2313,33 @@ public class AnalysisGUI extends JFrame {
 				switch (mode) {
 				case NONE:
 					ckbSkeletonization.setVisible(false);
-					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbStratifyLabels.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
-					pnlCoreVolValue.setVisible(false);
 					break;
 				case BASIC:
 					ckbSkeletonization.setVisible(true);
-					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbStratifyLabels.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
-					pnlCoreVolValue.setVisible(false);
 					break;
 				case SPHEROID:
-					ckbSpheroidCoreVsPeriphery.setVisible(true);
-					pnlCoreVolValue.setVisible(false);
+					ckbStratifyLabels.setVisible(true);
 					ckbSkeletonization.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(true);
 					break;
 				case SINGLECELL:
 					ckbTertiaryObjectOption.setVisible(true);
 					ckbSkeletonization.setVisible(true);
-					ckbSpheroidCoreVsPeriphery.setVisible(false);
-					pnlCoreVolValue.setVisible(false);
+					ckbStratifyLabels.setVisible(false);
 					break;
 				case SPECKLE:
 					ckbSkeletonization.setVisible(true);
-					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbStratifyLabels.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
-					pnlCoreVolValue.setVisible(false);
 					break;
 				default:
 					ckbSkeletonization.setVisible(false);
-					ckbSpheroidCoreVsPeriphery.setVisible(false);
+					ckbStratifyLabels.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
-					pnlCoreVolValue.setVisible(false);
 					break;
 				}
 			}
@@ -2454,21 +2477,50 @@ public class AnalysisGUI extends JFrame {
 			}
 		});
 
+		
 		/*
-		 * Display the core fraction input panel.
+		 * Options for stratification.
 		 */
-
-		ckbSpheroidCoreVsPeriphery.addItemListener(new ItemListener() {
+		ckbStratifyLabels.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if (ckbSpheroidCoreVsPeriphery.isSelected()) {
-					pnlCoreVolValue.setVisible(true);
+				if (ckbStratifyLabels.isSelected()) {
+					pnlStratify.setVisible(true);
+					ckbStratifyAll.setVisible(true);
 				} else {
-					pnlCoreVolValue.setVisible(false);
+					pnlStratify.setVisible(false);
+					ckbStratifyAll.setVisible(false);
 				}
 			}
 		});
+		
+		// when process all is ticked, activate all stratification options
+		ckbStratifyAll.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (ckbStratifyAll.isSelected()) {
+					ckbPri25Bands.setSelected(true);
+					ckbSec25Bands.setSelected(true);
+					ckbTer25Bands.setSelected(true);
+					ckbPri50Bands.setSelected(true);
+					ckbSec50Bands.setSelected(true);
+					ckbTer50Bands.setSelected(true);
+				} else {
+					ckbPri25Bands.setSelected(false);
+					ckbSec25Bands.setSelected(false);
+					ckbTer25Bands.setSelected(false);
+					ckbPri50Bands.setSelected(false);
+					ckbSec50Bands.setSelected(false);
+					ckbTer50Bands.setSelected(false);
+				}
+				
+			}
+		});
+		
 
 	}
+	
+	
+	
+	
 
 
 	public void setMode(int index) {

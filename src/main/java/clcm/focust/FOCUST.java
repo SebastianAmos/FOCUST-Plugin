@@ -1,9 +1,6 @@
 
 package clcm.focust;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
