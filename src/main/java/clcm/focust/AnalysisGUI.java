@@ -2073,6 +2073,7 @@ public class AnalysisGUI extends JFrame {
 				StratifyAndQuantifyLabels strat = new StratifyAndQuantifyLabels();
 				ResultsTable output = strat.process(imgData, 0.25);
 				
+				output.show("RESULTS");
 				ResultsTableUtility rtu = new ResultsTableUtility();
 				rtu.saveAndStackResults(output, "Test", parameterCollection);
 				
