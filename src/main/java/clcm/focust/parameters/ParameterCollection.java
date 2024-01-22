@@ -28,7 +28,7 @@ public class ParameterCollection implements DataObject{
     final String nameChannel4;
     final Boolean tertiaryIsDifference;
     final Boolean processTertiary;
-    final Boolean skeletonize;
+    final SkeletonParameters skeletonParamters;
     final StratifyParameters stratifyParameters;
 
     // Optimize Parameters

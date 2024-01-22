@@ -72,7 +72,7 @@ public class StratifyAndQuantifyLabels {
 		
 		// Do the intensity analysis for each band type, within each channel 
 		// ----> Using a combined chamfer distance map for testing!!
-		ClearCLBuffer testDist = computeChamferDistanceMap(labs, 1);
+		ClearCLBuffer testDist = computeChamferDistanceMap(labs);
 		ClearCLBuffer testDist2 = clij2.create(testDist); 
 		clij2.copy(testDist, testDist2);
 		ClearCLBuffer[] TestDists = {testDist, testDist2};
@@ -124,6 +124,9 @@ public class StratifyAndQuantifyLabels {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
+		// generate distance map on the whole label image before masking out each label
+		ClearCLBuffer dMap2 = computeChamferDistanceMap(labs);
+		
 		ResultsTable stats = new ResultsTable();
 		
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
@@ -134,23 +137,29 @@ public class StratifyAndQuantifyLabels {
 		// label IDs will ascend without gaps - so using i as label ID is fine - just start from 1 to avoid processing the background(0).
 		for (int i = 1; i <= stats.size(); i++) {
 			ClearCLBuffer mask = clij2.create(labs);
+			ClearCLBuffer distanceMask = clij2.create(labs);
 			
 			// extract a single label
 			clij2.labelToMask(labs, mask, i);
 			
+			// mask the distance map by the label to only process that region of the distance map
+			clij2.mask(dMap2, mask, distanceMask);
+			
 			// generate the distance map
-			ClearCLBuffer dMap = computeChamferDistanceMap(mask, i); // single mask chamfer distance map
+			//ClearCLBuffer dMap = computeChamferDistanceMap(mask); // single mask chamfer distance map
 			
 			// generate the stratified bands from the distance map
 			// take one mask distance map and create bands. 
-			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(dMap, bandPercent, bandIterations);
+			//List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(dMap, bandPercent, bandIterations);
+			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, bandPercent, bandIterations);
+			
 			
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
 			stratifiedLabels.put(i, bands);
 			
 			// debugging - delete when functional
 			ImagePlus buffMask = clij2.pull(mask);
-			ImagePlus distMap = clij2.pull(dMap);
+			ImagePlus distMap = clij2.pull(distanceMask);
 			distMap.setTitle("DistanceMap" + i);
 			distMap.show();
 			buffMask.setTitle("Mask" + i);
@@ -172,7 +181,7 @@ public class StratifyAndQuantifyLabels {
 	 * 
 	 * Chamfer weight set to MorpholibJ default: Svensson
 	 */
-	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input, int index) {
+	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input) {
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
 		ImagePlus label = clij2.pull(input);
@@ -196,7 +205,7 @@ public class StratifyAndQuantifyLabels {
 		ImageStack result = cdist.distanceMap(img);
 		
 		if (result == null){
-			ijLog("Unable to generate chamfer distace map 3D for label: " + index);
+			ijLog("Unable to generate chamfer distace map 3D");
 		}
 		
 		ImagePlus resultPlus = new ImagePlus("img", result);

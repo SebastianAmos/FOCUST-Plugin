@@ -28,16 +28,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.security.Policy.Parameters;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
-
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.CompiledImageData;
-import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
@@ -48,7 +45,6 @@ import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
-import clcm.focust.data.object.SegmentedChannels;
 
 import java.awt.Toolkit;
 import javax.swing.JTabbedPane;
@@ -139,7 +135,7 @@ public class AnalysisGUI extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1102, 638);
+		setBounds(100, 100, 1102, 643);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 240, 240));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -149,7 +145,7 @@ public class AnalysisGUI extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{801, 0};
-		gbl_contentPane.rowHeights = new int[]{149, 218, 76, 0};
+		gbl_contentPane.rowHeights = new int[]{149, 218, 50, 0};
 		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
@@ -329,10 +325,10 @@ public class AnalysisGUI extends JFrame {
 		JPanel pnlVariable = new JPanel();
 		pnlMain.add(pnlVariable);
 		GridBagLayout gbl_pnlVariable = new GridBagLayout();
-		gbl_pnlVariable.columnWidths = new int[]{0, 0, 0};
-		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 0, 0, 0, 35, 0, 0};
-		gbl_pnlVariable.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlVariable.columnWidths = new int[] {0, 0, 0};
+		gbl_pnlVariable.rowHeights = new int[] {35, 35, 35, 35, 35, 35, 0, 0, 104, 0};
+		gbl_pnlVariable.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlVariable.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlVariable.setLayout(gbl_pnlVariable);
 		
 		JPanel pnlKillBorders = new JPanel();
@@ -469,17 +465,6 @@ public class AnalysisGUI extends JFrame {
 		gbc_textField.gridy = 0;
 		pnlVariable.add(txtGroupingInfo, gbc_textField);
 		
-		JCheckBox ckbSkeletonization = new JCheckBox("Skeletonization?");
-		ckbSkeletonization.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_ckbSpeckleSkeletons = new GridBagConstraints();
-		gbc_ckbSpeckleSkeletons.anchor = GridBagConstraints.WEST;
-		gbc_ckbSpeckleSkeletons.gridwidth = 2;
-		gbc_ckbSpeckleSkeletons.insets = new Insets(0, 5, 5, 0);
-		gbc_ckbSpeckleSkeletons.gridx = 0;
-		gbc_ckbSpeckleSkeletons.gridy = 6;
-		pnlVariable.add(ckbSkeletonization, gbc_ckbSpeckleSkeletons);
-		ckbSkeletonization.setVisible(false);
-		
 		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
 		ckbTertiaryObjectOption.setSelected(true);
 		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -488,74 +473,89 @@ public class AnalysisGUI extends JFrame {
 		gbc_ckbCellsTertiaryOption.gridwidth = 2;
 		gbc_ckbCellsTertiaryOption.insets = new Insets(0, 5, 5, 0);
 		gbc_ckbCellsTertiaryOption.gridx = 0;
-		gbc_ckbCellsTertiaryOption.gridy = 7;
+		gbc_ckbCellsTertiaryOption.gridy = 6;
 		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
 		ckbTertiaryObjectOption.setVisible(false);
 		
-		JCheckBox ckbStratifyLabels = new JCheckBox("Stratify Labels?");
+		JCheckBox ckbAdditionalProcessing = new JCheckBox("Process Labels");
 		
-		ckbStratifyLabels.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
-		ckbStratifyLabels.setFont(new Font("Arial", Font.PLAIN, 14));
+		ckbAdditionalProcessing.setToolTipText("Tick the box to generate a 3D core and periphery (based on the target volume % for the core), calculate the intensity of all channels in the core and periphery regions. Ratios comparing channel intensity (core vs periphery) will also be calculated.");
+		ckbAdditionalProcessing.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbSpheroidCoreVsPeriphery = new GridBagConstraints();
 		gbc_ckbSpheroidCoreVsPeriphery.anchor = GridBagConstraints.WEST;
 		gbc_ckbSpheroidCoreVsPeriphery.insets = new Insets(0, 5, 5, 5);
 		gbc_ckbSpheroidCoreVsPeriphery.gridx = 0;
-		gbc_ckbSpheroidCoreVsPeriphery.gridy = 8;
-		pnlVariable.add(ckbStratifyLabels, gbc_ckbSpheroidCoreVsPeriphery);
-		ckbStratifyLabels.setVisible(false);
+		gbc_ckbSpheroidCoreVsPeriphery.gridy = 7;
+		pnlVariable.add(ckbAdditionalProcessing, gbc_ckbSpheroidCoreVsPeriphery);
+		ckbAdditionalProcessing.setVisible(false);
 		
-		JCheckBox ckbStratifyAll = new JCheckBox("Process all");
-		ckbStratifyAll.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+		JCheckBox ckbProcessAllObjects = new JCheckBox("Process all");
+		ckbProcessAllObjects.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
+		gbc_chckbxNewCheckBox.anchor = GridBagConstraints.WEST;
 		gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 0);
 		gbc_chckbxNewCheckBox.gridx = 1;
-		gbc_chckbxNewCheckBox.gridy = 8;
-		pnlVariable.add(ckbStratifyAll, gbc_chckbxNewCheckBox);
-		ckbStratifyAll.setVisible(false);
+		gbc_chckbxNewCheckBox.gridy = 7;
+		pnlVariable.add(ckbProcessAllObjects, gbc_chckbxNewCheckBox);
+		ckbProcessAllObjects.setVisible(false);
 		
-		JTabbedPane pnlStratify = new JTabbedPane(JTabbedPane.TOP);
-		pnlStratify.setFont(new Font("Arial", Font.PLAIN, 14));
+	
+		
+		JTabbedPane pnlAdditionalProcessing = new JTabbedPane(JTabbedPane.TOP);
+		pnlAdditionalProcessing.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_pnlStratify = new GridBagConstraints();
-		gbc_pnlStratify.gridheight = 2;
+		gbc_pnlStratify.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlStratify.gridwidth = 2;
-		gbc_pnlStratify.fill = GridBagConstraints.BOTH;
 		gbc_pnlStratify.gridx = 0;
-		gbc_pnlStratify.gridy = 9;
-		pnlVariable.add(pnlStratify, gbc_pnlStratify);
-		pnlStratify.setVisible(false);
+		gbc_pnlStratify.gridy = 8;
+		pnlVariable.add(pnlAdditionalProcessing, gbc_pnlStratify);
+		pnlAdditionalProcessing.setVisible(false);
 		
-		JPanel pnlStratifyPri = new JPanel();
-		pnlStratify.addTab("Primary", null, pnlStratifyPri, null);
+		JPanel pnlProcessPrimary = new JPanel();
+		pnlAdditionalProcessing.addTab("Primary", null, pnlProcessPrimary, null);
 		
 		JCheckBox ckbPri25Bands = new JCheckBox("25 % Bands");
 		ckbPri25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		pnlStratifyPri.add(ckbPri25Bands);
+		pnlProcessPrimary.add(ckbPri25Bands);
 		
 		JCheckBox ckbPri50Bands = new JCheckBox("50 % Bands");
 		ckbPri50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		pnlStratifyPri.add(ckbPri50Bands);
+		pnlProcessPrimary.add(ckbPri50Bands);
 		
-		JPanel panel_1 = new JPanel();
-		pnlStratify.addTab("Secondary", null, panel_1, null);
+		JCheckBox ckbPriSkeletonize = new JCheckBox("Skeletonize");
+		ckbPriSkeletonize.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlProcessPrimary.add(ckbPriSkeletonize);
+		
+		JPanel pnlProcessSecondary = new JPanel();
+		pnlAdditionalProcessing.addTab("Secondary", null, pnlProcessSecondary, null);
 		
 		JCheckBox ckbSec25Bands = new JCheckBox("25 % Bands");
 		ckbSec25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		panel_1.add(ckbSec25Bands);
+		pnlProcessSecondary.add(ckbSec25Bands);
 		
 		JCheckBox ckbSec50Bands = new JCheckBox("50 % Bands");
 		ckbSec50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		panel_1.add(ckbSec50Bands);
+		pnlProcessSecondary.add(ckbSec50Bands);
 		
-		JPanel panel = new JPanel();
-		pnlStratify.addTab("Tertiary", null, panel, null);
+		JCheckBox ckbSecSkeletonize = new JCheckBox("Skeletonize");
+		ckbSecSkeletonize.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlProcessSecondary.add(ckbSecSkeletonize);
+		
+		JPanel pnlProcessTertiary = new JPanel();
+		pnlAdditionalProcessing.addTab("Tertiary", null, pnlProcessTertiary, null);
 		
 		JCheckBox ckbTer25Bands = new JCheckBox("25 % Bands");
 		ckbTer25Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		panel.add(ckbTer25Bands);
+		pnlProcessTertiary.add(ckbTer25Bands);
 		
 		JCheckBox ckbTer50Bands = new JCheckBox("50 % Bands");
 		ckbTer50Bands.setFont(new Font("Arial", Font.PLAIN, 14));
-		panel.add(ckbTer50Bands);
+		pnlProcessTertiary.add(ckbTer50Bands);
+		
+		JCheckBox ckbTerSkeletonize = new JCheckBox("Skeletonize");
+		ckbTerSkeletonize.setFont(new Font("Arial", Font.PLAIN, 14));
+		pnlProcessTertiary.add(ckbTerSkeletonize);
 
 		JPanel pnlPrimary = new JPanel();
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
@@ -1611,7 +1611,6 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryBackground = new JComboBox();
 		cbTertiaryBackground.setEnabled(false);
-		//cbTertiaryBackground.setModel(new DefaultComboBoxModel(new String[] {"None", "Default", "3D DoG", "3D Top Hat"}));
 		cbTertiaryBackground.setModel(new DefaultComboBoxModel<>(BackgroundType.values()));
 		cbTertiaryBackground.setSelectedIndex(0);
 		cbTertiaryBackground.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1634,7 +1633,6 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryFilter = new JComboBox();
 		cbTertiaryFilter.setEnabled(false);
-		//cbTertiaryFilter.setModel(new DefaultComboBoxModel(new String[] {"None", "3D Gaussian Blur", "3D DoG", "3D Median", "3D Mean"}));
 		cbTertiaryFilter.setModel(new DefaultComboBoxModel<>(FilterType.values()));
 		cbTertiaryFilter.setSelectedIndex(0);
 		cbTertiaryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1882,7 +1880,6 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiaryThreshold.add(txtTertiaryMethodThreshold);
 		
 		JComboBox cbTertiaryMethodThreshold = new JComboBox();
-		//cbTertiaryMethodThreshold.setModel(new DefaultComboBoxModel(new String[] {"Otsu", "G.C", "Huang", "Yen"}));
 		cbTertiaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
 		cbTertiaryMethodThreshold.setSelectedIndex(0);
 		cbTertiaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1940,7 +1937,7 @@ public class AnalysisGUI extends JFrame {
 		JButton btnRunAnalysis = new JButton("Run Analysis");
 		btnRunAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
 				// Collect parameters from GUI
 				String inputDir = txtInputDir.getText();
 				String outputDir = txtOutputDir.getText();
@@ -2029,7 +2026,7 @@ public class AnalysisGUI extends JFrame {
 						).
 						build();
 				
-				// stratify labels
+				// Stratify label parameters
 				StratifyParameters stratifyParameters = StratifyParameters.builder().
 						primary25(ckbPri25Bands.isSelected()).
 						primary50(ckbPri50Bands.isSelected()).
@@ -2038,8 +2035,15 @@ public class AnalysisGUI extends JFrame {
 						tertiary25(ckbTer25Bands.isSelected()).
 						tertiary50(ckbTer50Bands.isSelected()).
 						build();
-
 				
+				// Skeletonize label parameters
+				SkeletonParameters skeletonParameters = SkeletonParameters.builder().
+						primary(ckbPriSkeletonize.isSelected()).
+						secondary(ckbSecSkeletonize.isSelected()).
+						tertairy(ckbTerSkeletonize.isSelected()).
+						build();
+				
+				// build the final data object
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
 						outputDir(outputDir).
@@ -2055,8 +2059,8 @@ public class AnalysisGUI extends JFrame {
 						nameChannel4(txtC4.getText()).
 						processTertiary(ckbTertiary.isSelected()).
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
-						skeletonize(ckbSkeletonization.isSelected()).
 						stratifyParameters(stratifyParameters).
+						skeletonParamters(skeletonParameters).
 						build();
 				
 				
@@ -2081,7 +2085,7 @@ public class AnalysisGUI extends JFrame {
 						.build();
 				
 				StratifyAndQuantifyLabels strat = new StratifyAndQuantifyLabels();
-				ResultsTable output = strat.process(imgData, 0.25);
+				ResultsTable output = strat.process(imgData, imp, 0.25);
 				
 				output.show("RESULTS");
 				ResultsTableUtility rtu = new ResultsTableUtility();
@@ -2095,8 +2099,8 @@ public class AnalysisGUI extends JFrame {
 				// Hand off to DatumUpdateService
 				//paramManager.notifyUpdated(parameterCollection);
 				
-
-
+				
+				
 				
 				
 			}
@@ -2145,7 +2149,7 @@ public class AnalysisGUI extends JFrame {
 					for(Component comp:guiHelper.getComponents(pnlTertiary)) {
 						comp.setEnabled(false);
 					}
-					ckbTertiary.setEnabled(false);
+					ckbTertiary.setEnabled(true);
 				} else if(ckbTertiary.isSelected()) {
 					for(Component comp:guiHelper.getComponents(pnlTertiary)) {
 						comp.setEnabled(true);
@@ -2323,34 +2327,40 @@ public class AnalysisGUI extends JFrame {
 				
 				switch (mode) {
 				case NONE:
-					ckbSkeletonization.setVisible(false);
-					ckbStratifyLabels.setVisible(false);
+					pnlAdditionalProcessing.setVisible(false);
+					ckbAdditionalProcessing.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
 					break;
 				case BASIC:
-					ckbSkeletonization.setVisible(true);
-					ckbStratifyLabels.setVisible(false);
+					ckbAdditionalProcessing.setVisible(true);
+					ckbAdditionalProcessing.setSelected(false);
+					ckbProcessAllObjects.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
 					break;
 				case SPHEROID:
-					ckbStratifyLabels.setVisible(true);
-					ckbSkeletonization.setVisible(false);
+					ckbAdditionalProcessing.setVisible(true);
+					ckbAdditionalProcessing.setSelected(false);
+					ckbProcessAllObjects.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(true);
 					break;
 				case SINGLECELL:
 					ckbTertiaryObjectOption.setVisible(true);
-					ckbSkeletonization.setVisible(true);
-					ckbStratifyLabels.setVisible(false);
+					ckbAdditionalProcessing.setSelected(false);
+					ckbProcessAllObjects.setVisible(false);
+					ckbAdditionalProcessing.setVisible(true);
 					break;
 				case SPECKLE:
-					ckbSkeletonization.setVisible(true);
-					ckbStratifyLabels.setVisible(false);
+					ckbAdditionalProcessing.setVisible(true);
+					ckbAdditionalProcessing.setSelected(false);
+					ckbProcessAllObjects.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
 					break;
 				default:
-					ckbSkeletonization.setVisible(false);
-					ckbStratifyLabels.setVisible(false);
+					pnlAdditionalProcessing.setVisible(false);
+					ckbAdditionalProcessing.setSelected(false);
+					ckbAdditionalProcessing.setVisible(false);
 					ckbTertiaryObjectOption.setVisible(false);
+					ckbProcessAllObjects.setVisible(false);
 					break;
 				}
 			}
@@ -2492,28 +2502,20 @@ public class AnalysisGUI extends JFrame {
 		/*
 		 * Options for stratification.
 		 */
-		ckbStratifyLabels.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (ckbStratifyLabels.isSelected()) {
-					pnlStratify.setVisible(true);
-					ckbStratifyAll.setVisible(true);
-				} else {
-					pnlStratify.setVisible(false);
-					ckbStratifyAll.setVisible(false);
-				}
-			}
-		});
-		
 		// when process all is ticked, activate all stratification options
-		ckbStratifyAll.addItemListener(new ItemListener() {
+		ckbProcessAllObjects.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if (ckbStratifyAll.isSelected()) {
+				if (ckbProcessAllObjects.isSelected()) {
 					ckbPri25Bands.setSelected(true);
 					ckbSec25Bands.setSelected(true);
 					ckbTer25Bands.setSelected(true);
 					ckbPri50Bands.setSelected(true);
 					ckbSec50Bands.setSelected(true);
 					ckbTer50Bands.setSelected(true);
+					ckbPriSkeletonize.setSelected(true);
+					ckbSecSkeletonize.setSelected(true);
+					ckbTerSkeletonize.setSelected(true);
+					
 				} else {
 					ckbPri25Bands.setSelected(false);
 					ckbSec25Bands.setSelected(false);
@@ -2521,11 +2523,25 @@ public class AnalysisGUI extends JFrame {
 					ckbPri50Bands.setSelected(false);
 					ckbSec50Bands.setSelected(false);
 					ckbTer50Bands.setSelected(false);
+					ckbPriSkeletonize.setSelected(false);
+					ckbSecSkeletonize.setSelected(false);
+					ckbTerSkeletonize.setSelected(false);
 				}
 				
 			}
 		});
 		
+		ckbAdditionalProcessing.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (ckbAdditionalProcessing.isSelected()) {
+					pnlAdditionalProcessing.setVisible(true);
+					ckbProcessAllObjects.setVisible(true);
+				} else {
+					pnlAdditionalProcessing.setVisible(false);
+					ckbProcessAllObjects.setVisible(false);
+				}
+			}
+		});
 
 	}
 	

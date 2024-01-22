@@ -25,6 +25,7 @@ public class StratifyProcess {
 			
 		}
 		
+		
 		if(params.getStratifyParameters().getPrimary50()) {
 			tables.put("pri50", stratify.process(imgData, imgData.getImages().getPrimary(), half));
 		}
