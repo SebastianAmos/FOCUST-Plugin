@@ -1,9 +1,11 @@
 package clcm.focust.mode;
 
+import java.util.Map;
 import java.util.Optional;
 
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
+import ij.measure.ResultsTable;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +15,7 @@ import lombok.Data;
 public class CompiledImageData {
 
 	SegmentedChannels images;
-	Optional<SkeletonResultsHolder> secondarySkeletons;
-	Optional<SkeletonResultsHolder> tertiarySkeletons;
+	Map<String, SkeletonResultsHolder> skeletons;
+	Map<String, ResultsTable> stratifyResults;
 	
 }

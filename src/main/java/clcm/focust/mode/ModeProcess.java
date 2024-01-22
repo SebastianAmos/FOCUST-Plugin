@@ -1,14 +1,17 @@
 package clcm.focust.mode;
 
 import java.io.File;
-import java.util.Optional;
-
+import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
-import clcm.focust.segmentation.skeleton.Skeleton;
+import clcm.focust.segmentation.SaveSkeletons;
+import clcm.focust.segmentation.labels.StratifyProcess;
+import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.ResultsTable;
+
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeProcess{
@@ -30,7 +33,7 @@ public class ModeProcess{
 			
 			String path = parameters.getInputDir() + list[i];
 
-			// open image.
+			// Open image.
 			ijLog("Opening image path: " + path);
 			ImagePlus imp = IJ.openImage(path);
 			String imgName = imp.getTitle();
@@ -38,35 +41,26 @@ public class ModeProcess{
 			// Run the user-specified segmentation for appropriate channels.
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels objects = segment.run(parameters, imp);
+		
 			
-			// run skeletons for secondary and tertiary objects
-			// TODO: add gui options to pick sec or ter or both - maybe even primary???
+			// Generate skeletons based on user inputs and save
+			SkeletonProcess skeletonize = new SkeletonProcess();
+			Map<String, SkeletonResultsHolder> skeletonResults = skeletonize.run(parameters, objects);
+			SaveSkeletons saveSkeletons = new SaveSkeletons();
+			saveSkeletons.saveSkeletons(skeletonResults, parameters, imgName);
 			
-			// Init both optionals.
-			Optional<SkeletonResultsHolder> secondarySkeletonResults = Optional.empty();
-			Optional<SkeletonResultsHolder> tertiarySkeletonResults = Optional.empty();
 			
-			
-			if(parameters.getSkeletonize()) {
-				Skeleton skeleton = new Skeleton();
-				
-				// Secondary
-				ImagePlus secondarySkeleton = skeleton.createSkeletons(objects.getSecondary());
-				secondarySkeletonResults = Optional.ofNullable(skeleton.analyzeSkeletons(secondarySkeleton, objects.getSecondary(), imgName));
-				
-				// Tertiary - optional
-				ImagePlus tertiarySkeleton = objects.getTertiary().map(t -> skeleton.createSkeletons(t)).orElse(null);
-				tertiarySkeletonResults = objects.getTertiary().map(t -> skeleton.analyzeSkeletons(tertiarySkeleton, t, imgName));
-				
-			}
+			// Generate stratified bands - bands are saved within
+			StratifyProcess stratify = new StratifyProcess();
+			Map<String, ResultsTable> stratifyResults = stratify.process(parameters, objects, imgName);
 			
 			
 			// Build compiledImageData object.
-			CompiledImageData imgData = CompiledImageData.builder()
-					.images(objects)
-					.secondarySkeletons(secondarySkeletonResults)
-					.tertiarySkeletons(tertiarySkeletonResults)
-					.build();
+			CompiledImageData imgData = CompiledImageData.builder().
+					images(objects).
+					skeletons(skeletonResults).
+					stratifyResults(stratifyResults).
+					build();
 			
 			
 			// Run the selected mode

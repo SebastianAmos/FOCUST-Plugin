@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import clcm.focust.TableUtility;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.mode.CompiledImageData;
+import clcm.focust.parameters.ParameterCollection;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -28,12 +30,11 @@ public class StratifyAndQuantifyLabels {
 	/**
 	 * CHANGE TO FIRST INPUT = LABEL TYPE TO STRATIFY
 	 * 
-	 * 
 	 * @param imgData 
 	 * @param bandPercent
 	 * @return
 	 */
-	public ResultsTable process(CompiledImageData imgData, ImagePlus imp, Double bandPercent) {
+	public ResultsTable process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
 		
 		// Lists to store each band type
 		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25%
@@ -42,7 +43,7 @@ public class StratifyAndQuantifyLabels {
 		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25%
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-		ClearCLBuffer labs = clij2.push(imgData.getImages().getPrimary());
+		ClearCLBuffer labs = clij2.push(imgData.getPrimary());
 		
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
@@ -63,36 +64,70 @@ public class StratifyAndQuantifyLabels {
 		
 		// Hold the 4 final band type images.
 		List<ClearCLBuffer> bandTypes = new ArrayList<>();
-	
-		// Add all labels of each band type into the same buffer for intensity analysis
-		bandTypes.add(combineAndRelabelBuffers(b1, labs, clij2));
-		bandTypes.add(combineAndRelabelBuffers(b2, labs, clij2));
-		bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2));
-		bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2));
 		
-		// Do the intensity analysis for each band type, within each channel 
+		// Add all labels of each band type into the same buffer for intensity analysis
+		bandTypes.add(combineAndRelabelBuffers(b1, labs, clij2, 1));
+		bandTypes.add(combineAndRelabelBuffers(b2, labs, clij2, 2));
+		bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
+		bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
+		
+		// Do the intensity analysis for each band type, within each channel
 		// ----> Using a combined chamfer distance map for testing!!
 		ClearCLBuffer testDist = computeChamferDistanceMap(labs);
 		ClearCLBuffer testDist2 = clij2.create(testDist); 
 		clij2.copy(testDist, testDist2);
 		ClearCLBuffer[] TestDists = {testDist, testDist2};
 		
-		/** Generate Results */ 
+		/** Generate Results */
 		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, TestDists);
-
+		
+		saveBands(bandTypes, objectType, params, imgName);
+		
+		
 		return rt;
 	}
 	
 	
 	/**
-	 * Combine all buffers in a list into a single buffer, then adopt labeling from the original buffer. 
+	 * Saves all of the band types, appending the current object type and band number to the name.
+	 * Objects are either of the type "Q" = quarter, or "H" = half.
+	 * Q1 = outer most band: Q4 = innermost band. H1 = outer half: H2 = inner half.
+	 * 
+	 * @param bandTypes
+	 * @param objectType
+	 */
+	private void saveBands(List<ClearCLBuffer> bandTypes, String objectType, ParameterCollection params, String imgName) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
+		int counter = 1;
+		
+		if(!params.getOutputDir().isEmpty()) {
+			for (ClearCLBuffer band : bandTypes) {
+				IJ.saveAs(clij2.pull(band), "TIF", params.getInputDir() + objectType + counter + imgName);
+				counter++;
+				band.close();
+			} 
+		} else {
+			for (ClearCLBuffer band : bandTypes) {
+				IJ.saveAs(clij2.pull(band), "TIF", params.getOutputDir() + objectType + counter + imgName);
+				counter++;
+				band.close();
+			}
+		}
+		
+	}
+
+
+	/**
+	 * Combine all buffers in a list into a single buffer, then adopt labeling from the original buffer.
 	 * 
 	 * @param buffers List to combine into a single buffer
 	 * @param labels  Original labels to adopt
-	 * @param clij2 instance. 
+	 * @param clij2 instance.
 	 * @return
 	 */
-	private ClearCLBuffer combineAndRelabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2) {
+	private ClearCLBuffer combineAndRelabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2, int bandType) {
 		
 		ClearCLBuffer intermediate = clij2.create(buffers.get(0));
 		ClearCLBuffer type = clij2.create(intermediate);
@@ -104,6 +139,7 @@ public class StratifyAndQuantifyLabels {
 		});
 		
 		clij2.multiplyImages(type, labels, result);
+		
 		
 		return result;
 	}
