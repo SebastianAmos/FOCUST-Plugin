@@ -71,6 +71,48 @@ public class ModeBasic implements Mode {
 		});
 
 
+		/* Append standard skeleton results */
+		
+		if(parameters.getSkeletonParamters().getPrimary()) {
+			primaryResults.add(imgData.getSkeletons().get("Primary").getStandard());
+		}
+		
+		if(parameters.getSkeletonParamters().getSecondary()) {
+			primaryResults.add(imgData.getSkeletons().get("Secondary").getStandard());
+		}
+		
+		if(parameters.getSkeletonParamters().getTertairy()) {
+			imgData.getImages().getTertiary().ifPresent(t -> {
+				primaryResults.add(imgData.getSkeletons().get("Tertiary").getStandard());
+			});
+		}
+		
+		/* Append the stratification results tables if they were generated */
+		for (Map.Entry<String, ResultsTable> band : imgData.getStratifyResults().entrySet()) {
+			
+			String type = band.getKey();
+			ResultsTable rt = band.getValue();
+			
+			switch (type) {
+			case "pri25":
+				primaryResults.add(rt);
+			case "pri50":
+				primaryResults.add(rt);
+			case "sec25":
+				secondaryResults.add(rt);
+			case "sec50":
+				secondaryResults.add(rt);
+			case "ter25":
+				tertiaryResults.add(rt);
+			case "ter50":
+				tertiaryResults.add(rt);
+			default:
+				break;
+			}
+		}
+		
+	
+		
 		/*
 		 * Build and save the final results tables
 		 */

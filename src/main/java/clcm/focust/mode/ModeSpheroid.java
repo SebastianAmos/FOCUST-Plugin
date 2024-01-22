@@ -8,10 +8,19 @@ import ij.ImagePlus;
 
 public class ModeSpheroid implements Mode {
 
+
 	@Override
-	public SegmentedChannels run(ParameterCollection parameters) {
-		return null;
-		// TODO Auto-generated method stub
+	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
+		
+		// Spheroid method will do the following: 
+		
+				// Count how many nuclei per spheroid
+				
+				// combine secondary and tertiary results tables (for whole spheroid and cytoplasmic --> ONLY IF NOT SEGMENTING TERTIARY
+				
+				// Count how many primary objects per stratification system
+				
+				// 
 		
 	}
 

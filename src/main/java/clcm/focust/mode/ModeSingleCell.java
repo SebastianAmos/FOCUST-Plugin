@@ -8,10 +8,9 @@ import ij.ImagePlus;
 
 public class ModeSingleCell implements Mode {
 
+
 	@Override
-	public SegmentedChannels run(ParameterCollection parameters) {
-		
-		return null;
+	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
 		// TODO Auto-generated method stub
 		
 	}

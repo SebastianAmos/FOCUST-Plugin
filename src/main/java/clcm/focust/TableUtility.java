@@ -304,8 +304,8 @@ public class TableUtility {
 			
 		}
 		
-		
-		ResultsTable output = compileAllResults(rtList);
+		TableUtility tu = new TableUtility();
+		ResultsTable output = tu.compileAllResults(rtList);
 		
 		return output;
 	}
@@ -335,7 +335,7 @@ public class TableUtility {
 	
 	
 	// TODO: Method for running analysis on all objects if present and storing results tables
-	public static ResultsTable compileAllResults(List<ResultsTable> list){
+	public ResultsTable compileAllResults(List<ResultsTable> list){
 		
 		ResultsBuilder rb = new ResultsBuilder();
 		

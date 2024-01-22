@@ -8,6 +8,12 @@ import clcm.focust.parameters.ParameterCollection;
 
 public class SkeletonProcess {
 
+	/**
+	 * Skeletonises the user-selected object types and stores the labelled skeletons and results tables mapped to a string of object type.
+	 * @param params
+	 * @param segmentedChannels
+	 * @return
+	 */
 	public Map<String, SkeletonResultsHolder> run(ParameterCollection params, SegmentedChannels segmentedChannels) {
 		
 		Map<String, SkeletonResultsHolder> results = new HashMap<>();
@@ -31,4 +37,8 @@ public class SkeletonProcess {
 		return results;
 		
 	}
+	
+
+	
+	
 }
