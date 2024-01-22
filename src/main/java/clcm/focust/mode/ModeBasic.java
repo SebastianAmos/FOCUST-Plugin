@@ -111,7 +111,7 @@ public class ModeBasic implements Mode {
 			}
 		}
 		
-	
+		
 		
 		/*
 		 * Build and save the final results tables
