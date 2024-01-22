@@ -33,7 +33,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param bandPercent
 	 * @return
 	 */
-	public ResultsTable process(CompiledImageData imgData, Double bandPercent) {
+	public ResultsTable process(CompiledImageData imgData, ImagePlus imp, Double bandPercent) {
 		
 		// Lists to store each band type
 		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25%

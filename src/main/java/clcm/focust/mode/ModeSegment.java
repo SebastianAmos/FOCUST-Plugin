@@ -82,7 +82,6 @@ public class ModeSegment{
 			
 			// Build return data object
 			SegmentedChannels segChannels = SegmentedChannels.builder().
-					parameterCollection(parameters).
 					primary(primary).
 					secondary(secondary).
 					tertiary(tertiary).

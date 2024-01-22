@@ -17,6 +17,5 @@ public class SegmentedChannels implements DataObject {
 	private final ImagePlus secondary;
 	private final Optional<ImagePlus> tertiary;
 	private final List<ImagePlus> channels;
-	private final ParameterCollection parameterCollection;
 	
 }

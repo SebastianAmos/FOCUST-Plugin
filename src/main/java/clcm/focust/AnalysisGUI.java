@@ -2028,7 +2028,18 @@ public class AnalysisGUI extends JFrame {
 										build()
 						).
 						build();
+				
+				// stratify labels
+				StratifyParameters stratifyParameters = StratifyParameters.builder().
+						primary25(ckbPri25Bands.isSelected()).
+						primary50(ckbPri50Bands.isSelected()).
+						secondary25(ckbSec25Bands.isSelected()).
+						secondary50(ckbSec50Bands.isSelected()).
+						tertiary25(ckbTer25Bands.isSelected()).
+						tertiary50(ckbTer50Bands.isSelected()).
+						build();
 
+				
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
 						outputDir(outputDir).
@@ -2044,9 +2055,8 @@ public class AnalysisGUI extends JFrame {
 						nameChannel4(txtC4.getText()).
 						processTertiary(ckbTertiary.isSelected()).
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
-						coreVPeriphery(ckbStratifyLabels.isSelected()).
-						coreVolume(Double.parseDouble("0.5")).
 						skeletonize(ckbSkeletonization.isSelected()).
+						stratifyParameters(stratifyParameters).
 						build();
 				
 				
