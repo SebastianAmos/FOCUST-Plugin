@@ -19,6 +19,8 @@ public class ParameterCollection implements DataObject {
     final String inputDir;
     final String outputDir;
     final ModeType mode;
+    final Boolean analysisOnly;
+    
     // Primary Object
     final ObjectParameters primaryObject;
     // Secondary Object
@@ -46,15 +48,16 @@ public class ParameterCollection implements DataObject {
     final boolean secondaryOverlay;
     final boolean tertiaryDisplayOriginal;
     final boolean tertiaryOverlay;
-
+    
+    
     public static void saveParameterCollection(ParameterCollection parameterCollection, String filename) throws IOException {
         try (Writer writer = new FileWriter(parameterCollection.outputDir + filename)) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         gson.toJson(parameterCollection, writer);
         }
     }
-       
-
+    
+    
     public static ParameterCollection loadParameterCollection(String file) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.fromJson(new FileReader(file), ParameterCollection.class);

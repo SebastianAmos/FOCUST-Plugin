@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,11 +47,14 @@ import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
 import clcm.focust.filter.Vector3D;
+import clcm.focust.mode.ModeType;
 import clcm.focust.parameters.BackgroundParameters;
 import clcm.focust.parameters.FilterParameters;
 import clcm.focust.parameters.MethodParameters;
 import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.parameters.SkeletonParameters;
+import clcm.focust.parameters.StratifyParameters;
 import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.Segmentation;
@@ -267,9 +271,10 @@ public class OptimizeGUI extends JFrame {
 		JButton btnAnalysis = new JButton("Analysis");
 		btnAnalysis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		
+						
 			}
 		});
+		
 		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnAnalysis = new GridBagConstraints();
 		gbc_btnAnalysis.fill = GridBagConstraints.HORIZONTAL;
@@ -2118,7 +2123,6 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnBackToMenu, gbc_btnBackToMenu);
 		
 		JButton btnLoadParameters = new JButton("Load Configuration");
-		
 		btnLoadParameters.setToolTipText("Browse for a previously saved configuration.");
 		btnLoadParameters.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnLoadParameters = new GridBagConstraints();
@@ -2175,14 +2179,6 @@ public class OptimizeGUI extends JFrame {
 		pnlFooter.add(btnUpdateOverlays, gbc_btnUpdateOverlays);
 		
 		JButton btnSaveConfiguration = new JButton("Save Configuration");
-		btnSaveConfiguration.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				IJ.getDir("Select an Input Directory");
-				
-				
-			}
-		});
 		btnSaveConfiguration.setToolTipText("Save the current configuration.");
 		btnSaveConfiguration.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_btnSaveConfiguration = new GridBagConstraints();
@@ -2665,12 +2661,236 @@ public class OptimizeGUI extends JFrame {
 				}
 			}
 		});
+		
+		
+		btnLoadParameters.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String paramDir = IJ.getFilePath("Select the parameter file");
+				System.out.println("Getting file from: " + paramDir);
+				
+				
+				try {
+					ParameterCollection param = ParameterCollection.loadParameterCollection(paramDir);
+					
+					// extract parameter components
+					ObjectParameters primaryObject = param.getPrimaryObject();
+					ObjectParameters secondaryObject = param.getSecondaryObject();
+					ObjectParameters tertiaryObject = param.getTertiaryObject();
+					
+					// set primary inputs
+					cbPrimaryChannel.setSelectedIndex(primaryObject.getChannel());
+					cbPrimaryBackground.setSelectedItem(primaryObject.getBackgroundParameters().getBackgroundType());
+					txtPrimaryS1X.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtPrimaryS1Y.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtPrimaryS1Z.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtPrimaryS2X.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtPrimaryS2Y.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtPrimaryS2Z.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbPrimaryFilter.setSelectedItem(primaryObject.getFilterParameters().getFilterType());
+					txtPriFilterX.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getX()));
+					txtPriFilterY.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getY()));
+					txtPriFilterZ.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getZ()));
+					txtPriFilter2X.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getX()));
+					txtPriFilter2Y.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getY()));
+					txtPriFilter2Z.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbPrimaryMethod.setSelectedItem(primaryObject.getMethodParameters().getMethodType());
+					txtPriSpotX.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getX()));
+					txtPriSpotY.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getY()));
+					txtPriSpotZ.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getZ()));
+					cbPrimaryMethodThreshold.setSelectedItem(primaryObject.getMethodParameters().getThresholdType());
+					txtPrimaryMethodThreshold.setText(String.valueOf(primaryObject.getMethodParameters().getThresholdSize()));
+		
+					// set secondary inputs
+					cbSecondaryChannel.setSelectedIndex(secondaryObject.getChannel());
+					cbSecondaryBackground.setSelectedItem(secondaryObject.getBackgroundParameters().getBackgroundType());
+					txtSecondaryS1X.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtSecondaryS1Y.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtSecondaryS1Z.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtSecondaryS2X.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtSecondaryS2Y.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtSecondaryS2Z.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbSecondaryFilter.setSelectedItem(secondaryObject.getFilterParameters().getFilterType());
+					txtSecFilterX.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getX()));
+					txtSecFilterY.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getY()));
+					txtSecFilterZ.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getZ()));
+					txtSecFilter2X.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getX()));
+					txtSecFilter2Y.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getY()));
+					txtSecFilter2Z.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbSecondaryMethod.setSelectedItem(secondaryObject.getMethodParameters().getMethodType());
+					txtSecondaryMethodX.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getX()));
+					txtSecondaryMethodY.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getY()));
+					txtSecondaryMethodZ.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getZ()));
+					cbSecondaryMethodThreshold.setSelectedItem(secondaryObject.getMethodParameters().getThresholdType());
+					txtSecondaryMethodThreshold.setText(String.valueOf(secondaryObject.getMethodParameters().getThresholdSize()));
+					
+					// set tertiary inputs
+					cbTertiaryChannel.setSelectedIndex(tertiaryObject.getChannel());
+					cbTertiaryBackground.setSelectedItem(tertiaryObject.getBackgroundParameters().getBackgroundType());
+					txtTertiaryS1X.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtTertiaryS1Y.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtTertiaryS1Z.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtTertiaryS2X.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtTertiaryS2Y.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtTertiaryS2Z.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbTertiaryFilter.setSelectedItem(tertiaryObject.getFilterParameters().getFilterType());
+					txtTertFilterX.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getX()));
+					txtTertFilterY.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getY()));
+					txtTertFilterZ.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getZ()));
+					txtTertFilter2X.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getX()));
+					txtTertFilter2Y.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getY()));
+					txtTertFilter2Z.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbTertiaryMethod.setSelectedItem(tertiaryObject.getMethodParameters().getMethodType());
+					txtTertiaryMethodX.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getX()));
+					txtTertiaryMethodY.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getY()));
+					txtTertiaryMethodZ.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getZ()));
+					cbTertiaryMethodThreshold.setSelectedItem(tertiaryObject.getMethodParameters().getThresholdType());
+					txtTertiaryMethodThreshold.setText(String.valueOf(tertiaryObject.getMethodParameters().getThresholdSize()));
+					
+					System.out.println("FOCUST paramter file found and loaded.");
+				} catch (IOException e1) {
+					System.out.println("Could not locate or load FOCUST parameter file.");
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		
 	
+		btnSaveConfiguration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String fileDir = IJ.getDir("Select a directory to save the parameter file.");
+				
+				
+				String inputDir = txtInputDir.getText();
+				
+				// Primary Object
+				ObjectParameters primaryObject = ObjectParameters.builder().
+						channel(cbPrimaryChannel.getSelectedIndex()).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbPrimaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPrimaryS1X.getText())).y(Double.parseDouble(txtPrimaryS1Y.getText())).z(Double.parseDouble(txtPrimaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPrimaryS2X.getText())).y(Double.parseDouble(txtPrimaryS2Y.getText())).z(Double.parseDouble(txtPrimaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbPrimaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtPriFilterX.getText())).y(Double.parseDouble(txtPriFilterY.getText())).z(Double.parseDouble(txtPriFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtPriFilter2X.getText())).y(Double.parseDouble(txtPriFilter2Y.getText())).z(Double.parseDouble(txtPriFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbPrimaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
+										thresholdType((ThresholdType) cbPrimaryMethodThreshold.getSelectedItem()).
+										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
+										classifierFilename(txtPrimaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+
+				// Secondary Object
+				ObjectParameters secondaryObject = ObjectParameters.builder().
+						channel(cbSecondaryChannel.getSelectedIndex()).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbSecondaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecondaryS1X.getText())).y(Double.parseDouble(txtSecondaryS1Y.getText())).z(Double.parseDouble(txtSecondaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecondaryS2X.getText())).y(Double.parseDouble(txtSecondaryS2Y.getText())).z(Double.parseDouble(txtSecondaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbSecondaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtSecFilterX.getText())).y(Double.parseDouble(txtSecFilterY.getText())).z(Double.parseDouble(txtSecFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtSecFilter2X.getText())).y(Double.parseDouble(txtSecFilter2Y.getText())).z(Double.parseDouble(txtSecFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbSecondaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
+										thresholdType((ThresholdType) cbSecondaryMethodThreshold.getSelectedItem()).
+										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
+										classifierFilename(txtSecondaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+
+				//Tertiary Object
+				ObjectParameters tertiaryObject = ObjectParameters.builder().
+						channel(cbTertiaryChannel.getSelectedIndex()).
+						backgroundParameters(
+								BackgroundParameters.builder().
+										backgroundType((BackgroundType) cbTertiaryBackground.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertiaryS1X.getText())).y(Double.parseDouble(txtTertiaryS1Y.getText())).z(Double.parseDouble(txtTertiaryS1Z.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertiaryS2X.getText())).y(Double.parseDouble(txtTertiaryS2Y.getText())).z(Double.parseDouble(txtTertiaryS2Z.getText())).build()).
+										build()
+						).
+						filterParameters(
+								FilterParameters.builder().
+										filterType((FilterType) cbTertiaryFilter.getSelectedItem()).
+										sigma1(Vector3D.builder().x(Double.parseDouble(txtTertFilterX.getText())).y(Double.parseDouble(txtTertFilterY.getText())).z(Double.parseDouble(txtTertFilterZ.getText())).build()).
+										sigma2(Vector3D.builder().x(Double.parseDouble(txtTertFilter2X.getText())).y(Double.parseDouble(txtTertFilter2Y.getText())).z(Double.parseDouble(txtTertFilter2Z.getText())).build()).
+										build()
+						).
+						methodParameters(
+								MethodParameters.builder().
+										methodType((MethodTypes) cbTertiaryMethod.getSelectedItem()).
+										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
+										thresholdType((ThresholdType) cbTertiaryMethodThreshold.getSelectedItem()).
+										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
+										classifierFilename(txtTertiaryClassiferDirectory.getText()).
+										build()
+						).
+						build();
+				
+				
+				
+				// build the final data object
+				ParameterCollection parameterCollection = ParameterCollection.builder().
+						inputDir(inputDir).
+						outputDir(fileDir).
+						primaryObject(primaryObject).
+						secondaryObject(secondaryObject).
+						tertiaryObject(tertiaryObject).
+						killBorderType(selectedKillBorderOption).
+						processTertiary(ckbTertiary.isSelected()).
+						build();
+				
+				
+				// save the parameter object
+				try {
+					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST-Optimization-File.json");
+				} catch (IOException e1) {
+					System.out.println("Unable to save FOCUST parameter file.");
+					e1.printStackTrace();
+				}
+				
+				
+				
+			}
+			
+		});
+		
+		
+		
 		
 		
 		
 	}
 
+
+	
 	
 	private static class __Tmp {
 		private static void __tmp() {

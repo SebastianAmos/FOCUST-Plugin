@@ -2044,6 +2044,7 @@ public class AnalysisGUI extends JFrame {
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
 						outputDir(outputDir).
+						analysisOnly(ckbAnalysisOnly.isSelected()).
 						mode((ModeType) cbAnalysisMode.getSelectedItem()).
 						primaryObject(primaryObject).
 						secondaryObject(secondaryObject).
@@ -2067,7 +2068,7 @@ public class AnalysisGUI extends JFrame {
 				
 				// testing save and load of params
 				try {
-					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST_Paramter_File.json");
+					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST-Parameter-File.json");
 				} catch (IOException e1) {
 					System.out.println("Unable to save FOCUST parameter file.");
 					e1.printStackTrace();
@@ -2544,7 +2545,7 @@ public class AnalysisGUI extends JFrame {
 		
 		btnLoadParameters.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String paramDir = IJ.getFilePath("Select the parameter file");
+				String paramDir = IJ.getFilePath("Select the parameter or optimisation file");
 				System.out.println("Getting file from: " + paramDir);
 				
 				
@@ -2642,6 +2643,7 @@ public class AnalysisGUI extends JFrame {
 					txtC4.setText(param.getNameChannel4());
 					selectedKillBorderOption = param.getKillBorderType();
 					cbAnalysisMode.setSelectedItem(param.getMode());
+					ckbAnalysisOnly.setSelected(param.getAnalysisOnly());
 					ckbTertiary.setSelected(param.getProcessTertiary());
 					ckbTertiaryObjectOption.setSelected(param.getTertiaryIsDifference());
 					
