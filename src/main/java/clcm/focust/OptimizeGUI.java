@@ -2854,16 +2854,35 @@ public class OptimizeGUI extends JFrame {
 						).
 						build();
 				
+				// Stratify label parameters
+				StratifyParameters stratifyParameters = StratifyParameters.builder().
+						primary25(false).
+						primary50(false).
+						secondary25(false).
+						secondary50(false).
+						tertiary25(false).
+						tertiary50(false).
+						build();
 				
+				// Skeletonize label parameters
+				SkeletonParameters skeletonParameters = SkeletonParameters.builder().
+						primary(false).
+						secondary(false).
+						tertairy(false).
+						build();
 				
 				// build the final data object
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						inputDir(inputDir).
 						outputDir(fileDir).
+						analysisOnly(false).
 						primaryObject(primaryObject).
 						secondaryObject(secondaryObject).
+						skeletonParamters(skeletonParameters).
+						stratifyParameters(stratifyParameters).
 						tertiaryObject(tertiaryObject).
 						killBorderType(selectedKillBorderOption).
+						tertiaryIsDifference(true).
 						processTertiary(ckbTertiary.isSelected()).
 						build();
 				

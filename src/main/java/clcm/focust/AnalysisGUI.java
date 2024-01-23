@@ -2642,11 +2642,19 @@ public class AnalysisGUI extends JFrame {
 					txtC3.setText(param.getNameChannel3());
 					txtC4.setText(param.getNameChannel4());
 					selectedKillBorderOption = param.getKillBorderType();
-					cbAnalysisMode.setSelectedItem(param.getMode());
+					
+					// default mode to NONE
+					try {
+						cbAnalysisMode.setSelectedItem(param.getMode());
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						cbAnalysisMode.setSelectedItem(ModeType.NONE);
+					}
+				
 					ckbAnalysisOnly.setSelected(param.getAnalysisOnly());
 					ckbTertiary.setSelected(param.getProcessTertiary());
 					ckbTertiaryObjectOption.setSelected(param.getTertiaryIsDifference());
-					
+
 					// set skeleton inputs 
 					ckbPriSkeletonize.setSelected(skeletonParams.getPrimary());
 					ckbSecSkeletonize.setSelected(skeletonParams.getSecondary());
