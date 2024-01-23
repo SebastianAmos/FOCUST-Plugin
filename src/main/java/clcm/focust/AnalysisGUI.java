@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.IOException;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.data.DatumUpdateService;
@@ -185,10 +186,6 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		JButton btnHelp = new JButton("Help");
-		btnHelp.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
 		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;
@@ -826,7 +823,7 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimarySecondBlur.add(lblNewLabel_6_1_5);
 		
 		txtPriFilter2Y = new JTextField();
-		txtPriFilter2Y.setText("3");
+		txtPriFilter2Y.setText("1");
 		txtPriFilter2Y.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtPriFilter2Y.setColumns(4);
 		pnlPrimarySecondBlur.add(txtPriFilter2Y);
@@ -1242,7 +1239,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondarySecondBlur.add(lblNewLabel_6_4_3);
 		
 		txtSecFilter2X = new JTextField();
-		txtSecFilter2X.setText("2");
+		txtSecFilter2X.setText("1");
 		txtSecFilter2X.setFont(new Font("Arial", Font.PLAIN, 14));
 		txtSecFilter2X.setColumns(4);
 		pnlSecondarySecondBlur.add(txtSecFilter2X);
@@ -2067,9 +2064,21 @@ public class AnalysisGUI extends JFrame {
 				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
 				
 				
+				
+				// testing save and load of params
+				try {
+					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST_Paramter_File.json");
+				} catch (IOException e1) {
+					System.out.println("Unable to save FOCUST parameter file.");
+					e1.printStackTrace();
+				}
+				
+				
+				
 				// Testing new distance-based label stratification
 				//ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
 				
+				/*
 				File f = new File(parameterCollection.getInputDir());
 				String[] list = f.list();
 				String path = parameterCollection.getInputDir() + list[0];
@@ -2078,19 +2087,8 @@ public class AnalysisGUI extends JFrame {
 				// Build compiledImageData object.
 				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
 				
-				CompiledImageData imgData = CompiledImageData.builder()
-						.images(images)
-						.secondarySkeletons(null)
-						.tertiarySkeletons(null)
-						.build();
-				
-				StratifyAndQuantifyLabels strat = new StratifyAndQuantifyLabels();
-				ResultsTable output = strat.process(imgData, imp, 0.25);
-				
-				output.show("RESULTS");
-				ResultsTableUtility rtu = new ResultsTableUtility();
-				rtu.saveAndStackResults(output, "Test", parameterCollection);
-				
+				*/
+			
 				
 				//ModeProcess process = new ModeProcess();
 				//process.run(parameterCollection);
@@ -2542,6 +2540,138 @@ public class AnalysisGUI extends JFrame {
 				}
 			}
 		});
+		
+		
+		btnLoadParameters.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String paramDir = IJ.getFilePath("Select the parameter file");
+				System.out.println("Getting file from: " + paramDir);
+				
+				
+				try {
+					ParameterCollection param = ParameterCollection.loadParameterCollection(paramDir);
+					
+					// extract parameter components
+					ObjectParameters primaryObject = param.getPrimaryObject();
+					ObjectParameters secondaryObject = param.getSecondaryObject();
+					ObjectParameters tertiaryObject = param.getTertiaryObject();
+					SkeletonParameters skeletonParams = param.getSkeletonParamters();
+					StratifyParameters stratifyParams = param.getStratifyParameters();
+					
+					
+					// set primary inputs
+					cbPrimaryChannel.setSelectedIndex(primaryObject.getChannel());
+					cbPrimaryBackground.setSelectedItem(primaryObject.getBackgroundParameters().getBackgroundType());
+					txtPrimaryS1X.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtPrimaryS1Y.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtPrimaryS1Z.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtPrimaryS2X.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtPrimaryS2Y.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtPrimaryS2Z.setText(String.valueOf(primaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbPrimaryFilter.setSelectedItem(primaryObject.getFilterParameters().getFilterType());
+					txtPriFilterX.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getX()));
+					txtPriFilterY.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getY()));
+					txtPriFilterZ.setText(String.valueOf(primaryObject.getFilterParameters().getSigma1().getZ()));
+					txtPriFilter2X.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getX()));
+					txtPriFilter2Y.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getY()));
+					txtPriFilter2Z.setText(String.valueOf(primaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbPrimaryMethod.setSelectedItem(primaryObject.getMethodParameters().getMethodType());
+					txtPriSpotX.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getX()));
+					txtPriSpotY.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getY()));
+					txtPriSpotZ.setText(String.valueOf(primaryObject.getMethodParameters().getSigma().getZ()));
+					cbPrimaryMethodThreshold.setSelectedItem(primaryObject.getMethodParameters().getThresholdType());
+					txtPrimaryMethodThreshold.setText(String.valueOf(primaryObject.getMethodParameters().getThresholdSize()));
+		
+					// set secondary inputs
+					cbSecondaryChannel.setSelectedIndex(secondaryObject.getChannel());
+					cbSecondaryBackground.setSelectedItem(secondaryObject.getBackgroundParameters().getBackgroundType());
+					txtSecondaryS1X.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtSecondaryS1Y.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtSecondaryS1Z.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtSecondaryS2X.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtSecondaryS2Y.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtSecondaryS2Z.setText(String.valueOf(secondaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbSecondaryFilter.setSelectedItem(secondaryObject.getFilterParameters().getFilterType());
+					txtSecFilterX.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getX()));
+					txtSecFilterY.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getY()));
+					txtSecFilterZ.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma1().getZ()));
+					txtSecFilter2X.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getX()));
+					txtSecFilter2Y.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getY()));
+					txtSecFilter2Z.setText(String.valueOf(secondaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbSecondaryMethod.setSelectedItem(secondaryObject.getMethodParameters().getMethodType());
+					txtSecondaryMethodX.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getX()));
+					txtSecondaryMethodY.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getY()));
+					txtSecondaryMethodZ.setText(String.valueOf(secondaryObject.getMethodParameters().getSigma().getZ()));
+					cbSecondaryMethodThreshold.setSelectedItem(secondaryObject.getMethodParameters().getThresholdType());
+					txtSecondaryMethodThreshold.setText(String.valueOf(secondaryObject.getMethodParameters().getThresholdSize()));
+					
+					// set tertiary inputs
+					cbTertiaryChannel.setSelectedIndex(tertiaryObject.getChannel());
+					cbTertiaryBackground.setSelectedItem(tertiaryObject.getBackgroundParameters().getBackgroundType());
+					txtTertiaryS1X.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getX()));
+					txtTertiaryS1Y.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getY()));
+					txtTertiaryS1Z.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma1().getZ()));
+					txtTertiaryS2X.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getX()));
+					txtTertiaryS2Y.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getY()));
+					txtTertiaryS2Z.setText(String.valueOf(tertiaryObject.getBackgroundParameters().getSigma2().getZ()));
+					
+					cbTertiaryFilter.setSelectedItem(tertiaryObject.getFilterParameters().getFilterType());
+					txtTertFilterX.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getX()));
+					txtTertFilterY.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getY()));
+					txtTertFilterZ.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma1().getZ()));
+					txtTertFilter2X.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getX()));
+					txtTertFilter2Y.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getY()));
+					txtTertFilter2Z.setText(String.valueOf(tertiaryObject.getFilterParameters().getSigma2().getZ()));
+					
+					cbTertiaryMethod.setSelectedItem(tertiaryObject.getMethodParameters().getMethodType());
+					txtTertiaryMethodX.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getX()));
+					txtTertiaryMethodY.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getY()));
+					txtTertiaryMethodZ.setText(String.valueOf(tertiaryObject.getMethodParameters().getSigma().getZ()));
+					cbTertiaryMethodThreshold.setSelectedItem(tertiaryObject.getMethodParameters().getThresholdType());
+					txtTertiaryMethodThreshold.setText(String.valueOf(tertiaryObject.getMethodParameters().getThresholdSize()));
+					
+					// set variable inputs
+					txtGroupingInfo.setText(param.getGroupingInfo());
+					txtC1.setText(param.getNameChannel1());
+					txtC2.setText(param.getNameChannel2());
+					txtC3.setText(param.getNameChannel3());
+					txtC4.setText(param.getNameChannel4());
+					selectedKillBorderOption = param.getKillBorderType();
+					cbAnalysisMode.setSelectedItem(param.getMode());
+					ckbTertiary.setSelected(param.getProcessTertiary());
+					ckbTertiaryObjectOption.setSelected(param.getTertiaryIsDifference());
+					
+					// set skeleton inputs 
+					ckbPriSkeletonize.setSelected(skeletonParams.getPrimary());
+					ckbSecSkeletonize.setSelected(skeletonParams.getSecondary());
+					ckbTerSkeletonize.setSelected(skeletonParams.getTertairy());
+					
+					// set stratify inputs
+					ckbPri25Bands.setSelected(stratifyParams.getPrimary25());
+					ckbPri50Bands.setSelected(stratifyParams.getPrimary50());
+					ckbSec25Bands.setSelected(stratifyParams.getSecondary25());
+					ckbSec50Bands.setSelected(stratifyParams.getSecondary50());
+					ckbTer25Bands.setSelected(stratifyParams.getTertiary25());
+					ckbTer50Bands.setSelected(stratifyParams.getTertiary50());
+					
+				
+					System.out.println("FOCUST paramter file found and loaded.");
+				} catch (IOException e1) {
+					System.out.println("Could not locate or load FOCUST parameter file.");
+					e1.printStackTrace();
+				}
+				
+				
+				
+				
+				
+			}
+		});
+		
 
 	}
 	

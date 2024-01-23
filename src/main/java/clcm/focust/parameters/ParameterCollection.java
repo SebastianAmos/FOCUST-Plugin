@@ -48,13 +48,15 @@ public class ParameterCollection implements DataObject {
     final boolean tertiaryOverlay;
 
     public static void saveParameterCollection(ParameterCollection parameterCollection, String filename) throws IOException {
-        Writer writer = new FileWriter(parameterCollection.outputDir + filename);
+        try (Writer writer = new FileWriter(parameterCollection.outputDir + filename)) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         gson.toJson(parameterCollection, writer);
+        }
     }
+       
 
-    public static ParameterCollection loadParameterCollection(String inputDir, String filename) throws IOException {
+    public static ParameterCollection loadParameterCollection(String file) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.fromJson(new FileReader(inputDir + filename), ParameterCollection.class);
+        return gson.fromJson(new FileReader(file), ParameterCollection.class);
     }
 }
