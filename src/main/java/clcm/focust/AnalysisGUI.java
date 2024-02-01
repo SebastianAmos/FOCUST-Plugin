@@ -36,6 +36,7 @@ import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.CompiledImageData;
+import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
@@ -2063,10 +2064,10 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
+			
 				
 				
-				
-				// testing save and load of params
+				// testing save params
 				try {
 					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST-Parameter-File.json");
 				} catch (IOException e1) {
@@ -2091,8 +2092,8 @@ public class AnalysisGUI extends JFrame {
 				*/
 			
 				
-				//ModeProcess process = new ModeProcess();
-				//process.run(parameterCollection);
+				ModeProcess process = new ModeProcess();
+				process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService
@@ -2334,7 +2335,7 @@ public class AnalysisGUI extends JFrame {
 					ckbAdditionalProcessing.setVisible(true);
 					ckbAdditionalProcessing.setSelected(false);
 					ckbProcessAllObjects.setVisible(false);
-					ckbTertiaryObjectOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(true);
 					break;
 				case SPHEROID:
 					ckbAdditionalProcessing.setVisible(true);

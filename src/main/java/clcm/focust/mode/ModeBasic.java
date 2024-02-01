@@ -1,6 +1,5 @@
 package clcm.focust.mode;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,10 @@ public class ModeBasic implements Mode {
 
 	
 	/**
-	 * Segmentation is followed by 3D measurements and intensity quantification. 
+	 * Segmentation is followed by 3D measurements and intensity quantification.
 	 * Each object type is treated independently and one results table per object type is generated.
 	 */
+	
 	@Override
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
 

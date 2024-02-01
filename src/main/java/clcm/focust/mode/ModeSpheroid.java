@@ -18,7 +18,8 @@ public class ModeSpheroid implements Mode {
 				
 				// combine secondary and tertiary results tables (for whole spheroid and cytoplasmic --> ONLY IF NOT SEGMENTING TERTIARY
 				
-				// Count how many primary objects per stratification system
+				// Count how many primary objects per band if available 
+				// -> reduce nuclei to centroids first then count to limit crossover
 				
 				// 
 		

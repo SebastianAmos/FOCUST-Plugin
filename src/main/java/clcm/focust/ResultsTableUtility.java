@@ -16,6 +16,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 
 import clcm.focust.parameters.ParameterCollection;
+import ij.IJ;
 import ij.measure.ResultsTable;
 
 public class ResultsTableUtility {
@@ -104,6 +105,9 @@ public class ResultsTableUtility {
 		
 		try {
 			Writer writer = new FileWriter(csv, true);
+			// test class path
+			IJ.log("resource: " + CSVFormat.class.getResource("CSVFormat.class"));
+			IJ.log("apache class path: " + CSVFormat.class.getDeclaredMethods());
 			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().build())) {
 				for (List<String> record : data) {
 					printer.printRecord(record);

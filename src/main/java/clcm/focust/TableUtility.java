@@ -1,6 +1,5 @@
 package clcm.focust;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -227,7 +226,7 @@ public class TableUtility {
 		return intensityTables;
 		
 	}
-
+	
 	
 	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ClearCLBuffer[] channels) {
 		

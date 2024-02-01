@@ -68,8 +68,6 @@ public class ModeProcess{
 			parameters.getMode().getMode().run(parameters, imgData, imgName);
 			
 			
-			
-		
 		}
 	}
 }

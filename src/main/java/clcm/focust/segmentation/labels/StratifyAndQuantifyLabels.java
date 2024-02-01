@@ -43,7 +43,7 @@ public class StratifyAndQuantifyLabels {
 		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25%
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-		ClearCLBuffer labs = clij2.push(imgData.getPrimary());
+		ClearCLBuffer labs = clij2.push(imp);
 		
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
@@ -78,10 +78,12 @@ public class StratifyAndQuantifyLabels {
 		clij2.copy(testDist, testDist2);
 		ClearCLBuffer[] TestDists = {testDist, testDist2};
 		
+		saveBands(bandTypes, objectType, params, imgName);
+		
 		/** Generate Results */
 		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, TestDists);
 		
-		saveBands(bandTypes, objectType, params, imgName);
+		
 		
 		
 		return rt;
@@ -139,7 +141,6 @@ public class StratifyAndQuantifyLabels {
 		});
 		
 		clij2.multiplyImages(type, labels, result);
-		
 		
 		return result;
 	}
@@ -256,10 +257,10 @@ public class StratifyAndQuantifyLabels {
 	
 	
 	/**
-	 * Stratifies a distance map into 4 bands by 25% histogram bin increments.
+	 * Stratifies a distance map into 4 bands by 25% or 50% histogram bin increments.
 	 *
 	 * @param dMap
-	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%]
+	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%] OR [inner 50%, outer 50%]
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, Double percent, Integer iterations){
 		
