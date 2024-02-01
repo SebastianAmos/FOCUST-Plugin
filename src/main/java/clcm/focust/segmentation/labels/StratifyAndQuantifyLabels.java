@@ -142,6 +142,13 @@ public class StratifyAndQuantifyLabels {
 		
 		clij2.multiplyImages(type, labels, result);
 		
+		
+		ClearCLBuffer imgCopy = clij2.create(result);
+		clij2.copy(result, imgCopy);
+		ImagePlus img = clij2.pull(imgCopy);
+		img.setTitle("band" + bandType);
+		imgCopy.close();
+		
 		return result;
 	}
 	
