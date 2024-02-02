@@ -2064,12 +2064,13 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
-			
+				
 				
 				
 				// testing save params
 				try {
 					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST-Parameter-File.json");
+					System.out.println("Parameter file saved.");
 				} catch (IOException e1) {
 					System.out.println("Unable to save FOCUST parameter file.");
 					e1.printStackTrace();
