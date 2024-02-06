@@ -53,13 +53,13 @@ public class ModeBasic implements Mode {
 		Map<ImagePlus, ResultsTable> intensityTables = TableUtility.compileIntensityResults(segmentedObjects, 
 				imgData.images.getChannels().toArray(new ImagePlus[imgData.images.getChannels().size()]), 
 				parameters);
-
-
+		
+		
 		// Extract the data we want to see first in the results table and add to the final results lists in the first position.
-		primaryResults.add(0, TableUtility.extractGroupAndTitle(rt1, parameters, imgName));
-		secondaryResults.add(0, TableUtility.extractGroupAndTitle(rt2, parameters, imgName));
+		primaryResults.add(0, TableUtility.extractGroupAndTitle(primaryResults.get(0), parameters, imgName));
+		secondaryResults.add(0, TableUtility.extractGroupAndTitle(secondaryResults.get(0), parameters, imgName));
 		imgData.images.getTertiary().ifPresent(t -> {
-			tertiaryResults.add(0, TableUtility.extractGroupAndTitle(rt3, parameters, imgName));
+			tertiaryResults.add(0, TableUtility.extractGroupAndTitle(tertiaryResults.get(0), parameters, imgName));
 		});
 
 

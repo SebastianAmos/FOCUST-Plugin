@@ -2,7 +2,6 @@ package clcm.focust.mode;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
@@ -14,7 +13,9 @@ import ij.plugin.ImageCalculator;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeSegment{
-
+	private static String primaryPrefix = "Primary_Objects_";
+	private static String secondaryPrefix = "Secondary_Objects_";
+	private static String tertiaryPrefix = "Tertiary_Objects_";
 	
 	/**
 	 * This method runs the user-defined segmentation on the appropriate channels.
@@ -24,28 +25,49 @@ public class ModeSegment{
 	 * @param imp
 	 * @return
 	 */
-	public SegmentedChannels run(ParameterCollection parameters, ImagePlus imp) {
-
-			// Get image info
-			String imgName = imp.getTitle();
-			Calibration cal = imp.getCalibration();
-
-
-			// Split channels
-			ImagePlus[] channels = ChannelSplitter.split(imp);
+	public SegmentedChannels run(ParameterCollection parameters, ImagePlus imp, String fileName) {
+		
+		// Get image info
+		String imgName = imp.getTitle();
+		Calibration cal = imp.getCalibration();
+		// Split channels
+		ImagePlus[] channels = ChannelSplitter.split(imp);
 			
+		ImagePlus primary = null;
+		ImagePlus secondary = null;
+		Optional<ImagePlus> tertiary = Optional.empty();	
+		
+		// open images if analysis-only = true
+		if(parameters.getAnalysisOnly()) {
+			
+			// prep file extension
+			
+			
+			
+			primary = IJ.openImage(parameters.getInputDir() + primaryPrefix + fileName);
+			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + fileName);
+			if (parameters.getProcessTertiary()) {
+				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + fileName));
+			} else if (parameters.getTertiaryIsDifference()) {
+				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
+			}
+			
+		} else {
+			
+			// analysis-only = false, run the user-defined segmentation.
+
 			ijLog("Number of channels: " + channels.length);
-			
+
 			// Run user-defined segmentation on the correct channel
-			ImagePlus primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
+			primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
 					parameters.getPrimaryObject(),
 					parameters);
-			ImagePlus secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
+			secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
 					parameters.getSecondaryObject(),
 					parameters);
-			Optional<ImagePlus> tertiary = Optional.empty();
 
-			
+
+
 			// if tertiary should be processed, run segmentation, otherwise generate by
 			// subtraction if selected.
 			if (parameters.getProcessTertiary()) {
@@ -55,14 +77,7 @@ public class ModeSegment{
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			}
-			
-			
-			// Set calibrations
-			primary.setCalibration(cal);
-			secondary.setCalibration(cal);
-			tertiary.ifPresent(t -> t.setCalibration(cal));
-			
-			
+
 			// Save the segmented images
 			if (!parameters.getOutputDir().isEmpty()) {
 				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + "Primary_Objects" + imgName);
@@ -70,7 +85,7 @@ public class ModeSegment{
 				tertiary.ifPresent(t -> {
 					IJ.saveAs(t, "TIF", parameters.getOutputDir() + "Tertiary_Objects" + imgName);
 				});
-				
+
 			} else {
 				IJ.saveAs(primary, "TIF", parameters.getInputDir() + "Primary_Objects" + imgName);
 				IJ.saveAs(secondary, "TIF", parameters.getInputDir() + "Secondary_Objects" + imgName);
@@ -78,6 +93,14 @@ public class ModeSegment{
 					IJ.saveAs(t, "TIF", parameters.getInputDir() + "Tertiary_Objects" + imgName);
 				});
 			}
+
+		}
+
+
+			// Set calibrations
+			primary.setCalibration(cal);
+			secondary.setCalibration(cal);
+			tertiary.ifPresent(t -> t.setCalibration(cal));
 			
 			
 			// Build return data object

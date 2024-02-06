@@ -316,6 +316,8 @@ public class TableUtility {
 		
 		ResultsTable result = new ResultsTable();
 		
+		rt.show("Results");
+		
 		if(parameters.getGroupingInfo().isEmpty()) {
 			for (int i = 0; i < rt.size(); i++) {
 				result.setValue("Label", i, rt.getValue("Label", i));
@@ -331,6 +333,7 @@ public class TableUtility {
 		
 		return result;
 	}
+	
 	
 	
 	// TODO: Method for running analysis on all objects if present and storing results tables

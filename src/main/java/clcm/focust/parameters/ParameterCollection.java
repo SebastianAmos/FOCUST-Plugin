@@ -54,6 +54,8 @@ public class ParameterCollection implements DataObject {
         try (Writer writer = new FileWriter(parameterCollection.outputDir + filename)) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         gson.toJson(parameterCollection, writer);
+        writer.flush();
+        writer.close();
         }
     }
     
