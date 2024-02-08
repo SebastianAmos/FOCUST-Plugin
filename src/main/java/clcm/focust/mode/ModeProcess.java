@@ -1,6 +1,7 @@
 package clcm.focust.mode;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
@@ -54,6 +55,8 @@ public class ModeProcess{
 					list = tempList.toArray(list);
 			}
 			
+			ijLog("new list length: " + list.length);
+			
 			String path = parameters.getInputDir() + list[i];
 			
 			
@@ -63,6 +66,15 @@ public class ModeProcess{
 			String imgName = imp.getTitle();
 			
 			// TODO: build in analysis only support 
+			
+			// testing save params
+			try {
+				ParameterCollection.saveParameterCollection(parameters, "/FOCUST-Parameter-File.json");
+				System.out.println("Parameter file saved.");
+			} catch (IOException e1) {
+				System.out.println("Unable to save FOCUST parameter file.");
+				e1.printStackTrace();
+			}
 			
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels objects = segment.run(parameters, imp, list[i]);
@@ -87,7 +99,8 @@ public class ModeProcess{
 					stratifyResults(stratifyResults).
 					build();
 			
-			
+		
+	
 			// Run the selected mode
 			// Each analysis method called within a mode should check for empty results tables and mark with na to improve data awareness.
 			parameters.getMode().getMode().run(parameters, imgData, imgName);

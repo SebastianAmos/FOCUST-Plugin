@@ -2067,17 +2067,6 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				
-				// testing save params
-				try {
-					ParameterCollection.saveParameterCollection(parameterCollection, "/FOCUST-Parameter-File.json");
-					System.out.println("Parameter file saved.");
-				} catch (IOException e1) {
-					System.out.println("Unable to save FOCUST parameter file.");
-					e1.printStackTrace();
-				}
-				
-				
-				
 				// Testing new distance-based label stratification
 				//ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
 				

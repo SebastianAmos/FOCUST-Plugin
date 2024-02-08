@@ -228,7 +228,7 @@ public class TableUtility {
 	}
 	
 	
-	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ClearCLBuffer[] channels) {
+	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
@@ -236,11 +236,19 @@ public class TableUtility {
 	
 		for (int i = 0; i < bands.size(); i++) {
 			
+			//TODO:
+			System.out.println("band: " + i + " of " + bands.size());
+			
 			ResultsTable rt = new ResultsTable();
 				
 			for (int j = 0; j < channels.length; j++) {
 				
-				ResultsTable temp = TableUtility.processIntensity(clij2.pull(channels[j]), clij2.pull(bands.get(i)));
+				//TODO: 
+				System.out.println("Channel: " + j + "of " + channels.length);
+				
+				
+				
+				ResultsTable temp = TableUtility.processIntensity(channels[j], clij2.pull(bands.get(i)));
 				
 				// get col headers without Label
 				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));

@@ -51,7 +51,16 @@ public class ParameterCollection implements DataObject {
     
     
     public static void saveParameterCollection(ParameterCollection parameterCollection, String filename) throws IOException {
-        try (Writer writer = new FileWriter(parameterCollection.outputDir + filename)) {
+    	
+    	String dir = null;
+    	
+    	if (parameterCollection.getOutputDir().isEmpty()) {
+			dir = parameterCollection.getInputDir();
+		} else {
+			dir = parameterCollection.getOutputDir();
+		}
+    	
+        try (Writer writer = new FileWriter(dir + filename)) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         gson.toJson(parameterCollection, writer);
         writer.flush();

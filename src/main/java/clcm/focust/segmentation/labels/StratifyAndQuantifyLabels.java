@@ -78,10 +78,11 @@ public class StratifyAndQuantifyLabels {
 		clij2.copy(testDist, testDist2);
 		ClearCLBuffer[] TestDists = {testDist, testDist2};
 		
+		
 		saveBands(bandTypes, objectType, params, imgName);
 		
 		/** Generate Results */
-		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, TestDists);
+		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels());
 		
 		
 		
