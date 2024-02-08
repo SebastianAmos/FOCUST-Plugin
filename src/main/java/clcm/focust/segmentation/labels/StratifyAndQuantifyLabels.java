@@ -42,6 +42,12 @@ public class StratifyAndQuantifyLabels {
 		List<ClearCLBuffer> b3 = new ArrayList<>(); // outer-middle 25%
 		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25%
 		
+		
+		// show lab img for testing
+		imp.setTitle("LAB IMG_" + objectType);
+		imp.show();
+		
+		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer labs = clij2.push(imp);
 		
@@ -73,16 +79,18 @@ public class StratifyAndQuantifyLabels {
 		
 		// Do the intensity analysis for each band type, within each channel
 		// ----> Using a combined chamfer distance map for testing!!
-		ClearCLBuffer testDist = computeChamferDistanceMap(labs);
-		ClearCLBuffer testDist2 = clij2.create(testDist); 
-		clij2.copy(testDist, testDist2);
-		ClearCLBuffer[] TestDists = {testDist, testDist2};
+		//ClearCLBuffer testDist = computeChamferDistanceMap(labs);
+		//ClearCLBuffer testDist2 = clij2.create(testDist); 
+		//clij2.copy(testDist, testDist2);
+		//ClearCLBuffer[] TestDists = {testDist, testDist2};
+		
 		
 		
 		saveBands(bandTypes, objectType, params, imgName);
 		
 		/** Generate Results */
-		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels());
+		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
+		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels));
 		
 		
 		
@@ -105,15 +113,17 @@ public class StratifyAndQuantifyLabels {
 		
 		int counter = 1;
 		
-		if(!params.getOutputDir().isEmpty()) {
+		if(params.getOutputDir().isEmpty()) {
 			for (ClearCLBuffer band : bandTypes) {
-				IJ.saveAs(clij2.pull(band), "TIF", params.getInputDir() + objectType + counter + imgName);
+				IJ.saveAs(clij2.pull(band), "TIF", params.getInputDir() + objectType + counter + "_" + imgName);
+				System.out.println("Saving band: " + counter);
 				counter++;
 				band.close();
 			} 
 		} else {
 			for (ClearCLBuffer band : bandTypes) {
-				IJ.saveAs(clij2.pull(band), "TIF", params.getOutputDir() + objectType + counter + imgName);
+				IJ.saveAs(clij2.pull(band), "TIF", params.getOutputDir() + objectType + counter + "_"+ imgName);
+				System.out.println("Saving band: " + counter);
 				counter++;
 				band.close();
 			}
@@ -171,11 +181,20 @@ public class StratifyAndQuantifyLabels {
 		
 		// generate distance map on the whole label image before masking out each label
 		ClearCLBuffer dMap2 = computeChamferDistanceMap(labs);
+		ClearCLBuffer copy = clij2.create(dMap2);
+		
+		
+		clij2.copy(dMap2, copy);
+		ImagePlus dmapImg = clij2.pull(copy);
+		dmapImg.setTitle("DistMap");
+		dmapImg.show();
+		
 		
 		ResultsTable stats = new ResultsTable();
 		
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
+		
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
@@ -231,6 +250,9 @@ public class StratifyAndQuantifyLabels {
 		
 		ImagePlus label = clij2.pull(input);
 		
+		label.setTitle("DistMapINPUTLAB");
+		label.show();
+		
 		// Create 3D chamfer map of label - set to default Svensson
 		ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
 		
@@ -249,15 +271,18 @@ public class StratifyAndQuantifyLabels {
 		
 		ImageStack result = cdist.distanceMap(img);
 		
-		if (result == null){
-			ijLog("Unable to generate chamfer distace map 3D");
-		}
-		
 		ImagePlus resultPlus = new ImagePlus("img", result);
+		resultPlus.setTitle("DistanceMapPROCESSED");
+		resultPlus.show();
 		double[] distExtent = Images3D.findMinAndMax(resultPlus);
 		resultPlus.setDisplayRange(0, distExtent[1]);
 		
 		resultPlus.copyScale(label);
+		
+		ImagePlus test = resultPlus;
+		test.setTitle("PostScale");
+		test.show();
+		
 		ClearCLBuffer output = clij2.push(resultPlus);
 		
 		return output;
