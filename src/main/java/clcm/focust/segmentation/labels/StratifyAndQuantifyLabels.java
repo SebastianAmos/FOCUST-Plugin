@@ -54,12 +54,13 @@ public class StratifyAndQuantifyLabels {
 		clij2.copy(labs, copy);
 		ImagePlus testImg = clij2.pull(copy);
 		testImg.setTitle("Immediate pull from clij " + objectType);
+		testImg.show();
 		
 		
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
 		
-		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs, bandPercent, iterations);
+		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs, bandPercent, iterations, clij2);
 		
 		// Group the band types together
 		for (Map.Entry<Integer, List<ClearCLBuffer>> entry : bands.entrySet()) {
@@ -178,18 +179,16 @@ public class StratifyAndQuantifyLabels {
 	 * @param bandIterations Number of bands to create. Should be related to the percentage. i.e 25% = 4 iterations.
 	 * @return
 	 */
-	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, Double bandPercent, Integer bandIterations){
+	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, Double bandPercent, Integer bandIterations, CLIJ2 clij2){
 		
 		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
 		
-		CLIJ2 clij2 = CLIJ2.getInstance();
-		
 		// generate distance map on the whole label image before masking out each label
-		ClearCLBuffer dMap2 = computeChamferDistanceMap(labs);
-		ClearCLBuffer copy = clij2.create(dMap2);
+		ClearCLBuffer dMap = computeChamferDistanceMap(labs);
+		ClearCLBuffer copy = clij2.create(dMap);
 		
 		
-		clij2.copy(dMap2, copy);
+		clij2.copy(dMap, copy);
 		ImagePlus dmapImg = clij2.pull(copy);
 		dmapImg.setTitle("DistMap");
 		dmapImg.show();
@@ -212,7 +211,7 @@ public class StratifyAndQuantifyLabels {
 			clij2.labelToMask(labs, mask, i);
 			
 			// mask the distance map by the label to only process that region of the distance map
-			clij2.mask(dMap2, mask, distanceMask);
+			clij2.mask(dMap, mask, distanceMask);
 			
 			// generate the distance map
 			//ClearCLBuffer dMap = computeChamferDistanceMap(mask); // single mask chamfer distance map
