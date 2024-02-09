@@ -50,6 +50,11 @@ public class StratifyAndQuantifyLabels {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer labs = clij2.push(imp);
+		ClearCLBuffer copy = clij2.create(labs);
+		clij2.copy(labs, copy);
+		ImagePlus testImg = clij2.pull(copy);
+		testImg.setTitle("Immediate pull from clij " + objectType);
+		
 		
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
@@ -250,7 +255,7 @@ public class StratifyAndQuantifyLabels {
 		
 		ImagePlus label = clij2.pull(input);
 		
-		label.setTitle("DistMapINPUTLAB");
+		label.setTitle("Label in the computerChamferDistanceMap() method");
 		label.show();
 		
 		// Create 3D chamfer map of label - set to default Svensson
@@ -280,7 +285,7 @@ public class StratifyAndQuantifyLabels {
 		resultPlus.copyScale(label);
 		
 		ImagePlus test = resultPlus;
-		test.setTitle("PostScale");
+		test.setTitle("Label after distance map processing");
 		test.show();
 		
 		ClearCLBuffer output = clij2.push(resultPlus);
