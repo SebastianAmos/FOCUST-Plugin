@@ -44,9 +44,9 @@ public class ModeSpheroid implements Mode {
 		
 		// Count primary objects within each secondary object
 		primary.add(countLabels.perLabel(imgData.getImages().getSecondary(), imgData.getImages().getPrimary(), "Primary"));
-
-		// Calculate the parent band (if available) for each primary object
-
+		
+		// Calculate the parent band (if available) for each primary object and the number of primary/children per secondary/parent.
+		
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 
 			String type = band.getKey();
@@ -54,13 +54,15 @@ public class ModeSpheroid implements Mode {
 			
 			switch (type) {
 			case "sec25":
-				
-				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary()));
-				secondary.add(countLabels.perBand(bands, imgData.getImages().getPrimary(), imgName));
+
+				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary()), "Q");
+				secondary.add(countLabels.perBand(bands, imgData.getImages().getPrimary(), "Q", "Primary")); // Q = quarter
 				
 			case "sec50":
 				
-				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary()));
+				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary()), "H");
+				secondary.add(countLabels.perBand(bands, imgData.getImages().getPrimary(), "H", "Primary"));
+				
 				
 			default:
 				break;

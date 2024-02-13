@@ -21,7 +21,7 @@ public class OverlapMapping {
 	 * @param colHeader
 	 * @return
 	 */
-	public ResultsTable perBand(List<ClearCLBuffer> bands, ImagePlus label, String colHeader) {
+	public ResultsTable perBand(List<ClearCLBuffer> bands, ImagePlus label, String bandType, String labType) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
@@ -45,8 +45,8 @@ public class OverlapMapping {
 			clij2.labelOverlapCountMap(band, centroids, overlapMap);
 			clij2.statisticsOfLabelledPixels(band, overlapMap, rt);
 
-			results.setColumn("Label", rt.getColumnAsVariables("Label"));
-			results.setColumn(colHeader + "_band_" + count, rt.getColumnAsVariables("Max"));
+			results.setColumn("Label", rt.getColumnAsVariables("IDENTIFIER"));
+			results.setColumn("Number_Of_" + labType + "Objects_In_Band_" + bandType + count, rt.getColumnAsVariables("MAXIMUM_INTENSITY"));
 
 			count++;
 		}
@@ -88,7 +88,7 @@ public class OverlapMapping {
 		clij2.statisticsOfLabelledPixels(image, overlapMap, rt);
 
 		results.setColumn("Label", rt.getColumnAsVariables("Label"));
-		results.setColumn("NumberOf" + objectName + "Objects", rt.getColumnAsVariables("Max"));
+		results.setColumn("Number_Of_" + objectName + "_Objects", rt.getColumnAsVariables("Max"));
 
 		lab.close();
 		centroids.close();
@@ -106,7 +106,7 @@ public class OverlapMapping {
 	 * @param labels
 	 * @return
 	 */
-	public ResultsTable parentBand(List<ClearCLBuffer> bands, ImagePlus labels) {
+	public ResultsTable parentBand(List<ClearCLBuffer> bands, ImagePlus labels, String bandType) {
 
 		ResultsTable results = new ResultsTable();
 		
@@ -130,7 +130,7 @@ public class OverlapMapping {
 		final IntensityMeasures im = new IntensityMeasures(clij2.pull(relabelledBands), labels);
 		
 		results.setColumn("Label", im.getMax().getColumnAsVariables("Label"));
-		results.setColumn("ParentObject",im.getMax().getColumnAsVariables("Max"));
+		results.setColumn("Parent_Object_ID_" + bandType,im.getMax().getColumnAsVariables("Max"));
 		
 		return results;
 	}
