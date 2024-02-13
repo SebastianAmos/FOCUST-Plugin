@@ -7,6 +7,7 @@ import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.SaveSkeletons;
+import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.labels.StratifyProcess;
 import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
@@ -89,7 +90,7 @@ public class ModeProcess{
 			
 			// Generate stratified bands - bands are saved within
 			StratifyProcess stratify = new StratifyProcess();
-			Map<String, ResultsTable> stratifyResults = stratify.process(parameters, objects, imgName);
+			Map<String, StratifiedResultsHolder> stratifyResults = stratify.process(parameters, objects, imgName);
 			
 			
 			// Build compiledImageData object.

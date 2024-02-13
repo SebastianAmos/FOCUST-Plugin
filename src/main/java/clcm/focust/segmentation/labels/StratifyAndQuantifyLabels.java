@@ -34,7 +34,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param bandPercent
 	 * @return
 	 */
-	public ResultsTable process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
+	public StratifiedResultsHolder process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
 		
 		// Lists to store each band type
 		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25%
@@ -99,9 +99,12 @@ public class StratifyAndQuantifyLabels {
 		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels));
 		
 		
+		StratifiedResultsHolder results = StratifiedResultsHolder.builder()
+				.bands(bandTypes)
+				.table(rt)
+				.build();
 		
-		
-		return rt;
+		return results;
 	}
 	
 	

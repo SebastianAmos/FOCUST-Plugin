@@ -325,6 +325,10 @@ public class TableUtility {
 		ResultsTable result = new ResultsTable();
 		
 		rt.show("Results");
+		String headers = rt.getColumnHeadings();
+		System.out.println("Headers = " + headers);
+		
+		System.out.println(rt);
 		
 		if(parameters.getGroupingInfo().isEmpty()) {
 			for (int i = 0; i < rt.size(); i++) {

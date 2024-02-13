@@ -5,15 +5,14 @@ import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import ij.IJ;
-import ij.measure.ResultsTable;
 
 public class StratifyProcess {
 	
 	// switch to determine which label maps to stratify
 	// each method generates a single results table
-	public Map<String, ResultsTable> process(ParameterCollection params, SegmentedChannels segmentedChannels, String imgName) {
+	public Map<String, StratifiedResultsHolder> process(ParameterCollection params, SegmentedChannels segmentedChannels, String imgName) {
 		
-		Map<String, ResultsTable> tables = new HashMap<>();
+		Map<String, StratifiedResultsHolder> tables = new HashMap<>();
 		
 		Double quarter = 0.25;
 		Double half = 0.5;
@@ -22,6 +21,7 @@ public class StratifyProcess {
 		
 		if(params.getStratifyParameters().getPrimary25()) {
 			IJ.log("Generating 25% bands for primary object.");
+			
 			tables.put("pri25", stratify.process(segmentedChannels, segmentedChannels.getPrimary(), quarter, "Primary_Q_", params, imgName));
 		}
 		

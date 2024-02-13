@@ -3,9 +3,12 @@ package clcm.focust.mode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import clcm.focust.ResultsTableUtility;
 import clcm.focust.TableUtility;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -88,10 +91,10 @@ public class ModeBasic implements Mode {
 		}
 		
 		/* Append the stratification results tables if they were generated */
-		for (Map.Entry<String, ResultsTable> band : imgData.getStratifyResults().entrySet()) {
+		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 			
 			String type = band.getKey();
-			ResultsTable rt = band.getValue();
+			ResultsTable rt = band.getValue().getTable();
 			
 			switch (type) {
 			case "pri25":
@@ -114,24 +117,60 @@ public class ModeBasic implements Mode {
 		
 		
 		/*
-		 * Build and save the final results tables
+		 * Build the final results table for each object type and save or hand off
 		 */
-		
-		ResultsTableUtility rtSave = new ResultsTableUtility();
 		TableUtility tu = new TableUtility();
 		
-		ijLog("Saving results tables...");
-		
-		// Primary results
-		rtSave.saveAndStackResults(tu.compileAllResults(primaryResults), "primary_objects", parameters);
-
-		// Secondary results
-		rtSave.saveAndStackResults(tu.compileAllResults(secondaryResults), "secondary_objects", parameters);
-
-		// Tertiary results (optional)
-		imgData.images.getTertiary().ifPresent(t ->{
-			rtSave.saveAndStackResults(tu.compileAllResults(tertiaryResults), "tertiary_objects", parameters);
+		imgData.setPrimary(tu.compileAllResults(primaryResults));
+		imgData.setSecondary(tu.compileAllResults(secondaryResults));
+		imgData.images.getTertiary().ifPresent(t -> {
+			imgData.setTertiary(tu.compileAllResults(tertiaryResults));
 		});
+		
+		
+		switch (parameters.getMode()) {
+		
+		case BASIC:
+			
+			ResultsTableUtility rtSave = new ResultsTableUtility();
+		
+			
+			ijLog("Saving results tables...");
+			
+			// Primary results
+			rtSave.saveAndStackResults(imgData.getPrimary(), "primary_objects", parameters);
+
+			// Secondary results
+			rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
+
+			// Tertiary results (optional)
+			imgData.images.getTertiary().ifPresent(t ->{
+				rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
+			});
+			
+			break;
+			
+		case SPHEROID:
+			
+			
+			
+			break;
+			
+		case SINGLECELL:
+			
+			
+			
+			break;
+				
+		case SPECKLE: 
+
+			break;
+
+		default:
+			break;
+		}
+		
+		
 	}
 } 
 
