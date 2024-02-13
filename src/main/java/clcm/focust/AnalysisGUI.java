@@ -27,29 +27,28 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 import java.io.IOException;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.data.DatumUpdateService;
-import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
-import clcm.focust.mode.CompiledImageData;
 import clcm.focust.mode.ModeProcess;
 import clcm.focust.mode.ModeType;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
 import clcm.focust.segmentation.MethodTypes;
-import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
-import ij.ImagePlus;
-import ij.measure.ResultsTable;
-
 import java.awt.Toolkit;
 import javax.swing.JTabbedPane;
+
+/**
+ * Built with WindowsBuilder Editor
+ * @author SebastianAmos
+ *
+ */
 
 public class AnalysisGUI extends JFrame {
 

@@ -23,9 +23,6 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class LabelEditor {
 
 	public static ImagePlus renamedImage;
-	//private static AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-	
-
 	
 	/**
 	 * Adds an empty black slice as the first and last slice of an image stack.
@@ -261,4 +258,4 @@ public class LabelEditor {
 	
 	
 	
-}// end of LabelEditor class
+}

@@ -13,8 +13,6 @@ import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.measure.ResultsTable;
-
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 
@@ -39,10 +37,6 @@ public class ModeProcess{
 		ijLog("Number of images to process: " + list.length);
 
 		for (int i = 0; i < list.length; i++) {
-			
-			
-			
-			// build in analysis only mode
 			
 			// if analysis-only mode: filter the list to remove objects and only list original images.
 			if (parameters.getAnalysisOnly()) {
@@ -100,12 +94,10 @@ public class ModeProcess{
 					stratifyResults(stratifyResults).
 					build();
 			
-		
-	
-			// Run the selected mode
-			// Each analysis method called within a mode should check for empty results tables and mark with na to improve data awareness.
-			parameters.getMode().getMode().run(parameters, imgData, imgName);
+			// Hand off to mode analyse for common anaylses
+			ModeAnalyse analyse = new ModeAnalyse();
 			
+			analyse.run(parameters, imgData, imgName);
 			
 		}
 	}

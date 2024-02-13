@@ -13,5 +13,7 @@ public class StratifiedResultsHolder {
 	ResultsTable table;
 	List<ClearCLBuffer> bands;
 
+	List<ResultsTable> objectCounts; // record how many objects sit within the label
+	List<ResultsTable> parentObjects; // record which secondary objects a primary object sits within
 	
 }

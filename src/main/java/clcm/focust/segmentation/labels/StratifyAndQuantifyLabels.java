@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import clcm.focust.TableUtility;
 import clcm.focust.data.object.SegmentedChannels;
-import clcm.focust.mode.CompiledImageData;
 import clcm.focust.parameters.ParameterCollection;
 import ij.IJ;
 import ij.ImagePlus;
@@ -22,7 +21,11 @@ import inra.ijpb.data.image.Images3D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
+/**
+ * @author SebastianAmos
+ */
+
 
 public class StratifyAndQuantifyLabels {
 	

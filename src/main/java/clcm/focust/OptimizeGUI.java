@@ -1,12 +1,10 @@
 package clcm.focust;
 
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.FlowLayout;
-import net.miginfocom.swing.MigLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -25,10 +23,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
@@ -37,17 +32,13 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.filter.BackgroundType;
-import clcm.focust.filter.Filter;
 import clcm.focust.filter.FilterType;
 import clcm.focust.filter.Vector3D;
-import clcm.focust.mode.ModeType;
 import clcm.focust.parameters.BackgroundParameters;
 import clcm.focust.parameters.FilterParameters;
 import clcm.focust.parameters.MethodParameters;
@@ -55,17 +46,20 @@ import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.parameters.SkeletonParameters;
 import clcm.focust.parameters.StratifyParameters;
-import clcm.focust.segmentation.Method;
 import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.Segmentation;
-import clcm.focust.segmentation.skeleton.Skeleton;
-import clcm.focust.threshold.Threshold;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
-
 import java.awt.Toolkit;
+
+
+/**
+ * Built with WindowsBuilder Editor
+ * @author SebastianAmos
+ *
+ */
 
 public class OptimizeGUI extends JFrame {
 
