@@ -15,7 +15,7 @@ public class SaveSkeletons {
 	 */
 	public void saveSkeletons(Map<String, SkeletonResultsHolder> skeletons, ParameterCollection parameters, String imgName) {
 		
-		if(skeletons !=null) {
+		if(!skeletons.isEmpty()) {
 			for (Map.Entry<String, SkeletonResultsHolder> skeleton : skeletons.entrySet()) {
 				String object = skeleton.getKey();
 				SkeletonResultsHolder results = skeleton.getValue();

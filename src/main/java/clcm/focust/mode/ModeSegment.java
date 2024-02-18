@@ -20,6 +20,7 @@ public class ModeSegment{
 
 	/**
 	 * This method runs the user-defined segmentation on the appropriate channels.
+	 * If analysis only = T, segmentation is not run, images are opened from input. 
 	 * Returns an object that contains calibrated segmented images.
 	 * 
 	 * @param parameters
@@ -54,7 +55,7 @@ public class ModeSegment{
 				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
-			}
+			} 
 
 		} else {
 
@@ -80,6 +81,13 @@ public class ModeSegment{
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			}
 
+			
+			// Set calibrations
+			primary.setCalibration(cal);
+			secondary.setCalibration(cal);
+			tertiary.ifPresent(t -> t.setCalibration(cal));
+			
+			
 			// Save the segmented images
 			if (!parameters.getOutputDir().isEmpty()) {
 				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + "Primary_Objects_" + imgName);
@@ -97,12 +105,6 @@ public class ModeSegment{
 			}
 
 		}
-
-
-		// Set calibrations
-		primary.setCalibration(cal);
-		secondary.setCalibration(cal);
-		tertiary.ifPresent(t -> t.setCalibration(cal));
 
 
 		// Build return data object

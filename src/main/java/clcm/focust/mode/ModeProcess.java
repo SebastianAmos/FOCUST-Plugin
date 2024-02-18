@@ -60,7 +60,6 @@ public class ModeProcess{
 			ImagePlus imp = IJ.openImage(path);
 			String imgName = imp.getTitle();
 			
-			// TODO: build in analysis only support 
 			
 			// testing save params
 			try {
@@ -97,7 +96,13 @@ public class ModeProcess{
 			// Hand off to mode analyse for common anaylses
 			ModeAnalyse analyse = new ModeAnalyse();
 			
-			analyse.run(parameters, imgData, imgName);
+			
+			if(!parameters.getMode().equals(ModeType.NONE)) {
+				analyse.run(parameters, imgData, imgName);
+			} else { 
+				IJ.log("Images saved, no further anaylsis conducted.");
+			}
+			
 			
 		}
 	}
