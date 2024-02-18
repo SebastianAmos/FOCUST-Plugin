@@ -14,7 +14,7 @@ import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 
-public class ModeAnalyse {
+public class ModeAnalyse implements Mode {
 	
 	private AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	private ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
@@ -60,6 +60,7 @@ public class ModeAnalyse {
 			tertiaryResults.add(0, TableUtility.extractGroupAndTitle(tertiaryResults.get(0), parameters, imgName));
 		});
 		
+		ijLog("Results 1");
 		
 		// Then append the intensity data to the end.
 		primaryResults.add(intensityTables.get(segmentedObjects.get(0)));
@@ -67,7 +68,7 @@ public class ModeAnalyse {
 		imgData.getImages().getTertiary().ifPresent(t -> {
 			tertiaryResults.add(intensityTables.get(segmentedObjects.get(2)));
 		});
-		
+		ijLog("Results 2");
 		
 		// Append standard skeleton results
 		if(parameters.getSkeletonParamters().getPrimary()) {
@@ -83,6 +84,8 @@ public class ModeAnalyse {
 				primaryResults.add(imgData.getSkeletons().get("Tertiary").getStandard());
 			});
 		}
+		
+		ijLog("Results 3");
 		
 		/* Append the stratification results tables if they were generated */
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
@@ -108,7 +111,7 @@ public class ModeAnalyse {
 			}
 		}
 		
-	
+		ijLog("Results 4");
 		
 		/*
 		 * Build the final results table for each object type and update the imgData object before hand off
@@ -121,10 +124,10 @@ public class ModeAnalyse {
 			imgData.setTertiary(tu.compileAllResults(tertiaryResults));
 		});
 		
-		
+		ijLog("Handing off.");
 		
 		// Hand off to selected mode
 		parameters.getMode().getMode().run(parameters, imgData, imgName);
-		
+		ijLog("Results 5");
 	}
 }

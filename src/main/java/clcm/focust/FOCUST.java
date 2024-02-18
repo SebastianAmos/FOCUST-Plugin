@@ -10,6 +10,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -30,8 +33,6 @@ import clcm.focust.speckle.SpecklesConfiguration;
 import clcm.focust.speckle.service.SpeckleProcessor;
 import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
-
-@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 
 public final class FOCUST {
 
@@ -62,7 +63,7 @@ public final class FOCUST {
 	 */
 	private FOCUST() {
 		services = new ArrayList<>();
-		ExecutorService dataExecService = Executors.newSingleThreadExecutor();
+		ExecutorService dataExecService = new FOCUSTExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 		/* Data managers. */
 		specklesManager = new DataMapManager<>(dataExecService);
@@ -123,7 +124,7 @@ public final class FOCUST {
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
-		ExecutorService executor = Executors.newSingleThreadExecutor();
+		ExecutorService executor =  new FOCUSTExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 		executor.execute(futureFileChooser);
 	}
 

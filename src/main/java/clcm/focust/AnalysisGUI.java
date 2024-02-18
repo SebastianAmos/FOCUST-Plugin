@@ -2079,18 +2079,10 @@ public class AnalysisGUI extends JFrame {
 				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
 				
 				*/
-			
-				
-				ModeProcess process = new ModeProcess();
-				process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService
-				//paramManager.notifyUpdated(parameterCollection);
-				
-				
-				
-				
+				paramManager.notifyUpdated(parameterCollection);
 				
 			}
 		});

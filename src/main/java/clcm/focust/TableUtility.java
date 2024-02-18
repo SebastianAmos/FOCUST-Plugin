@@ -1,11 +1,16 @@
 package clcm.focust;
 
+import static clcm.focust.SwingIJLoggerUtils.ijLog;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.SwingUtilities;
 
 import clcm.focust.parameters.ParameterCollection;
 import ij.IJ;
@@ -157,11 +162,13 @@ public class TableUtility {
 		 * calculate the intensity of every channel in the input image (channels) 
 		 */
 		for (int j = 0; j < segmentedObjects.size(); j++) {
-				
+			
+			ijLog("Segmented Obj [" + j + "]");
+			
 			ResultsTable rt = new ResultsTable();
 				
 			for (int k = 0; k < channels.length; k++) {
-				
+				ijLog("Channel Obj [" + k + "]");
 				ResultsTable temp = TableUtility.processIntensity(channels[k], segmentedObjects.get(j));
 				String[] headers = temp.getHeadings();
 				
@@ -218,7 +225,6 @@ public class TableUtility {
 				}
 				
 			}
-			
 			intensityTables.put(segmentedObjects.get(j), rt);
 			
 		}
@@ -259,8 +265,8 @@ public class TableUtility {
 				rtLab.setColumn("Label", temp.getColumnAsVariables("Label"));
 				rtList.add(rtLab);
 				
-				
-				temp.show("Band " + (i+1) + " Results" );
+				final int val = i;
+				SwingUtilities.invokeLater(() ->temp.show("Band " + (val+1) + " Results" ));
 				
 				// channel 1
 				if ((j + 1) == 1) {
@@ -304,8 +310,8 @@ public class TableUtility {
 				}
 				
 			}
-			
-			rt.show("FINAL BAND " + (i+1) + " TABLE");
+			final int fi = i;
+			SwingUtilities.invokeLater(() -> rt.show("FINAL BAND " + (fi+1) + " TABLE"));
 			
 			rtList.add(rt);
 			
@@ -323,25 +329,25 @@ public class TableUtility {
 	public static ResultsTable extractGroupAndTitle(ResultsTable rt, ParameterCollection parameters, String imgName) {
 		
 		ResultsTable result = new ResultsTable();
+		SwingUtilities.invokeLater(() -> rt.show("Results"));
 		
-		rt.show("Results");
 		String headers = rt.getColumnHeadings();
 		System.out.println("Headers = " + headers);
 		
 		System.out.println(rt);
+		ijLog(headers);
+		ijLog("empty params?: " + parameters.getGroupingInfo().isEmpty());
 		
-		if(parameters.getGroupingInfo().isEmpty()) {
-			for (int i = 0; i < rt.size(); i++) {
-				result.setValue("Label", i, rt.getValue("Label", i));
-				result.setValue("ImageID", i, imgName);
-			}
-		} else {
-			for (int i = 0; i < rt.size(); i++) {
-				result.setValue("Label", i, rt.getValue("Label", i));
-				result.setValue("ImageID", i, imgName);
+		for(int i=0; i<rt.size(); i++) {
+			result.setValue("ImageID", i, imgName);
+			if (!parameters.getGroupingInfo().isEmpty()) {
 				result.setValue("Group", i, parameters.getGroupingInfo());
 			}
-		}
+		}		
+		result.setColumn("Label", rt.getColumnAsVariables("Label"));
+
+		result.show("Final Table");
+		ijLog("Done");
 		
 		return result;
 	}

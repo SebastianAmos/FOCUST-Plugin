@@ -92,9 +92,10 @@ public class ModeProcess{
 					stratifyResults(stratifyResults).
 					build();
 			
+			
+			/* TODO */
 			// Hand off to mode analyse for common anaylses
 			ModeAnalyse analyse = new ModeAnalyse();
-			
 			analyse.run(parameters, imgData, imgName);
 			
 		}
