@@ -8,7 +8,7 @@ import lombok.Builder;
 @Data
 @Builder
 public class FilterParameters {
-    FilterType filterType;
-    Vector3D sigma1;
-    Vector3D sigma2;
+	private FilterType filterType;
+	private Vector3D sigma1;
+	private Vector3D sigma2;
 }

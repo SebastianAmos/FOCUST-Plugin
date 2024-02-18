@@ -153,10 +153,5 @@ public class OverlapMapping {
 	
 		return rb.getResultsTable();
 	}
-	
-	
-
-	
-
 
 }

@@ -18,19 +18,16 @@ public class ParameterModeService implements FOCUSTService, DataListener<DataCon
 	public ParameterModeService(DatumSubscriptionService<ParameterCollection> parameterSubService, DatumUpdateService<SegmentedChannels> segmentedChannelsService) {
 		super();
 		this.parameterSubService = parameterSubService;
-		this.segmentedUpdateService = segmentedUpdateService;
+		this.segmentedUpdateService = segmentedChannelsService;
 	}
 
 	@Override
 	public void init() {
-
 		parameterSubService.registerListener(this); 
-		
 	}
 
 	@Override
 	public void shutdown() {
-	
 		parameterSubService.deregisterListener(DataConstants.Datum.DATUM, this);
 	}
 

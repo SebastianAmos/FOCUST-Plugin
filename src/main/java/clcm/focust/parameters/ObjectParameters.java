@@ -6,9 +6,9 @@ import lombok.Builder;
 @Data
 @Builder
 public class ObjectParameters {
-    int channel;
-    BackgroundParameters backgroundParameters;
-    FilterParameters filterParameters;
-    MethodParameters methodParameters;
+	private int channel;
+	private BackgroundParameters backgroundParameters;
+	private FilterParameters filterParameters;
+	private MethodParameters methodParameters;
 
 }

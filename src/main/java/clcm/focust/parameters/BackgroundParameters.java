@@ -8,7 +8,7 @@ import lombok.Builder;
 @Data
 @Builder
 public class BackgroundParameters {
-    BackgroundType backgroundType;
-    Vector3D sigma1;
-    Vector3D sigma2;
+    private BackgroundType backgroundType;
+    private Vector3D sigma1;
+    private Vector3D sigma2;
 }

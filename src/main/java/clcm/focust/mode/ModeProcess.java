@@ -18,10 +18,6 @@ import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeProcess{
 
-	private static String primaryPrefix = "Primary_Objects_";
-	private static String secondaryPrefix = "Secondary_Objects_";
-	private static String tertiaryPrefix = "Tertiary_Objects_";
-
 		
 	/**
 	 * This method is the kick off for image processing.
@@ -42,7 +38,9 @@ public class ModeProcess{
 			if (parameters.getAnalysisOnly()) {
 				ArrayList<String> tempList = new ArrayList<>();
 				for (String imgName : list) {
-					if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix) && !imgName.startsWith(tertiaryPrefix)) {
+					if (!imgName.startsWith(ModeConstants.PRIMARY_PREFIX) &&
+						!imgName.startsWith(ModeConstants.SECONDARY_PREFIX) &&
+						!imgName.startsWith(ModeConstants.TERTIARY_PREFIX)) {
 						tempList.add(imgName);
 					}
 				}

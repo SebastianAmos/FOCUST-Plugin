@@ -31,7 +31,7 @@ public class ModeBasic implements Mode {
 			rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
 
 			// Tertiary results (optional)
-			imgData.images.getTertiary().ifPresent(t ->{
+			imgData.getImages().getTertiary().ifPresent(t ->{
 				rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
 			});
 			

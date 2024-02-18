@@ -10,8 +10,8 @@ import lombok.Data;
 @Builder
 public class ResultsTables {
 
-	ResultsTable primary;
-	ResultsTable secondary;
-	Optional<ResultsTable> tertiary;
+	private ResultsTable primary;
+	private ResultsTable secondary;
+	private Optional<ResultsTable> tertiary;
 
 }

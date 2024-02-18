@@ -12,20 +12,17 @@ import lombok.Data;
 @Builder
 public class ParamTest {
 
-	FilterType filterType;
-	Vector3D filterS1;
-	Vector3D filterS2;
+	private FilterType filterType;
+	private Vector3D filterS1;
+	private Vector3D filterS2;
 	
-	BackgroundType backgroundType;
-	Vector3D backgroundS1;
-	Vector3D backgroundS2;
+	private BackgroundType backgroundType;
+	private Vector3D backgroundS1;
+	private Vector3D backgroundS2;
 	
-	MethodTypes methodType;
-	ThresholdType thresholdType;
-	Vector3D sigmaMethod;
-	double thresholdSize;
-	
-	
-	
+	private MethodTypes methodType;
+	private ThresholdType thresholdType;
+	private Vector3D sigmaMethod;
+	private double thresholdSize;
 	
 }

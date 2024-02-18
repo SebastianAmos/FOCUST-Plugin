@@ -16,38 +16,38 @@ import java.io.Writer;
 @Data
 @Builder
 public class ParameterCollection implements DataObject {
-    final String inputDir;
-    final String outputDir;
-    final ModeType mode;
-    final Boolean analysisOnly;
+	private final String inputDir;
+	private final String outputDir;
+	private final ModeType mode;
+	private final Boolean analysisOnly;
     
     // Primary Object
-    final ObjectParameters primaryObject;
+	private final ObjectParameters primaryObject;
     // Secondary Object
-    final ObjectParameters secondaryObject;
+	private final ObjectParameters secondaryObject;
     // Tertiary Object
-    final ObjectParameters tertiaryObject;
+	private final ObjectParameters tertiaryObject;
 
     // Common Paramters
-    final KillBorderTypes killBorderType;
+	private final KillBorderTypes killBorderType;
     // Analysis Parameters
-    final String groupingInfo;
-    final String nameChannel1;
-    final String nameChannel2;
-    final String nameChannel3;
-    final String nameChannel4;
-    final Boolean tertiaryIsDifference;
-    final Boolean processTertiary;
-    final SkeletonParameters skeletonParamters;
-    final StratifyParameters stratifyParameters;
+	private final String groupingInfo;
+	private final String nameChannel1;
+	private final String nameChannel2;
+	private final String nameChannel3;
+	private final String nameChannel4;
+	private final Boolean tertiaryIsDifference;
+	private final Boolean processTertiary;
+	private final SkeletonParameters skeletonParamters;
+	private final StratifyParameters stratifyParameters;
 
     // Optimize Parameters
-    final boolean primaryDisplayOriginal;
-    final boolean primaryOverlay;
-    final boolean secondaryDisplayOriginal;
-    final boolean secondaryOverlay;
-    final boolean tertiaryDisplayOriginal;
-    final boolean tertiaryOverlay;
+    private final boolean primaryDisplayOriginal;
+    private final boolean primaryOverlay;
+    private final boolean secondaryDisplayOriginal;
+    private final boolean secondaryOverlay;
+    private final boolean tertiaryDisplayOriginal;
+    private final boolean tertiaryOverlay;
     
     
     public static void saveParameterCollection(ParameterCollection parameterCollection, String filename) throws IOException {

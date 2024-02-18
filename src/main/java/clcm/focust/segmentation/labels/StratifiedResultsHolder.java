@@ -10,10 +10,10 @@ import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 @Builder
 public class StratifiedResultsHolder {
 	
-	ResultsTable table;
-	List<ClearCLBuffer> bands;
+	private ResultsTable table;
+	private List<ClearCLBuffer> bands;
 
-	List<ResultsTable> objectCounts; // record how many objects sit within the label
-	List<ResultsTable> parentObjects; // record which secondary objects a primary object sits within
+	private List<ResultsTable> objectCounts; // record how many objects sit within the label
+	private List<ResultsTable> parentObjects; // record which secondary objects a primary object sits within
 	
 }

@@ -13,11 +13,11 @@ import lombok.Data;
 @Builder
 public class CompiledImageData {
 
-	SegmentedChannels images;
-	Map<String, SkeletonResultsHolder> skeletons;
-	Map<String, StratifiedResultsHolder> stratifyResults;
-	
-	ResultsTable primary;
-	ResultsTable secondary;
-	ResultsTable tertiary;
+	private SegmentedChannels images;
+	private Map<String, SkeletonResultsHolder> skeletons;
+	private Map<String, StratifiedResultsHolder> stratifyResults;
+
+	private ResultsTable primary;
+	private ResultsTable secondary;
+	private ResultsTable tertiary;
 }

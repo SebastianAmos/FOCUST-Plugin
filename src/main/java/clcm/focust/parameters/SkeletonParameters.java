@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class SkeletonParameters {
-	Boolean primary;
-	Boolean secondary;
-	Boolean tertairy;
+	private Boolean primary;
+	private Boolean secondary;
+	private Boolean tertairy;
 }
