@@ -140,7 +140,7 @@ public class LabelEditor {
 					}
 							
 				}
-			}
+			} 
 		}
 		ImagePlus output = input;
 		return output;

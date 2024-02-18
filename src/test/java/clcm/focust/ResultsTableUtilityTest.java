@@ -43,7 +43,8 @@ class ResultsTableUtilityTest {
 	
 	
 	private File createDir() {
-		File dir = new File("C:/Users/21716603/Desktop/rtTesting");
+		//File dir = new File("C:/Users/21716603/Desktop/rtTesting");
+		File dir = new File("C:\\Users\\simpl\\OneDrive - The University of Western Australia\\Data\\FOCUST Test");
 		dir.mkdir();
 		return dir;
 	}

@@ -28,8 +28,8 @@ public class ModeProcess{
 	 * Opens images from the directory, passes them to the segment class, then the user-defined mode.
 	 * 
 	 * @param parameters
-	 * @return
 	 */
+	
 	public void run(ParameterCollection parameters) {
 	
 		File f = new File(parameters.getInputDir());

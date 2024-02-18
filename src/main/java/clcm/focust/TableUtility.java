@@ -16,6 +16,7 @@ import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
+import util.FindConnectedRegions.Results;
 
 /**
  * This helper class contains helper methods for calculating intensities and saving results tables. 
@@ -324,27 +325,35 @@ public class TableUtility {
 		
 		ResultsTable result = new ResultsTable();
 		
-		rt.show("Results");
+		//rt.show("Results");
 		String headers = rt.getColumnHeadings();
 		System.out.println("Headers = " + headers);
 		
-		System.out.println(rt);
+		//System.out.println(rt);
 		
 		if(parameters.getGroupingInfo().isEmpty()) {
 			for (int i = 0; i < rt.size(); i++) {
-				result.setValue("Label", i, rt.getValue("Label", i));
+				//result.setValue("Label", i, rt.getValue("Label", i));
 				result.setValue("ImageID", i, imgName);
 			}
 		} else {
 			for (int i = 0; i < rt.size(); i++) {
-				result.setValue("Label", i, rt.getValue("Label", i));
+				//result.setValue("Label", i, rt.getValue("Label", i)); 
 				result.setValue("ImageID", i, imgName);
 				result.setValue("Group", i, parameters.getGroupingInfo());
 			}
 		}
 		
+		result.setColumn("Label", rt.getColumnAsVariables("Label"));
+		
+		result.show("Final Table");
 		return result;
 	}
+	
+	
+	
+	
+	
 	
 	
 	

@@ -7,10 +7,9 @@ public enum MethodTypes {
 	CLASSICWATERSHED(new ClassicWatershed(), "Classic Watershed"),
 	VORONOIOTSU(new VoronoiOtsuLabelling(), "Voronoi Otsu"),
 	EXTENDBYVORONOI(new ExtendByVoronoi(), "Extend by Voronoi"),
+	CONNECTEDCOMP(new ConnectedComponents(), "Conn. Comp."),
 	MEMBRANESCALAR(new MembraneScalar(), "Membrane Scalar"),
-	EDTMEMBRANES(new EDTMembranes(), "Membrane-Based"),
-	CLASSIFER(new TrainedClassifier(), "Trained Classifer"),
-	DEEPIMAGEJ(new MaximaSegmentation(), "Deep IJ");
+	EDTMEMBRANES(new EDTMembranes(), "Membrane-Based");
 	
 	private Method method;
 	private String displayName;
