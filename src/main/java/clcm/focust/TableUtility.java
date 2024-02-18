@@ -338,15 +338,14 @@ public class TableUtility {
 			}
 		} else {
 			for (int i = 0; i < rt.size(); i++) {
-				//result.setValue("Label", i, rt.getValue("Label", i)); 
+				//result.setValue("Label", i, rt.getValue("Label", i));
 				result.setValue("ImageID", i, imgName);
 				result.setValue("Group", i, parameters.getGroupingInfo());
 			}
 		}
 		
 		result.setColumn("Label", rt.getColumnAsVariables("Label"));
-		
-		result.show("Final Table");
+
 		return result;
 	}
 	

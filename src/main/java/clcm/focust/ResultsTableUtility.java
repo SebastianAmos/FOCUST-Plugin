@@ -1,22 +1,17 @@
 package clcm.focust;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
-
 import clcm.focust.parameters.ParameterCollection;
-import ij.IJ;
 import ij.measure.ResultsTable;
 
 public class ResultsTableUtility {
@@ -77,21 +72,27 @@ public class ResultsTableUtility {
 	 * @param headers The headers from the ResultsTable.
 	 */
 	private void writeCSV(File csv, List<List<String>> data, List<String> headers) {
-		
-		try {
-			
-			Writer writer = new FileWriter(csv, false);
-			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().setHeader(headers.toArray(new String[headers.size()])).build())) {
-				for (List<String> record : data) {
-					printer.printRecord(record);
+
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(csv,false))) {
+			// Write the header row
+			bw.append(headers.stream().collect(Collectors.joining(",")));
+			bw.append(System.lineSeparator());
+
+			// 
+			data.forEach(line -> {
+				try {
+					bw.append(line.stream().collect(Collectors.joining(","))+System.lineSeparator());
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Failed to write new csv records.");
 				}
-			}
-		
+			});
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Failed to write new csv records.");
 		}
-		
+
 	}
 	
 	
@@ -103,16 +104,17 @@ public class ResultsTableUtility {
 	 */
 	private void appendCSV(File csv, List<List<String>> data) {
 		
-		try {
-			Writer writer = new FileWriter(csv, true);
-			// test class path
-			IJ.log("resource: " + CSVFormat.class.getResource("CSVFormat.class"));
-			IJ.log("apache class path: " + CSVFormat.class.getDeclaredMethods());
-			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.builder().build())) {
-				for (List<String> record : data) {
-					printer.printRecord(record);
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(csv,true))) {
+
+			// 
+			data.forEach(line -> {
+				try {
+					bw.append(line.stream().collect(Collectors.joining(","))+System.lineSeparator());
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Failed to write new csv records.");
 				}
-			}
+			});
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -122,46 +124,37 @@ public class ResultsTableUtility {
 	}
 
 	// Get csv headers for cross-check.
-	public List<String> readCSVHeaders(File file){
-			try {
-				Reader in = new FileReader(file);
-				CSVFormat format = CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(false).build();
-				CSVParser parser = CSVParser.parse(in, format);
-				List<String> headers = parser.getHeaderNames();
-				return headers;
-			} catch (FileNotFoundException e) {
+		public List<String> readCSVHeaders(File file){
+			try(BufferedReader br = new BufferedReader(new FileReader(file))){
+				// Header may only be the first line of the CSV. Otherwise it's bound to break.
+				return Arrays.stream(br.readLine().split(",")).map(String::trim).collect(Collectors.toList());
+			}catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return null;
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
 			}
-	}
+		}
 	
+		
 	
 	// Get .csv as nested list
-	public List<List<String>> readCSV(File file){
-		
-		try {
-			Reader in = new FileReader(file);
-			CSVFormat format = CSVFormat.DEFAULT.builder().setHeader().setSkipHeaderRecord(true).build();
-			CSVParser parser = CSVParser.parse(in, format);
+		public List<List<String>> readCSV(File file){
 			
-			return parser.getRecords().stream()
-					.map(record -> {
-						List<String> row = new ArrayList<>();
-						record.forEach(row::add);
-						return row;
-					}).collect(Collectors.toList());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			try(BufferedReader br = new BufferedReader(new FileReader(file))){
+				
+				/* Takes each line, separates them by comma, trims whitespace, puts it in a list, puts all of the lists from all lines into a list.*/
+			    return br.lines().skip(1).map(line -> Arrays.stream(line.split(",")).map(String::trim).collect(Collectors.toList()))
+			    		.collect(Collectors.toList());
+			}catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}		
 		}
-		
-	}
 
 	
 	private boolean headersCheck(ResultsTable rt, List<String> existingHeaders) {

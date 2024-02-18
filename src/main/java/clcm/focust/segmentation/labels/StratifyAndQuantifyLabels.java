@@ -92,8 +92,7 @@ public class StratifyAndQuantifyLabels {
 		//ClearCLBuffer testDist2 = clij2.create(testDist); 
 		//clij2.copy(testDist, testDist2);
 		//ClearCLBuffer[] TestDists = {testDist, testDist2};
-		
-		
+		 
 		
 		saveBands(bandTypes, objectType, params, imgName);
 		
