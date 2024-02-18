@@ -25,7 +25,7 @@ class ParameterCollectionTest {
     void loadParameterCollection() {
         try{
             ParameterCollection params = ParameterCollection.loadParameterCollection("src/test/resources/parameterCollectionWriteTest.json");
-            assertEquals("src/test/resources/", params.outputDir);
+            assertEquals("src/test/resources/", params.getOutputDir());
         } catch (IOException e){
             fail("IO Exception encountered");
         }
