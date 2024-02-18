@@ -14,9 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeSegment{
-	private static String primaryPrefix = "Primary_Objects_";
-	private static String secondaryPrefix = "Secondary_Objects_";
-	private static String tertiaryPrefix = "Tertiary_Objects_";
+
 
 	/**
 	 * This method runs the user-defined segmentation on the appropriate channels.
@@ -44,14 +42,14 @@ public class ModeSegment{
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
 
-			System.out.println("Opening: " + parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
-			primary = IJ.openImage(parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
+			System.out.println("Opening: " + parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
+			primary = IJ.openImage(parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
 
-			System.out.println("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
-			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
+			System.out.println("Opening: " + parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
+			secondary = IJ.openImage(parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 
 			if (parameters.getProcessTertiary()) {
-				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
+				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif"));
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			}
@@ -82,17 +80,17 @@ public class ModeSegment{
 
 			// Save the segmented images
 			if (!parameters.getOutputDir().isEmpty()) {
-				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + "Primary_Objects_" + imgName);
-				IJ.saveAs(secondary, "TIF", parameters.getOutputDir() + "Secondary_Objects_" + imgName);
+				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + ModeConstants.PRIMARY_PREFIX + imgName);
+				IJ.saveAs(secondary, "TIF", parameters.getOutputDir() + ModeConstants.SECONDARY_PREFIX + imgName);
 				tertiary.ifPresent(t -> {
-					IJ.saveAs(t, "TIF", parameters.getOutputDir() + "Tertiary_Objects_" + imgName);
+					IJ.saveAs(t, "TIF", parameters.getOutputDir() + ModeConstants.TERTIARY_PREFIX + imgName);
 				});
 
 			} else {
-				IJ.saveAs(primary, "TIF", parameters.getInputDir() + "Primary_Objects_" + imgName);
-				IJ.saveAs(secondary, "TIF", parameters.getInputDir() + "Secondary_Objects_" + imgName);
+				IJ.saveAs(primary, "TIF", parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + imgName);
+				IJ.saveAs(secondary, "TIF", parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + imgName);
 				tertiary.ifPresent(t -> {
-					IJ.saveAs(t, "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
+					IJ.saveAs(t, "TIF", parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + imgName);
 				});
 			}
 
