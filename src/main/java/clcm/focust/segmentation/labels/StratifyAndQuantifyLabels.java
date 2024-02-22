@@ -178,7 +178,6 @@ public class StratifyAndQuantifyLabels {
 	/**
 	 * Extracts each label from an image and stratifies it into x % distance bands.
 	 * 
-	 * 
 	 * @param labs Labelled image to process.
 	 * @param bandPercent Percentage of the distance map histogram to segment for each label.
 	 * @param bandIterations Number of bands to create. Should be related to the percentage. i.e 25% = 4 iterations.
@@ -192,18 +191,15 @@ public class StratifyAndQuantifyLabels {
 		ClearCLBuffer dMap = computeChamferDistanceMap(labs);
 		ClearCLBuffer copy = clij2.create(dMap);
 		
-		
 		clij2.copy(dMap, copy);
 		ImagePlus dmapImg = clij2.pull(copy);
 		dmapImg.setTitle("DistMap");
 		dmapImg.show();
 		
-		
 		ResultsTable stats = new ResultsTable();
 		
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
-		
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
@@ -211,21 +207,17 @@ public class StratifyAndQuantifyLabels {
 		for (int i = 1; i <= stats.size(); i++) {
 			ClearCLBuffer mask = clij2.create(labs);
 			ClearCLBuffer distanceMask = clij2.create(labs);
-			
+	
 			// extract a single label
 			clij2.labelToMask(labs, mask, i);
 			
 			// mask the distance map by the label to only process that region of the distance map
 			clij2.mask(dMap, mask, distanceMask);
 			
-			// generate the distance map
 			//ClearCLBuffer dMap = computeChamferDistanceMap(mask); // single mask chamfer distance map
-			
-			// generate the stratified bands from the distance map
-			// take one mask distance map and create bands. 
+
 			//List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(dMap, bandPercent, bandIterations);
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, bandPercent, bandIterations);
-			
 			
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
 			stratifiedLabels.put(i, bands);
@@ -238,8 +230,6 @@ public class StratifyAndQuantifyLabels {
 			buffMask.setTitle("Mask" + i);
 			buffMask.show();
 		}
-		
-		
 		
 		return stratifiedLabels;
 	}
@@ -302,6 +292,8 @@ public class StratifyAndQuantifyLabels {
 	 * Stratifies a distance map into 4 bands by 25% or 50% histogram bin increments.
 	 *
 	 * @param dMap
+	 * @param percent
+	 * @param iterations
 	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%] OR [inner 50%, outer 50%]
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, Double percent, Integer iterations){

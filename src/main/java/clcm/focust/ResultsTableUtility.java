@@ -123,6 +123,7 @@ public class ResultsTableUtility {
 		
 	}
 
+	
 	// Get csv headers for cross-check.
 		public List<String> readCSVHeaders(File file){
 			try(BufferedReader br = new BufferedReader(new FileReader(file))){
