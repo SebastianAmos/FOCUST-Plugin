@@ -127,6 +127,8 @@ public class OptimizeGUI extends JFrame {
 	public String inputDir;
 	public ImagePlus currentImage;
 	public int currentIndex;
+	public JLabel ImageName = new JLabel("");
+
 	
 	public String[] list;
 	public ImagePlus[] channelArray;
@@ -182,13 +184,13 @@ public class OptimizeGUI extends JFrame {
 		gbc_pnlHeader.gridy = 0;
 		contentPane.add(pnlHeader, gbc_pnlHeader);
 		GridBagLayout gbl_pnlHeader = new GridBagLayout();
-		gbl_pnlHeader.columnWidths = new int[]{0, 0, 86, 0, 0, 0, 305, 0, 0, 0, 0, 0, 0};
+		gbl_pnlHeader.columnWidths = new int[]{0, 179, 86, 0, 0, 0, 305, 0, 0, 0, 0, 0, 0};
 		gbl_pnlHeader.rowHeights = new int[]{0, 0, 19, 0};
-		gbl_pnlHeader.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_pnlHeader.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_pnlHeader.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlHeader.setLayout(gbl_pnlHeader);
 		
-		JLabel lblNewLabel = new JLabel("Optimize a Dataset:");
+		JLabel lblNewLabel = new JLabel("Optimize a Dataset");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
@@ -203,24 +205,6 @@ public class OptimizeGUI extends JFrame {
 				
 			}
 		});
-		
-		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
-		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnHelp.gridwidth = 4;
-		gbc_btnHelp.insets = new Insets(5, 0, 5, 5);
-		gbc_btnHelp.gridx = 8;
-		gbc_btnHelp.gridy = 0;
-		pnlHeader.add(btnHelp, gbc_btnHelp);
-		
-		JLabel lblNewLabel_2 = new JLabel("Select an input directory:");
-		lblNewLabel_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 5, 5, 5);
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 1;
-		pnlHeader.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		JButton btnBrowseInput = new JButton("Browse");
 		btnBrowseInput.addActionListener(new ActionListener() {
@@ -237,14 +221,24 @@ public class OptimizeGUI extends JFrame {
 				String path = inputDir + list[0];
 				ImagePlus imp = IJ.openImage(path);
 				channelArray = ChannelSplitter.split(imp);
+				ImageName.setText(list[0]);
 			}
 		});
+		
+		JLabel lblNewLabel_2 = new JLabel("Select an input directory:");
+		lblNewLabel_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
+		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_2.insets = new Insets(0, 5, 5, 5);
+		gbc_lblNewLabel_2.gridx = 1;
+		gbc_lblNewLabel_2.gridy = 0;
+		pnlHeader.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		btnBrowseInput.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnBrowseInput = new GridBagConstraints();
 		gbc_btnBrowseInput.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnBrowseInput.insets = new Insets(0, 0, 5, 5);
-		gbc_btnBrowseInput.gridx = 1;
-		gbc_btnBrowseInput.gridy = 1;
+		gbc_btnBrowseInput.gridx = 2;
+		gbc_btnBrowseInput.gridy = 0;
 		pnlHeader.add(btnBrowseInput, gbc_btnBrowseInput);
 		
 		txtInputDir = new JTextField();
@@ -254,10 +248,21 @@ public class OptimizeGUI extends JFrame {
 		gbc_txtInputDir.fill = GridBagConstraints.BOTH;
 		gbc_txtInputDir.anchor = GridBagConstraints.WEST;
 		gbc_txtInputDir.insets = new Insets(0, 0, 5, 5);
-		gbc_txtInputDir.gridx = 2;
-		gbc_txtInputDir.gridy = 1;
+		gbc_txtInputDir.gridx = 3;
+		gbc_txtInputDir.gridy = 0;
 		pnlHeader.add(txtInputDir, gbc_txtInputDir);
 		txtInputDir.setColumns(10);
+		
+		
+		
+		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
+		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnHelp.gridwidth = 4;
+		gbc_btnHelp.insets = new Insets(5, 0, 5, 0);
+		gbc_btnHelp.gridx = 8;
+		gbc_btnHelp.gridy = 0;
+		pnlHeader.add(btnHelp, gbc_btnHelp);
 		
 		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
@@ -269,11 +274,31 @@ public class OptimizeGUI extends JFrame {
 			}
 		});
 		
+		JLabel lblNewLabel_2_1 = new JLabel("Current image:");
+		lblNewLabel_2_1.setFont(new Font("Arial", Font.BOLD, 14));
+		GridBagConstraints gbc_lblNewLabel_2_1 = new GridBagConstraints();
+		gbc_lblNewLabel_2_1.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_2_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_2_1.gridx = 0;
+		gbc_lblNewLabel_2_1.gridy = 1;
+		pnlHeader.add(lblNewLabel_2_1, gbc_lblNewLabel_2_1);
+		
+
+		ImageName.setHorizontalAlignment(SwingConstants.LEFT);
+		ImageName.setFont(new Font("Arial", Font.PLAIN, 14));
+		GridBagConstraints gbc_ImageName = new GridBagConstraints();
+		gbc_ImageName.anchor = GridBagConstraints.WEST;
+		gbc_ImageName.gridwidth = 6;
+		gbc_ImageName.insets = new Insets(0, 0, 5, 5);
+		gbc_ImageName.gridx = 1;
+		gbc_ImageName.gridy = 1;
+		pnlHeader.add(ImageName, gbc_ImageName);
+		
 		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnAnalysis = new GridBagConstraints();
 		gbc_btnAnalysis.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnAnalysis.gridwidth = 4;
-		gbc_btnAnalysis.insets = new Insets(0, 0, 5, 5);
+		gbc_btnAnalysis.insets = new Insets(0, 0, 5, 0);
 		gbc_btnAnalysis.gridx = 8;
 		gbc_btnAnalysis.gridy = 1;
 		pnlHeader.add(btnAnalysis, gbc_btnAnalysis);

@@ -28,6 +28,8 @@ public class OptimizeHelpers {
 			gui.currentImage = IJ.openImage(imgPath);
 			gui.channelArray = ChannelSplitter.split(gui.currentImage);
 			
+			gui.ImageName.setText(gui.list[gui.currentIndex]);
+			
 			if(gui.currentImage != null) {
 				IJ.run("Close All");
 			}
@@ -47,6 +49,7 @@ public class OptimizeHelpers {
 			gui.currentIndex = ++gui.currentIndex;
 			initialiseImage();
 		}
+
 	}
 	
 	
