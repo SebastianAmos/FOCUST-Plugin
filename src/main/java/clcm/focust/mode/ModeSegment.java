@@ -35,8 +35,8 @@ public class ModeSegment{
 		// Split channels
 		ImagePlus[] channels = ChannelSplitter.split(imp);
 		
-		ImagePlus primary;
-		ImagePlus secondary;
+		ImagePlus primary = null;
+		ImagePlus secondary = null;
 		Optional<ImagePlus> tertiary = Optional.empty();	
 		
 		// open images if analysis-only = true
@@ -45,10 +45,11 @@ public class ModeSegment{
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
 			
-			System.out.println("Opening: " + parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
+			IJ.log("Opening: " + parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
+			
 			primary = IJ.openImage(parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
 			
-			System.out.println("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
+			IJ.log("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			
 			if (parameters.getProcessTertiary()) {
@@ -90,25 +91,51 @@ public class ModeSegment{
 			
 			// Save the segmented images
 			if (!parameters.getOutputDir().isEmpty()) {
-				IJ.saveAs(primary, "TIF", parameters.getOutputDir() + "Primary_Objects_" + imgName);
-				IJ.saveAs(secondary, "TIF", parameters.getOutputDir() + "Secondary_Objects_" + imgName);
+				IJ.saveAs(primary.duplicate(), "TIF", parameters.getOutputDir() + "Primary_Objects_" + imgName);
+				IJ.saveAs(secondary.duplicate(), "TIF", parameters.getOutputDir() + "Secondary_Objects_" + imgName);
 				tertiary.ifPresent(t -> {
-					IJ.saveAs(t, "TIF", parameters.getOutputDir() + "Tertiary_Objects_" + imgName);
+					IJ.saveAs(t.duplicate(), "TIF", parameters.getOutputDir() + "Tertiary_Objects_" + imgName);
 				});
 
 			} else {
-				IJ.saveAs(primary, "TIF", parameters.getInputDir() + "Primary_Objects_" + imgName);
-				IJ.saveAs(secondary, "TIF", parameters.getInputDir() + "Secondary_Objects_" + imgName);
+				IJ.saveAs(primary.duplicate(), "TIF", parameters.getInputDir() + "Primary_Objects_" + imgName);
+				IJ.saveAs(secondary.duplicate(), "TIF", parameters.getInputDir() + "Secondary_Objects_" + imgName);
 				tertiary.ifPresent(t -> {
-					IJ.saveAs(t, "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
+					IJ.saveAs(t.duplicate(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
 				});
 			}
 
 		}
 
+		System.out.println("IN MODE SEGMENT: ");
+		if (primary == null) {
+			System.out.println("Primary is NULL");
+		} else { 
+			System.out.println("Primary is NOT NULL");
+		}
+		
+		if (secondary == null) {
+			System.out.println("Secondary is NULL");
+		} else { 
+			System.out.println("Secondary is NOT NULL");
+		}
 
+		
+		
+		
+		ImagePlus pTest = primary.duplicate();
+		pTest.setTitle("segmentedPrimary");
+		ImagePlus sTest = secondary.duplicate();
+		sTest.setTitle("segmentedSecondary");
+		
+		
+		
+		System.out.println("Primary Image Title: " + (pTest != null ? pTest.getTitle() : "null"));
+		System.out.println("Secondary Image Title: " + (sTest != null ? sTest.getTitle() : "null"));
+
+		
 		// Build return data object
-		SegmentedChannels segChannels = SegmentedChannels.builder().
+		SegmentedChannels segmentedChannels = SegmentedChannels.builder().
 				primary(primary).
 				secondary(secondary).
 				tertiary(tertiary).
@@ -116,7 +143,7 @@ public class ModeSegment{
 
 		ijLog("Segmentation Complete.");
 
-		return segChannels;
+		return segmentedChannels;
 
 	}
 

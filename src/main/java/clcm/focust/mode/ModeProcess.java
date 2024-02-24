@@ -71,24 +71,38 @@ public class ModeProcess{
 			}
 			
 			ModeSegment segment = new ModeSegment();
-			SegmentedChannels objects = segment.run(parameters, imp, list[i]);
+			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
 			
+			System.out.println("IN MODE Process: ");
+			
+			
+			
+			
+			ImagePlus imP = segmentedChannels.getPrimary().duplicate();
+			ImagePlus imS = segmentedChannels.getSecondary().duplicate();
+			
+			imP.show();
+			imS.show();
+
+			System.out.println("Primary Image Title: " + (imP != null ? imP.getTitle() : "null"));
+			System.out.println("Secondary Image Title: " + (imS != null ? imS.getTitle() : "null"));
+
 			
 			// Generate skeletons based on user inputs and save
 			SkeletonProcess skeletonize = new SkeletonProcess();
-			Map<String, SkeletonResultsHolder> skeletonResults = skeletonize.run(parameters, objects);
+			Map<String, SkeletonResultsHolder> skeletonResults = skeletonize.run(parameters, segmentedChannels, imgName);
 			SaveSkeletons saveSkeletons = new SaveSkeletons();
 			saveSkeletons.saveSkeletons(skeletonResults, parameters, imgName);
 			
 			
 			// Generate stratified bands - bands are saved within
 			StratifyProcess stratify = new StratifyProcess();
-			Map<String, StratifiedResultsHolder> stratifyResults = stratify.process(parameters, objects, imgName);
+			Map<String, StratifiedResultsHolder> stratifyResults = stratify.process(parameters, segmentedChannels, imgName);
 			
 			
 			// Build compiledImageData object.
 			CompiledImageData imgData = CompiledImageData.builder().
-					images(objects).
+					images(segmentedChannels).
 					skeletons(skeletonResults).
 					stratifyResults(stratifyResults).
 					build();
