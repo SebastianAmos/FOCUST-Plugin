@@ -28,46 +28,46 @@ public class ModeSegment{
 	 * @return
 	 */
 	public SegmentedChannels run(ParameterCollection parameters, ImagePlus imp, String fileName) {
-
+		
 		// Get image info
 		String imgName = imp.getTitle();
 		Calibration cal = imp.getCalibration();
 		// Split channels
 		ImagePlus[] channels = ChannelSplitter.split(imp);
-
+		
 		ImagePlus primary;
 		ImagePlus secondary;
 		Optional<ImagePlus> tertiary = Optional.empty();	
-
+		
 		// open images if analysis-only = true
 		if(parameters.getAnalysisOnly()) {
-
+			
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
-
+			
 			System.out.println("Opening: " + parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
 			primary = IJ.openImage(parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
-
+			
 			System.out.println("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
-
+			
 			if (parameters.getProcessTertiary()) {
 				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			} 
-
+			
 		} else {
-
+			
 			// analysis-only = false, run the user-defined segmentation.
-
+			
 			ijLog("Number of channels: " + channels.length);
-
+			
 			// Run user-defined segmentation on the correct channel
 			primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
 					parameters.getPrimaryObject(),
 					parameters);
-
+			
 			secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
 					parameters.getSecondaryObject(),
 					parameters);
@@ -80,7 +80,7 @@ public class ModeSegment{
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 			}
-
+			
 			
 			// Set calibrations
 			primary.setCalibration(cal);

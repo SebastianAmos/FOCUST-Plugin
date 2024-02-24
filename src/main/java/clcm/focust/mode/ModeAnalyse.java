@@ -32,19 +32,19 @@ public class ModeAnalyse {
 	 * @param imgName
 	 */
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
-
+		
 		// Quantify primary, secondary, and optional tertiary.
 		ijLog("Analysing objects...");
 		primaryResults.add(analyze3D.process(imgData.images.getPrimary()));
 		secondaryResults.add(analyze3D.process(imgData.images.getSecondary()));
 		imgData.images.getTertiary().ifPresent(t -> tertiaryResults.add(analyze3D.process(t)));
-
+		
 		
 		// Add segmented images to lists for intensity analysis
 		segmentedObjects.add(imgData.images.getPrimary());
 		segmentedObjects.add(imgData.images.getSecondary());
 		imgData.images.getTertiary().ifPresent(t -> {segmentedObjects.add(t);});
-
+		
 		
 		// Map intensity data to each object type
 		ijLog("Measuring channel intensities...");

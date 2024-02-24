@@ -14,31 +14,27 @@ public class SkeletonProcess {
 	 * @param segmentedChannels
 	 * @return
 	 */
-	public Map<String, SkeletonResultsHolder> run(ParameterCollection params, SegmentedChannels segmentedChannels) {
+	public Map<String, SkeletonResultsHolder> run(ParameterCollection params, SegmentedChannels segmentedChannels, String imgName) {
 		
 		Map<String, SkeletonResultsHolder> results = new HashMap<>();
 		
 		Skeleton skeleton = new Skeleton();
 		
 		if(params.getSkeletonParamters().getPrimary()) {
-			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary()), segmentedChannels.getPrimary(), "IMGNAME"));
+			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary()), segmentedChannels.getPrimary(), imgName));
 		}
 		
 		if(params.getSkeletonParamters().getSecondary()) {
-			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary()), segmentedChannels.getSecondary(), "IMGNAME"));
+			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary()), segmentedChannels.getSecondary(), imgName));
 		}
 		
 		if(params.getSkeletonParamters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				results.put("Teritary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t), t, "IMGNAME"));
+				results.put("Teritary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t), t, imgName));
 			});
 		}
 		
 		return results;
 		
 	}
-	
-
-	
-	
 }

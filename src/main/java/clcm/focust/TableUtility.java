@@ -153,18 +153,19 @@ public class TableUtility {
 
 		// A map for intensity cals
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
-			
+		
 		/*
 		 * calculate the intensity of every channel in the input image (channels) 
 		 */
 		for (int j = 0; j < segmentedObjects.size(); j++) {
-				
+			
 			ResultsTable rt = new ResultsTable();
-				
+			
 			for (int k = 0; k < channels.length; k++) {
-				
+			
 				ResultsTable temp = TableUtility.processIntensity(channels[k], segmentedObjects.get(j));
-				String[] headers = temp.getHeadings();
+				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+				headers.remove(0);
 				
 				// if channel 1
 				if ((k + 1) == 1) {
@@ -175,7 +176,8 @@ public class TableUtility {
 						c1Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						rt.setColumn(c1Name, temp.getColumnAsVariables(head));
+						String newHead = c1Name + "." + head;
+						rt.setColumn(newHead, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -188,7 +190,8 @@ public class TableUtility {
 						c2Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						rt.setColumn(c2Name, temp.getColumnAsVariables(head));
+						String newHead = c2Name + "." + head;
+						rt.setColumn(newHead, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -201,7 +204,8 @@ public class TableUtility {
 						c3Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						rt.setColumn(c3Name, temp.getColumnAsVariables(head));
+						String newHead = c3Name + "." + head;
+						rt.setColumn(newHead, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -214,7 +218,8 @@ public class TableUtility {
 						c4Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						rt.setColumn(c4Name, temp.getColumnAsVariables(head));
+						String newHead = c4Name + "." + head;
+						rt.setColumn(newHead, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -265,10 +270,10 @@ public class TableUtility {
 				
 				// channel 1
 				if ((j + 1) == 1) {
-					String c1Name = ("band" + (i + 1) + "_c1").toString();
+					String c1Name = ("band" + (i + 1) + ".c1").toString();
 					
 					for (String head : headers) {
-						String headerName = (c1Name + "_" + head).toString();
+						String headerName = (c1Name + "." + head).toString();
 						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
@@ -276,30 +281,30 @@ public class TableUtility {
 				
 				// channel 2
 				if ((j + 1) == 2) {
-					String c2Name = ("band" + (i + 1) + "_c2").toString();
+					String c2Name = ("band" + (i + 1) + ".c2").toString();
 					
 					for (String head : headers) {
-						String headerName = (c2Name + "_" + head).toString();
+						String headerName = (c2Name + "." + head).toString();
 						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
 				// channel 3
 				if ((j + 1) == 3) {
-					String c3Name = ("band" + (i + 1) + "_c3").toString();
+					String c3Name = ("band" + (i + 1) + ".c3").toString();
 			
 					for (String head : headers) {
-						String headerName = (c3Name + "_" + head).toString();
+						String headerName = (c3Name + "." + head).toString();
 						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
 				
 				// channel 4
 				if ((j + 1) == 4) {
-					String c4Name = ("band" + (i + 1) + "_c4").toString();
+					String c4Name = ("band" + (i + 1) + ".c4").toString();
 					
 					for (String head : headers) {
-						String headerName = (c4Name + "_" + head).toString();
+						String headerName = (c4Name + "." + head).toString();
 						rt.setColumn(headerName, temp.getColumnAsVariables(head));
 					}
 				}
