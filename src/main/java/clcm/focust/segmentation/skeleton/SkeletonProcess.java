@@ -64,13 +64,13 @@ public class SkeletonProcess {
 		
 		if(params.getSkeletonParamters().getSecondary()) {
 			imS.show();
-			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Primary"), segmentedChannels.getSecondary(), imgName));
+			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary"), segmentedChannels.getSecondary(), imgName));
 			
 		}
 		
 		if(params.getSkeletonParamters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				results.put("Teritary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Primary"), t, imgName));
+				results.put("Teritary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName));
 			});
 		}
 		
