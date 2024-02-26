@@ -46,6 +46,7 @@ public class Skeleton {
 	 
 		
 		IJ.run(imp, "8-bit", "");
+		
 		ImagePlus skeletons = LabelEditor.makeBinary(imp);
 		skeletons.setTitle("Skeletons_of_" + objectName + "_" + imgName);
 		skeletons.show();

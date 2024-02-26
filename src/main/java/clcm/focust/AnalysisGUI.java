@@ -27,10 +27,12 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.io.IOException;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
 import clcm.focust.data.DatumUpdateService;
+import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;
 import clcm.focust.mode.ModeProcess;
@@ -41,6 +43,8 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
+import ij.ImagePlus;
+
 import java.awt.Toolkit;
 import javax.swing.JTabbedPane;
 
@@ -2069,7 +2073,7 @@ public class AnalysisGUI extends JFrame {
 				// Testing new distance-based label stratification
 				//ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
 				
-				/*
+				
 				File f = new File(parameterCollection.getInputDir());
 				String[] list = f.list();
 				String path = parameterCollection.getInputDir() + list[0];
@@ -2078,11 +2082,11 @@ public class AnalysisGUI extends JFrame {
 				// Build compiledImageData object.
 				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
 				
-				*/
+				
 			
 				
-				ModeProcess process = new ModeProcess();
-				process.run(parameterCollection);
+				//ModeProcess process = new ModeProcess();
+				//process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService
