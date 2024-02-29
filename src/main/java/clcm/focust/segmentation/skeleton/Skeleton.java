@@ -38,7 +38,7 @@ public class Skeleton {
 	 */
 	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName) {
 		
-		imp.setTitle("LABEL TO SKELETONIZE");
+		imp.setTitle(imgName + " TO SKELETONIZE");
 		System.out.println("LABEL TO SKEL STATS: " + imp.getAllStatistics());
 		imp.show();
 		

@@ -13,22 +13,18 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 public class MaximaSegmentation implements Method{
 
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection) {
+	public ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection) {
 		
-		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
 		
-		ClearCLBuffer bg = background.getFilter().apply(input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
-		ClearCLBuffer filtered = filter.getFilter().apply(bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
-		
-		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, parameters.getMethodParameters().getThresholdSize());
+		ClearCLBuffer bg = background.getFilter().apply(clij2, input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
+		ClearCLBuffer filtered = filter.getFilter().apply(clij2, bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
+		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(clij2, filtered, parameters.getMethodParameters().getThresholdSize());
 		
 		ClearCLBuffer inverted = clij2.create(input);
 		ClearCLBuffer maxima = clij2.create(input);
 		ClearCLBuffer labelled = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
-		ClearCLBuffer killBorders = clij2.create(input);
-		ClearCLBuffer ordered = clij2.create(input);
 		
 		clij2.invert(filtered, inverted);
 		clij2.detectMaxima3DBox(filtered, maxima, 
@@ -39,16 +35,9 @@ public class MaximaSegmentation implements Method{
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);
 		
-		// Kill borders
-		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
-		
-		// close label gaps
-		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
-		
-		
-		ImagePlus output = clij2.pull(ordered);
-		IJ.run(output, "glasbey inverted", "");
-		
+		// pull image
+		ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
+	
 		// clean up GPU without using clij2.clear() - as this will interrupt optimization workflow.
 		input.close();
 		bg.close();
@@ -58,8 +47,6 @@ public class MaximaSegmentation implements Method{
 		maxima.close();
 		labelled.close();
 		segmented.close();
-		killBorders.close();
-		ordered.close();
 		
 		return output;
 	}

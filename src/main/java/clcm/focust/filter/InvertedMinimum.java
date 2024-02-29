@@ -6,9 +6,7 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class InvertedMinimum implements Filter {
 
 	@Override
-	public ClearCLBuffer apply(ClearCLBuffer input, Vector3D v1, Vector3D v2) {
-		
-		CLIJ2 clij2 = CLIJ2.getInstance();
+	public ClearCLBuffer apply(CLIJ2 clij2, ClearCLBuffer input, Vector3D v1, Vector3D v2) {
 		Minimum minimum = new Minimum();
 		
 		ClearCLBuffer invert = clij2.create(input);
@@ -16,7 +14,7 @@ public class InvertedMinimum implements Filter {
 		ClearCLBuffer filtered = clij2.create(input);
 		
 		clij2.invert(input, invert);
-		min = minimum.apply(invert, v1, v2);
+		min = minimum.apply(clij2, invert, v1, v2);
 		clij2.subtractImages(input, min, filtered);
 		
 		return filtered;

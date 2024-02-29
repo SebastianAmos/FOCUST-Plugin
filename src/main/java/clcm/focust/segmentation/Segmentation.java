@@ -5,7 +5,13 @@ import clcm.focust.parameters.FilterParameters;
 import clcm.focust.parameters.MethodParameters;
 import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
+import ij.plugin.LutLoader;
+import ij.process.LUT;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 public class Segmentation {
 	
@@ -17,8 +23,11 @@ public class Segmentation {
 		MethodParameters method = parameters.getMethodParameters();
 		
 		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		
 		// Run selected method with respective parameters
-		ImagePlus output = method.getMethodType().getMethod().apply(input, 
+		ImagePlus output = method.getMethodType().getMethod().apply(clij2, 
+				input, 
 				background.getBackgroundType(), 
 				filter.getFilterType(), 
 				method.getThresholdType(), 
@@ -27,6 +36,43 @@ public class Segmentation {
 		
 		return output;
 		
+	}
+	
+	
+	/**
+	 * Runs the killBorders method, closes labelling gaps, pulls from GPU then sets the display range, calibration and LUT.
+	 * 
+	 * @param clij2
+	 * @param buffer
+	 * @param cal
+	 * @return
+	 */
+	public static ImagePlus pullAndSetDisplay(CLIJ2 clij2, ClearCLBuffer buffer, Calibration cal, ParameterCollection parameters) {
+		
+		// Kill borders
+		ClearCLBuffer killBorders = clij2.create(buffer);
+		killBorders  = parameters.getKillBorderType().getKillBorders().apply(buffer);
+		
+		// Close label gaps
+		ClearCLBuffer ordered = clij2.create(buffer);
+		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
+		
+		// set display max to max label value 
+		double maxVal = clij2.maximumOfAllPixels(ordered);
+		ImagePlus output = clij2.pull(ordered);
+		
+		
+		// get LUT
+		LUT lut = LutLoader.openLut(IJ.getDirectory("luts") + "glasbey_on_dark.lut");
+		
+		output.setLut(lut);
+		output.setDisplayRange(0.0, maxVal);
+		output.setCalibration(cal);
+		
+		killBorders.close();
+		ordered.close();
+		
+		return output;
 	}
 	
 	

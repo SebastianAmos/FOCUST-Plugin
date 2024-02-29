@@ -40,6 +40,8 @@ import clcm.focust.mode.ModeType;
 import clcm.focust.filter.Vector3D;
 import clcm.focust.parameters.*;
 import clcm.focust.segmentation.MethodTypes;
+import clcm.focust.segmentation.skeleton.Skeleton;
+import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
@@ -190,6 +192,13 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		
 		JButton btnHelp = new JButton("Help");
+		btnHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+			}
+		});
 		btnHelp.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnHelp = new GridBagConstraints();
 		gbc_btnHelp.fill = GridBagConstraints.HORIZONTAL;
@@ -2070,9 +2079,35 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				
-				// Testing new distance-based label stratification
-				//ImagePlus imp = IJ.openImage("C:/Users/21716603/Desktop/Data/test/img.tif");
+				// Testing new distance-based label stratification and skeletonization
 				
+				/*
+				
+				File f = new File(parameterCollection.getInputDir());
+				String[] list = f.list();
+				
+				for (int i = 0; i < list.length; i++) {
+					
+					String path = parameterCollection.getInputDir() + list[i];
+					ImagePlus imp = IJ.openImage(path);
+					String imgName  = imp.getTitle();
+					
+					String objectType = imgName + "_" + i;
+				
+					Skeleton skeleton = new Skeleton();
+					ImagePlus skel = skeleton.createSkeletons(imp, imgName, objectType);
+					SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel, imp.duplicate(), imgName);
+					skel.setTitle(imgName + "_Skeletons");
+					skel.show();
+
+					results.getStandard().show("Standard Results" + imgName);
+					results.getExtra().show("Extra Results" + imgName);
+					
+				}
+				
+				*/
+				
+				/*
 				
 				File f = new File(parameterCollection.getInputDir());
 				String[] list = f.list();
@@ -2081,12 +2116,12 @@ public class AnalysisGUI extends JFrame {
 				
 				// Build compiledImageData object.
 				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
+		
+				*/
 				
 				
-			
-				
-				//ModeProcess process = new ModeProcess();
-				//process.run(parameterCollection);
+				ModeProcess process = new ModeProcess();
+				process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService

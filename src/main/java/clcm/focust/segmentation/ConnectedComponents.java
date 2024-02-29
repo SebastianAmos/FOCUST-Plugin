@@ -13,37 +13,25 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class ConnectedComponents implements Method {
 
 	@Override
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold,
+	public ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold,
 			ObjectParameters parameters, ParameterCollection parameterCollection) {
 
-		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
-		ClearCLBuffer bg = background.getFilter().apply(input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
-		ClearCLBuffer filtered = filter.getFilter().apply(bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
-		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, parameters.getMethodParameters().getThresholdSize());
+		ClearCLBuffer bg = background.getFilter().apply(clij2, input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
+		ClearCLBuffer filtered = filter.getFilter().apply(clij2, bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
+		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(clij2, filtered, parameters.getMethodParameters().getThresholdSize());
+		ClearCLBuffer segmented = clij2.create(input);
+
+		clij2.connectedComponentsLabelingBox(thresholdImg, segmented);
 		
-		ClearCLBuffer labelled = clij2.create(input);
-		ClearCLBuffer killBorders = clij2.create(input);
-		ClearCLBuffer ordered = clij2.create(input);
-		
-		clij2.connectedComponentsLabelingBox(thresholdImg, labelled);
-		
-		// Kill borders
-		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(labelled);
-		
-		// close label gaps
-		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
-				
-		ImagePlus output = clij2.pull(ordered);
-		IJ.run(output, "glasbey inverted", "");
+		// pull image
+		ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
 		
 		input.close();
 		bg.close();
 		filtered.close();
 		thresholdImg.close();
-		labelled.close();
-		killBorders.close();
-		ordered.close();
+		segmented.close();
 		
 		return output;
 	}

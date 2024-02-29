@@ -12,8 +12,8 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class ExtendByVoronoi implements Method {
 
 	@Override
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollections) {
-		CLIJ2 clij2 = CLIJ2.getInstance();
+	public ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollections) {
+	
 		
 		ClearCLBuffer input = clij2.push(imp);
 		ClearCLBuffer thresholded = clij2.create(input);

@@ -14,19 +14,17 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJClassicWatershed;
 public class ClassicWatershed implements Method {
 
 	@Override
-	public ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold,
+	public ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold,
 			ObjectParameters parameters, ParameterCollection parameterCollection) {
 		
-		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer input = clij2.push(imp);
 		
-		ClearCLBuffer bg = background.getFilter().apply(input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
-		ClearCLBuffer filtered = filter.getFilter().apply(bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
-		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(filtered, parameters.getMethodParameters().getThresholdSize());
+		ClearCLBuffer bg = background.getFilter().apply(clij2, input, parameters.getBackgroundParameters().getSigma1(), parameters.getBackgroundParameters().getSigma2());
+		ClearCLBuffer filtered = filter.getFilter().apply(clij2, bg, parameters.getFilterParameters().getSigma1(), parameters.getFilterParameters().getSigma2());
+		ClearCLBuffer thresholdImg = threshold.getThreshold().apply(clij2, filtered, parameters.getMethodParameters().getThresholdSize());
 		
 		ClearCLBuffer segmented = clij2.create(input);
-		ClearCLBuffer killBorders = clij2.create(input);
-		ClearCLBuffer ordered = clij2.create(input);
+
 		
 		// method - casting doubles to float.
 		/*
@@ -40,28 +38,17 @@ public class ClassicWatershed implements Method {
 		
 		MorphoLibJClassicWatershed.morphoLibJClassicWatershed(clij2, filtered, thresholdImg, segmented, hMin, hMax);
 		
-		// kill borders
-		killBorders = parameterCollection.getKillBorderType().getKillBorders().apply(segmented);
-	
-		// close label gaps
-		clij2.closeIndexGapsInLabelMap(killBorders, ordered);
-				
-		// pull output
-		ImagePlus output = clij2.pull(ordered);
-		IJ.run(output, "glasey inverted", "");
 		
-	
+		// pull image
+		ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
+		
 		// clean up
 		input.close();
 		bg.close();
 		filtered.close();
 		thresholdImg.close();
 		segmented.close();
-		killBorders.close();
-		
-	
 
-		
 		return output;
 	}
 

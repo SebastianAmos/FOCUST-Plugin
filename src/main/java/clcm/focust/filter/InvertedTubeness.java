@@ -6,9 +6,8 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class InvertedTubeness implements Filter{
 
 	@Override
-	public ClearCLBuffer apply(ClearCLBuffer input, Vector3D v1, Vector3D v2) {
+	public ClearCLBuffer apply(CLIJ2 clij2, ClearCLBuffer input, Vector3D v1, Vector3D v2) {
 		
-		CLIJ2 clij2 = CLIJ2.getInstance();
 		Tubeness tubeness = new Tubeness();
 		
 		ClearCLBuffer invert = clij2.create(input);
@@ -17,7 +16,7 @@ public class InvertedTubeness implements Filter{
 		ClearCLBuffer filtered = clij2.create(input);
 		
 		clij2.invert(input, invert);
-		tube = tubeness.apply(invert, v1, v2);
+		tube = tubeness.apply(clij2, invert, v1, v2);
 		
 		// Bump intensity
 		clij2.multiplyImageAndScalar(tube, temp, 2);

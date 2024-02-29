@@ -76,8 +76,6 @@ public class ModeProcess{
 			System.out.println("IN MODE Process: ");
 			
 			
-			
-			
 			ImagePlus imP = segmentedChannels.getPrimary().duplicate();
 			ImagePlus imS = segmentedChannels.getSecondary().duplicate();
 			

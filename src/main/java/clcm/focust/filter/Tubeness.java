@@ -7,8 +7,8 @@ import net.haesleinhuepf.clijx.imagej2.ImageJ2Tubeness;
 public class Tubeness implements Filter{
 
 	@Override
-	public ClearCLBuffer apply(ClearCLBuffer input, Vector3D v1, Vector3D v2) {
-		CLIJ2 clij2 = CLIJ2.getInstance();
+	public ClearCLBuffer apply(CLIJ2 clij2, ClearCLBuffer input, Vector3D v1, Vector3D v2) {
+
 		ImageJ2Tubeness ij2Tubeness = new ImageJ2Tubeness();
 		
 		ClearCLBuffer filtered = clij2.create(input);

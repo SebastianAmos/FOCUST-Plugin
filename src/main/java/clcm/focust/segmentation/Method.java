@@ -6,9 +6,10 @@ import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.threshold.ThresholdType;
 import ij.ImagePlus;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 public interface Method {
 
-	ImagePlus apply(ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection);
+	ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection);
 	
 }

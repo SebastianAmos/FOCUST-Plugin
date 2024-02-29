@@ -65,17 +65,17 @@ public class ModeSegment{
 			ijLog("Number of channels: " + channels.length);
 			
 			// Run user-defined segmentation on the correct channel
-			primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()],
+			primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()].duplicate(),
 					parameters.getPrimaryObject(),
 					parameters);
 			
-			secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()],
+			secondary = Segmentation.run(channels[parameters.getSecondaryObject().getChannel()].duplicate(),
 					parameters.getSecondaryObject(),
 					parameters);
 
 			// if tertiary should be processed, run segmentation, otherwise generate by subtraction if selected.
 			if (parameters.getProcessTertiary()) {
-				tertiary = Optional.ofNullable(Segmentation.run(channels[parameters.getTertiaryObject().getChannel()],
+				tertiary = Optional.ofNullable(Segmentation.run(channels[parameters.getTertiaryObject().getChannel()].duplicate(),
 						parameters.getTertiaryObject(),
 						parameters));
 			} else if (parameters.getTertiaryIsDifference()) {
