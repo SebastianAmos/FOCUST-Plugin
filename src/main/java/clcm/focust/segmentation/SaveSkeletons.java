@@ -23,11 +23,11 @@ public class SaveSkeletons {
 				// Save the labelled skeletons
 				if (!parameters.getOutputDir().isEmpty()) {
 					
-					IJ.saveAs(results.getLabelledSkeletons(), "TIF", parameters.getOutputDir() + object + "_Skeletons" + imgName);
+					IJ.saveAs(results.getLabelledSkeletons(), "TIF", parameters.getOutputDir() + object + "_Skeletons_" + imgName);
 					
 				} else {
 					
-					IJ.saveAs(results.getLabelledSkeletons(), "TIF", parameters.getInputDir() + object + "_Skeletons" + imgName);
+					IJ.saveAs(results.getLabelledSkeletons(), "TIF", parameters.getInputDir() + object + "_Skeletons_" + imgName);
 					
 				}
 			}

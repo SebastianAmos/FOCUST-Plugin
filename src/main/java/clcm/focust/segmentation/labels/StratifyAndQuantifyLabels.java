@@ -12,6 +12,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.ResultsTable;
+import ij.process.ImageConverter;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
@@ -263,7 +264,9 @@ public class StratifyAndQuantifyLabels {
 		
 		DefaultAlgoListener.monitor(algo);
 		
-		IJ.run(label, "8-bit", "");
+		
+		ImageConverter converter = new ImageConverter(label);
+		converter.convertToGray8();
 		
 		ImageStack img = label.getStack();
 		

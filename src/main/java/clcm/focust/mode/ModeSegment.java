@@ -79,7 +79,7 @@ public class ModeSegment{
 						parameters.getTertiaryObject(),
 						parameters));
 			} else if (parameters.getTertiaryIsDifference()) {
-				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
+				tertiary = Optional.ofNullable(Segmentation.generateBySubtraction(secondary, primary, parameters));
 			}
 			
 			
@@ -107,33 +107,6 @@ public class ModeSegment{
 
 		}
 
-		System.out.println("IN MODE SEGMENT: ");
-		if (primary == null) {
-			System.out.println("Primary is NULL");
-		} else { 
-			System.out.println("Primary is NOT NULL");
-		}
-		
-		if (secondary == null) {
-			System.out.println("Secondary is NULL");
-		} else { 
-			System.out.println("Secondary is NOT NULL");
-		}
-
-		
-		
-		
-		ImagePlus pTest = primary.duplicate();
-		pTest.setTitle("segmentedPrimary");
-		ImagePlus sTest = secondary.duplicate();
-		sTest.setTitle("segmentedSecondary");
-		
-		
-		
-		System.out.println("Primary Image Title: " + (pTest != null ? pTest.getTitle() : "null"));
-		System.out.println("Secondary Image Title: " + (sTest != null ? sTest.getTitle() : "null"));
-
-		
 		// Build return data object
 		SegmentedChannels segmentedChannels = SegmentedChannels.builder().
 				primary(primary).

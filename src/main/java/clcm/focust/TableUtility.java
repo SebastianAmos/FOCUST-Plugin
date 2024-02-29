@@ -176,8 +176,8 @@ public class TableUtility {
 						c1Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						String newHead = c1Name + "." + head;
-						rt.setColumn(newHead, temp.getColumnAsVariables(head));
+						String newC1Head = c1Name + "." + head;
+						rt.setColumn(newC1Head, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -190,8 +190,8 @@ public class TableUtility {
 						c2Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						String newHead = c2Name + "." + head;
-						rt.setColumn(newHead, temp.getColumnAsVariables(head));
+						String newC2Head = c2Name + "." + head;
+						rt.setColumn(newC2Head, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -204,8 +204,8 @@ public class TableUtility {
 						c3Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						String newHead = c3Name + "." + head;
-						rt.setColumn(newHead, temp.getColumnAsVariables(head));
+						String newC3Head = c3Name + "." + head;
+						rt.setColumn(newC3Head, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -218,8 +218,8 @@ public class TableUtility {
 						c4Name = ("C" + (k + 1)).toString();
 					}
 					for (String head : headers) {
-						String newHead = c4Name + "." + head;
-						rt.setColumn(newHead, temp.getColumnAsVariables(head));
+						String newC4Head = c4Name + "." + head;
+						rt.setColumn(newC4Head, temp.getColumnAsVariables(head));
 					}
 				}
 				
@@ -317,8 +317,8 @@ public class TableUtility {
 			
 		}
 		
-		TableUtility tu = new TableUtility();
-		ResultsTable output = tu.compileAllResults(rtList);
+		//TableUtility tu = new TableUtility();
+		ResultsTable output = TableUtility.compileAllResults(rtList);
 		
 		return output;
 	}
@@ -356,24 +356,39 @@ public class TableUtility {
 	
 	
 	
-	
-	
-	
-	
-	
-	// TODO: Method for running analysis on all objects if present and storing results tables
-	public ResultsTable compileAllResults(List<ResultsTable> list){
-		
+	public static ResultsTable compileAllResults(List<ResultsTable> list){
 		ResultsBuilder rb = new ResultsBuilder();
-		
 		for (ResultsTable rt : list) {
 			rb.addResult(rt);
 		}
-	
-	
 		return rb.getResultsTable();
 	}
 	
+	
+	
+	public static ResultsTable compileTables(List<ResultsTable> list) {
+		ResultsTable rt = new ResultsTable();
+		for (ResultsTable table : list) {
+			List<String> headers = new ArrayList<>(Arrays.asList(table.getHeadings()));
+			for (String head : headers) {
+				if (!rt.columnExists(head)) {
+					rt.setColumn(head, table.getColumnAsVariables(head));
+				}
+			}
+		}
+		return rt;
+	}
+	
+	
+	
+	// for testing only!
+	public static void viewMappedTables(Map<String, ResultsTable> map) {
+		for (Map.Entry<String, ResultsTable> entry : map.entrySet()) {
+			String name = entry.getKey();
+			ResultsTable table = entry.getValue();
+			table.show(name);
+		}
+	}
 	
 	
 }

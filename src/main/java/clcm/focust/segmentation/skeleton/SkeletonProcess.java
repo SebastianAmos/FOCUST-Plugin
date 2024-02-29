@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
-import ij.ImagePlus;
 import ij.measure.ResultsTable;
 
 public class SkeletonProcess {
@@ -20,38 +19,25 @@ public class SkeletonProcess {
 	 */
 	public Map<String, SkeletonResultsHolder> run(ParameterCollection params, SegmentedChannels segmentedChannels, String imgName) {
 		
-		System.out.println("Primary skeletons: " + params.getSkeletonParamters().getPrimary());
-		System.out.println("Secondary skeletons: " + params.getSkeletonParamters().getSecondary());
-		
 		Map<String, SkeletonResultsHolder> results = new HashMap<>();
 		
 		Skeleton skeleton = new Skeleton();
 		
-		if(params.getSkeletonParamters().getPrimary()) {
-			
-			// Debugging - visualise that the create skeletons method receives
-			ImagePlus imP = segmentedChannels.getPrimary().duplicate();
-			imP.setTitle(imgName + "Primary_Before_Skeletonization");
-			imP.show();
+		if(params.getSkeletonParameters().getPrimary()) {
 			
 			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary"), segmentedChannels.getPrimary(), imgName));
 			
 		}
 		
-		if(params.getSkeletonParamters().getSecondary()) {
-			
-			// Debugging - visualise that the create skeletons method receives
-			ImagePlus imS = segmentedChannels.getSecondary().duplicate();
-			imS.setTitle(imgName + "Secondary_Before_Skeletonization");
-			imS.show();
-			
+		if(params.getSkeletonParameters().getSecondary()) {
+
 			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary"), segmentedChannels.getSecondary(), imgName));
 			
 		}
 		
-		if(params.getSkeletonParamters().getTertairy()) {
+		if(params.getSkeletonParameters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				results.put("Teritary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName));
+				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName));
 			});
 		}
 		
@@ -69,31 +55,31 @@ public class SkeletonProcess {
 	 */
 	public Map<String, SkeletonResultsHolder> renameHeaders(Map<String, SkeletonResultsHolder> results){
 		
-		ResultsTable newRt =  new ResultsTable();
+		
 		
 		for (Map.Entry<String, SkeletonResultsHolder> result : results.entrySet()) {
 			
-			String key = result.getKey();
+			ResultsTable newRt =  new ResultsTable();
 			
-			SkeletonResultsHolder val = result.getValue();
+			String objectName = result.getKey();
 			
-			ResultsTable rt = val.getStandard();
+			SkeletonResultsHolder holder = result.getValue();
+			
+			ResultsTable rt = holder.getStandard();
 			
 			List<String> headers = new ArrayList<>(Arrays.asList(rt.getHeadings()));
 			
 			for (String head : headers) {
 				
-				String newHead = key + "." + "Skeleton." + head;
+				String newHead = objectName + "." + "Skeleton." + head;
 				newRt.setColumn(newHead, rt.getColumnAsVariables(head));
 				
 			}
 			
-			val.setStandard(newRt);
+			holder.setStandard(newRt);
 			
 			
 		}
-		
-		
 		
 		return results;
 	}

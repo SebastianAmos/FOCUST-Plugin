@@ -68,19 +68,31 @@ public class ModeAnalyse {
 			tertiaryResults.add(intensityTables.get(segmentedObjects.get(2)));
 		});
 		
+
+		
 		
 		// Append standard skeleton results
-		if(parameters.getSkeletonParamters().getPrimary()) {
-			primaryResults.add(imgData.getSkeletons().get("Primary").getStandard());
+		if(parameters.getSkeletonParameters().getPrimary()) {
+			
+			ResultsTable primarySkeletons = imgData.getSkeletons().get("Primary").getStandard();
+			
+			primaryResults.add(primarySkeletons);
+			
+			primarySkeletons.show("primarySkeletons");
 		}
 		
-		if(parameters.getSkeletonParamters().getSecondary()) {
-			primaryResults.add(imgData.getSkeletons().get("Secondary").getStandard());
+		if(parameters.getSkeletonParameters().getSecondary()) {
+			
+			ResultsTable secondarySkeletons = imgData.getSkeletons().get("Secondary").getStandard();
+			
+			secondaryResults.add(secondarySkeletons);
+			
+			secondarySkeletons.show("secondarySkeletons");
 		}
 		
-		if(parameters.getSkeletonParamters().getTertairy()) {
+		if(parameters.getSkeletonParameters().getTertairy()) {
 			imgData.getImages().getTertiary().ifPresent(t -> {
-				primaryResults.add(imgData.getSkeletons().get("Tertiary").getStandard());
+				tertiaryResults.add(imgData.getSkeletons().get("Tertiary").getStandard());
 			});
 		}
 		
@@ -110,16 +122,29 @@ public class ModeAnalyse {
 		
 	
 		
+		System.out.println("Secondary Table List Length: " + secondaryResults.size() + " tables");
+		
 		/*
 		 * Build the final results table for each object type and update the imgData object before hand off
 		 */
-		TableUtility tu = new TableUtility();
 		
-		imgData.setPrimary(tu.compileAllResults(primaryResults));
-		imgData.setSecondary(tu.compileAllResults(secondaryResults));
+		imgData.setPrimary(TableUtility.compileTables(primaryResults));
+		imgData.setSecondary(TableUtility.compileTables(secondaryResults));
 		imgData.images.getTertiary().ifPresent(t -> {
-			imgData.setTertiary(tu.compileAllResults(tertiaryResults));
+			imgData.setTertiary(TableUtility.compileTables(tertiaryResults));
 		});
+		
+		
+		
+		/*
+		imgData.setPrimary(TableUtility.compileAllResults(primaryResults));
+		imgData.setSecondary(TableUtility.compileAllResults(secondaryResults));
+		imgData.images.getTertiary().ifPresent(t -> {
+			imgData.setTertiary(TableUtility.compileAllResults(tertiaryResults));
+		});
+		
+		*/
+		
 		
 		
 		

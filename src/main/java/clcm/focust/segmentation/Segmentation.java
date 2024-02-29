@@ -17,7 +17,7 @@ public class Segmentation {
 	
 	public static ImagePlus run(ImagePlus input, ObjectParameters parameters, ParameterCollection parameterCollection) {
 	
-		// Collect parameter data
+		// Extract parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
 		FilterParameters filter = parameters.getFilterParameters();
 		MethodParameters method = parameters.getMethodParameters();
@@ -61,7 +61,6 @@ public class Segmentation {
 		double maxVal = clij2.maximumOfAllPixels(ordered);
 		ImagePlus output = clij2.pull(ordered);
 		
-		
 		// get LUT
 		LUT lut = LutLoader.openLut(IJ.getDirectory("luts") + "glasbey_on_dark.lut");
 		
@@ -71,6 +70,23 @@ public class Segmentation {
 		
 		killBorders.close();
 		ordered.close();
+		
+		return output;
+	}
+	
+	
+	
+	public static ImagePlus generateBySubtraction(ImagePlus larger, ImagePlus smaller, ParameterCollection params) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ClearCLBuffer largerBuffer = clij2.push(larger);
+		ClearCLBuffer smallerBuffer = clij2.push(smaller);
+		ClearCLBuffer largeMinusSmall = clij2.create(largerBuffer);
+		clij2.binarySubtract(largerBuffer, smallerBuffer, largeMinusSmall);
+		ImagePlus output = pullAndSetDisplay(clij2, largeMinusSmall, larger.getCalibration(), params);
+		largerBuffer.close();
+		smallerBuffer.close();
+		largeMinusSmall.close();
 		
 		return output;
 	}

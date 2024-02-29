@@ -2071,7 +2071,7 @@ public class AnalysisGUI extends JFrame {
 						processTertiary(ckbTertiary.isSelected()).
 						tertiaryIsDifference(ckbTertiaryObjectOption.isSelected()).
 						stratifyParameters(stratifyParameters).
-						skeletonParamters(skeletonParameters).
+						skeletonParameters(skeletonParameters).
 						build();
 				
 				
@@ -2585,7 +2585,7 @@ public class AnalysisGUI extends JFrame {
 					ObjectParameters primaryObject = param.getPrimaryObject();
 					ObjectParameters secondaryObject = param.getSecondaryObject();
 					ObjectParameters tertiaryObject = param.getTertiaryObject();
-					SkeletonParameters skeletonParams = param.getSkeletonParamters();
+					SkeletonParameters skeletonParams = param.getSkeletonParameters();
 					StratifyParameters stratifyParams = param.getStratifyParameters();
 					
 					

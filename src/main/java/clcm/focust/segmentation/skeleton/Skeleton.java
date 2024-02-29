@@ -7,6 +7,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
+import ij.process.ImageConverter;
 import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
 import sc.fiji.skeletonize3D.Skeletonize3D_;
@@ -37,27 +38,17 @@ public class Skeleton {
 	 * @return 
 	 */
 	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName) {
-		
-		imp.setTitle(imgName + " TO SKELETONIZE");
-		System.out.println("LABEL TO SKEL STATS: " + imp.getAllStatistics());
-		imp.show();
-		
 		Skeletonize3D_ skeletonise = new Skeletonize3D_();
-	 
-		
-		IJ.run(imp, "8-bit", "");
-		
+		if (imp.getBitDepth() != 8) {
+			System.out.println("Skeleton: Image not 8-bit, converting for thinning.");
+			ImageConverter converter = new ImageConverter(imp);
+			converter.convertToGray8();
+		}
 		ImagePlus skeletons = LabelEditor.makeBinary(imp);
-		skeletons.setTitle("Skeletons_of_" + objectName + "_" + imgName);
-		skeletons.show();
 		IJ.log("Computing skeletons...");
 		skeletonise.setup("", skeletons);
 		skeletonise.run(null);
-		
-		skeletons.show();
-
 		return skeletons;
-		
 	}
 	
 	
@@ -88,10 +79,7 @@ public class Skeleton {
 		// get the tagged skeleton img
 		final ImageStack lblSkeletonStack = analyseSkeletons.getLabeledSkeletons();
 		ImagePlus labelledSkeletons = new ImagePlus("labelled_skeletons_" + skeletonOriginals.getTitle(), lblSkeletonStack);
-		
-		skeletonOriginals.setTitle("SkeletonOriginals");
-		skeletonOriginals.show();
-		
+
 		// pull data from SkeletonResults object
 		SkeletonResultsHolder results = new SkeletonResultsHolder(null, null, null, null);
 		results = buildResults(skeletonResults, results, imgName);
@@ -133,12 +121,7 @@ public class Skeleton {
 
 		ResultsTable standard = new ResultsTable();
 		ResultsTable extra = new ResultsTable();
-
-		// collect the standard results
-		final String[] head = {"ImageID", "# Skeleton", "# Branches", "# Junctions", 
-				"# End-point voxels", "# Junction voxels","# Slab voxels", "Average Branch Length", 
-				"# Triple points", "# Quadruple points","Maximum Branch Length" };
-
+		
 		for (int i = 0; i < skel.getNumOfTrees(); i++) {
 			standard.addRow();
 			standard.addValue("ImageID", imgName);
@@ -156,10 +139,6 @@ public class Skeleton {
 		
 		
 		// collect the extra results
-		final String[] xtHead = {"ImageID","# Skeleton", "# Branch", "Branch Length", 
-				"V1x","V1y","V1z","V2x","V2y","V2z","Euclidean Distance", "Running Average Length"};
-		
-		
 		final Graph[] graphs = skel.getGraph();
 		System.out.println("Graph Number: " +  graphs.length);
 		

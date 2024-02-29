@@ -73,17 +73,7 @@ public class ModeProcess{
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
 			
-			System.out.println("IN MODE Process: ");
-			
-			
-			ImagePlus imP = segmentedChannels.getPrimary().duplicate();
-			ImagePlus imS = segmentedChannels.getSecondary().duplicate();
-			
-			imP.show();
-			imS.show();
 
-			System.out.println("Primary Image Title: " + (imP != null ? imP.getTitle() : "null"));
-			System.out.println("Secondary Image Title: " + (imS != null ? imS.getTitle() : "null"));
 
 			
 			// Generate skeletons based on user inputs and save
