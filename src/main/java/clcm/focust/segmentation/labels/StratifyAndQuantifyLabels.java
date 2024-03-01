@@ -47,26 +47,15 @@ public class StratifyAndQuantifyLabels {
 		List<ClearCLBuffer> b3 = new ArrayList<>(); // outer-middle 25%
 		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25%
 		
-		
-			//show lab img for testing
-			imp.setTitle("LAB IMG_" + objectType);
-			imp.show();
-		
 		Calibration cal = imp.getCalibration();
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer labs = clij2.push(imp.duplicate());
-			//ClearCLBuffer copy = clij2.create(labs);
-			//clij2.copy(labs, copy);
-			//ImagePlus testImg = clij2.pull(copy);
-			//testImg.setTitle("Immediate pull from clij " + objectType);
-			//testImg.show();
-		
-		
+	
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
 		
-		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs, bandPercent, iterations, clij2, cal);
+		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs, imp.duplicate(), bandPercent, iterations, clij2, cal);
 		
 		// Group the band types together
 		for (Map.Entry<Integer, List<ClearCLBuffer>> entry : bands.entrySet()) {
@@ -88,14 +77,6 @@ public class StratifyAndQuantifyLabels {
 		bandTypes.add(combineAndRelabelBuffers(b2, labs, clij2, 2));
 		bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
 		bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
-		
-			// Do the intensity analysis for each band type, within each channel
-			// ----> Using a combined chamfer distance map for testing!!
-			//ClearCLBuffer testDist = computeChamferDistanceMap(labs);
-			//ClearCLBuffer testDist2 = clij2.create(testDist); 
-			//clij2.copy(testDist, testDist2);
-			//ClearCLBuffer[] TestDists = {testDist, testDist2};
-		 
 		
 		saveBands(bandTypes, objectType, params, imgName);
 		
@@ -167,13 +148,6 @@ public class StratifyAndQuantifyLabels {
 		
 		clij2.multiplyImages(type, labels, result);
 		
-		
-			//ClearCLBuffer imgCopy = clij2.create(result);
-			//clij2.copy(result, imgCopy);
-			//ImagePlus img = clij2.pull(imgCopy);
-			//img.setTitle("band" + bandType);
-			//imgCopy.close();
-		
 		return result;
 	}
 	
@@ -186,7 +160,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param bandIterations Number of bands to create. Should be related to the percentage. i.e 25% = 4 iterations.
 	 * @return
 	 */
-	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, Double bandPercent, Integer bandIterations, CLIJ2 clij2, Calibration cal){
+	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, ImagePlus labels, Double bandPercent, Integer bandIterations, CLIJ2 clij2, Calibration cal){
 		
 		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
 		
@@ -199,7 +173,7 @@ public class StratifyAndQuantifyLabels {
 		double testImgMAX = testImgIP.getDisplayRangeMax();
 		
 		// generate distance map on the whole label image before masking out each label
-		ClearCLBuffer dMap = computeChamferDistanceMap(testImg, clij2, cal); 
+		ClearCLBuffer dMap = computeChamferDistanceMap(testImg, labels ,clij2, cal); 
 		
 		//TODO
 			ClearCLBuffer copy = clij2.create(dMap);
@@ -228,21 +202,14 @@ public class StratifyAndQuantifyLabels {
 			// mask the distance map by the label to only process that region of the distance map
 			clij2.mask(dMap, mask, distanceMask);
 			
-				//ClearCLBuffer dMap = computeChamferDistanceMap(mask); // single mask chamfer distance map
-				//List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(dMap, bandPercent, bandIterations);
-			
-			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, bandPercent, bandIterations);
+			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
 			
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
 			stratifiedLabels.put(i, bands);
 			
-				// debugging - delete when functional
-				//ImagePlus buffMask = clij2.pull(mask);
-				//ImagePlus distMap = clij2.pull(distanceMask);
-				//distMap.setTitle("DistanceMap" + i);
-				//distMap.show();
-				//buffMask.setTitle("Mask" + i);
-				//buffMask.show();
+			mask.close();
+			distanceMask.close();
+
 		}
 		
 		return stratifiedLabels;
@@ -258,29 +225,16 @@ public class StratifyAndQuantifyLabels {
 	 * 
 	 * Chamfer weight set to MorpholibJ default: Svensson
 	 */
-	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input, CLIJ2 clij2, Calibration cal) {
+	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input, ImagePlus labelledImg, CLIJ2 clij2, Calibration cal) {
 		
-		ImagePlus label = clij2.pull(input);
-		
-		ImagePlus labelCopy = label.duplicate();
-		labelCopy.setTitle("LabelCopy");
-		labelCopy.show(); // This contains image data
-		
-		
-		/** -----------------------------------------------------------------
-		 * SOMETHING IS WRONG HERE!!!!
-		 */
-		if (label.getBitDepth() != 8) {
+		if (labelledImg.getBitDepth() != 8) {
 			System.out.println("Stratification: Image not 8-bit, converting for distance map algo.");
-			ImageConverter converter = new ImageConverter(label);
+			ImageConverter converter = new ImageConverter(labelledImg);
 			converter.convertToGray8();
 		}
 		
-		
-		label.setTitle("Label in the computerChamferDistanceMap() method");
-		label.duplicate().show(); // this does not contain image data
-		
-		double labelMAX = label.getDisplayRangeMax();
+		labelledImg.setTitle("Label in the computerChamferDistanceMap() method");
+		labelledImg.duplicate().show();
 		
 		// Create 3D chamfer map of label - set to default Svensson
 		ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
@@ -293,20 +247,14 @@ public class StratifyAndQuantifyLabels {
 		
 		DefaultAlgoListener.monitor(algo);
 		
-		ImageStack result = cdist.distanceMap(label.getStack());
+		ImageStack result = cdist.distanceMap(labelledImg.getStack());
 		
 		ImagePlus resultPlus = new ImagePlus("img", result);
-		resultPlus.setTitle("DistanceMapPROCESSED");
-		resultPlus.show();
 		
 		double[] distExtent = Images3D.findMinAndMax(resultPlus);
 		resultPlus.setDisplayRange(0, distExtent[1]);
 		resultPlus.setCalibration(cal);
-		
-		//ImagePlus test = resultPlus;
-		//test.setTitle("Label after distance map processing");
-		//test.show();
-		
+			
 		ClearCLBuffer output = clij2.push(resultPlus);
 		
 		return output;
@@ -321,9 +269,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param iterations
 	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%] OR [inner 50%, outer 50%]
 	 */
-	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, Double percent, Integer iterations){
-		
-		CLIJ2 clij2 = CLIJ2.getInstance();
+	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, CLIJ2 clij2, Double percent, Integer iterations){
 		
 		// get the min and max pixel values for the the distance map
 		double max = clij2.getMaximumOfAllPixels(dMap);

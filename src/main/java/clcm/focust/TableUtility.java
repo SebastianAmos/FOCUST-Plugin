@@ -252,11 +252,14 @@ public class TableUtility {
 			for (int j = 0; j < channels.length; j++) {
 				
 				//TODO: 
-				System.out.println("Channel: " + j + "of " + channels.length);
+				System.out.println("Channel: " + j + " of " + channels.length);
 				
+				// pull buffer safely
+				ClearCLBuffer b = clij2.create(bands.get(i));
+				ImagePlus bPull = clij2.pull(b);
+				bPull.duplicate().show(); 
 				
-				
-				ResultsTable temp = TableUtility.processIntensity(channels[j], clij2.pull(bands.get(i)));
+				ResultsTable temp = TableUtility.processIntensity(channels[j], bPull);
 				
 				// get col headers without Label
 				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
