@@ -68,7 +68,7 @@ public class ModeAnalyse {
 			tertiaryResults.add(intensityTables.get(segmentedObjects.get(2)));
 		});
 		
-
+	
 		
 		
 		// Append standard skeleton results
@@ -81,14 +81,33 @@ public class ModeAnalyse {
 			primarySkeletons.show("primarySkeletons");
 		}
 		
+		
+		/*
+		 * TESTING!!! 
+		 */
+		
+		
 		if(parameters.getSkeletonParameters().getSecondary()) {
+			
 			
 			ResultsTable secondarySkeletons = imgData.getSkeletons().get("Secondary").getStandard();
 			
-			secondaryResults.add(secondarySkeletons);
+			//secondaryResults.add(secondarySkeletons);
+			ResultsTable secTest = TableUtility.test(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"), "Secondary");
+			
+			secTest.show("secTest");
 			
 			secondarySkeletons.show("secondarySkeletons");
+			
+			imgData.getSkeletons().get("Secondary").getLabelMatched().show("Secondary Skeleton Matched Labels");
+		
+			
+			
 		}
+		
+		
+		
+		
 		
 		if(parameters.getSkeletonParameters().getTertairy()) {
 			imgData.getImages().getTertiary().ifPresent(t -> {

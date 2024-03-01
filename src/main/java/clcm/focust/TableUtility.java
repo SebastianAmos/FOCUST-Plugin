@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
@@ -381,14 +383,134 @@ public class TableUtility {
 	
 	
 	
-	// for testing only!
-	public static void viewMappedTables(Map<String, ResultsTable> map) {
-		for (Map.Entry<String, ResultsTable> entry : map.entrySet()) {
-			String name = entry.getKey();
-			ResultsTable table = entry.getValue();
-			table.show(name);
+	// Add only matching skeletonIDs to a compiled table > write na if 0.
+	
+	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel) {
+		
+		ResultsTable output = new ResultsTable();
+		
+		ResultsTable standard = skel.getStandard();
+		List<String> skeletonHeaders = new ArrayList<>(Arrays.asList(standard.getHeadings()));
+		
+		ResultsTable matched = skel.getLabelMatched();
+		
+		for (int i = 0; i < data.size(); i++) {
+			
+			double objectLabel = data.getValue("Label", i);
+			
+			for (int j = 0; j < matched.size(); j++) {
+				
+				if(objectLabel == matched.getValue("Label", j)) {
+					
+					for (String head : skeletonHeaders) {
+						
+						data.addValue(head, standard.getValue(head, i));
+						
+						
+						
+						
+					}
+					
+				}
+				
+			}
 		}
+		
+		
+		return null;
 	}
 	
 	
+	
+	/**
+	 * Match skeletons to labels objects they typically don't adopt the same labelling and some shapes may skeletonize incompletely. 
+	 * This way users have visibility to shared skeletons and data may still be analysed in linked and meaningful ways.
+	 * 
+	 * @param data
+	 * @param skel
+	 * @param objectHeaderName
+	 * @return
+	 */
+	public static ResultsTable test(ResultsTable data, SkeletonResultsHolder skel, String objectHeaderName) { 
+
+		ResultsTable standard = skel.getStandard();
+		ResultsTable matched = skel.getLabelMatched();
+		
+		System.out.println("Max Col Index: " + matched.getColumnIndex("Max"));
+		System.out.println("Label col index: " + matched.getColumnIndex("Label"));
+		
+		double[] matchedLabels = matched.getColumnAsDoubles(0);
+
+
+		// convert from variable to int - not required.
+		//int[] intLabels = new int[matchedLabels.length];
+		//for (int i = 0; i < matchedLabels.length; i++) {
+		//	intLabels[i] = (int) matchedLabels[i].getValue();
+		//}
+		
+		
+		for (int i = 0; i < data.size(); i++) {
+
+			IJ.log("label Column index in data = "  + data.getColumnIndex("Label"));
+			
+			int id = (int) data.getValue("Label", i);
+
+			
+			IJ.log("Current secTest.Label = " + id);
+			
+			// find max for corresponding matched label
+			int skelID = 0;
+
+			for (int j = 0; j < matched.size(); j++) {
+
+				IJ.log("matchLabel as double = " + matchedLabels[j]);
+				IJ.log("matchLabel as integer = " + (int) matchedLabels[j]);
+				
+				if ((int) matchedLabels[j] == id) {
+					skelID = (int) matched.getValue("Max", j);
+					break;
+				}
+			}
+
+			int rowIndex = -1;
+			for (int j = 0; j < standard.size(); j++) {
+				
+				IJ.log("standard.getValue from col: " + objectHeaderName + ".Skeleton.# Skeleton");
+				IJ.log("Current val as integer: " + (int) standard.getValue(objectHeaderName + ".Skeleton.# Skeleton", j));
+				
+				if ((int) standard.getValue(objectHeaderName + ".Skeleton.# Skeleton", j) == skelID) {
+					rowIndex = j;
+					break;
+				}
+			}
+			
+			if (rowIndex != - 1) {
+
+				for (int j = 0; j < standard.getHeadings().length; j++) {
+					String header = standard.getColumnHeading(j);
+					data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
+				} 
+
+			} else {
+
+				for (int j = 0; j < standard.getHeadings().length; j++) {
+
+					String header = standard.getColumnHeading(j);
+					data.setValue(header, i, "NA");	
+				}
+			}
+
+		}
+		
+		return data;
+	}
+
 }
+
+	
+	
+	
+	
+	
+	
+	

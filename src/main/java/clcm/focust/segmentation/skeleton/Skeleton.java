@@ -99,14 +99,10 @@ public class Skeleton {
 	 * @param originaLabels
 	 */
 	public ResultsTable matchSkeletonToLabels(ImagePlus skeletons, ImagePlus originalLabels) {
-	
 		ResultsBuilder rb = new ResultsBuilder();
 		final IntensityMeasures im = new IntensityMeasures(skeletons, originalLabels);
-		
 		rb.addResult(im.getMax());
-		
-		ResultsTable rt = rb.getResultsTable();
-		return rt;
+		return rb.getResultsTable();
 	}
 	
 	
