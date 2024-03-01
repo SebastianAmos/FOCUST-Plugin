@@ -2,6 +2,8 @@ package clcm.focust.mode;
 
 import clcm.focust.ResultsTableUtility;
 import clcm.focust.parameters.ParameterCollection;
+import net.haesleinhuepf.clij2.CLIJ2;
+
 import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 /**
@@ -37,5 +39,8 @@ public class ModeBasic implements Mode {
 			
 			ijLog("Analysis complete.");
 			
+			// clean up
+			CLIJ2 clij2 = CLIJ2.getInstance();
+			clij2.clear();
 	}
 } 

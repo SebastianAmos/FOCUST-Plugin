@@ -13,6 +13,7 @@ import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
+import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
@@ -236,16 +237,21 @@ public class TableUtility {
 	}
 	
 	
-	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels) {
+	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
 		List<ResultsTable> rtList = new ArrayList<>();
-	
-		for (int i = 0; i < bands.size(); i++) {
+		
+		//for (int i = 0; i < bands.size(); i++) {
+		
+		int count = 1;
+		
+		for (ClearCLBuffer band : bands) {
 			
+		
 			//TODO:
-			System.out.println("band: " + i + " of " + bands.size());
+			System.out.println("band: " + count + " of " + bands.size());
 			
 			ResultsTable rt = new ResultsTable();
 				
@@ -255,11 +261,24 @@ public class TableUtility {
 				System.out.println("Channel: " + j + " of " + channels.length);
 				
 				// pull buffer safely
-				ClearCLBuffer b = clij2.create(bands.get(i));
-				ImagePlus bPull = clij2.pull(b);
-				bPull.duplicate().show(); 
+				//ClearCLBuffer b = clij2.create(band);
+				//ImagePlus bPull = clij2.pull(b);
+				//bPull.duplicate().show(); 
 				
-				ResultsTable temp = TableUtility.processIntensity(channels[j], bPull);
+				
+				//TODO
+				/*
+				 * I think clij2 is returning null objects once 
+				 */
+				
+				
+				ClearCLBuffer copy = clij2.create(band);
+				clij2.copy(band, copy);
+				ImagePlus imp = clij2.pull(copy);
+				imp.setCalibration(cal);
+				copy.close();
+				
+				ResultsTable temp = TableUtility.processIntensity(channels[j], imp);
 				
 				// get col headers without Label
 				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
@@ -271,11 +290,11 @@ public class TableUtility {
 				rtList.add(rtLab);
 				
 				
-				temp.show("Band " + (i+1) + " Results" );
+				temp.show("Band " + count + " Results" );
 				
 				// channel 1
 				if ((j + 1) == 1) {
-					String c1Name = ("band" + (i + 1) + ".c1").toString();
+					String c1Name = ("band" + count + ".c1").toString();
 					
 					for (String head : headers) {
 						String headerName = (c1Name + "." + head).toString();
@@ -286,7 +305,7 @@ public class TableUtility {
 				
 				// channel 2
 				if ((j + 1) == 2) {
-					String c2Name = ("band" + (i + 1) + ".c2").toString();
+					String c2Name = ("band" + count + ".c2").toString();
 					
 					for (String head : headers) {
 						String headerName = (c2Name + "." + head).toString();
@@ -296,7 +315,7 @@ public class TableUtility {
 				
 				// channel 3
 				if ((j + 1) == 3) {
-					String c3Name = ("band" + (i + 1) + ".c3").toString();
+					String c3Name = ("band" + count + ".c3").toString();
 			
 					for (String head : headers) {
 						String headerName = (c3Name + "." + head).toString();
@@ -306,7 +325,7 @@ public class TableUtility {
 				
 				// channel 4
 				if ((j + 1) == 4) {
-					String c4Name = ("band" + (i + 1) + ".c4").toString();
+					String c4Name = ("band" + count + ".c4").toString();
 					
 					for (String head : headers) {
 						String headerName = (c4Name + "." + head).toString();
@@ -316,11 +335,12 @@ public class TableUtility {
 				
 			}
 			
-			rt.show("FINAL BAND " + (i+1) + " TABLE");
+			rt.show("FINAL BAND " + count + " TABLE");
 			
 			rtList.add(rt);
 			
-		}
+			count++;
+		} // This one
 		
 		//TableUtility tu = new TableUtility();
 		ResultsTable output = TableUtility.compileAllResults(rtList);

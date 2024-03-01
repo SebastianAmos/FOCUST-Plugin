@@ -78,11 +78,11 @@ public class StratifyAndQuantifyLabels {
 		bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
 		bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
 		
-		saveBands(bandTypes, objectType, params, imgName);
+		saveBands(bandTypes, objectType, params, imgName, cal);
 		
 		/** Generate Results */
 		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
-		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels));
+		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal);
 		
 		
 		StratifiedResultsHolder results = StratifiedResultsHolder.builder()
@@ -102,7 +102,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param bandTypes
 	 * @param objectType
 	 */
-	private void saveBands(List<ClearCLBuffer> bandTypes, String objectType, ParameterCollection params, String imgName) {
+	private void saveBands(List<ClearCLBuffer> bandTypes, String objectType, ParameterCollection params, String imgName, Calibration cal) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
@@ -110,17 +110,31 @@ public class StratifyAndQuantifyLabels {
 		
 		if(params.getOutputDir().isEmpty()) {
 			for (ClearCLBuffer band : bandTypes) {
-				IJ.saveAs(clij2.pull(band), "TIF", params.getInputDir() + objectType + counter + "_" + imgName);
+				
+				ClearCLBuffer copy = clij2.create(band);
+				clij2.copy(band, copy);
+				ImagePlus imp = clij2.pull(copy);
+				imp.setCalibration(cal);
+				
+				IJ.saveAs(imp, "TIF", params.getInputDir() + objectType + counter + "_" + imgName);
 				System.out.println("Saving band: " + counter);
 				counter++;
-				band.close();
+				copy.close();
+				imp.close();
 			} 
 		} else {
 			for (ClearCLBuffer band : bandTypes) {
-				IJ.saveAs(clij2.pull(band), "TIF", params.getOutputDir() + objectType + counter + "_"+ imgName);
+				
+				ClearCLBuffer copy = clij2.create(band);
+				clij2.copy(band, copy);
+				ImagePlus imp = clij2.pull(copy);
+				imp.setCalibration(cal);
+				
+				IJ.saveAs(imp, "TIF", params.getOutputDir() + objectType + counter + "_"+ imgName);
 				System.out.println("Saving band: " + counter);
 				counter++;
-				band.close();
+				copy.close();
+				imp.close();
 			}
 		}
 		
