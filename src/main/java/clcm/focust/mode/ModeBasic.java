@@ -35,5 +35,7 @@ public class ModeBasic implements Mode {
 				rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
 			});
 			
+			ijLog("Analysis complete.");
+			
 	}
 } 
