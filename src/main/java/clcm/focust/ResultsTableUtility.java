@@ -78,7 +78,7 @@ public class ResultsTableUtility {
 			bw.append(headers.stream().collect(Collectors.joining(",")));
 			bw.append(System.lineSeparator());
 
-			// 
+			// Add the data
 			data.forEach(line -> {
 				try {
 					bw.append(line.stream().collect(Collectors.joining(","))+System.lineSeparator());

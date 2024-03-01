@@ -385,7 +385,7 @@ public class TableUtility {
 	
 	// Add only matching skeletonIDs to a compiled table > write na if 0.
 	
-	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel) {
+	public static ResultsTable matchAndAddSkeletons1(ResultsTable data, SkeletonResultsHolder skel) {
 		
 		ResultsTable output = new ResultsTable();
 		
@@ -431,53 +431,40 @@ public class TableUtility {
 	 * @param objectHeaderName
 	 * @return
 	 */
-	public static ResultsTable test(ResultsTable data, SkeletonResultsHolder skel, String objectHeaderName) { 
-
+	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel, String objectHeaderName) { 
+		
 		ResultsTable standard = skel.getStandard();
 		ResultsTable matched = skel.getLabelMatched();
 		
-		System.out.println("Max Col Index: " + matched.getColumnIndex("Max"));
-		System.out.println("Label col index: " + matched.getColumnIndex("Label"));
+		Variable[] matchedLabelsVar = matched.getColumnAsVariables("Label");
 		
-		double[] matchedLabels = matched.getColumnAsDoubles(0);
-
-
 		// convert from variable to int - not required.
-		//int[] intLabels = new int[matchedLabels.length];
-		//for (int i = 0; i < matchedLabels.length; i++) {
-		//	intLabels[i] = (int) matchedLabels[i].getValue();
-		//}
+		int[] matchedLabels = new int[matchedLabelsVar.length];
+		for (int i = 0; i < matchedLabelsVar.length; i++) {
+			matchedLabels[i] = (int) matchedLabelsVar[i].getValue();
+		}
 		
+		Variable[] dataLabelsVar = data.getColumnAsVariables("Label");
 		
+		int[] dataLabels = new int[dataLabelsVar.length];
+		for (int i = 0; i < dataLabelsVar.length; i++) {
+			dataLabels[i] = (int) dataLabelsVar[i].getValue();
+		}
+	
 		for (int i = 0; i < data.size(); i++) {
-
-			IJ.log("label Column index in data = "  + data.getColumnIndex("Label"));
-			
-			int id = (int) data.getValue("Label", i);
-
-			
-			IJ.log("Current secTest.Label = " + id);
 			
 			// find max for corresponding matched label
 			int skelID = 0;
-
+			
 			for (int j = 0; j < matched.size(); j++) {
-
-				IJ.log("matchLabel as double = " + matchedLabels[j]);
-				IJ.log("matchLabel as integer = " + (int) matchedLabels[j]);
-				
-				if ((int) matchedLabels[j] == id) {
+				if ((int) matchedLabels[j] == dataLabels[i]) {
 					skelID = (int) matched.getValue("Max", j);
 					break;
 				}
 			}
-
+			
 			int rowIndex = -1;
 			for (int j = 0; j < standard.size(); j++) {
-				
-				IJ.log("standard.getValue from col: " + objectHeaderName + ".Skeleton.# Skeleton");
-				IJ.log("Current val as integer: " + (int) standard.getValue(objectHeaderName + ".Skeleton.# Skeleton", j));
-				
 				if ((int) standard.getValue(objectHeaderName + ".Skeleton.# Skeleton", j) == skelID) {
 					rowIndex = j;
 					break;
@@ -485,21 +472,21 @@ public class TableUtility {
 			}
 			
 			if (rowIndex != - 1) {
-
 				for (int j = 0; j < standard.getHeadings().length; j++) {
 					String header = standard.getColumnHeading(j);
-					data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
+					
+					if (j != 0) {
+						data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
+					} 
 				} 
-
+				
 			} else {
-
+				
 				for (int j = 0; j < standard.getHeadings().length; j++) {
-
 					String header = standard.getColumnHeading(j);
 					data.setValue(header, i, "NA");	
 				}
 			}
-
 		}
 		
 		return data;
@@ -507,10 +494,3 @@ public class TableUtility {
 
 }
 
-	
-	
-	
-	
-	
-	
-	
