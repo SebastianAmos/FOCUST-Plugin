@@ -17,7 +17,8 @@ import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import org.apache.commons.math3.util.MathArrays;
-import clcm.focust.LabelEditor;
+
+import clcm.focust.segmentation.labels.LabelEditor;
 
 
 

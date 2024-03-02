@@ -1,7 +1,8 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import java.util.ArrayList;
 
+import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;

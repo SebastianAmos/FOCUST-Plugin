@@ -1,6 +1,6 @@
 package clcm.focust.speckle.service;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

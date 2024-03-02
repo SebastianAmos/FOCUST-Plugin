@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;

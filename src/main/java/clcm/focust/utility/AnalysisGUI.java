@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +20,9 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JComboBox;
@@ -43,7 +46,6 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
 import ij.IJ;
 import ij.ImagePlus;
 

@@ -1,5 +1,7 @@
 package clcm.focust.mode;
 
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 import java.util.Arrays;
 import java.util.Optional;
 import clcm.focust.data.object.SegmentedChannels;
@@ -11,7 +13,6 @@ import ij.measure.Calibration;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.ImageCalculator;
 import org.apache.commons.io.FilenameUtils;
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 public class ModeSegment{
 	private static String primaryPrefix = "Primary_Objects_";

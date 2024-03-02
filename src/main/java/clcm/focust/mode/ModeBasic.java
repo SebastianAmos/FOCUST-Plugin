@@ -1,10 +1,10 @@
 package clcm.focust.mode;
 
-import clcm.focust.ResultsTableUtility;
-import clcm.focust.parameters.ParameterCollection;
-import net.haesleinhuepf.clij2.CLIJ2;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.utility.ResultsTableUtility;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 /**
  *

@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 

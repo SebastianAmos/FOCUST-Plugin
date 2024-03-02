@@ -1,7 +1,5 @@
 package clcm.focust;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.macro.Variable;
@@ -14,6 +12,9 @@ import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.CLIJx;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapService;
 import clcm.focust.data.DataMapUpdateService;
@@ -35,6 +37,8 @@ import clcm.focust.data.DatumService;
 import clcm.focust.speckle.SpeckleType;
 import clcm.focust.speckle.Speckles;
 import clcm.focust.speckle.SpecklesConfiguration;
+import clcm.focust.utility.BinarySearch;
+import clcm.focust.utility.TableUtility;
 
 /**
  * A class for segmenting fluorescent datasets based on user-defined parameters.

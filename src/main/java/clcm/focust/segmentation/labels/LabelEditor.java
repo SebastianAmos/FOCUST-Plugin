@@ -1,8 +1,10 @@
-package clcm.focust;
+package clcm.focust.segmentation.labels;
 
 
 import java.util.HashMap;
 import java.util.Map;
+
+import clcm.focust.utility.TableUtility;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;

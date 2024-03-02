@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 
 import javax.swing.JFrame;
@@ -48,6 +48,7 @@ import clcm.focust.parameters.SkeletonParameters;
 import clcm.focust.parameters.StratifyParameters;
 import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.Segmentation;
+import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.threshold.ThresholdType;
 import ij.IJ;
 import ij.ImagePlus;
@@ -2897,7 +2898,7 @@ public class OptimizeGUI extends JFrame {
 						analysisOnly(false).
 						primaryObject(primaryObject).
 						secondaryObject(secondaryObject).
-						skeletonParamters(skeletonParameters).
+						skeletonParameters(skeletonParameters).
 						stratifyParameters(stratifyParameters).
 						tertiaryObject(tertiaryObject).
 						killBorderType(selectedKillBorderOption).

@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import ij.IJ;
 import inra.ijpb.plugins.AnalyzeRegions3D;

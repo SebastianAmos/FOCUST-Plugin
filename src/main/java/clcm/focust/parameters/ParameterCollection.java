@@ -1,8 +1,9 @@
 package clcm.focust.parameters;
 
-import clcm.focust.KillBorderTypes;
 import clcm.focust.data.DataObject;
 import clcm.focust.mode.ModeType;
+import clcm.focust.utility.KillBorderTypes;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Builder;

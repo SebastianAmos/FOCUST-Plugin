@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import java.io.IOException;
 import java.util.ArrayList;

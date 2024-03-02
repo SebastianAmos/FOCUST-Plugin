@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import java.util.HashMap;
 import java.util.Map;

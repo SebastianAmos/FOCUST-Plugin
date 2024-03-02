@@ -1,5 +1,7 @@
 package clcm.focust.mode;
 
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +15,6 @@ import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
 
 
 public class ModeProcess{

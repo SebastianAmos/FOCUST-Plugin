@@ -1,6 +1,6 @@
 package clcm.focust.data;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import java.util.HashMap;
 import java.util.HashSet;

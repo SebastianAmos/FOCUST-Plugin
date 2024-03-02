@@ -1,4 +1,4 @@
-package clcm.focust;
+package clcm.focust.utility;
 
 import clcm.focust.filter.BackgroundType;
 import clcm.focust.filter.FilterType;

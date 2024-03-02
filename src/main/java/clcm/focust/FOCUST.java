@@ -30,6 +30,8 @@ import clcm.focust.speckle.SpecklesConfiguration;
 import clcm.focust.speckle.service.SpeckleProcessor;
 import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
+import clcm.focust.utility.CheckPlugins;
+import clcm.focust.utility.MainScreen;
 
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 

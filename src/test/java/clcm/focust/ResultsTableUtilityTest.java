@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.utility.ResultsTableUtility;
 import ij.measure.ResultsTable;
 
 class ResultsTableUtilityTest {

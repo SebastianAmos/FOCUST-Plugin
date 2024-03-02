@@ -1,6 +1,6 @@
 package clcm.focust.speckle.service;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -12,14 +12,14 @@ import javax.swing.SwingUtilities;
 
 import clcm.focust.FOCUST;
 import clcm.focust.FOCUSTService;
-import clcm.focust.LabelEditor;
-import clcm.focust.TableUtility;
 import clcm.focust.data.DataConstants.Datum;
+import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.speckle.SpeckleResult;
 import clcm.focust.speckle.SpeckleType;
 import clcm.focust.speckle.Speckles;
 import clcm.focust.speckle.SpecklesConfiguration;
 import clcm.focust.speckle.view.SpeckleView;
+import clcm.focust.utility.TableUtility;
 import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataListener;
 import clcm.focust.data.DataMapService;

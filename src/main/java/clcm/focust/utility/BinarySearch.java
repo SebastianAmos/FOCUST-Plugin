@@ -1,5 +1,6 @@
-package clcm.focust;
+package clcm.focust.utility;
 
+import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
 import inra.ijpb.plugins.AnalyzeRegions3D;

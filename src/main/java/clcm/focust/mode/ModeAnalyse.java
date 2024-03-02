@@ -1,15 +1,15 @@
 package clcm.focust.mode;
 
-import static clcm.focust.SwingIJLoggerUtils.ijLog;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import clcm.focust.TableUtility;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
+import clcm.focust.utility.TableUtility;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -94,15 +94,13 @@ public class ModeAnalyse {
 			
 			//secondaryResults.add(secondarySkeletons);
 			ResultsTable secTest = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"), "Secondary");
-			
+			secondaryResults.clear();
+			secondaryResults.add(secTest);
 
 			
-			imgData.getSkeletons().get("Secondary").getLabelMatched().show("Secondary Skeleton Matched Labels");
+			//imgData.getSkeletons().get("Secondary").getLabelMatched().show("Secondary Skeleton Matched Labels");
 			
 		}
-		
-		
-		
 		
 		
 		if(parameters.getSkeletonParameters().getTertairy()) {
@@ -142,6 +140,7 @@ public class ModeAnalyse {
 		/*
 		 * Build the final results table for each object type and update the imgData object before hand off
 		 */
+		
 		
 		imgData.setPrimary(TableUtility.compileTables(primaryResults));
 		imgData.setSecondary(TableUtility.compileTables(secondaryResults));

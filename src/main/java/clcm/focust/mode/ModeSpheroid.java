@@ -3,11 +3,12 @@ package clcm.focust.mode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import clcm.focust.ResultsTableUtility;
-import clcm.focust.TableUtility;
+
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.OverlapMapping;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
+import clcm.focust.utility.ResultsTableUtility;
+import clcm.focust.utility.TableUtility;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 
