@@ -307,7 +307,6 @@ public class AnalysisGUI extends JFrame {
 		pnlHeader.add(cbAnalysisMode, gbc_cbAnalysisMode);
 		
 		JCheckBox ckbAnalysisOnly = new JCheckBox("Analysis only mode?");
-		ckbAnalysisOnly.setSelected(true);
 		ckbAnalysisOnly.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbAnalysisOnly = new GridBagConstraints();
 		gbc_ckbAnalysisOnly.anchor = GridBagConstraints.WEST;
@@ -479,7 +478,6 @@ public class AnalysisGUI extends JFrame {
 		pnlVariable.add(txtGroupingInfo, gbc_textField);
 		
 		JCheckBox ckbTertiaryObjectOption = new JCheckBox("Tertiary = Secondary - Primary?");
-		ckbTertiaryObjectOption.setSelected(true);
 		ckbTertiaryObjectOption.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_ckbCellsTertiaryOption = new GridBagConstraints();
 		gbc_ckbCellsTertiaryOption.anchor = GridBagConstraints.WEST;

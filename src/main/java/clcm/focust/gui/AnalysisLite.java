@@ -18,12 +18,6 @@ public class AnalysisLite implements Command {
 	@Parameter(label = "Output Directory", style = "directory", required = false)
 	private File outputSelect;
 	
-	@Parameter(label = "Primary Object Channel:", choices = {"1", "2", "3", "4"})
-	private String primaryChannelChoice;
-	
-	@Parameter(label = "Secondary Object Channel:", choices = {"1", "2", "3", "4"})
-	private String secondaryChannelChoice;
-	
 	@Parameter(label = "Name Channel 1 :", style = "text field", required = false)
 	private String channel1Name;
 	
@@ -39,7 +33,7 @@ public class AnalysisLite implements Command {
 	@Parameter(label = "Grouping Info?", style = "text field", required = false)
 	private String groupName;
 	
-	@Parameter(label = "Select Parameter File", style = "directory", required = true)
+	@Parameter(label = "Select Parameter File", style = "file", required = true)
 	private File segParameterFile;
 	
 	@Parameter(visibility = ItemVisibility.MESSAGE, required = false)

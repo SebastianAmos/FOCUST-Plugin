@@ -8,10 +8,8 @@ public enum ModeType {
 	SINGLECELL(new ModeSingleCell(), "Single Cell"),
 	SPECKLE(new ModeSpeckle(), "Speckle");
 	
-	
 	private Mode mode;
 	private String displayName;
-	
 	
 	ModeType(Mode mode, String displayName) {
 		this.mode = mode;

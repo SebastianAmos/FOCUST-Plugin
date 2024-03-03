@@ -270,11 +270,6 @@ public class OptimizeGUI extends JFrame {
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		
 		JButton btnAnalysis = new JButton("Analysis");
-		btnAnalysis.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-						
-			}
-		});
 		
 		JLabel lblNewLabel_2_1 = new JLabel("Current image:");
 		lblNewLabel_2_1.setFont(new Font("Arial", Font.BOLD, 14));

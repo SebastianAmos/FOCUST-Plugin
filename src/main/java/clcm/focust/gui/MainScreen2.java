@@ -112,30 +112,30 @@ public class MainScreen2 extends JFrame{
 		});
 		btnOptimize.setFont(new Font("Gadugi", Font.BOLD, 16));
 		
-		JButton btnSpeckle_1 = new JButton("Analyze");
-		GridBagConstraints gbc_btnSpeckle_1 = new GridBagConstraints();
-		gbc_btnSpeckle_1.gridwidth = 3;
-		gbc_btnSpeckle_1.fill = GridBagConstraints.BOTH;
-		gbc_btnSpeckle_1.insets = new Insets(0, 0, 5, 0);
-		gbc_btnSpeckle_1.gridx = 1;
-		gbc_btnSpeckle_1.gridy = 1;
-		mainPane.add(btnSpeckle_1, gbc_btnSpeckle_1);
-		btnSpeckle_1.addActionListener(new ActionListener() {
+		JButton btnAnalyze = new JButton("Analyze");
+		GridBagConstraints gbc_btnAnalyze = new GridBagConstraints();
+		gbc_btnAnalyze.gridwidth = 3;
+		gbc_btnAnalyze.fill = GridBagConstraints.BOTH;
+		gbc_btnAnalyze.insets = new Insets(0, 0, 5, 0);
+		gbc_btnAnalyze.gridx = 1;
+		gbc_btnAnalyze.gridy = 1;
+		mainPane.add(btnAnalyze, gbc_btnAnalyze);
+		btnAnalyze.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
 					
 					// launch anaylsis with the speckle analysis mode selected
 					AnalysisGUI gui = new AnalysisGUI(paramManager);
-					gui.setMode(4);
+					gui.setMode(0);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
 					
-					Window win = SwingUtilities.getWindowAncestor(btnSpeckle_1);
+					Window win = SwingUtilities.getWindowAncestor(btnAnalyze);
 					win.dispose();
 				});
 			}
 		});
-		btnSpeckle_1.setFont(new Font("Gadugi", Font.BOLD, 16));
+		btnAnalyze.setFont(new Font("Gadugi", Font.BOLD, 16));
 		
 		JLabel lblQMarkIcon = new JLabel("");
 		GridBagConstraints gbc_lblQMarkIcon = new GridBagConstraints();
