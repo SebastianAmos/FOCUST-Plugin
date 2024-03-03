@@ -25,19 +25,19 @@ public class SkeletonProcess {
 		
 		if(params.getSkeletonParameters().getPrimary()) {
 			
-			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary"), segmentedChannels.getPrimary(), imgName));
+			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary", segmentedChannels.getPrimary().getCalibration()), segmentedChannels.getPrimary(), imgName));
 			
 		}
 		
 		if(params.getSkeletonParameters().getSecondary()) {
 
-			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary"), segmentedChannels.getSecondary(), imgName));
+			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary", segmentedChannels.getSecondary().getCalibration()), segmentedChannels.getSecondary(), imgName));
 			
 		}
 		
 		if(params.getSkeletonParameters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName));
+				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary", t.getCalibration()), t, imgName));
 			});
 		}
 		

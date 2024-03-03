@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 import java.util.ArrayList;
 

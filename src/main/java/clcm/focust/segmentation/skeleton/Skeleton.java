@@ -38,7 +38,8 @@ public class Skeleton {
 	 * @param imp
 	 * @return 
 	 */
-	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName) {
+	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName, Calibration cal) {
+		
 		Skeletonize3D_ skeletonise = new Skeletonize3D_();
 		if (imp.getBitDepth() != 8) {
 			System.out.println("Skeleton: Image not 8-bit, converting for thinning.");
@@ -49,6 +50,7 @@ public class Skeleton {
 		IJ.log("Computing skeletons...");
 		skeletonise.setup("", skeletons);
 		skeletonise.run(null);
+		skeletons.setCalibration(cal);
 		return skeletons;
 	}
 	

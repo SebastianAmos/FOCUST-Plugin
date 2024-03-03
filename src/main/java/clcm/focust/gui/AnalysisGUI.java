@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,6 +46,7 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.skeleton.Skeleton;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import clcm.focust.threshold.ThresholdType;
+import clcm.focust.utility.KillBorderTypes;
 import ij.IJ;
 import ij.ImagePlus;
 
@@ -2159,7 +2160,7 @@ public class AnalysisGUI extends JFrame {
 		
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainScreen MainGui = new MainScreen(paramManager);
+				MainScreen2 MainGui = new MainScreen2(paramManager);
 				MainGui.setLocationRelativeTo(null);
 				MainGui.setVisible(true);
 				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);

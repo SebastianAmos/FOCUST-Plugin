@@ -21,6 +21,8 @@ import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
 import clcm.focust.data.object.SegmentedChannels;
+import clcm.focust.gui.MainScreen;
+import clcm.focust.gui.MainScreen2;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.service.ParameterModeService;
 import clcm.focust.speckle.ExpectedSpeckleResults;
@@ -31,7 +33,6 @@ import clcm.focust.speckle.service.SpeckleProcessor;
 import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
 import clcm.focust.utility.CheckPlugins;
-import clcm.focust.utility.MainScreen;
 
 @Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
 
@@ -120,7 +121,7 @@ public final class FOCUST {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> services.forEach(FOCUSTService::shutdown)));
 		CheckPlugins.areAvailable();
 		SwingUtilities.invokeLater(() -> {
-			MainScreen MainGui = new MainScreen(paramManager);
+			MainScreen2 MainGui = new MainScreen2(paramManager);
 			MainGui.setLocationRelativeTo(null);
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

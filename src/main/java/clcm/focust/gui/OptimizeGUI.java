@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 
 import javax.swing.JFrame;
@@ -50,6 +50,7 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.Segmentation;
 import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.threshold.ThresholdType;
+import clcm.focust.utility.KillBorderTypes;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -2265,7 +2266,7 @@ public class OptimizeGUI extends JFrame {
 		
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainScreen MainGui = new MainScreen(paramManager);
+				MainScreen2 MainGui = new MainScreen2(paramManager);
 				MainGui.setLocationRelativeTo(null);
 				MainGui.setVisible(true);
 				Window win = SwingUtilities.getWindowAncestor(btnBackToMenu);

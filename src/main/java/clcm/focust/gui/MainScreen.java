@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;

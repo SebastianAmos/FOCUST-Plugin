@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 import java.io.File;
 import org.scijava.ItemVisibility;
@@ -8,9 +8,9 @@ import org.scijava.plugin.Plugin;
 import ij.IJ;
 
 
-@Plugin(type = Command.class, label = "FOCUST: Spheroid Analysis Lite", menuPath = "Plugins>FOCUST>Lite>Spheroid Analysis")
+@Plugin(type = Command.class, label = "FOCUST: Analysis Lite", menuPath = "Plugins>FOCUST>Lite>Analysis")
 
-public class SpheroidLite implements Command {
+public class AnalysisLite implements Command {
 	
 	@Parameter(label = "Input Directory",style="directory")
 	private File inputFiles;
@@ -18,19 +18,19 @@ public class SpheroidLite implements Command {
 	@Parameter(label = "Output Directory", style = "directory", required = false)
 	private File outputSelect;
 	
-	@Parameter(label = "How Many Channels?", choices = {"1", "2", "3", "4"})
-	private String totalChannelNum;
-	
 	@Parameter(label = "Primary Object Channel:", choices = {"1", "2", "3", "4"})
 	private String primaryChannelChoice;
 	
 	@Parameter(label = "Secondary Object Channel:", choices = {"1", "2", "3", "4"})
 	private String secondaryChannelChoice;
 	
-	@Parameter(label = "Name Channel 2:", style = "text field", required = false)
+	@Parameter(label = "Name Channel 1 :", style = "text field", required = false)
+	private String channel1Name;
+	
+	@Parameter(label = "Name Channel 2 :", style = "text field", required = false)
 	private String channel2Name;
 	
-	@Parameter(label = "Name Channel 3:", style = "text field", required = false)
+	@Parameter(label = "Name Channel 3 :", style = "text field", required = false)
 	private String channel3Name;
 	
 	@Parameter(label = "Name Channel 4:", style = "text field", required = false)
@@ -39,31 +39,22 @@ public class SpheroidLite implements Command {
 	@Parameter(label = "Grouping Info?", style = "text field", required = false)
 	private String groupName;
 	
-	@Parameter(label = "Select Parameter File", style = "directory", required = false)
+	@Parameter(label = "Select Parameter File", style = "directory", required = true)
 	private File segParameterFile;
-	
-	// channel fields here
-	//@Parameter(label = "Background Subtraction Radius:", min = "0f", max = "1000f", required = false)
-	//private Float primaryBGSubtraction = 1.0f;
-	
-	//@Parameter(label = "3D Gaussian Blur:", min = "0")
-	//private Double gBlurx;
-	
 	
 	@Parameter(visibility = ItemVisibility.MESSAGE, required = false)
 	private final String runMessage = "Click 'OK' when you are ready to run analysis!";
 	
 	
-	
-	
-	// where channel names and grouping info are null, set variable contents to "C2, C3, C4 and "" - respectively.
-	// executes when "ok" is pressed on the dialog box.
 	@Override
 	public void run() {
 		IJ.log("running");
 		
-		// run loaded parameter file interpreter here to extract variable options
-		// run segmentation function here.
+		// open and parse .json to ParameterCollection object.
+		
+		// if inputs are in the GD gui, use them over the paramcollection object. 
+		
+		
 		
 	}
 
