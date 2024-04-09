@@ -1,17 +1,23 @@
 package clcm.focust.mode;
 
-import java.util.ArrayList;
-
-import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
-import ij.ImagePlus;
+import ij.measure.ResultsTable;
 
 public class ModeSingleCell implements Mode {
 
 
 	@Override
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
-		// TODO Auto-generated method stub
+
+		/* TODO:
+		 * Manage duplicate labels
+		 * 
+		 * New table, add row data for nuc, cell and cyto where labelIDs match.
+		 * 
+		 */
+		
+		ResultsTable rt = new ResultsTable();
+		
 		
 	}
 
