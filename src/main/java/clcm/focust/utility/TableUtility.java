@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import clcm.focust.mode.CompiledImageData;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
@@ -514,6 +515,136 @@ public class TableUtility {
 		
 		return data;
 	}
+	
+	
+	
+	// TODO: Method to match rows between tables where Label is the same, and append all columns that aren't common.
+
+	public static ResultsTable matchLabelledResults(ParameterCollection parameters, CompiledImageData imgData) {
+
+		ResultsTable rt = new ResultsTable();
+
+		for (int i = 0; i < imgData.getSecondary().size(); i++) {
+
+			int priIndex = -1;
+			final int currentIndex = i;
+			final int currentLabel = (int) imgData.getSecondary().getValue("Label", i);
+
+			priIndex = findMatchingRow(imgData.getPrimary(), "Label", currentLabel);
+
+			imgData.getImages().getTertiary().ifPresent(t -> {
+				int terIndex = findMatchingRow(imgData.getTertiary(), "Label", currentLabel);
+			});
+
+			// Match found, append all the data from available tables excluding Label, ImageID and Group.
+			if (priIndex >= 0) {
+				rt.addRow();
+				rt.addValue("ImageID", imgData.getSecondary().getStringValue("ImageID", i));
+				
+				if (!parameters.getGroupingInfo().isEmpty()) {
+					rt.addValue("Group", imgData.getSecondary().getStringValue("Group", i));	
+				}
+				
+				rt.addValue("Label", currentLabel);
+				
+				for (int j = 0; j < imgData.getSecondary().getLastColumn(); j++) {
+					String head = imgData.getSecondary().getColumnHeading(j);
+					if (!head.equals("ImageID") && !head.equals("Group") && !head.equals("Label")) {
+						double val = imgData.getPrimary().getValue(head, priIndex);
+					}
+				}
+			}
+	
+		}
+		
+		
+		return rt;
+	}
+	
+	
+	
+	/**
+	 * Perform an inner join on the data by the columns specified in joinBy.
+	 * Written for joining data by imageID and label for the single cell analysis mode. 
+	 *
+	 * @param rt1
+	 * @param rt2
+	 * @param joinBy
+	 * @return
+	 */
+	public ResultsTable innerJoin(ResultsTable rt1, ResultsTable rt2, List<String> joinBy) {
+		
+		ResultsTable rt = new ResultsTable();
+	
+		
+		for (int i = 0; i < rt1.size(); i++) {
+			for (int j = 0; j < rt2.size(); j++) {
+				
+				for (String col : joinBy) {
+					if (rt1.getValue(col, i) == rt2.getValue(col, j)) {
+						
+						addRow(rt, rt1, rt2, joinBy);
+						
+					} 
+				}
+				
+			}
+		}
+		
+		
+		return rt;
+	}
+	
+	
+	/**
+	 * Adds a row to the 
+	 * 
+	 * @param rt
+	 * @param rt1
+	 * @param row1
+	 * @param rt2
+	 * @param row2
+	 * @param joinBy
+	 */
+	private void addRow(ResultsTable rt, ResultsTable rt1, int row1, ResultsTable rt2, int row2, List<String> joinBy) {
+		
+		for (int i = 0; i < rt1.getLastColumn(); i++) {
+			String header = rt1.getColumnHeading(i);
+			if (!joinBy.contains(header)) {
+				rt.addValue(i, rt1.getValueAsDouble(i, row1));
+			}
+		}
+		
+		for (int i = 0; i < rt2.getLastColumn(); i++) {
+			String header = rt2.getColumnHeading(i);
+			if (!joinBy.contains(header)) {
+				rt.addValue(i, rt2.getValueAsDouble(i, row2));
+			}
+		}
+	}
+
+
+
+	/**
+	 * Locate matching rows between results tables for single cell processing.
+	 * 
+	 * @param table 
+	 * @param colName the Label column
+	 * @param val the label ID to find
+	 * @return
+	 */
+	public static int findMatchingRow(ResultsTable table, String colName, int val) {
+		int index = -1;
+		for (int i = 0; i < table.size(); i++) {
+			int label = Integer.parseInt(table.getStringValue(colName, i));
+			if (label == val) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+	
 
 }
 

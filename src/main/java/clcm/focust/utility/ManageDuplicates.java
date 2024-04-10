@@ -163,7 +163,6 @@ public class ManageDuplicates {
 			for (int y = 0; y < ip.getHeight(); y++) {
 				for (int x = 0; x < ip.getWidth(); x++) {
 					Double lbl = Double.valueOf(ip.getPixelValue(x, y));
-					
 					if (map.containsKey(lbl)) {
 						Double val = map.get(lbl);
 						ip.putPixelValue(x, y, val);
