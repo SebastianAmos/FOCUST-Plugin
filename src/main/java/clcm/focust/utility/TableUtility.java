@@ -1,5 +1,6 @@
 package clcm.focust.utility;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -560,6 +561,131 @@ public class TableUtility {
 		
 		return rt;
 	}
+	
+	
+	/**
+	 * Combine two ResultsTables  where col matches.
+	 * 
+	 * Could change col to a list for multiple matches, but only operating on single image data.
+	 * 
+	 * @param rt1 The first table to check
+	 * @param rt2 The second table to check
+	 * @param rt The table to combine matches
+	 * @param col The header to match by (Label)
+	 */
+	public void joinTablesByLabel(ResultsTable rt1, ResultsTable rt2, ResultsTable rt, String col) {
+
+		for (int i = 0; i < rt1.size(); i++) {
+
+			double lbl1 = rt1.getValue(col, i);
+
+			for (int j = 0; j < rt2.size(); j++) {
+
+				double lbl2 = rt2.getValue(col, j);
+
+				if (lbl1 == lbl2) {
+
+					rt.addRow();
+
+					rt.addValue("ImageID", rt1.getStringValue("ImageID", i));
+
+					
+					
+					// add all values in a each matched row for i (index rt1) and j (index rt2)
+					// only write common columns once (ImageID, Group if present, Label) - check if column exists
+
+					for (int k = 0; k < rt1.getLastColumn()+1; k++) {
+						System.out.println("rt1 columns are: " + rt1.getColumnHeadings());
+						String head1 = rt1.getColumnHeading(k);
+						if (!rt.columnExists(head1)) {
+							double val1 = rt1.getValue(head1, i);
+							rt.addValue(head1, rt1.getValue(head1, i));
+						}
+					}
+
+					for (int l = 0; l < rt2.getLastColumn()+1; l++) {
+						System.out.println("rt2 columns are: " + rt2.getColumnHeadings());
+						String head2 = rt2.getColumnHeading(l);
+						if (!rt.columnExists(head2)) {
+							double val2 = rt2.getValue(head2, j);
+							rt.addValue(head2, rt2.getValue(head2, j));							
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	void testJoinTablesByLabel() {
+
+		TableUtility tu = new TableUtility();
+		ResultsTableUtility rtu = new ResultsTableUtility();
+
+		File dir = new File("C:\\Users\\simpl\\OneDrive\\Desktop\\FOCUST");
+
+		ParameterCollection params = ParameterCollection.builder().
+				outputDir(dir.toString()).
+				build();
+
+
+		ResultsTable rt = new ResultsTable();
+
+		ResultsTable rt1 = testResultsTable1();
+		ResultsTable rt2 = testResultsTable2();
+
+		tu.joinTablesByLabel(rt1, rt2, rt, "Label");
+
+		rtu.saveAndStackResults(rt1, "rt1_data", params);
+		rtu.saveAndStackResults(rt2, "rt2_data", params);
+
+		rtu.saveAndStackResults(rt, "combined_data", params);
+
+		System.out.println(rt);
+		rt.show("Combined Results");
+	}
+
+
+
+	
+
+	/**
+	 * Generate an example ResultsTable for testing
+	 * @return
+	 */
+	private ResultsTable testResultsTable1() {
+		ResultsTable rt = new ResultsTable();
+		rt.addRow();
+		rt.addValue("ImageID", "Test-Image-1");
+		rt.addValue("Label", 1);
+		rt.addValue("Primary-Value", 123.987);
+		rt.addRow();
+		rt.addValue("ImageID", "Test-Image-1");
+		rt.addValue("Label", 3);
+		rt.addValue("Primary-Value", 987.123);
+		return rt;
+	}
+	
+
+	/**
+	 * Generate an example ResultsTable for testing
+	 * @return
+	 */
+	private ResultsTable testResultsTable2() {
+		ResultsTable rt = new ResultsTable();
+		rt.addRow();
+		rt.addValue("ImageID", "Test-Image-1");
+		rt.addValue("Label", 1);
+		rt.addValue("Secondary-Value", 86.77);
+		rt.addRow();
+		rt.addValue("ImageID", "Test-Image-1");
+		rt.addValue("Label", 3);
+		rt.addValue("Secondary-Value", 642.987);
+		return rt;
+	}
+	
 	
 	
 	
