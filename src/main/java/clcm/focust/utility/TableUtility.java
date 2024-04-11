@@ -1,15 +1,12 @@
 package clcm.focust.utility;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import clcm.focust.mode.CompiledImageData;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
@@ -21,7 +18,6 @@ import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
-import util.FindConnectedRegions.Results;
 
 /**
  * This helper class contains helper methods for calculating intensities and saving results tables. 
@@ -120,7 +116,8 @@ public class TableUtility {
 		
 		return rt;
 	}
-/**
+	
+	/**
 	 * Collects the columns from RT and puts them into a Map of columns. 
 	 * @param rt
 	 * @param columnDataMap
@@ -156,7 +153,7 @@ public class TableUtility {
 	 */
 	public static Map<ImagePlus, ResultsTable> compileIntensityResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
 
-		// A map for intensity cals
+		// A map for intensity calcs
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
 		
 		/*
@@ -356,33 +353,29 @@ public class TableUtility {
 	public static ResultsTable extractGroupAndTitle(ResultsTable rt, ParameterCollection parameters, String imgName) {
 		
 		ResultsTable result = new ResultsTable();
-		
-		//rt.show("Results");
 		String headers = rt.getColumnHeadings();
-		System.out.println("Headers = " + headers);
-		
-		//System.out.println(rt);
-		
 		if(parameters.getGroupingInfo().isEmpty()) {
 			for (int i = 0; i < rt.size(); i++) {
-				//result.setValue("Label", i, rt.getValue("Label", i));
 				result.setValue("ImageID", i, imgName);
 			}
 		} else {
 			for (int i = 0; i < rt.size(); i++) {
-				//result.setValue("Label", i, rt.getValue("Label", i));
 				result.setValue("ImageID", i, imgName);
 				result.setValue("Group", i, parameters.getGroupingInfo());
 			}
 		}
-		
 		result.setColumn("Label", rt.getColumnAsVariables("Label"));
 
 		return result;
 	}
 	
 	
-	
+	/**
+	 * Compile results with the ResultsBuilder class. 
+	 * 
+	 * @param list
+	 * @return
+	 */
 	public static ResultsTable compileAllResults(List<ResultsTable> list){
 		ResultsBuilder rb = new ResultsBuilder();
 		for (ResultsTable rt : list) {
@@ -430,10 +423,6 @@ public class TableUtility {
 					for (String head : skeletonHeaders) {
 						
 						data.addValue(head, standard.getValue(head, i));
-						
-						
-						
-						
 					}
 					
 				}
@@ -519,62 +508,22 @@ public class TableUtility {
 	
 	
 	
-	// TODO: Method to match rows between tables where Label is the same, and append all columns that aren't common.
-
-	public static ResultsTable matchLabelledResults(ParameterCollection parameters, CompiledImageData imgData) {
-
-		ResultsTable rt = new ResultsTable();
-
-		for (int i = 0; i < imgData.getSecondary().size(); i++) {
-
-			int priIndex = -1;
-			final int currentIndex = i;
-			final int currentLabel = (int) imgData.getSecondary().getValue("Label", i);
-
-			priIndex = findMatchingRow(imgData.getPrimary(), "Label", currentLabel);
-
-			imgData.getImages().getTertiary().ifPresent(t -> {
-				int terIndex = findMatchingRow(imgData.getTertiary(), "Label", currentLabel);
-			});
-
-			// Match found, append all the data from available tables excluding Label, ImageID and Group.
-			if (priIndex >= 0) {
-				rt.addRow();
-				rt.addValue("ImageID", imgData.getSecondary().getStringValue("ImageID", i));
-				
-				if (!parameters.getGroupingInfo().isEmpty()) {
-					rt.addValue("Group", imgData.getSecondary().getStringValue("Group", i));	
-				}
-				
-				rt.addValue("Label", currentLabel);
-				
-				for (int j = 0; j < imgData.getSecondary().getLastColumn(); j++) {
-					String head = imgData.getSecondary().getColumnHeading(j);
-					if (!head.equals("ImageID") && !head.equals("Group") && !head.equals("Label")) {
-						double val = imgData.getPrimary().getValue(head, priIndex);
-					}
-				}
-			}
-	
-		}
-		
-		
-		return rt;
-	}
-	
 	
 	/**
-	 * Combine two ResultsTables  where col matches.
+	 * Combine two ResultsTables where col matches.
 	 * 
-	 * Could change col to a list for multiple matches, but only operating on single image data.
+	 * Could change col to a list for multiple matches, but only operating on single image data at this stage.
 	 * 
 	 * @param rt1 The first table to check
+	 * @param rt1Object The name that should be appended to each column header from rt1
 	 * @param rt2 The second table to check
-	 * @param rt The table to combine matches
-	 * @param col The header to match by (Label)
+	 * @param rt2Object The name that should be appended to each column header from rt2 
+	 * @param col The column header to match rows by
 	 */
-	public void joinTablesByLabel(ResultsTable rt1, ResultsTable rt2, ResultsTable rt, String col) {
+	public ResultsTable joinTablesByLabel(ResultsTable rt1, String rt1Object, ResultsTable rt2, String rt2Object, String col) {
 
+		ResultsTable rt = new ResultsTable();
+		
 		for (int i = 0; i < rt1.size(); i++) {
 
 			double lbl1 = rt1.getValue(col, i);
@@ -584,31 +533,62 @@ public class TableUtility {
 				double lbl2 = rt2.getValue(col, j);
 
 				if (lbl1 == lbl2) {
-
-					rt.addRow();
-
-					rt.addValue("ImageID", rt1.getStringValue("ImageID", i));
-
 					
+					int row = rt.getCounter();
+					rt.incrementCounter();
+
+					// write common columns
+					rt.setValue("ImageID", row, rt1.getStringValue("ImageID", i));
+					if (rt1.columnExists("Group")) {
+						rt.setValue("Group", row, rt1.getStringValue("Group", i));
+					}
+					rt.setValue("Label", row, lbl1);
 					
 					// add all values in a each matched row for i (index rt1) and j (index rt2)
-					// only write common columns once (ImageID, Group if present, Label) - check if column exists
-
 					for (int k = 0; k < rt1.getLastColumn()+1; k++) {
-						System.out.println("rt1 columns are: " + rt1.getColumnHeadings());
 						String head1 = rt1.getColumnHeading(k);
-						if (!rt.columnExists(head1)) {
-							double val1 = rt1.getValue(head1, i);
-							rt.addValue(head1, rt1.getValue(head1, i));
+						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label") {
+							rt.setValue(rt1Object + head1, row, rt1.getValue(head1, i));
 						}
 					}
 
 					for (int l = 0; l < rt2.getLastColumn()+1; l++) {
-						System.out.println("rt2 columns are: " + rt2.getColumnHeadings());
 						String head2 = rt2.getColumnHeading(l);
-						if (!rt.columnExists(head2)) {
-							double val2 = rt2.getValue(head2, j);
-							rt.addValue(head2, rt2.getValue(head2, j));							
+						if (head2 != "ImageID" && head2 != "Group" && head2 != "Label") {
+							rt.setValue(rt2Object + head2, row, rt2.getValue(head2, j));
+						}
+					}
+				}
+			}
+		}
+		return rt;
+	}
+	
+	
+	/**
+	 * Perform an inner join on two results tables.
+	 * 
+	 * @param rt Existing table
+	 * @param rt1 Table to join (inner) with existing table
+	 * @param rt1Object Name of object type for rt1 i.e. "tertiary" 
+	 * @param col Column header to join by
+	 */
+	public void innerJoin(ResultsTable rt, ResultsTable rt1, String rt1Object, String col) {
+		
+		for (int i = 0; i < rt.size(); i++) {
+			
+			double lbl = rt.getValue(col, i);
+			
+			for (int j = 0; j < rt1.size(); j++) {
+				
+				double lbl1 = rt1.getValue(col, j);
+				
+				if (lbl == lbl1) {
+					
+					for (int k = 0; k < rt1.getLastColumn()+1 ; k++) {		
+						String head1 = rt1.getColumnHeading(k);
+						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label") {
+							rt.setValue(rt1Object + "." + head1, i, rt1.getValue(head1, j));
 						}
 					}
 				}
@@ -616,161 +596,6 @@ public class TableUtility {
 		}
 	}
 	
-	
-	
-	
-	void testJoinTablesByLabel() {
-
-		TableUtility tu = new TableUtility();
-		ResultsTableUtility rtu = new ResultsTableUtility();
-
-		File dir = new File("C:\\Users\\simpl\\OneDrive\\Desktop\\FOCUST");
-
-		ParameterCollection params = ParameterCollection.builder().
-				outputDir(dir.toString()).
-				build();
-
-
-		ResultsTable rt = new ResultsTable();
-
-		ResultsTable rt1 = testResultsTable1();
-		ResultsTable rt2 = testResultsTable2();
-
-		tu.joinTablesByLabel(rt1, rt2, rt, "Label");
-
-		rtu.saveAndStackResults(rt1, "rt1_data", params);
-		rtu.saveAndStackResults(rt2, "rt2_data", params);
-
-		rtu.saveAndStackResults(rt, "combined_data", params);
-
-		System.out.println(rt);
-		rt.show("Combined Results");
-	}
-
-
-
-	
-
-	/**
-	 * Generate an example ResultsTable for testing
-	 * @return
-	 */
-	private ResultsTable testResultsTable1() {
-		ResultsTable rt = new ResultsTable();
-		rt.addRow();
-		rt.addValue("ImageID", "Test-Image-1");
-		rt.addValue("Label", 1);
-		rt.addValue("Primary-Value", 123.987);
-		rt.addRow();
-		rt.addValue("ImageID", "Test-Image-1");
-		rt.addValue("Label", 3);
-		rt.addValue("Primary-Value", 987.123);
-		return rt;
-	}
-	
-
-	/**
-	 * Generate an example ResultsTable for testing
-	 * @return
-	 */
-	private ResultsTable testResultsTable2() {
-		ResultsTable rt = new ResultsTable();
-		rt.addRow();
-		rt.addValue("ImageID", "Test-Image-1");
-		rt.addValue("Label", 1);
-		rt.addValue("Secondary-Value", 86.77);
-		rt.addRow();
-		rt.addValue("ImageID", "Test-Image-1");
-		rt.addValue("Label", 3);
-		rt.addValue("Secondary-Value", 642.987);
-		return rt;
-	}
-	
-	
-	
-	
-	/**
-	 * Perform an inner join on the data by the columns specified in joinBy.
-	 * Written for joining data by imageID and label for the single cell analysis mode. 
-	 *
-	 * @param rt1
-	 * @param rt2
-	 * @param joinBy
-	 * @return
-	 */
-	public ResultsTable innerJoin(ResultsTable rt1, ResultsTable rt2, List<String> joinBy) {
-		
-		ResultsTable rt = new ResultsTable();
-	
-		
-		for (int i = 0; i < rt1.size(); i++) {
-			for (int j = 0; j < rt2.size(); j++) {
-				
-				for (String col : joinBy) {
-					if (rt1.getValue(col, i) == rt2.getValue(col, j)) {
-						
-						addRow(rt, rt1, rt2, joinBy);
-						
-					} 
-				}
-				
-			}
-		}
-		
-		
-		return rt;
-	}
-	
-	
-	/**
-	 * Adds a row to the 
-	 * 
-	 * @param rt
-	 * @param rt1
-	 * @param row1
-	 * @param rt2
-	 * @param row2
-	 * @param joinBy
-	 */
-	private void addRow(ResultsTable rt, ResultsTable rt1, int row1, ResultsTable rt2, int row2, List<String> joinBy) {
-		
-		for (int i = 0; i < rt1.getLastColumn(); i++) {
-			String header = rt1.getColumnHeading(i);
-			if (!joinBy.contains(header)) {
-				rt.addValue(i, rt1.getValueAsDouble(i, row1));
-			}
-		}
-		
-		for (int i = 0; i < rt2.getLastColumn(); i++) {
-			String header = rt2.getColumnHeading(i);
-			if (!joinBy.contains(header)) {
-				rt.addValue(i, rt2.getValueAsDouble(i, row2));
-			}
-		}
-	}
-
-
-
-	/**
-	 * Locate matching rows between results tables for single cell processing.
-	 * 
-	 * @param table 
-	 * @param colName the Label column
-	 * @param val the label ID to find
-	 * @return
-	 */
-	public static int findMatchingRow(ResultsTable table, String colName, int val) {
-		int index = -1;
-		for (int i = 0; i < table.size(); i++) {
-			int label = Integer.parseInt(table.getStringValue(colName, i));
-			if (label == val) {
-				index = i;
-				break;
-			}
-		}
-		return index;
-	}
-	
-
 }
+
 
