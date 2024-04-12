@@ -27,13 +27,9 @@ public class ManageDuplicates {
 	 */
 	public RelabelledObjects run(ImagePlus labels, ImagePlus toRelabel) {
 		
-		//RelabelledObjects relab = new RelabelledObjects();
-		
 		// impose labels of secondary object onto primary object (or tertiary) 
-		ImagePlus matched = imposeLabels(labels, toRelabel);
+		ImagePlus matched = imposeLabels(labels, toRelabel); // matched = primary or tertiary objects relabelled with secondary object values.
 		
-		// matched = primary or tertiary objects relabelled with secondary object values.
-
 		// for each original primary object
 		Map<Double, Double> map = matchLabels(toRelabel, matched);
 		
@@ -86,11 +82,7 @@ public class ManageDuplicates {
 		ResultsTable copy = im.getMax();
 		copy.show("TABLE");
 		
-		
-		
 		ResultsTable labels = im.getMax();
-		
-
 		
 		String headers = labels.getColumnHeadings();
 		int labelColIndex = labels.getColumnIndex("Label");

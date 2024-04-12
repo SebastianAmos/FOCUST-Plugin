@@ -526,12 +526,20 @@ public class TableUtility {
 		
 		for (int i = 0; i < rt1.size(); i++) {
 
-			double lbl1 = rt1.getValue(col, i);
-
+			//double lbl1 = rt1.getValue(col, i);
+			
+			double lbl1 = Double.parseDouble(rt1.getStringValue(col, i));
+			
+			// testing
+			System.out.println("label 1: " + lbl1);
+			
 			for (int j = 0; j < rt2.size(); j++) {
 
-				double lbl2 = rt2.getValue(col, j);
+				//double lbl2 = rt2.getValue(col, j);
+				double lbl2 = Double.parseDouble(rt2.getStringValue(col, j));
 
+				System.out.println("label 2: " + lbl1);
+				
 				if (lbl1 == lbl2) {
 					
 					int row = rt.getCounter();

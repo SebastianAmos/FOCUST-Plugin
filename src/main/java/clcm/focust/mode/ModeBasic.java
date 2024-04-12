@@ -6,11 +6,7 @@ import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.utility.ResultsTableUtility;
 import net.haesleinhuepf.clij2.CLIJ2;
 
-/**
- *
- * @author SebastianAmos
- * 
- */
+
 
 public class ModeBasic implements Mode {
 

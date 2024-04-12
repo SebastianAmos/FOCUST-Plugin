@@ -7,6 +7,7 @@ import java.util.Optional;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
+import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -53,11 +54,33 @@ public class ModeSegment{
 			IJ.log("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			
-			if (parameters.getProcessTertiary()) {
+			System.out.println("TertiaryIsDifference: " + parameters.getTertiaryIsDifference());
+			System.out.println("" + parameters.getProcessTertiary());
+			
+			if (parameters.getTertiaryIsDifference()) {
+				//tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
+				tertiary = Optional.ofNullable(LabelEditor.subtractOneFromTwo(primary, secondary));
+				
+			} else if (parameters.getProcessTertiary()) {
+				
 				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
-			} else if (parameters.getTertiaryIsDifference()) {
-				tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
-			} 
+				
+				// save to appropriate dir
+				if (!parameters.getOutputDir().isEmpty()) {
+					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getOutputDir() + "Tertiary_Objects_" + imgName);
+				} else {
+					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
+				}
+				
+			}
+			
+			/*
+			 * if (parameters.getProcessTertiary()) { tertiary =
+			 * Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix +
+			 * rmExtName + ".tif")); } else if (parameters.getTertiaryIsDifference()) {
+			 * tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary,
+			 * "Subtract create stack")); }
+			 */
 			
 		} else {
 			

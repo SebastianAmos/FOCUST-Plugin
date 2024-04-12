@@ -13,7 +13,8 @@ class TableUtilityTest2 {
 		TableUtility tu = new TableUtility();
 		ResultsTableUtility rtu = new ResultsTableUtility();
 	
-		File dir = new File("C:\\Users\\simpl\\OneDrive\\Desktop\\FOCUST");
+		//File dir = new File("C:\\Users\\simpl\\OneDrive\\Desktop\\FOCUST");
+		File dir = new File("C:\\Users\\21716603\\OneDrive - The University of Western Australia\\Desktop\\focust test");
 		
 		ParameterCollection params = ParameterCollection.builder().
 				outputDir(dir.toString()).

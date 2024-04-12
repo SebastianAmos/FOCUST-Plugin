@@ -8,12 +8,14 @@ import clcm.focust.utility.TableUtility;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
+import net.haesleinhuepf.clij2.utilities.CLIJ2MacroExtensions;
 
 
 /**
@@ -258,6 +260,42 @@ public class LabelEditor {
 		return labelledEdges;
 	}
 	
+	
+	/** 
+	 * Subtract two images.
+	 * @param one
+	 * @param two
+	 * @return
+	 */
+	public static ImagePlus subtractOneFromTwo(ImagePlus one, ImagePlus two) {
+		
+		Calibration cal = one.getCalibration();
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ClearCLBuffer oneCL = clij2.push(one);
+		ClearCLBuffer twoCL = clij2.push(two);
+		ClearCLBuffer two2CL = clij2.create(twoCL);
+		ClearCLBuffer subtracted = clij2.create(twoCL);	
+		clij2.subtractImages(twoCL, oneCL, subtracted);
+		clij2.subtractImages(oneCL, twoCL, two2CL);
+		
+		ImagePlus output = clij2.pull(subtracted);
+		ImagePlus copy = output.duplicate();
+		copy.setTitle("Tertiary");
+		copy.setCalibration(cal);
+		copy.show();
+		
+		ImagePlus copy2 = clij2.pull(two2CL);
+		copy2.setTitle("Tertiary2222");
+		copy2.setCalibration(cal);
+		copy2.show();
+		
+		oneCL.close();
+		twoCL.close();
+		subtracted.close();
+		
+		return output;
+	}
 	
 	
 }
