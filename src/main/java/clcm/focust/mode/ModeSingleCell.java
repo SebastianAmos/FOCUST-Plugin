@@ -32,6 +32,7 @@ public class ModeSingleCell implements Mode {
 		 * MAP DUPLICATE PRIMRAY OBJECTS
 		 */
 
+		
 		ManageDuplicates md = new ManageDuplicates();
 
 		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary());
