@@ -37,7 +37,7 @@ public class ModeSingleCell implements Mode {
 
 		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary());
 		
-		IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
+		//IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
 
 		
 		

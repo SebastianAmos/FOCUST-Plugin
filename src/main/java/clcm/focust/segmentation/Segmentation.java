@@ -75,9 +75,6 @@ public class Segmentation {
 	}
 	
 	
-	
-	
-	
 	public static ImagePlus generateBySubtraction(ImagePlus larger, ImagePlus smaller, ParameterCollection params) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -89,6 +86,37 @@ public class Segmentation {
 		largerBuffer.close();
 		smallerBuffer.close();
 		largeMinusSmall.close();
+		
+		return output;
+	}
+	
+	
+	
+	public static ImagePlus generateBySubtractionAndRelabel(ImagePlus larger, ImagePlus smaller) {
+		
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ClearCLBuffer largerBuffer = clij2.push(larger);
+		ClearCLBuffer smallerBuffer = clij2.push(smaller);
+		ClearCLBuffer largeMinusSmall = clij2.create(largerBuffer);
+		ClearCLBuffer labelled = clij2.create(largerBuffer);
+		
+		clij2.binarySubtract(largerBuffer, smallerBuffer, largeMinusSmall);
+		clij2.connectedComponentsLabelingBox(largeMinusSmall, labelled);
+		
+		ImagePlus output = clij2.pull(labelled);
+		output.setCalibration(larger.getCalibration());
+		LUT lut = LutLoader.openLut(IJ.getDirectory("luts") + "glasbey_on_dark.lut");
+		output.setLut(lut);
+		
+		ImagePlus dup1 = output.duplicate();
+		dup1.setTitle("1");
+		dup1.show();
+		
+		
+		largerBuffer.close();
+		smallerBuffer.close();
+		largeMinusSmall.close();
+		
 		
 		return output;
 	}

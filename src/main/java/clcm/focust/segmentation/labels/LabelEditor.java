@@ -274,21 +274,20 @@ public class LabelEditor {
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer oneCL = clij2.push(one);
 		ClearCLBuffer twoCL = clij2.push(two);
-		ClearCLBuffer two2CL = clij2.create(twoCL);
-		ClearCLBuffer subtracted = clij2.create(twoCL);	
-		clij2.subtractImages(twoCL, oneCL, subtracted);
-		clij2.subtractImages(oneCL, twoCL, two2CL);
+		ClearCLBuffer subtracted = clij2.create(twoCL);
+		
+		clij2.binarySubtract(twoCL, oneCL, subtracted);
+
+		
+		//clij2.subtractImages(twoCL, oneCL, subtracted);
 		
 		ImagePlus output = clij2.pull(subtracted);
-		ImagePlus copy = output.duplicate();
-		copy.setTitle("Tertiary");
-		copy.setCalibration(cal);
-		copy.show();
+		output.setCalibration(cal);
 		
-		ImagePlus copy2 = clij2.pull(two2CL);
-		copy2.setTitle("Tertiary2222");
-		copy2.setCalibration(cal);
-		copy2.show();
+		ImagePlus check = output.duplicate();
+		check.setTitle("TertiaryTest");
+		check.show();
+		
 		
 		oneCL.close();
 		twoCL.close();

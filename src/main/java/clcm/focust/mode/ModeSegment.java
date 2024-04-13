@@ -40,40 +40,40 @@ public class ModeSegment{
 		ImagePlus primary = null;
 		ImagePlus secondary = null;
 		Optional<ImagePlus> tertiary = Optional.empty();	
-		
+
 		// open images if analysis-only = true
 		if(parameters.getAnalysisOnly()) {
-			
+
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
-			
+
 			IJ.log("Opening: " + parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
-			
+
 			primary = IJ.openImage(parameters.getInputDir() + primaryPrefix + rmExtName + ".tif");
-			
+
 			IJ.log("Opening: " + parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + secondaryPrefix + rmExtName + ".tif");
-			
+
 			System.out.println("TertiaryIsDifference: " + parameters.getTertiaryIsDifference());
 			System.out.println("" + parameters.getProcessTertiary());
-			
+
 			if (parameters.getTertiaryIsDifference()) {
 				//tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
-				tertiary = Optional.ofNullable(LabelEditor.subtractOneFromTwo(primary, secondary));
+				//tertiary = Optional.ofNullable(LabelEditor.subtractOneFromTwo(primary, secondary));
+
+				tertiary = Optional.ofNullable(Segmentation.generateBySubtractionAndRelabel(secondary, primary));
 				
-			} else if (parameters.getProcessTertiary()) {
-				
-				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
-				
-				// save to appropriate dir
 				if (!parameters.getOutputDir().isEmpty()) {
 					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getOutputDir() + "Tertiary_Objects_" + imgName);
 				} else {
 					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
 				}
-				
+
+			} else if (parameters.getProcessTertiary()) {
+
+				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix + rmExtName + ".tif"));
+
 			}
-			
 			/*
 			 * if (parameters.getProcessTertiary()) { tertiary =
 			 * Optional.ofNullable(IJ.openImage(parameters.getInputDir() + tertiaryPrefix +
@@ -81,7 +81,7 @@ public class ModeSegment{
 			 * tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary,
 			 * "Subtract create stack")); }
 			 */
-			
+
 		} else {
 			
 			// analysis-only = false, run the user-defined segmentation.
