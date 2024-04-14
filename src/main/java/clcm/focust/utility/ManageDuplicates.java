@@ -2,6 +2,7 @@ package clcm.focust.utility;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
@@ -25,7 +26,7 @@ public class ManageDuplicates {
 	 * @param toRelabel an image with labels you want to replace with the "labels" input (i.e. a primary or tertiary object) 
 	 * @return an object that contains a map of old to new labels, and a relabelled image.
 	 */
-	public RelabelledObjects run(ImagePlus labels, ImagePlus toRelabel) {
+	public RelabelledObjects run(ImagePlus labels, ImagePlus toRelabel, ResultsTable rt) {
 		
 		// impose labels of secondary object onto primary object (or tertiary) 
 		ImagePlus matched = imposeLabels(labels, toRelabel); // matched = primary or tertiary objects relabelled with secondary object values.
@@ -38,13 +39,45 @@ public class ManageDuplicates {
 		
 		ImagePlus relabelled = relabelFromMap(toRelabel, indexed);
 		
-		RelabelledObjects relab = RelabelledObjects.builder().map(indexed).relabelled(relabelled).build();
+		modifyTableLabels(rt, map);
+		
+		RelabelledObjects relab = RelabelledObjects.builder().
+				map(indexed).
+				relabelled(relabelled).
+				results(rt).build();
 		
 		return relab;
 		
 	}
 	
 	
+	// Extract label from rt, compare to the keys in the map, if a match is found
+	// replace the label with the map value - append an index if the value has been seen before. 
+	private void modifyTableLabels(ResultsTable rt, Map<Double, Double> indexed) {
+		
+		// for each row in the table
+		for (int i = 0; i < rt.size(); i++) {
+			
+			// get the label 
+			double lbl = Double.parseDouble(rt.getStringValue("Label", i));
+			
+			// compare to each label in the map.
+			for (Double key : indexed.keySet()) {
+				
+				if (lbl == key) {
+					
+					// if matched, get the corresponding value (duplicate managed with an index) and replace the table's Label
+					
+					Double val = indexed.get(key);
+					
+					rt.setValue("Label", i, val);
+						
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * converts original label value to 1 then imposes the values from the "labels"
 	 * ImagePlus by multiplication.

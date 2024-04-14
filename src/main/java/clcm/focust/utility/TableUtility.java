@@ -525,8 +525,6 @@ public class TableUtility {
 		ResultsTable rt = new ResultsTable();
 		
 		for (int i = 0; i < rt1.size(); i++) {
-
-			//double lbl1 = rt1.getValue(col, i);
 			
 			double lbl1 = Double.parseDouble(rt1.getStringValue(col, i));
 			
@@ -535,7 +533,6 @@ public class TableUtility {
 			
 			for (int j = 0; j < rt2.size(); j++) {
 
-				//double lbl2 = rt2.getValue(col, j);
 				double lbl2 = Double.parseDouble(rt2.getStringValue(col, j));
 
 				System.out.println("label 2: " + lbl1);

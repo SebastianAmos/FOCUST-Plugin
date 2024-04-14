@@ -31,14 +31,32 @@ public class ModeSingleCell implements Mode {
 		/*
 		 * MAP DUPLICATE PRIMRAY OBJECTS
 		 */
-
+		
 		
 		ManageDuplicates md = new ManageDuplicates();
-
-		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary());
 		
-		//IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Tertiary_Objects_" + imgName);
+		ResultsTable primaryCopy = imgData.getPrimary();
 
+		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), primaryCopy);
+		
+		IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Primary_Objects_Relabelled_" + imgName);
+
+		primaryCopy.show("REBALLED");
+		
+		
+		ResultsTable test = imgData.getPrimary();
+		test.show("ORIGINAL");
+		
+		
+		// REASSIGN THE LABELS IN THE PRIMARY TABLE - Append an index if the same label is encountered > 1
+		
+		
+		
+		
+		// Determine which secondary labels each primary object belong to - relabel a copy of the image.
+		
+		
+	
 		
 		
 		
