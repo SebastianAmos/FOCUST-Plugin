@@ -25,16 +25,19 @@ public class ModeSingleCell implements Mode {
 		 * New table, add row data for nuc, cell and cyto where labelIDs match.
 		 * 
 		 */
-		
-		
-		
+
+		// Run mode basic to save spreadsheets individually for reference
+		ModeBasic mb = new ModeBasic();
+		mb.run(parameters, imgData, imgName);
+
+
 		/*
 		 * MAP DUPLICATE PRIMRAY OBJECTS
 		 */
-		
-		
+
+
 		ManageDuplicates md = new ManageDuplicates();
-		
+
 		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), imgData.getPrimary());
 		
 		IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Primary_Objects_Relabelled_" + imgName);
@@ -54,11 +57,9 @@ public class ModeSingleCell implements Mode {
 			rt = tu.joinTablesByLabel(rt, "", imgData.getTertiary(), tertiaryObjectName, "Label");
 		}
 
+		
 		rtSave.saveAndStackResults(rt, "single_cells", parameters);
-
-		// Run mode basic to save spreadsheets individually for reference
-		ModeBasic mb = new ModeBasic();
-		mb.run(parameters, imgData, imgName);
+		
 		
 		// clean up
 		CLIJ2 clij2 = CLIJ2.getInstance();

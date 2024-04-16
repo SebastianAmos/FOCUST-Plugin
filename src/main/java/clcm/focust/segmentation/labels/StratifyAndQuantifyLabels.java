@@ -285,7 +285,7 @@ public class StratifyAndQuantifyLabels {
 	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%] OR [inner 50%, outer 50%]
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, CLIJ2 clij2, Double percent, Integer iterations){
-		
+
 		// get the min and max pixel values for the the distance map
 		double max = clij2.getMaximumOfAllPixels(dMap);
 		double min = clij2.getMinimumOfAllPixels(dMap);
