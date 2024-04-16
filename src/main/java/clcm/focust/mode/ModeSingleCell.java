@@ -25,7 +25,7 @@ public class ModeSingleCell implements Mode {
 		 * New table, add row data for nuc, cell and cyto where labelIDs match.
 		 * 
 		 */
-
+		
 		
 		
 		/*
@@ -35,30 +35,9 @@ public class ModeSingleCell implements Mode {
 		
 		ManageDuplicates md = new ManageDuplicates();
 		
-		ResultsTable primaryCopy = imgData.getPrimary();
-
-		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), primaryCopy);
+		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), imgData.getPrimary());
 		
 		IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Primary_Objects_Relabelled_" + imgName);
-
-		primaryCopy.show("REBALLED");
-		
-		
-		ResultsTable test = imgData.getPrimary();
-		test.show("ORIGINAL");
-		
-		
-		// REASSIGN THE LABELS IN THE PRIMARY TABLE - Append an index if the same label is encountered > 1
-		
-		
-		
-		
-		// Determine which secondary labels each primary object belong to - relabel a copy of the image.
-		
-		
-	
-		
-		
 		
 		
 		/*

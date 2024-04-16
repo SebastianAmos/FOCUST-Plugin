@@ -2,7 +2,6 @@ package clcm.focust.utility;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
@@ -39,7 +38,7 @@ public class ManageDuplicates {
 		
 		ImagePlus relabelled = relabelFromMap(toRelabel, indexed);
 		
-		modifyTableLabels(rt, map);
+		modifyTableLabels(rt, indexed);
 		
 		RelabelledObjects relab = RelabelledObjects.builder().
 				map(indexed).
@@ -71,7 +70,8 @@ public class ManageDuplicates {
 					Double val = indexed.get(key);
 					
 					rt.setValue("Label", i, val);
-						
+					rt.setValue("ID", i, val);
+					
 				}
 			}
 		}
@@ -112,28 +112,13 @@ public class ManageDuplicates {
 		
 		Map<Double, Double> labelComparisons = new HashMap<>();
 		
-		ResultsTable copy = im.getMax();
-		copy.show("TABLE");
-		
 		ResultsTable labels = im.getMax();
-		
-		String headers = labels.getColumnHeadings();
-		int labelColIndex = labels.getColumnIndex("Label");
+
 		int maxColIndex = labels.getColumnIndex("Max");
-		int length = labels.getLastColumn();
-		boolean labelsColBool = labels.columnExists(labelColIndex);
-		IJ.log("Label index is: " + labelColIndex + " | Max index is: " + maxColIndex);
-		IJ.log("Does Label exist: " + labelsColBool);
-		IJ.log(headers);
 		
 		for (int i = 0; i < labels.size(); i++) {
-			
-			String lab = labels.getLabel(i);
-			IJ.log("label is: " + lab);
-			
+	
 			labelComparisons.put(Double.parseDouble(labels.getLabel(i)), labels.getValueAsDouble(maxColIndex, i));
-			
-			//labelComparisons.put(labels.getValue("Label", i), labels.getValue("Max", i));
 			
 		}
 		
@@ -144,6 +129,7 @@ public class ManageDuplicates {
 	
 	/**
 	 * for each repeated value encountered, append 0.1.
+	 * Ignore if val == 0. 
 	 * 
 	 * @param map
 	 */
@@ -155,20 +141,22 @@ public class ManageDuplicates {
 		for (Double key : map.keySet()) {
 
 			Double val = map.get(key);
-			int counter = labelTracker.getOrDefault(val, 0);
-			labelTracker.put(val, counter + 1);
 
-			if (counter > 0) {
-				val += counter * 0.1;
+			if (val != 0) {
+					
+				int counter = labelTracker.getOrDefault(val, 0);
+				labelTracker.put(val, counter + 1);
+
+				if (counter > 0) {
+					val += counter * 0.1;
+				}
+
+				results.put(key, val);
+				
 			}
-
-			results.put(key, val);
-
+			
 		}
-		
-		System.out.println("Counter Map: " + labelTracker);
 
-		System.out.println("Indexed Labels Map: " + results);
 		return results;
 
 	}

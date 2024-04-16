@@ -524,20 +524,30 @@ public class TableUtility {
 
 		ResultsTable rt = new ResultsTable();
 		
+		ResultsTable rt1Copy = (ResultsTable) rt1.clone();
+		ResultsTable rt2Copy = (ResultsTable) rt2.clone();
+		
+		rt1Copy.show("rt1Copy");
+		rt2Copy.show("rt2Copy");
+		
+		
 		for (int i = 0; i < rt1.size(); i++) {
 			
 			double lbl1 = Double.parseDouble(rt1.getStringValue(col, i));
+			IJ.log("lbl1 : " + lbl1);
+			IJ.log("As int: " + getBaseLabel(lbl1));
 			
-			// testing
-			System.out.println("label 1: " + lbl1);
 			
 			for (int j = 0; j < rt2.size(); j++) {
 
 				double lbl2 = Double.parseDouble(rt2.getStringValue(col, j));
-
-				System.out.println("label 2: " + lbl1);
+				IJ.log("lbl2 : " + lbl2);
+				IJ.log("As int: " + getBaseLabel(lbl2));
 				
-				if (lbl1 == lbl2) {
+
+				if (getBaseLabel(lbl1) == getBaseLabel(lbl2)) {
+					
+					IJ.log("Match found");
 					
 					int row = rt.getCounter();
 					rt.incrementCounter();
@@ -552,14 +562,16 @@ public class TableUtility {
 					// add all values in a each matched row for i (index rt1) and j (index rt2)
 					for (int k = 0; k < rt1.getLastColumn()+1; k++) {
 						String head1 = rt1.getColumnHeading(k);
-						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label") {
+						IJ.log("k = " + k + ", head1 = " +head1);
+						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label" && head1 != "-") {
 							rt.setValue(rt1Object + head1, row, rt1.getValue(head1, i));
 						}
 					}
 
 					for (int l = 0; l < rt2.getLastColumn()+1; l++) {
 						String head2 = rt2.getColumnHeading(l);
-						if (head2 != "ImageID" && head2 != "Group" && head2 != "Label") {
+						IJ.log("l = " + l + ", head2 = " +head2);
+						if (head2 != "ImageID" && head2 != "Group" && head2 != "Label" && head2 != "-") {
 							rt.setValue(rt2Object + head2, row, rt2.getValue(head2, j));
 						}
 					}
@@ -599,6 +611,17 @@ public class TableUtility {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Return the integer component from a double. 
+	 * @param lab
+	 * @return
+	 */
+	public int getBaseLabel(double lab) {
+		//Math.floor(lab);
+		return (int) lab;
 	}
 	
 }
