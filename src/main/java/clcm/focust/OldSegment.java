@@ -868,13 +868,13 @@ public class OldSegment {
 						 * IJ.error("Error",
 						 * "The raw image and primary object stack sizes do not match."); }
 						 */
-					} else {
+					}
 						// if analysis mode is F, segment primary channel based on user inputs
 						primaryOriginalObjectsCells = gpuSegmentGreaterConstant(
 								channelsSingleCell[primaryChannelChoice], SingleCellView.sigma_x,
 								SingleCellView.sigma_y, SingleCellView.sigma_z, SingleCellView.greaterConstantPrimary,
 								SingleCellView.radius_x, SingleCellView.radius_y, SingleCellView.radius_z);
-					}
+
 
 					IJ.resetMinAndMax(primaryOriginalObjectsCells);
 					primaryOriginalObjectsCells.setCalibration(cal);

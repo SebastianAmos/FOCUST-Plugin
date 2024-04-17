@@ -30,8 +30,14 @@ public class ManageDuplicates {
 	public RelabelledObjects run(ImagePlus labels, ImagePlus toRelabel, ResultsTable rt) {
 		
 		// impose labels of secondary object onto primary object (or tertiary) 
-		ImagePlus matched = imposeLabels(labels, toRelabel); // matched = primary or tertiary objects relabelled with secondary object values.
-		
+		//ImagePlus matched = imposeLabels(labels, toRelabel); // matched = primary or tertiary objects relabelled with secondary object values.
+
+		ImagePlus matched = imposeLabelling(labels, toRelabel.duplicate()); // matched = primary or tertiary objects relabelled with secondary object values.
+
+		ImagePlus matchedCopy = matched.duplicate();
+		matchedCopy.setTitle("Primary Matched");
+		matchedCopy.show();
+
 		// for each original primary object
 		Map<Double, Double> map = matchLabels(toRelabel, matched);
 		
@@ -40,12 +46,12 @@ public class ManageDuplicates {
 		
 		ImagePlus relabelled = relabelFromMap(toRelabel, indexed);
 		
-		modifyTableLabels(rt, indexed);
+		ResultsTable table = modifyTableLabels(rt, indexed);
 		
 		RelabelledObjects relab = RelabelledObjects.builder().
 				map(indexed).
 				relabelled(relabelled).
-				results(rt).build();
+				results(table).build();
 		
 		return relab;
 		
@@ -53,12 +59,8 @@ public class ManageDuplicates {
 	
 	
 	// Extract label from rt, compare to the keys in the map, if a match is found
-	// replace the label with the map value - append an index if the value has been seen before. 
-	
-	//TODO: MUST WRITE MATCHES TO NEW RESULTS TABLE AS THOSE WITHOUT A MATCH REMAIN. 
-	// -> would be fine if the labels didn't have to be matched. Easier so build a new one. 
-	
-	private void modifyTableLabels(ResultsTable rt, Map<Double, Double> indexed) {
+	// write all data to a new table and replace the label with the value from the map.
+	private ResultsTable modifyTableLabels(ResultsTable rt, Map<Double, Double> indexed) {
 		
 		ResultsTable output = new ResultsTable();
 		
@@ -73,15 +75,14 @@ public class ManageDuplicates {
 				
 				if (lbl == key) {
 
-					// NEW RESULTS TABLE TO AVOID DUPLICATES!!!
 					int row = output.getCounter();
 					output.incrementCounter();
 					
 					for (int j = 0; j < rt.getLastColumn(); j++) {
 						String head = rt.getColumnHeading(j);
 						
-						// use the the string method for known strings
-						if (head == "ImageID" || head == "Group" || head == "Label") {
+						// use the string method for known strings
+						if (head.equals("ImageID") || head.equals("Group") || head.equals("Label") ) {
 							output.setValue(head, row, rt.getStringValue(head, i));
 						} else {
 							output.setValue(head, row, rt.getValue(head, i));
@@ -97,7 +98,7 @@ public class ManageDuplicates {
 			}
 		}
 		
-		rt = output;
+		return output;
 
 	}
 
@@ -125,23 +126,41 @@ public class ManageDuplicates {
 		
 		return matched;
 	}
-	
+
+
+
+	/**
+	 * Use CLIJ2 to impose labels from one image to another.
+	 *
+	 * @param labels
+	 * @param toRelabel
+	 * @return
+	 */
 	public ImagePlus imposeLabelling(ImagePlus labels, ImagePlus toRelabel) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		ClearCLBuffer labs = clij2.push(labels);
 		ClearCLBuffer toLab = clij2.push(toRelabel);
 		ClearCLBuffer relabelled = clij2.create(toLab);
+		ClearCLBuffer binary = clij2.create(toLab);
+
+		clij2.threshold(toLab, binary, 1.0);
+		clij2.multiplyImages(binary, labs, relabelled);
 		
-		
-		
-		
-		ImagePlus output = null;
-		
+		ImagePlus output = clij2.pull(relabelled);
+
+		labs.close();
+		toLab.close();
+		relabelled.close();
+		binary.close();
+
 		return output;
 	}
 	
-	
+
+	// add a method that uses CLIJ2 to recreate the imposeLabels method, first, make toRelabel binary, then multiply by labels.
+	// then use the map to relabel the image.
+
 	
 	/**
 	 * Compare the labels of two images and store in a map. keys = original labels
@@ -225,21 +244,28 @@ public class ManageDuplicates {
 	 */
 	public ImagePlus relabelFromMap(ImagePlus imp, Map<Double, Double> map) {
 		IJ.run(imp, "32-bit", "");
+
 		for (int z = 1; z <= imp.getStackSize(); z++) {
 			ImageProcessor ip = imp.getStack().getProcessor(z);
 			for (int y = 0; y < ip.getHeight(); y++) {
 				for (int x = 0; x < ip.getWidth(); x++) {
 					Double lbl = Double.valueOf(ip.getPixelValue(x, y));
 					if (map.containsKey(lbl)) {
+
+						System.out.println("Relabelling: " + lbl + " to " + map.get(lbl));
+
 						Double val = map.get(lbl);
 						ip.putPixelValue(x, y, val);
+					} else {
+						ip.putPixelValue(x, y, 0);
 					}
-
 				}
 			}
 		}
 		return imp;
 	}
-	
-	
+
+
+
+
 }

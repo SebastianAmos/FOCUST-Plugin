@@ -50,7 +50,7 @@ public class ModeSingleCell implements Mode {
 		ResultsTableUtility rtSave = new ResultsTableUtility();
 		
 		// join secondary into primary
-		ResultsTable rt = tu.joinTablesByLabel(imgData.getPrimary(), primaryObjectName, imgData.getSecondary(), secondaryObjectName, "Label");
+		ResultsTable rt = tu.joinTablesByLabel(primaryRelabelled.getResults(), primaryObjectName, imgData.getSecondary(), secondaryObjectName, "Label");
 
 		// join tertiary into combined if tertiary data is available
 		if (parameters.getProcessTertiary() || parameters.getTertiaryIsDifference()) {
@@ -58,13 +58,13 @@ public class ModeSingleCell implements Mode {
 		}
 
 		
-		rtSave.saveAndStackResults(rt, "single_cells", parameters);
+		rtSave.saveAndStackResults(rt, "cells", parameters);
 		
 		
 		// clean up
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
-		
+
 	}
 
 
