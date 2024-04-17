@@ -18,39 +18,34 @@ import sc.fiji.analyzeSkeleton.Point;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import org.apache.commons.math3.util.MathArrays;
 
-import clcm.focust.segmentation.labels.LabelEditor;
-
-
 
 /**
- * Wrapper to implement functionality from Skeletonize3D and AnalyzeSkeleton3D and return results in IJ ResultTable objects.
+ * Implement functionality from Skeletonize3D and AnalyzeSkeleton3D and return results in IJ ResultTable objects.
  *
  */
-
-
 public class Skeleton {
-	
-	private Calibration cal = null;
+
 	
 	/**
 	 * Skeletonize the input image.
 	 * 
-	 * @param imp
-	 * @return 
+	 * @param imp Labels to skeletonise.
+	 * @return Skeletonised image.
 	 */
-	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName, Calibration cal) {
-		
+	public ImagePlus createSkeletons(ImagePlus imp, String imgName, String objectName) {
+
 		Skeletonize3D_ skeletonise = new Skeletonize3D_();
 		if (imp.getBitDepth() != 8) {
-			System.out.println("Skeleton: Image not 8-bit, converting for thinning.");
+			IJ.log("Skeletonize note: Image not 8-bit, converting for thinning.");
 			ImageConverter converter = new ImageConverter(imp);
 			converter.convertToGray8();
 		}
-		ImagePlus skeletons = LabelEditor.makeBinary(imp);
+
+		ImagePlus skeletons = imp.duplicate();
+
 		IJ.log("Computing skeletons...");
 		skeletonise.setup("", skeletons);
 		skeletonise.run(null);
-		skeletons.setCalibration(cal);
 		return skeletons;
 	}
 	
@@ -58,23 +53,20 @@ public class Skeleton {
 	/**
 	 * Analyse the skeletons and produce a results holder containing two tables:
 	 * 1 x standard and 1 x verbose results.
-	 * 
-	 * @param skeletons
+	 *
+	 * @param skeletonOriginals
 	 * @param labels
+	 * @param imgName
+	 * @param cal
 	 * @return
 	 */
-	
-	public SkeletonResultsHolder analyzeSkeletons(ImagePlus skeletonOriginals, ImagePlus labels, String imgName) {
+	public SkeletonResultsHolder analyzeSkeletons(ImagePlus skeletonOriginals, ImagePlus labels, String imgName, Calibration cal) {
 
 		final AnalyzeSkeleton_ analyseSkeletons = new AnalyzeSkeleton_();
 		final ImagePlus skeletons = skeletonOriginals.duplicate();
-		cal = skeletonOriginals.getCalibration();
+		//cal = skeletonOriginals.getCalibration();
 		IJ.log("Analyzing Skeletons...");
 		analyseSkeletons.setup("", skeletons);
-		IJ.log("Running skeleton analysis...");
-		
-		// Doesn't include ROI param.
-		//final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true);
 		
 		final SkeletonResult skeletonResults = analyseSkeletons.run(AnalyzeSkeleton_.NONE, false, false, null, true, true, null);
 		IJ.log("Complete.");
@@ -82,14 +74,14 @@ public class Skeleton {
 		// get the tagged skeleton img
 		final ImageStack lblSkeletonStack = analyseSkeletons.getLabeledSkeletons();
 		ImagePlus labelledSkeletons = new ImagePlus("labelled_skeletons_" + skeletonOriginals.getTitle(), lblSkeletonStack);
-
+		labelledSkeletons.setCalibration(cal);
 		// pull data from SkeletonResults object
 		SkeletonResultsHolder results = new SkeletonResultsHolder(null, null, null, null);
-		results = buildResults(skeletonResults, results, imgName);
+		results = buildResults(skeletonResults, results, imgName, cal);
 		results.setLabelledSkeletons(labelledSkeletons);
 		results.setLabelMatched(matchSkeletonToLabels(labelledSkeletons, labels));
-		
-		
+
+
 		return results;
 	}
 	
@@ -98,8 +90,8 @@ public class Skeleton {
 	 * Create a map of skeleton to original labels.
 	 * This can be used to match the skeletons with existing results. 
 	 * 
-	 * @param skeletons
-	 * @param originaLabels
+	 * @param skeletons The skeltons derived from the oringinalLabels.
+	 * @param originalLabels The original labels that served as the input to skeletonise.
 	 */
 	public ResultsTable matchSkeletonToLabels(ImagePlus skeletons, ImagePlus originalLabels) {
 		ResultsBuilder rb = new ResultsBuilder();
@@ -113,10 +105,10 @@ public class Skeleton {
 	 * Extracts the results from the standard and verbose results of a SkeletonResult object.
 	 * Returns an object that holds both results tables.
 	 * 
-	 * @param skel
-	 * @return
+	 * @param skel SkeletonResult object
+	 * @return SkeletonResultsHolder object
 	 */
-	private SkeletonResultsHolder buildResults(SkeletonResult skel, SkeletonResultsHolder results, String imgName) {
+	private SkeletonResultsHolder buildResults(SkeletonResult skel, SkeletonResultsHolder results, String imgName, Calibration cal) {
 
 		ResultsTable standard = new ResultsTable();
 		ResultsTable extra = new ResultsTable();
@@ -135,12 +127,9 @@ public class Skeleton {
 			standard.addValue("# Quadruple points", skel.getQuadruples()[i]);
 			standard.addValue("Maximum Branch Length", skel.getMaximumBranchLength()[i]);
 		}
-		
-		
+
 		// collect the extra results
 		final Graph[] graphs = skel.getGraph();
-		System.out.println("Graph Number: " +  graphs.length);
-		
 		
 		for (int j = 0; j < graphs.length; j++) {
 			final ArrayList<Edge> edges = graphs[j].getEdges();

@@ -19,23 +19,25 @@ import ij.ImagePlus;
 
 public class ModeProcess{
 
-	private static String primaryPrefix = "Primary_Objects_";
-	private static String secondaryPrefix = "Secondary_Objects_";
-	private static String tertiaryPrefix = "Tertiary_Objects_";
+	private static final String primaryPrefix = "Primary_Objects_";
+	private static final String secondaryPrefix = "Secondary_Objects_";
+	private static final String tertiaryPrefix = "Tertiary_Objects_";
 
 		
 	/**
 	 * This method is the kick off for image processing.
 	 * Opens images from the directory, passes them to the segment class, then the user-defined mode.
 	 * 
-	 * @param parameters
+	 * @param parameters Parameter collection
 	 */
 	
 	public void run(ParameterCollection parameters) {
-	
+
+		IJ.log("FOCUST: Running in " + parameters.getMode().toString() + " mode.");
+
 		File f = new File(parameters.getInputDir());
 		String[] list = f.list();
-		ijLog("Number of images to process: " + list.length);
+        assert list != null;
 
 		for (int i = 0; i < list.length; i++) {
 			
@@ -51,7 +53,7 @@ public class ModeProcess{
 					list = tempList.toArray(list);
 			}
 			
-			ijLog("new list length: " + list.length);
+			ijLog("Number of images to process: " + list.length);
 			
 			String path = parameters.getInputDir() + list[i];
 			
@@ -62,10 +64,10 @@ public class ModeProcess{
 			String imgName = imp.getTitle();
 			
 			
-			// testing save params
+			// Save parameter file.
 			try {
 				ParameterCollection.saveParameterCollection(parameters, "/FOCUST-Parameter-File.json");
-				System.out.println("Parameter file saved.");
+				IJ.log("FOCUST parameter file saved.");
 			} catch (IOException e1) {
 				System.out.println("Unable to save FOCUST parameter file.");
 				e1.printStackTrace();
@@ -73,10 +75,7 @@ public class ModeProcess{
 			
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
-			
 
-
-			
 			// Generate skeletons based on user inputs and save
 			SkeletonProcess skeletonize = new SkeletonProcess();
 			Map<String, SkeletonResultsHolder> skeletonResults = skeletonize.run(parameters, segmentedChannels, imgName);

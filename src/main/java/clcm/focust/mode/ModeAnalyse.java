@@ -16,10 +16,8 @@ import inra.ijpb.plugins.AnalyzeRegions3D;
 
 public class ModeAnalyse {
 	
-	private AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
-	ArrayList<ResultsTable> measureResults = null;
-
 	List<ResultsTable> primaryResults = new ArrayList<>();
 	List<ResultsTable> secondaryResults = new ArrayList<>();
 	List<ResultsTable> tertiaryResults = new ArrayList<>();
@@ -27,9 +25,9 @@ public class ModeAnalyse {
 	/**
 	 * Method to conduct common analyses shared between modes.
 	 * 
-	 * @param parameters
-	 * @param imgData
-	 * @param imgName
+	 * @param parameters Param collection
+	 * @param imgData Compiled image data
+	 * @param imgName Name of the current image
 	 */
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
 		
@@ -40,7 +38,7 @@ public class ModeAnalyse {
 		imgData.images.getTertiary().ifPresent(t -> tertiaryResults.add(analyze3D.process(t)));
 		
 		
-		// Add segmented images to lists for intensity analysis
+		// Add segmented images to list for intensity analysis
 		segmentedObjects.add(imgData.images.getPrimary());
 		segmentedObjects.add(imgData.images.getSecondary());
 		imgData.images.getTertiary().ifPresent(t -> {segmentedObjects.add(t);});
@@ -49,7 +47,7 @@ public class ModeAnalyse {
 		// Map intensity data to each object type
 		ijLog("Measuring channel intensities...");
 		Map<ImagePlus, ResultsTable> intensityTables = TableUtility.compileIntensityResults(segmentedObjects, 
-				imgData.images.getChannels().toArray(new ImagePlus[imgData.images.getChannels().size()]), 
+				imgData.images.getChannels().toArray(new ImagePlus[imgData.images.getChannels().size()]),
 				parameters);
 		
 		
@@ -61,55 +59,40 @@ public class ModeAnalyse {
 		});
 		
 		
-		// Then append the intensity data to the end.
+		// Append the intensity data to the end.
 		primaryResults.add(intensityTables.get(segmentedObjects.get(0)));
 		secondaryResults.add(intensityTables.get(segmentedObjects.get(1)));
 		imgData.images.getTertiary().ifPresent(t -> {
 			tertiaryResults.add(intensityTables.get(segmentedObjects.get(2)));
 		});
-		
-	
-		
-		
-		// Append standard skeleton results
-		if(parameters.getSkeletonParameters().getPrimary()) {
-			
-			ResultsTable primarySkeletons = imgData.getSkeletons().get("Primary").getStandard();
-			
-			primaryResults.add(primarySkeletons);
-			
-			primarySkeletons.show("primarySkeletons");
-		}
-		
-		
-		/*
-		 * TESTING!!! 
-		 */
-		
-		
-		if(parameters.getSkeletonParameters().getSecondary()) {
-			
-			
-			ResultsTable secondarySkeletons = imgData.getSkeletons().get("Secondary").getStandard();
-			
-			//secondaryResults.add(secondarySkeletons);
-			ResultsTable secTest = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"), "Secondary");
-			secondaryResults.clear();
-			secondaryResults.add(secTest);
 
-			
-			//imgData.getSkeletons().get("Secondary").getLabelMatched().show("Secondary Skeleton Matched Labels");
-			
+
+		/*
+		 * Append standard skeleton results.
+		 * Easier to compile current results first then match to skeletons.
+		 */
+		if(parameters.getSkeletonParameters().getPrimary()) {
+			ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(primaryResults), imgData.getSkeletons().get("Primary"));
+			primaryResults.clear();
+			primaryResults.add(rt);
+		}
+
+		if(parameters.getSkeletonParameters().getSecondary()) {
+			ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"));
+			secondaryResults.clear();
+			secondaryResults.add(rt);
 		}
 		
 		
 		if(parameters.getSkeletonParameters().getTertairy()) {
 			imgData.getImages().getTertiary().ifPresent(t -> {
-				tertiaryResults.add(imgData.getSkeletons().get("Tertiary").getStandard());
+				ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(tertiaryResults), imgData.getSkeletons().get("Tertiary"));
+				tertiaryResults.clear();
+				tertiaryResults.add(rt);
 			});
 		}
 		
-		/* Append the stratification results tables if they were generated */
+		// Append the stratification results tables if they were generated
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 			
 			String type = band.getKey();
@@ -133,35 +116,17 @@ public class ModeAnalyse {
 			}
 		}
 		
-	
-		
-		System.out.println("Secondary Table List Length: " + secondaryResults.size() + " tables");
-		
+
 		/*
 		 * Build the final results table for each object type and update the imgData object before hand off
 		 */
-		
-		
 		imgData.setPrimary(TableUtility.compileTables(primaryResults));
 		imgData.setSecondary(TableUtility.compileTables(secondaryResults));
 		imgData.images.getTertiary().ifPresent(t -> {
 			imgData.setTertiary(TableUtility.compileTables(tertiaryResults));
 		});
 		
-		
-		
-		/*
-		imgData.setPrimary(TableUtility.compileAllResults(primaryResults));
-		imgData.setSecondary(TableUtility.compileAllResults(secondaryResults));
-		imgData.images.getTertiary().ifPresent(t -> {
-			imgData.setTertiary(TableUtility.compileAllResults(tertiaryResults));
-		});
-		
-		*/
-		
-		
-		
-		
+
 		// Hand off to selected mode
 		parameters.getMode().getMode().run(parameters, imgData, imgName);
 		

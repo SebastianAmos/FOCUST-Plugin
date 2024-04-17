@@ -29,14 +29,9 @@ public class ManageDuplicates {
 	 */
 	public RelabelledObjects run(ImagePlus labels, ImagePlus toRelabel, ResultsTable rt) {
 		
-		// impose labels of secondary object onto primary object (or tertiary) 
-		//ImagePlus matched = imposeLabels(labels, toRelabel); // matched = primary or tertiary objects relabelled with secondary object values.
-
-		ImagePlus matched = imposeLabelling(labels, toRelabel.duplicate()); // matched = primary or tertiary objects relabelled with secondary object values.
-
-		ImagePlus matchedCopy = matched.duplicate();
-		matchedCopy.setTitle("Primary Matched");
-		matchedCopy.show();
+		// impose labels of secondary object onto primary object (or tertiary)
+		// matched = primary or tertiary objects relabelled with secondary object values.
+		ImagePlus matched = imposeLabelling(labels, toRelabel.duplicate());
 
 		// for each original primary object
 		Map<Double, Double> map = matchLabels(toRelabel, matched);
@@ -47,15 +42,14 @@ public class ManageDuplicates {
 		ImagePlus relabelled = relabelFromMap(toRelabel, indexed);
 		
 		ResultsTable table = modifyTableLabels(rt, indexed);
-		
-		RelabelledObjects relab = RelabelledObjects.builder().
+
+        return RelabelledObjects.builder().
 				map(indexed).
 				relabelled(relabelled).
 				results(table).build();
 		
-		return relab;
-		
 	}
+
 	
 	
 	// Extract label from rt, compare to the keys in the map, if a match is found
@@ -97,15 +91,13 @@ public class ManageDuplicates {
 				}
 			}
 		}
-		
 		return output;
-
 	}
 
 
 	/**
 	 * converts original label value to 1 then imposes the values from the "labels"
-	 * ImagePlus by multiplication.
+	 * ImagePlus by multiplication. Runs on CPU. 
 	 * 
 	 * @param labels   Imp with labels to impose on the orignal image. i.e.
 	 *                 secondary objects.
@@ -117,24 +109,17 @@ public class ManageDuplicates {
 
 		ImagePlus binary = LabelEditor.makeBinary(toRelabel);
 		IJ.run(binary, "Divide...", "value=" + binary.getDisplayRangeMax() + " stack");
-		ImagePlus matched = ImageCalculator.run(labels, binary, "Multiply create stack");
-		
-		ImagePlus matchedCopy = matched.duplicate();
-		matchedCopy.setTitle("Binary Primary");
-		matchedCopy.show();
-		
-		
-		return matched;
-	}
 
+        return ImageCalculator.run(labels, binary, "Multiply create stack");
+	}
 
 
 	/**
 	 * Use CLIJ2 to impose labels from one image to another.
 	 *
-	 * @param labels
-	 * @param toRelabel
-	 * @return
+	 * @param labels Imp with labels to impose on the orignal image. i.e. secondary objects.
+	 * @param toRelabel Imp with labels that need to adopt the labelling from the "labels" imp. i.e. primary objects.
+	 * @return an ImagePlus with the labels imposed.
 	 */
 	public ImagePlus imposeLabelling(ImagePlus labels, ImagePlus toRelabel) {
 		
@@ -156,12 +141,8 @@ public class ManageDuplicates {
 
 		return output;
 	}
-	
 
-	// add a method that uses CLIJ2 to recreate the imposeLabels method, first, make toRelabel binary, then multiply by labels.
-	// then use the map to relabel the image.
 
-	
 	/**
 	 * Compare the labels of two images and store in a map. keys = original labels
 	 * and values = relabelled labels (potentially duplicates).
@@ -177,10 +158,6 @@ public class ManageDuplicates {
 		Map<Double, Double> labelComparisons = new HashMap<>();
 		
 		ResultsTable labels = im.getMax();
-		
-		ResultsTable labelsCopy = (ResultsTable) labels.clone();
-		labelsCopy.show("LabelsCopy");
-		
 
 		int maxColIndex = labels.getColumnIndex("Max");
 		
@@ -189,9 +166,7 @@ public class ManageDuplicates {
 			labelComparisons.put(Double.parseDouble(labels.getLabel(i)), labels.getValueAsDouble(maxColIndex, i));
 			
 		}
-		
-		System.out.println("Label Comparisons Map : /n" + labelComparisons);
-		
+
 		return labelComparisons;
 		
 	}
@@ -222,16 +197,9 @@ public class ManageDuplicates {
 				}
 
 				results.put(key, val);
-				
 			}
-			
 		}
-
-		System.out.println("input MAP: " + map);
-		System.out.println("output MAP (indexed): " + results);
-		
 		return results;
-
 	}
 	
 	
@@ -251,9 +219,6 @@ public class ManageDuplicates {
 				for (int x = 0; x < ip.getWidth(); x++) {
 					Double lbl = Double.valueOf(ip.getPixelValue(x, y));
 					if (map.containsKey(lbl)) {
-
-						System.out.println("Relabelling: " + lbl + " to " + map.get(lbl));
-
 						Double val = map.get(lbl);
 						ip.putPixelValue(x, y, val);
 					} else {
@@ -264,8 +229,5 @@ public class ManageDuplicates {
 		}
 		return imp;
 	}
-
-
-
 
 }

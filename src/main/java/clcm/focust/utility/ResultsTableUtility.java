@@ -53,6 +53,9 @@ public class ResultsTableUtility {
 				appendCSV(csv, convertResultsTableData(rt));
 			} else {
 				System.out.println("Headers don't match - Cannot append new data to existing .csv file.");
+				System.out.println("Existing headers: " + existingHeaders);
+				System.out.println("rt headers: " + getResultsTableHeaders(rt));
+				rt.show("HEADERS DON'T MATCH");
 			}
 			
 		} else {

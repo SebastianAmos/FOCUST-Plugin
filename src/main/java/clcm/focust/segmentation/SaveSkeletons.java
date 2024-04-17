@@ -10,8 +10,8 @@ public class SaveSkeletons {
 	/**
 	 * Save the labelled skeletons for each skeleton image that was created.
 	 * @param skeletons A map of object type (string) to skeletonResults objects
-	 * @param parameters 
-	 * @param imgName
+	 * @param parameters Parameter collection
+	 * @param imgName Current image name
 	 */
 	public void saveSkeletons(Map<String, SkeletonResultsHolder> skeletons, ParameterCollection parameters, String imgName) {
 		

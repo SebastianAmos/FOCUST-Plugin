@@ -1,11 +1,7 @@
 package clcm.focust.utility;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
@@ -48,11 +44,8 @@ public class TableUtility {
 	 * This method calculates the intensity of the input image for each object in the label image.
 	 * IntensityMeasures and ResultsBuilder instanced from MorphoLibJ.	
 	 * 
-	 * @param input 
-	 * 			A raw image containing intensity data. Can be passed from the current image's channels[]. 
-	 * @param label 
-	 * 			A labelled (segmented) image.
-	 * 
+	 * @param input A raw image containing intensity data. Can be passed from the current image's channels[].
+	 * @param label A labelled (segmented) image.
 	 * @return A results table containing label, mean_intensity, volume, max and IntDen columns.
 	 */
 	public static ResultsTable processIntensity(ImagePlus input, ImagePlus label) {
@@ -75,8 +68,7 @@ public class TableUtility {
 		rb.addResult(im.getSkewness());
 		rb.addResult(im.getKurtosis());
 		rb.addResult(im.getStdDev());
-		ResultsTable table = rb.getResultsTable();
-		return table; 
+        return rb.getResultsTable();
 	}
 
 	
@@ -147,9 +139,9 @@ public class TableUtility {
 	 * Calculate the intensity of every channel in the input image (channels) within
 	 * each label of every object type (segmentedObjects).
 	 * 
-	 * @param segmentedObjects
-	 * @param channels
-	 * @return
+	 * @param segmentedObjects List of objects within which intensity is to be calculated.
+	 * @param channels Array of channels to be measured.
+	 * @return A map of segmented objects to their respective results tables.
 	 */
 	public static Map<ImagePlus, ResultsTable> compileIntensityResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
 
@@ -241,7 +233,7 @@ public class TableUtility {
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		
 		List<ResultsTable> rtList = new ArrayList<>();
-		
+
 		//for (int i = 0; i < bands.size(); i++) {
 		
 		int count = 1;
@@ -398,58 +390,21 @@ public class TableUtility {
 		}
 		return rt;
 	}
-	
-	
-	
-	// Add only matching skeletonIDs to a compiled table > write na if 0.
-	
-	public static ResultsTable matchAndAddSkeletons1(ResultsTable data, SkeletonResultsHolder skel) {
-		
-		ResultsTable output = new ResultsTable();
-		
-		ResultsTable standard = skel.getStandard();
-		List<String> skeletonHeaders = new ArrayList<>(Arrays.asList(standard.getHeadings()));
-		
-		ResultsTable matched = skel.getLabelMatched();
-		
-		for (int i = 0; i < data.size(); i++) {
-			
-			double objectLabel = data.getValue("Label", i);
-			
-			for (int j = 0; j < matched.size(); j++) {
-				
-				if(objectLabel == matched.getValue("Label", j)) {
-					
-					for (String head : skeletonHeaders) {
-						
-						data.addValue(head, standard.getValue(head, i));
-					}
-					
-				}
-				
-			}
-		}
-		
-		
-		return null;
-	}
-	
-	
+
 	
 	/**
-	 * Match skeletons to labels objects they typically don't adopt the same labelling and some shapes may skeletonize incompletely. 
+	 * Match skeletons to labels objects as they typically don't adopt the same labelling and some shapes may skeletonize incompletely.
 	 * This way users have visibility to shared skeletons and data may still be analysed in linked and meaningful ways.
 	 * 
-	 * @param data
-	 * @param skel
-	 * @param objectHeaderName
-	 * @return
+	 * @param data The compiled table to match and add skeletons to.
+	 * @param skel The skeleton results holder object that labelled skeletons can be pulled from.
+	 * @return The compiled table with matched skeletons appended.
 	 */
-	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel, String objectHeaderName) { 
+	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel) {
 		
 		ResultsTable standard = skel.getStandard();
 		ResultsTable matched = skel.getLabelMatched();
-		
+
 		Variable[] matchedLabelsVar = matched.getColumnAsVariables("Label");
 		
 		// convert from variable to int - not required.
@@ -479,7 +434,7 @@ public class TableUtility {
 			
 			int rowIndex = -1;
 			for (int j = 0; j < standard.size(); j++) {
-				if ((int) standard.getValue(objectHeaderName + ".Skeleton.# Skeleton", j) == skelID) {
+				if ((int) standard.getValue("Skeleton.# Skeleton", j) == skelID) {
 					rowIndex = j;
 					break;
 				}
@@ -490,7 +445,8 @@ public class TableUtility {
 					String header = standard.getColumnHeading(j);
 					
 					if (j != 0) {
-						data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
+						if (!header.contains("ImageID"))
+							data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
 					} 
 				} 
 				
@@ -511,7 +467,6 @@ public class TableUtility {
 	
 	/**
 	 * Combine two ResultsTables where col matches.
-	 * 
 	 * Could change col to a list for multiple matches, but only operating on single image data at this stage.
 	 * 
 	 * @param rt1 The first table to check
@@ -523,32 +478,17 @@ public class TableUtility {
 	public ResultsTable joinTablesByLabel(ResultsTable rt1, String rt1Object, ResultsTable rt2, String rt2Object, String col) {
 
 		ResultsTable rt = new ResultsTable();
-		
-		ResultsTable rt1Copy = (ResultsTable) rt1.clone();
-		ResultsTable rt2Copy = (ResultsTable) rt2.clone();
-		
-		rt1Copy.show("rt1Copy");
-		rt2Copy.show("rt2Copy");
-		
-		
+
 		for (int i = 0; i < rt1.size(); i++) {
 			
 			double lbl1 = Double.parseDouble(rt1.getStringValue(col, i));
-			IJ.log("lbl1 : " + lbl1);
-			IJ.log("As int: " + getBaseLabel(lbl1));
-			
 			
 			for (int j = 0; j < rt2.size(); j++) {
 
 				double lbl2 = Double.parseDouble(rt2.getStringValue(col, j));
-				IJ.log("lbl2 : " + lbl2);
-				IJ.log("As int: " + getBaseLabel(lbl2));
-				
 
 				if (getBaseLabel(lbl1) == getBaseLabel(lbl2)) {
-					
-					IJ.log("Match found");
-					
+
 					int row = rt.getCounter();
 					rt.incrementCounter();
 
@@ -562,16 +502,14 @@ public class TableUtility {
 					// add all values in a each matched row for i (index rt1) and j (index rt2)
 					for (int k = 0; k < rt1.getLastColumn()+1; k++) {
 						String head1 = rt1.getColumnHeading(k);
-						IJ.log("k = " + k + ", head1 = " +head1);
-						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label" && head1 != "-") {
+						if (!head1.equals("ImageID") && !head1.equals("Group") && !head1.equals("Label") && !head1.equals("-")) {
 							rt.setValue(rt1Object + head1, row, rt1.getValue(head1, i));
 						}
 					}
 
 					for (int l = 0; l < rt2.getLastColumn()+1; l++) {
 						String head2 = rt2.getColumnHeading(l);
-						IJ.log("l = " + l + ", head2 = " +head2);
-						if (head2 != "ImageID" && head2 != "Group" && head2 != "Label" && head2 != "-") {
+						if (!head2.equals("ImageID") && !head2.equals("Group") && !head2.equals("Label") && !head2.equals("-")) {
 							rt.setValue(rt2Object + head2, row, rt2.getValue(head2, j));
 						}
 					}
@@ -604,7 +542,7 @@ public class TableUtility {
 					
 					for (int k = 0; k < rt1.getLastColumn()+1 ; k++) {		
 						String head1 = rt1.getColumnHeading(k);
-						if (head1 != "ImageID" && head1!= "Group" && head1 != "Label") {
+						if (!head1.equals("ImageID") && !head1.equals("Group") && !head1.equals("Label")) {
 							rt.setValue(rt1Object + "." + head1, i, rt1.getValue(head1, j));
 						}
 					}
@@ -616,8 +554,8 @@ public class TableUtility {
 	
 	/**
 	 * Return the integer component from a double. 
-	 * @param lab
-	 * @return
+	 * @param lab The label value
+	 * @return The integer component of the label
 	 */
 	public int getBaseLabel(double lab) {
 		//Math.floor(lab);
@@ -625,5 +563,3 @@ public class TableUtility {
 	}
 	
 }
-
-

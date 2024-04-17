@@ -7,15 +7,16 @@ import java.util.List;
 import java.util.Map;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
+import ij.IJ;
 import ij.measure.ResultsTable;
 
 public class SkeletonProcess {
 
 	/**
 	 * Skeletonises the user-selected object types and stores the labelled skeletons and results tables mapped to a string of object type.
-	 * @param params
-	 * @param segmentedChannels
-	 * @return
+	 * @param params Parameter collection.
+	 * @param segmentedChannels Segmented channels.
+	 * @return Map of object type to skeleton results holder.
 	 */
 	public Map<String, SkeletonResultsHolder> run(ParameterCollection params, SegmentedChannels segmentedChannels, String imgName) {
 		
@@ -24,27 +25,26 @@ public class SkeletonProcess {
 		Skeleton skeleton = new Skeleton();
 		
 		if(params.getSkeletonParameters().getPrimary()) {
-			
-			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary", segmentedChannels.getPrimary().getCalibration()), segmentedChannels.getPrimary(), imgName));
+			IJ.log("Skeletonizing primary objects...");
+			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary"), segmentedChannels.getPrimary(), imgName, segmentedChannels.getPrimary().getCalibration()));
 			
 		}
 		
 		if(params.getSkeletonParameters().getSecondary()) {
-
-			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary", segmentedChannels.getSecondary().getCalibration()), segmentedChannels.getSecondary(), imgName));
+			IJ.log("Skeletonizing secondary objects...");
+			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary"), segmentedChannels.getSecondary(), imgName, segmentedChannels.getSecondary().getCalibration()));
 			
 		}
 		
 		if(params.getSkeletonParameters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary", t.getCalibration()), t, imgName));
+				IJ.log("Skeletonizing tertiary objects...");
+				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName, t.getCalibration()));
 			});
 		}
-		
-		Map<String, SkeletonResultsHolder> output = renameHeaders(results);
-		
-		
-		return output;	
+
+
+        return renameHeaders(results);
 	}
 	
 	
@@ -61,8 +61,6 @@ public class SkeletonProcess {
 			
 			ResultsTable newRt =  new ResultsTable();
 			
-			String objectName = result.getKey();
-			
 			SkeletonResultsHolder holder = result.getValue();
 			
 			ResultsTable rt = holder.getStandard();
@@ -71,7 +69,7 @@ public class SkeletonProcess {
 			
 			for (String head : headers) {
 				
-				String newHead = objectName + "." + "Skeleton." + head;
+				String newHead = "Skeleton." + head;
 				newRt.setColumn(newHead, rt.getColumnAsVariables(head));
 				
 			}
