@@ -179,7 +179,7 @@ public class StratifyAndQuantifyLabels {
 	
 	
 	/**
-	 * Extracts each label from an image and stratifies it into x % distance bands.
+//	 * Extracts each label from an image and stratifies it into x % distance bands.
 	 * 
 	 * @param labs Labelled image to process.
 	 * @param bandPercent Percentage of the distance map histogram to segment for each label.
@@ -211,9 +211,13 @@ public class StratifyAndQuantifyLabels {
 			//
 		
 		ResultsTable stats = new ResultsTable();
-		
+
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
+
+		// TODO -> Consider using im.max or something here again - otherwise should use the LABEL (i think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
+
+		stats.show("StatisticsOfLabelledPixels Table");
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
@@ -229,7 +233,7 @@ public class StratifyAndQuantifyLabels {
 			
 			// mask the distance map by the label to only process that region of the distance map
 			clij2.mask(dMap, mask, distanceMask);
-			
+
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
 			
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
@@ -308,23 +312,28 @@ public class StratifyAndQuantifyLabels {
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, CLIJ2 clij2, Double percent, Integer iterations){
 
-		// get the min and max pixel values for the the distance map
+		// get the min and max pixel values for the distance map
 		double max = clij2.getMaximumOfAllPixels(dMap);
 		double min = clij2.getMinimumOfAllPixels(dMap);
-		
+
 		//TODO
 		System.out.println("distance map min: " + min);
 		System.out.println("distance map max: " + max);
 		
 		List<ClearCLBuffer> bands = new ArrayList<>();
 		
-		// set thresholds and mask, incrementing the histogram bin by 25% for each iteration. 
+		// set thresholds and mask, incrementing the histogram bin by x % for each iteration.
 		for (int j = 0; j < iterations; j++) {
 			ClearCLBuffer result = clij2.create(dMap);
 			float thresholdMin = (float) (min + j * percent * (max-min));
 			float thresholdMax = (float) (min + (j + 1) * percent * (max-min));
+			System.out.println("j = " + j);
+			System.out.println("maxFloat: " + thresholdMax);
+			System.out.println("minFloat: " + thresholdMin);
+
 			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
 			bands.add(result);
+			//result.close();
 		}
 		
 		// flip the list so 1 = core.
@@ -332,6 +341,18 @@ public class StratifyAndQuantifyLabels {
 		
 		return bands;
 	}
-	
+
+
+
+	public void calOutputs(double min, double max, double percent, Integer iterations) {
+
+		for (int j = 0; j < iterations; j++) {
+			float thresholdMin = (float) (min + j * percent * (max - min));
+			float thresholdMax = (float) (min + (j + 1) * percent * (max - min));
+			System.out.println("min: " + thresholdMin);
+			System.out.println("Band: " + thresholdMax);
+		}
+
+	}
 	
 }

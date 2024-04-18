@@ -77,6 +77,7 @@ public class ModeAnalyse {
 			primaryResults.add(rt);
 		}
 
+
 		if(parameters.getSkeletonParameters().getSecondary()) {
 			ResultsTable rt = TableUtility.matchAndAppendSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"));
 			secondaryResults.clear();
@@ -131,4 +132,5 @@ public class ModeAnalyse {
 		parameters.getMode().getMode().run(parameters, imgData, imgName);
 		
 	}
+
 }
