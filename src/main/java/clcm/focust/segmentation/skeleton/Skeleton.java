@@ -115,7 +115,7 @@ public class Skeleton {
 		
 		for (int i = 0; i < skel.getNumOfTrees(); i++) {
 			standard.addRow();
-			standard.addValue("ImageID", imgName);
+			//standard.addValue("ImageID", imgName);
 			standard.addValue("# Skeleton", i + 1);
 			standard.addValue("# Branches", skel.getBranches()[i]);
 			standard.addValue("# Junctions", skel.getJunctions()[i]);

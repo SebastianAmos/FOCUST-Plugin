@@ -72,13 +72,13 @@ public class ModeAnalyse {
 		 * Easier to compile current results first then match to skeletons.
 		 */
 		if(parameters.getSkeletonParameters().getPrimary()) {
-			ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(primaryResults), imgData.getSkeletons().get("Primary"));
+			ResultsTable rt = TableUtility.matchAndAppendSkeletons(TableUtility.compileAllResults(primaryResults), imgData.getSkeletons().get("Primary"));
 			primaryResults.clear();
 			primaryResults.add(rt);
 		}
 
 		if(parameters.getSkeletonParameters().getSecondary()) {
-			ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"));
+			ResultsTable rt = TableUtility.matchAndAppendSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"));
 			secondaryResults.clear();
 			secondaryResults.add(rt);
 		}
@@ -86,7 +86,7 @@ public class ModeAnalyse {
 		
 		if(parameters.getSkeletonParameters().getTertairy()) {
 			imgData.getImages().getTertiary().ifPresent(t -> {
-				ResultsTable rt = TableUtility.matchAndAddSkeletons(TableUtility.compileAllResults(tertiaryResults), imgData.getSkeletons().get("Tertiary"));
+				ResultsTable rt = TableUtility.matchAndAppendSkeletons(TableUtility.compileAllResults(tertiaryResults), imgData.getSkeletons().get("Tertiary"));
 				tertiaryResults.clear();
 				tertiaryResults.add(rt);
 			});

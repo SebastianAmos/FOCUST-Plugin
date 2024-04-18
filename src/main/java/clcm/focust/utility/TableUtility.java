@@ -392,6 +392,8 @@ public class TableUtility {
 	}
 
 	
+	
+	
 	/**
 	 * Match skeletons to labels objects as they typically don't adopt the same labelling and some shapes may skeletonize incompletely.
 	 * This way users have visibility to shared skeletons and data may still be analysed in linked and meaningful ways.
@@ -400,68 +402,45 @@ public class TableUtility {
 	 * @param skel The skeleton results holder object that labelled skeletons can be pulled from.
 	 * @return The compiled table with matched skeletons appended.
 	 */
-	public static ResultsTable matchAndAddSkeletons(ResultsTable data, SkeletonResultsHolder skel) {
-		
+	public static ResultsTable matchAndAppendSkeletons(ResultsTable rt, SkeletonResultsHolder skel) {
+
 		ResultsTable standard = skel.getStandard();
 		ResultsTable matched = skel.getLabelMatched();
 
-		Variable[] matchedLabelsVar = matched.getColumnAsVariables("Label");
-		
-		// convert from variable to int - not required.
-		int[] matchedLabels = new int[matchedLabelsVar.length];
-		for (int i = 0; i < matchedLabelsVar.length; i++) {
-			matchedLabels[i] = (int) matchedLabelsVar[i].getValue();
-		}
-		
-		Variable[] dataLabelsVar = data.getColumnAsVariables("Label");
-		
-		int[] dataLabels = new int[dataLabelsVar.length];
-		for (int i = 0; i < dataLabelsVar.length; i++) {
-			dataLabels[i] = (int) dataLabelsVar[i].getValue();
-		}
-	
-		for (int i = 0; i < data.size(); i++) {
-			
-			// find max for corresponding matched label
-			int skelID = 0;
-			
+		for (int i = 0; i < rt.size(); i++) {
+
+			double lbl = Double.parseDouble(rt.getStringValue("Label", i));
+
 			for (int j = 0; j < matched.size(); j++) {
-				if ((int) matchedLabels[j] == dataLabels[i]) {
-					skelID = (int) matched.getValue("Max", j);
-					break;
-				}
-			}
-			
-			int rowIndex = -1;
-			for (int j = 0; j < standard.size(); j++) {
-				if ((int) standard.getValue("Skeleton.# Skeleton", j) == skelID) {
-					rowIndex = j;
-					break;
-				}
-			}
-			
-			if (rowIndex != - 1) {
-				for (int j = 0; j < standard.getHeadings().length; j++) {
-					String header = standard.getColumnHeading(j);
-					
-					if (j != 0) {
-						if (!header.contains("ImageID"))
-							data.setValue(header, i, standard.getValueAsDouble(j, rowIndex));
-					} 
-				} 
-				
-			} else {
-				
-				for (int j = 0; j < standard.getHeadings().length; j++) {
-					String header = standard.getColumnHeading(j);
-					data.setValue(header, i, "NA");	
+
+				double sklbl = Double.parseDouble(matched.getStringValue("Label", j));
+
+				if (lbl == sklbl) {
+
+					double skID = matched.getValue("Max", j);
+
+					// find the matching label in standard
+
+					for (int k = 0; k < standard.size(); k++) {
+
+						double standardID = standard.getValue("Skeleton.# Skeleton", k);
+
+						if (skID == standardID) {
+
+							for (int l = 0; l < standard.getLastColumn()+1; l++) {
+
+								String head = standard.getColumnHeading(l);
+
+								rt.setValue(head, i, standard.getValue(head, k));
+							}
+						}
+					}
 				}
 			}
 		}
 		
-		return data;
+		return rt;
 	}
-	
 	
 	
 	
