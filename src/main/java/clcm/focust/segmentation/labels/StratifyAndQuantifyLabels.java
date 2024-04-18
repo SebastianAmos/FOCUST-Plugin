@@ -33,20 +33,31 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class StratifyAndQuantifyLabels {
 	
 	
-	/**
+	/*
 	 * CHANGE TO FIRST INPUT = LABEL TYPE TO STRATIFY
 	 * 
 	 * @param imgData 
 	 * @param bandPercent
 	 * @return
 	 */
+	
+	/**
+	 * 
+	 * @param imgData
+	 * @param imp
+	 * @param bandPercent
+	 * @param objectType
+	 * @param params
+	 * @param imgName
+	 * @return
+	 */
 	public StratifiedResultsHolder process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
 		
 		// Lists to store each band type
-		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25%
-		List<ClearCLBuffer> b2 = new ArrayList<>(); // inner-middle 25%
-		List<ClearCLBuffer> b3 = new ArrayList<>(); // outer-middle 25%
-		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25%
+		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25 %
+		List<ClearCLBuffer> b2 = new ArrayList<>(); // inner-middle 25 %
+		List<ClearCLBuffer> b3 = new ArrayList<>(); // outer-middle 25 %
+		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25 %
 		
 		Calibration cal = imp.getCalibration();
 		
@@ -179,23 +190,25 @@ public class StratifyAndQuantifyLabels {
 		
 		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
 		
-		//TODO
+		//TODO - TESTING
 		ClearCLBuffer testImg = clij2.create(labs);
 		clij2.copy(labs, testImg);
 		ImagePlus testImgIP = clij2.pull(testImg);
 		testImgIP.setTitle("Inside generateStratifiedBands before processing");
 		testImgIP.show();
 		double testImgMAX = testImgIP.getDisplayRangeMax();
+		//
 		
 		// generate distance map on the whole label image before masking out each label
-		ClearCLBuffer dMap = computeChamferDistanceMap(testImg, labels ,clij2, cal); 
+		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal); 
 		
-		//TODO
+		//TODO - TESTING
 			ClearCLBuffer copy = clij2.create(dMap);
 			clij2.copy(dMap, copy);
 			ImagePlus dmapImg = clij2.pull(copy);
 			dmapImg.setTitle("DistMap");
 			dmapImg.show();
+			//
 		
 		ResultsTable stats = new ResultsTable();
 		
@@ -240,10 +253,19 @@ public class StratifyAndQuantifyLabels {
 	 * 
 	 * Chamfer weight set to MorpholibJ default: Svensson
 	 */
-	private ClearCLBuffer computeChamferDistanceMap(ClearCLBuffer input, ImagePlus labelledImg, CLIJ2 clij2, Calibration cal) {
+	
+	/**
+	 * Computes a distance map from an input buffer. 
+	 * @param input
+	 * @param labelledImg
+	 * @param clij2
+	 * @param cal
+	 * @return
+	 */
+	private ClearCLBuffer computeChamferDistanceMap(ImagePlus labelledImg, CLIJ2 clij2, Calibration cal) {
 		
 		if (labelledImg.getBitDepth() != 8) {
-			System.out.println("Stratification: Image not 8-bit, converting for distance map algo.");
+			System.out.println("Stratification Note: Image not 8-bit, converting for distance map algo.");
 			ImageConverter converter = new ImageConverter(labelledImg);
 			converter.convertToGray8();
 		}
@@ -277,7 +299,7 @@ public class StratifyAndQuantifyLabels {
 	
 	
 	/**
-	 * Stratifies a distance map into 4 bands by 25% or 50% histogram bin increments.
+	 * Stratifies a distance map into 4 bands by 25 % or 50 % histogram bin increments.
 	 *
 	 * @param dMap
 	 * @param percent

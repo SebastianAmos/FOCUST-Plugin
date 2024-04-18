@@ -20,25 +20,25 @@ public class StratifyProcess {
 		StratifyAndQuantifyLabels stratify = new StratifyAndQuantifyLabels();
 		
 		if(params.getStratifyParameters().getPrimary25()) {
-			IJ.log("Generating 25% bands for primary object.");
+			IJ.log("Generating 25 % bands for primary object.");
 			
 			tables.put("pri25", stratify.process(segmentedChannels, segmentedChannels.getPrimary(), quarter, "Primary_Q_", params, imgName));
 		}
 		
 		if(params.getStratifyParameters().getPrimary50()) {
-			IJ.log("Generating 50% bands for primary object.");
+			IJ.log("Generating 50 % bands for primary object.");
 			tables.put("pri50", stratify.process(segmentedChannels, segmentedChannels.getPrimary(), half, "Primary_H_", params, imgName));
 		}
 		
 		
 		if(params.getStratifyParameters().getSecondary25()) {
-			IJ.log("Generating 25% bands for secondary object.");
+			IJ.log("Generating 25 % bands for secondary object.");
 			tables.put("sec25", stratify.process(segmentedChannels, segmentedChannels.getSecondary(), quarter, "Secondary_Q_", params, imgName));
 		}
 		
 		
 		if(params.getStratifyParameters().getSecondary50()) {
-			IJ.log("Generating 50% bands for secondary object.");
+			IJ.log("Generating 50 % bands for secondary object.");
 			tables.put("sec50", stratify.process(segmentedChannels, segmentedChannels.getSecondary(), half, "Secondary_H_", params, imgName));
 		}
 		
@@ -46,7 +46,7 @@ public class StratifyProcess {
 		// manage with optional tertiary object
 		if(params.getStratifyParameters().getTertiary25()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				IJ.log("Generating 25% bands for tertiary object.");
+				IJ.log("Generating 25 % bands for tertiary object.");
 				tables.put("ter25", stratify.process(segmentedChannels, t, quarter, "Tertiary_Q_", params, imgName));
 			});
 		}
@@ -55,7 +55,7 @@ public class StratifyProcess {
 		// manage with optional tertiary object
 		if(params.getStratifyParameters().getTertiary50()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
-				IJ.log("Generating 50% bands for tertiary object.");
+				IJ.log("Generating 50 % bands for tertiary object.");
 				tables.put("ter50", stratify.process(segmentedChannels, t, half, "Tertiary_H_", params, imgName));
 			});
 		}
