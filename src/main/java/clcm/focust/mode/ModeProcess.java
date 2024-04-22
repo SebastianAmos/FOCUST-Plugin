@@ -102,7 +102,7 @@ public class ModeProcess{
 			if(!parameters.getMode().equals(ModeType.NONE)) {
 				analyse.run(parameters, imgData, imgName);
 			} else { 
-				IJ.log("Images saved, no further anaylsis conducted.");
+				IJ.log("Images saved, no further analysis conducted.");
 			}
 			
 			

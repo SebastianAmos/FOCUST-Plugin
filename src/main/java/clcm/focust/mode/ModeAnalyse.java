@@ -98,7 +98,10 @@ public class ModeAnalyse {
 			
 			String type = band.getKey();
 			ResultsTable rt = band.getValue().getTable();
-			
+
+			//TODO - a method that appends all stratification results to the final results tables
+			// There
+
 			switch (type) {
 			case "pri25":
 				primaryResults.add(rt);

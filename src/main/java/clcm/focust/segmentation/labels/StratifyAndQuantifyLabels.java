@@ -49,7 +49,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param objectType
 	 * @param params
 	 * @param imgName
-	 * @return
+	 * @return StratifiedResultsHolder:
 	 */
 	public StratifiedResultsHolder process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
 		
