@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
@@ -103,10 +104,8 @@ public class TableUtility {
 		rb.addResult(primary);
 		rb.addResult(secondary);
 		rb.addResult(tertiary);
-		
-		ResultsTable rt = rb.getResultsTable();
-		
-		return rt;
+
+        return rb.getResultsTable();
 	}
 	
 	/**
@@ -228,115 +227,99 @@ public class TableUtility {
 	}
 	
 	
-	public static ResultsTable compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal) {
+	public static List<ResultsTable> compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-		
 		List<ResultsTable> rtList = new ArrayList<>();
-
-		//for (int i = 0; i < bands.size(); i++) {
-		
 		int count = 1;
 		
 		for (ClearCLBuffer band : bands) {
-			
-		
-			//TODO:
-			System.out.println("band: " + count + " of " + bands.size());
-			
-			ResultsTable rt = new ResultsTable();
-				
-			for (int j = 0; j < channels.length; j++) {
-				
-				//TODO: 
-				System.out.println("Channel: " + j + " of " + channels.length);
-				
-				// pull buffer safely
-				//ClearCLBuffer b = clij2.create(band);
-				//ImagePlus bPull = clij2.pull(b);
-				//bPull.duplicate().show(); 
-				
-				
-				//TODO
-				/*
-				 * I think clij2 is returning null objects once 
-				 */
-				
-				
-				ClearCLBuffer copy = clij2.create(band);
-				clij2.copy(band, copy);
-				ImagePlus imp = clij2.pull(copy);
-				imp.setCalibration(cal);
-				copy.close();
-				
-				ResultsTable temp = TableUtility.processIntensity(channels[j], imp);
-				
-				// get col headers without Label
-				List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
-				
-				
-				// get the labelID values + remove them from the current rt
-				ResultsTable rtLab = new ResultsTable();
-				rtLab.setColumn("Label", temp.getColumnAsVariables("Label"));
-				rtList.add(rtLab);
-				
-				
-				temp.show("Band " + count + " Results" );
-				
-				// channel 1
-				if ((j + 1) == 1) {
-					String c1Name = ("band" + count + ".c1").toString();
-					
-					for (String head : headers) {
-						String headerName = (c1Name + "." + head).toString();
-						rt.setColumn(headerName, temp.getColumnAsVariables(head));
-					}
-				}
-				
-				
-				// channel 2
-				if ((j + 1) == 2) {
-					String c2Name = ("band" + count + ".c2").toString();
-					
-					for (String head : headers) {
-						String headerName = (c2Name + "." + head).toString();
-						rt.setColumn(headerName, temp.getColumnAsVariables(head));
-					}
-				}
-				
-				// channel 3
-				if ((j + 1) == 3) {
-					String c3Name = ("band" + count + ".c3").toString();
-			
-					for (String head : headers) {
-						String headerName = (c3Name + "." + head).toString();
-						rt.setColumn(headerName, temp.getColumnAsVariables(head));
-					}
-				}
-				
-				// channel 4
-				if ((j + 1) == 4) {
-					String c4Name = ("band" + count + ".c4").toString();
-					
-					for (String head : headers) {
-						String headerName = (c4Name + "." + head).toString();
-						rt.setColumn(headerName, temp.getColumnAsVariables(head));
-					}
-				}
-				
-			}
-			
-			rt.show("FINAL BAND " + count + " TABLE");
-			
-			rtList.add(rt);
-			
-			count++;
-		} // This one
+
+
+            ResultsTable rt = new ResultsTable();
+
+            Variable[] labelID = null;
+
+            for (int j = 0; j < channels.length; j++) {
+
+                ClearCLBuffer copy = clij2.create(band);
+                clij2.copy(band, copy);
+                ImagePlus imp = clij2.pull(copy);
+                imp.setCalibration(cal);
+                copy.close();
+
+                ResultsTable temp = TableUtility.processIntensity(channels[j], imp);
+
+                // get col headers without Label
+                List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
+
+
+                // get the labelID values + remove them from the current rt
+                //ResultsTable rtLab = new ResultsTable();
+                //rtLab.setColumn("Label", temp.getColumnAsVariables("Label"));
+                //rtList.add(rtLab);
+
+                labelID = temp.getColumnAsVariables("Label");
+
+
+                temp.show("Band " + count + " Results");
+
+                // channel 1
+                if ((j + 1) == 1) {
+                    String c1Name = ("band" + count + ".c1").toString();
+
+                    for (String head : headers) {
+                        String headerName = (c1Name + "." + head).toString();
+                        rt.setColumn(headerName, temp.getColumnAsVariables(head));
+                    }
+                }
+
+
+                // channel 2
+                if ((j + 1) == 2) {
+                    String c2Name = ("band" + count + ".c2").toString();
+
+                    for (String head : headers) {
+                        String headerName = (c2Name + "." + head).toString();
+                        rt.setColumn(headerName, temp.getColumnAsVariables(head));
+                    }
+                }
+
+                // channel 3
+                if ((j + 1) == 3) {
+                    String c3Name = ("band" + count + ".c3").toString();
+
+                    for (String head : headers) {
+                        String headerName = (c3Name + "." + head).toString();
+                        rt.setColumn(headerName, temp.getColumnAsVariables(head));
+                    }
+                }
+
+                // channel 4
+                if ((j + 1) == 4) {
+                    String c4Name = ("band" + count + ".c4").toString();
+
+                    for (String head : headers) {
+                        String headerName = (c4Name + "." + head).toString();
+                        rt.setColumn(headerName, temp.getColumnAsVariables(head));
+                    }
+                }
+
+            }
+
+
+            rt.setColumn("Label", labelID);
+            rt.show("FINAL BAND " + count + " TABLE");
+
+            rtList.add(rt);
+
+            count++;
+        } // This one
 		
 		//TableUtility tu = new TableUtility();
-		ResultsTable output = TableUtility.compileAllResults(rtList);
+		//ResultsTable output = TableUtility.compileAllResults(rtList);
 		
-		return output;
+		return rtList;
 	}
 	
 	
@@ -441,7 +424,46 @@ public class TableUtility {
 		
 		return rt;
 	}
-	
+
+
+	// Iterate through the list of tables and append the results to the main table.
+	public static ResultsTable addBandResults(ResultsTable rt , List<ResultsTable> rtList) {
+
+		for (ResultsTable table : rtList) {
+			rt = appendStratifiedResults(rt, table);
+		}
+
+		return rt;
+	}
+
+	public static ResultsTable appendStratifiedResults(ResultsTable rt, ResultsTable stratified) {
+
+		for (int i = 0; i < rt.size(); i++) {
+
+			double lbl = Double.parseDouble(rt.getStringValue("Label", i));
+
+			for (int j = 0; j < stratified.size(); j++) {
+
+				double lbl1 = Double.parseDouble(stratified.getStringValue("Label", j));
+
+				if (lbl == lbl1) {
+
+					for (int k = 0; k < stratified.getLastColumn()+1; k++) {
+
+						String head = stratified.getColumnHeading(k);
+
+						rt.setValue(head, i, stratified.getValue(head, j));
+					}
+				}
+			}
+		}
+
+		return rt;
+	}
+
+
+
+
 	
 	
 	/**

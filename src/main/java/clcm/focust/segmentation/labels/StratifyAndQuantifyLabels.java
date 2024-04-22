@@ -94,15 +94,13 @@ public class StratifyAndQuantifyLabels {
 		
 		/** Generate Results */
 		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
-		ResultsTable rt = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal);
-		
-		
-		StratifiedResultsHolder results = StratifiedResultsHolder.builder()
+		List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal);
+
+
+        return StratifiedResultsHolder.builder()
 				.bands(bandTypes)
-				.table(rt)
+				.tableList(rtList)
 				.build();
-		
-		return results;
 	}
 	
 	
@@ -295,7 +293,7 @@ public class StratifyAndQuantifyLabels {
 		double[] distExtent = Images3D.findMinAndMax(resultPlus);
 		resultPlus.setDisplayRange(0, distExtent[1]);
 		resultPlus.setCalibration(cal);
-			
+
 		ClearCLBuffer output = clij2.push(resultPlus);
 		
 		return output;
@@ -354,5 +352,11 @@ public class StratifyAndQuantifyLabels {
 		}
 
 	}
+
+
+
+
+
+
 	
 }

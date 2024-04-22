@@ -11,6 +11,7 @@ import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 public class StratifiedResultsHolder {
 	
 	ResultsTable table;
+	List<ResultsTable> tableList;
 	List<ClearCLBuffer> bands;
 
 	List<ResultsTable> objectCounts; // record how many objects sit within the label

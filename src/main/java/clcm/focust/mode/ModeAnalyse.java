@@ -100,7 +100,7 @@ public class ModeAnalyse {
 			ResultsTable rt = band.getValue().getTable();
 
 			//TODO - a method that appends all stratification results to the final results tables
-			// There
+			// compile results first, then append the stratified results
 
 			switch (type) {
 			case "pri25":
@@ -108,7 +108,8 @@ public class ModeAnalyse {
 			case "pri50":
 				primaryResults.add(rt);
 			case "sec25":
-				secondaryResults.add(rt);
+				//secondaryResults.add(rt);
+				TableUtility.addBandResults(TableUtility.compileAllResults(secondaryResults), band.getValue().getTableList());
 			case "sec50":
 				secondaryResults.add(rt);
 			case "ter25":
