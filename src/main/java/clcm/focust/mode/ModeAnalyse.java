@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.utility.TableUtility;
+import com.itextpdf.text.log.SysoCounter;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
@@ -92,41 +93,68 @@ public class ModeAnalyse {
 				tertiaryResults.add(rt);
 			});
 		}
-		
+
+
+
+
 		// Append the stratification results tables if they were generated
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 			
 			String type = band.getKey();
-			ResultsTable rt = band.getValue().getTable();
+
+			System.out.println("Type: " + type);
+
+			List<ResultsTable> rtList = band.getValue().getTableList();
 
 			//TODO - a method that appends all stratification results to the final results tables
 			// compile results first, then append the stratified results
 
 			switch (type) {
 			case "pri25":
-				primaryResults.add(rt);
+				System.out.println("pri25 Triggered");
+				//primaryResults.add(rtList);
 			case "pri50":
-				primaryResults.add(rt);
+				//primaryResults.add(rtList);
 			case "sec25":
 				//secondaryResults.add(rt);
-				TableUtility.addBandResults(TableUtility.compileAllResults(secondaryResults), band.getValue().getTableList());
+				System.out.println("Number of items BEFORE: " + secondaryResults.size());
+				ResultsTable sec25 = TableUtility.compileAllResults(secondaryResults);
+				TableUtility.addBandResults(sec25, rtList, "Q");
+				secondaryResults.clear();
+				secondaryResults.add(sec25);
+
+				//ResultsTable test = (ResultsTable) secondaryResults.get(0).clone();
+				//test.show("Secondary_Objects");
+
+				System.out.println("Number of items AFTER: " + secondaryResults.size());
+
 			case "sec50":
-				secondaryResults.add(rt);
+				System.out.println("sec50 Triggered");
+
+				ResultsTable sec50 = TableUtility.compileAllResults(secondaryResults);
+				TableUtility.addBandResults(sec50, rtList, "H");
+				secondaryResults.clear();
+				secondaryResults.add(sec50);
+
 			case "ter25":
-				tertiaryResults.add(rt);
+				System.out.println("ter25 Triggered");
+				//tertiaryResults.add(rtList);
 			case "ter50":
-				tertiaryResults.add(rt);
+				//tertiaryResults.add(rtList);
 			default:
 				break;
 			}
 		}
-		
 
 		/*
 		 * Build the final results table for each object type and update the imgData object before hand off
 		 */
 		imgData.setPrimary(TableUtility.compileTables(primaryResults));
+
+		System.out.println("Number of items in secondaryResults: " + secondaryResults.size());
+
 		imgData.setSecondary(TableUtility.compileTables(secondaryResults));
+
 		imgData.images.getTertiary().ifPresent(t -> {
 			imgData.setTertiary(TableUtility.compileTables(tertiaryResults));
 		});

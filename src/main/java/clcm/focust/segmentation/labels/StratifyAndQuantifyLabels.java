@@ -196,7 +196,9 @@ public class StratifyAndQuantifyLabels {
 		testImgIP.show();
 		double testImgMAX = testImgIP.getDisplayRangeMax();
 		//
-		
+
+		labels.setCalibration(cal);
+
 		// generate distance map on the whole label image before masking out each label
 		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal); 
 		

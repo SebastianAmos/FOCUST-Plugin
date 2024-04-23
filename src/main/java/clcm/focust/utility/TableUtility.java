@@ -352,11 +352,24 @@ public class TableUtility {
 	 * @return
 	 */
 	public static ResultsTable compileAllResults(List<ResultsTable> list){
-		ResultsBuilder rb = new ResultsBuilder();
-		for (ResultsTable rt : list) {
-			rb.addResult(rt);
+
+		ResultsTable output;
+
+		System.out.println("List size: " + list.size());
+
+		if (list.size() > 1) {
+			System.out.println("Compiling tables...");
+			ResultsBuilder rb = new ResultsBuilder();
+			for (ResultsTable rt : list) {
+				rb.addResult(rt);
+			}
+			output = rb.getResultsTable();
+		} else {
+			System.out.println("Only one table exists - returning.");
+			output = list.get(0);
 		}
-		return rb.getResultsTable();
+
+		return output;
 	}
 	
 	
@@ -427,16 +440,17 @@ public class TableUtility {
 
 
 	// Iterate through the list of tables and append the results to the main table.
-	public static ResultsTable addBandResults(ResultsTable rt , List<ResultsTable> rtList) {
-
+	public static void addBandResults(ResultsTable rt , List<ResultsTable> rtList, String bandName) {
+		int count = 1;
 		for (ResultsTable table : rtList) {
-			rt = appendStratifiedResults(rt, table);
+			appendStratifiedResults(rt, table, bandName, count);
+			count++;
 		}
 
-		return rt;
+
 	}
 
-	public static ResultsTable appendStratifiedResults(ResultsTable rt, ResultsTable stratified) {
+	public static void appendStratifiedResults(ResultsTable rt, ResultsTable stratified, String bandName, int count) {
 
 		for (int i = 0; i < rt.size(); i++) {
 
@@ -452,13 +466,11 @@ public class TableUtility {
 
 						String head = stratified.getColumnHeading(k);
 
-						rt.setValue(head, i, stratified.getValue(head, j));
+						rt.setValue(bandName + count + "_" + head, i, stratified.getValue(head, j));
 					}
 				}
 			}
 		}
-
-		return rt;
 	}
 
 
