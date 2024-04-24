@@ -77,8 +77,10 @@ public class StratifyAndQuantifyLabels {
 			// Collect the bands into lists so they can be joined back into one image per band type for intensity analysis.
 			b1.add(stratifiedBands.get(0));
 			b2.add(stratifiedBands.get(1));
-			b3.add(stratifiedBands.get(2));
-			b4.add(stratifiedBands.get(3));
+			if (bandPercent == 0.25) {
+				b3.add(stratifiedBands.get(2));
+				b4.add(stratifiedBands.get(3));
+			}
 		}
 		
 		// Hold the 4 final band type images.
@@ -87,8 +89,11 @@ public class StratifyAndQuantifyLabels {
 		// Add all labels of each band type into the same buffer for intensity analysis
 		bandTypes.add(combineAndRelabelBuffers(b1, labs, clij2, 1));
 		bandTypes.add(combineAndRelabelBuffers(b2, labs, clij2, 2));
-		bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
-		bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
+		if (bandPercent == 0.25) {
+			bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
+			bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
+		}
+
 		
 		saveBands(bandTypes, objectType, params, imgName, cal);
 		
@@ -171,7 +176,10 @@ public class StratifyAndQuantifyLabels {
 		});
 		
 		clij2.multiplyImages(type, labels, result);
-		
+
+		type.close();
+		intermediate.close();
+
 		return result;
 	}
 	
@@ -187,29 +195,12 @@ public class StratifyAndQuantifyLabels {
 	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, ImagePlus labels, Double bandPercent, Integer bandIterations, CLIJ2 clij2, Calibration cal){
 		
 		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
-		
-		//TODO - TESTING
-		ClearCLBuffer testImg = clij2.create(labs);
-		clij2.copy(labs, testImg);
-		ImagePlus testImgIP = clij2.pull(testImg);
-		testImgIP.setTitle("Inside generateStratifiedBands before processing");
-		testImgIP.show();
-		double testImgMAX = testImgIP.getDisplayRangeMax();
-		//
 
 		labels.setCalibration(cal);
 
 		// generate distance map on the whole label image before masking out each label
 		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal); 
-		
-		//TODO - TESTING
-			ClearCLBuffer copy = clij2.create(dMap);
-			clij2.copy(dMap, copy);
-			ImagePlus dmapImg = clij2.pull(copy);
-			dmapImg.setTitle("DistMap");
-			dmapImg.show();
-			//
-		
+
 		ResultsTable stats = new ResultsTable();
 
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
@@ -217,7 +208,7 @@ public class StratifyAndQuantifyLabels {
 
 		// TODO -> Consider using im.max or something here again - otherwise should use the LABEL (i think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
 
-		stats.show("StatisticsOfLabelledPixels Table");
+		//stats.show("StatisticsOfLabelledPixels Table");
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
@@ -259,8 +250,7 @@ public class StratifyAndQuantifyLabels {
 	 */
 	
 	/**
-	 * Computes a distance map from an input buffer. 
-	 * @param input
+	 * Computes a distance map from an input buffer.
 	 * @param labelledImg
 	 * @param clij2
 	 * @param cal
@@ -273,10 +263,7 @@ public class StratifyAndQuantifyLabels {
 			ImageConverter converter = new ImageConverter(labelledImg);
 			converter.convertToGray8();
 		}
-		
-		labelledImg.setTitle("Label in the computerChamferDistanceMap() method");
-		labelledImg.duplicate().show();
-		
+
 		// Create 3D chamfer map of label - set to default Svensson
 		ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
 		
@@ -297,7 +284,7 @@ public class StratifyAndQuantifyLabels {
 		resultPlus.setCalibration(cal);
 
 		ClearCLBuffer output = clij2.push(resultPlus);
-		
+
 		return output;
 	}
 	
@@ -333,7 +320,6 @@ public class StratifyAndQuantifyLabels {
 
 			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
 			bands.add(result);
-			//result.close();
 		}
 		
 		// flip the list so 1 = core.
@@ -343,22 +329,4 @@ public class StratifyAndQuantifyLabels {
 	}
 
 
-
-	public void calOutputs(double min, double max, double percent, Integer iterations) {
-
-		for (int j = 0; j < iterations; j++) {
-			float thresholdMin = (float) (min + j * percent * (max - min));
-			float thresholdMax = (float) (min + (j + 1) * percent * (max - min));
-			System.out.println("min: " + thresholdMin);
-			System.out.println("Band: " + thresholdMax);
-		}
-
-	}
-
-
-
-
-
-
-	
 }

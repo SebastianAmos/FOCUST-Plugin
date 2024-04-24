@@ -266,10 +266,10 @@ public class TableUtility {
 
                 // channel 1
                 if ((j + 1) == 1) {
-                    String c1Name = ("band" + count + ".c1").toString();
+                    String c1Name = (count + ".c1");
 
                     for (String head : headers) {
-                        String headerName = (c1Name + "." + head).toString();
+                        String headerName = (c1Name + "." + head);
                         rt.setColumn(headerName, temp.getColumnAsVariables(head));
                     }
                 }
@@ -277,30 +277,30 @@ public class TableUtility {
 
                 // channel 2
                 if ((j + 1) == 2) {
-                    String c2Name = ("band" + count + ".c2").toString();
+                    String c2Name = (count + ".c2");
 
                     for (String head : headers) {
-                        String headerName = (c2Name + "." + head).toString();
+                        String headerName = (c2Name + "." + head);
                         rt.setColumn(headerName, temp.getColumnAsVariables(head));
                     }
                 }
 
                 // channel 3
                 if ((j + 1) == 3) {
-                    String c3Name = ("band" + count + ".c3").toString();
+                    String c3Name = (count + ".c3");
 
                     for (String head : headers) {
-                        String headerName = (c3Name + "." + head).toString();
+                        String headerName = (c3Name + "." + head);
                         rt.setColumn(headerName, temp.getColumnAsVariables(head));
                     }
                 }
 
                 // channel 4
                 if ((j + 1) == 4) {
-                    String c4Name = ("band" + count + ".c4").toString();
+                    String c4Name = (count + ".c4");
 
                     for (String head : headers) {
-                        String headerName = (c4Name + "." + head).toString();
+                        String headerName = (c4Name + "." + head);
                         rt.setColumn(headerName, temp.getColumnAsVariables(head));
                     }
                 }
@@ -443,14 +443,14 @@ public class TableUtility {
 	public static void addBandResults(ResultsTable rt , List<ResultsTable> rtList, String bandName) {
 		int count = 1;
 		for (ResultsTable table : rtList) {
-			appendStratifiedResults(rt, table, bandName, count);
+			appendStratifiedResults(rt, table, bandName);
 			count++;
 		}
 
 
 	}
 
-	public static void appendStratifiedResults(ResultsTable rt, ResultsTable stratified, String bandName, int count) {
+	public static void appendStratifiedResults(ResultsTable rt, ResultsTable stratified, String bandName) {
 
 		for (int i = 0; i < rt.size(); i++) {
 
@@ -466,7 +466,7 @@ public class TableUtility {
 
 						String head = stratified.getColumnHeading(k);
 
-						rt.setValue(bandName + count + "_" + head, i, stratified.getValue(head, j));
+						rt.setValue(bandName + head, i, stratified.getValue(head, j));
 					}
 				}
 			}

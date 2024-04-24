@@ -106,15 +106,22 @@ public class ModeAnalyse {
 
 			List<ResultsTable> rtList = band.getValue().getTableList();
 
-			//TODO - a method that appends all stratification results to the final results tables
+			//TODO - a method that appends all stratification results to  the final results tables
 			// compile results first, then append the stratified results
+
+
+
 
 			switch (type) {
 			case "pri25":
 				System.out.println("pri25 Triggered");
 				//primaryResults.add(rtList);
+				break;
+
 			case "pri50":
 				//primaryResults.add(rtList);
+				break;
+
 			case "sec25":
 				//secondaryResults.add(rt);
 				System.out.println("Number of items BEFORE: " + secondaryResults.size());
@@ -128,6 +135,8 @@ public class ModeAnalyse {
 
 				System.out.println("Number of items AFTER: " + secondaryResults.size());
 
+				break;
+
 			case "sec50":
 				System.out.println("sec50 Triggered");
 
@@ -136,11 +145,15 @@ public class ModeAnalyse {
 				secondaryResults.clear();
 				secondaryResults.add(sec50);
 
+				break;
+
 			case "ter25":
 				System.out.println("ter25 Triggered");
 				//tertiaryResults.add(rtList);
+				break;
 			case "ter50":
 				//tertiaryResults.add(rtList);
+				break;
 			default:
 				break;
 			}
