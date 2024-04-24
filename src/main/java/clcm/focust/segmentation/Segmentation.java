@@ -10,6 +10,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.LutLoader;
 import ij.process.LUT;
+import inra.ijpb.data.image.Images3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
@@ -72,6 +73,14 @@ public class Segmentation {
 		ordered.close();
 		
 		return output;
+	}
+
+
+	public static void adjustLutRange(ImagePlus imp) {
+		LUT lut = LutLoader.openLut(IJ.getDirectory("luts") + "glasbey_on_dark.lut");
+		imp.setLut(lut);
+		double[] distExtent = Images3D.findMinAndMax(imp);
+		imp.setDisplayRange(0, distExtent[1]);
 	}
 	
 	

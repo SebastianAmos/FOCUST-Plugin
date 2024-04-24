@@ -25,9 +25,10 @@ public class ModeSegment{
 	 * If analysis only = T, segmentation is not run, images are opened from input. 
 	 * Returns an object that contains calibrated segmented images.
 	 * 
-	 * @param parameters
-	 * @param imp
-	 * @return
+	 * @param parameters ParameterCollection
+	 * @param imp an ImagePlus object
+	 * @param fileName The name of the file.
+	 * @return SegmentedChannels object that contains calibrated segmented images.
 	 */
 	public SegmentedChannels run(ParameterCollection parameters, ImagePlus imp, String fileName) {
 		

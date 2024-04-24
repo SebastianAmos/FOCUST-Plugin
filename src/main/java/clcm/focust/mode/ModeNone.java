@@ -2,6 +2,7 @@ package clcm.focust.mode;
 
 
 import clcm.focust.parameters.ParameterCollection;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 public class ModeNone implements Mode {
 	
@@ -17,6 +18,10 @@ public class ModeNone implements Mode {
 		 * No additional processing to do.
 		 * This mode is a placeholder for segmentation only.
 		 */
+
+		// clean up
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
 		
 	}
 }

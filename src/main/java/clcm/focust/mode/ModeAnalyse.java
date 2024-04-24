@@ -78,13 +78,11 @@ public class ModeAnalyse {
 			primaryResults.add(rt);
 		}
 
-
 		if(parameters.getSkeletonParameters().getSecondary()) {
 			ResultsTable rt = TableUtility.matchAndAppendSkeletons(TableUtility.compileAllResults(secondaryResults), imgData.getSkeletons().get("Secondary"));
 			secondaryResults.clear();
 			secondaryResults.add(rt);
 		}
-		
 		
 		if(parameters.getSkeletonParameters().getTertairy()) {
 			imgData.getImages().getTertiary().ifPresent(t -> {
@@ -101,58 +99,49 @@ public class ModeAnalyse {
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 			
 			String type = band.getKey();
-
-			System.out.println("Type: " + type);
-
 			List<ResultsTable> rtList = band.getValue().getTableList();
-
-			//TODO - a method that appends all stratification results to  the final results tables
-			// compile results first, then append the stratified results
-
-
-
 
 			switch (type) {
 			case "pri25":
-				System.out.println("pri25 Triggered");
-				//primaryResults.add(rtList);
+				ResultsTable pri25 = TableUtility.compileAllResults(primaryResults);
+				TableUtility.addBandResults(pri25, rtList, "Q");
+				primaryResults.clear();
+				primaryResults.add(pri25);
 				break;
 
 			case "pri50":
-				//primaryResults.add(rtList);
+				ResultsTable pri50 = TableUtility.compileAllResults(primaryResults);
+				TableUtility.addBandResults(pri50, rtList, "H");
+				primaryResults.clear();
+				primaryResults.add(pri50);
 				break;
 
 			case "sec25":
-				//secondaryResults.add(rt);
-				System.out.println("Number of items BEFORE: " + secondaryResults.size());
 				ResultsTable sec25 = TableUtility.compileAllResults(secondaryResults);
 				TableUtility.addBandResults(sec25, rtList, "Q");
 				secondaryResults.clear();
 				secondaryResults.add(sec25);
-
-				//ResultsTable test = (ResultsTable) secondaryResults.get(0).clone();
-				//test.show("Secondary_Objects");
-
-				System.out.println("Number of items AFTER: " + secondaryResults.size());
-
 				break;
 
 			case "sec50":
-				System.out.println("sec50 Triggered");
-
 				ResultsTable sec50 = TableUtility.compileAllResults(secondaryResults);
 				TableUtility.addBandResults(sec50, rtList, "H");
 				secondaryResults.clear();
 				secondaryResults.add(sec50);
-
 				break;
 
 			case "ter25":
-				System.out.println("ter25 Triggered");
-				//tertiaryResults.add(rtList);
+				ResultsTable ter25 = TableUtility.compileAllResults(tertiaryResults);
+				TableUtility.addBandResults(ter25, rtList, "Q");
+				tertiaryResults.clear();
+				tertiaryResults.add(ter25);
 				break;
+
 			case "ter50":
-				//tertiaryResults.add(rtList);
+				ResultsTable ter50 = TableUtility.compileAllResults(tertiaryResults);
+				TableUtility.addBandResults(ter50, rtList, "H");
+				tertiaryResults.clear();
+				tertiaryResults.add(ter50);
 				break;
 			default:
 				break;
@@ -163,15 +152,10 @@ public class ModeAnalyse {
 		 * Build the final results table for each object type and update the imgData object before hand off
 		 */
 		imgData.setPrimary(TableUtility.compileTables(primaryResults));
-
-		System.out.println("Number of items in secondaryResults: " + secondaryResults.size());
-
 		imgData.setSecondary(TableUtility.compileTables(secondaryResults));
-
 		imgData.images.getTertiary().ifPresent(t -> {
 			imgData.setTertiary(TableUtility.compileTables(tertiaryResults));
 		});
-		
 
 		// Hand off to selected mode
 		parameters.getMode().getMode().run(parameters, imgData, imgName);

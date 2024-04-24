@@ -47,7 +47,7 @@ public class TableUtility {
 	 * 
 	 * @param input A raw image containing intensity data. Can be passed from the current image's channels[].
 	 * @param label A labelled (segmented) image.
-	 * @return A results table containing label, mean_intensity, volume, max and IntDen columns.
+	 * @return A results table containing intensity results.
 	 */
 	public static ResultsTable processIntensity(ImagePlus input, ImagePlus label) {
 
@@ -59,8 +59,9 @@ public class TableUtility {
 		ResultsTable rtVol = im.getVolume();
 		ResultsTable rtMean = im.getMean();
 		rb.addResult(rtVol);
+		rb.addResult(im.getNumberOfVoxels());
 		rb.addResult(rtMean);
-		rb.addResult(intDen(rtVol, rtMean));
+		//rb.addResult(intDen(rtVol, rtMean));
 		rb.addResult(im.getSumOfVoxels());
 		rb.addResult(im.getMax());
 		rb.addResult(im.getMin());
@@ -166,7 +167,7 @@ public class TableUtility {
 					if (!parameters.getNameChannel1().isEmpty()) {
 						c1Name = parameters.getNameChannel1();
 					} else {
-						c1Name = ("C" + (k + 1)).toString();
+						c1Name = ("C" + (k + 1));
 					}
 					for (String head : headers) {
 						String newC1Head = c1Name + "." + head;
@@ -180,7 +181,7 @@ public class TableUtility {
 					if (!parameters.getNameChannel2().isEmpty()) {
 						c2Name = parameters.getNameChannel2();
 					} else {
-						c2Name = ("C" + (k + 1)).toString();
+						c2Name = ("C" + (k + 1));
 					}
 					for (String head : headers) {
 						String newC2Head = c2Name + "." + head;
@@ -194,7 +195,7 @@ public class TableUtility {
 					if (!parameters.getNameChannel3().isEmpty()) {
 						c3Name = parameters.getNameChannel3();
 					} else {
-						c3Name = ("C" + (k + 1)).toString();
+						c3Name = ("C" + (k + 1));
 					}
 					for (String head : headers) {
 						String newC3Head = c3Name + "." + head;
@@ -208,7 +209,7 @@ public class TableUtility {
 					if (!parameters.getNameChannel4().isEmpty()) {
 						c4Name = parameters.getNameChannel4();
 					} else {
-						c4Name = ("C" + (k + 1)).toString();
+						c4Name = ("C" + (k + 1));
 					}
 					for (String head : headers) {
 						String newC4Head = c4Name + "." + head;
@@ -253,16 +254,8 @@ public class TableUtility {
                 // get col headers without Label
                 List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()).subList(1, temp.getHeadings().length));
 
-
-                // get the labelID values + remove them from the current rt
-                //ResultsTable rtLab = new ResultsTable();
-                //rtLab.setColumn("Label", temp.getColumnAsVariables("Label"));
-                //rtList.add(rtLab);
-
                 labelID = temp.getColumnAsVariables("Label");
-
-
-                temp.show("Band " + count + " Results");
+                //temp.show("Band " + count + " Results");
 
                 // channel 1
                 if ((j + 1) == 1) {
@@ -309,7 +302,7 @@ public class TableUtility {
 
 
             rt.setColumn("Label", labelID);
-            rt.show("FINAL BAND " + count + " TABLE");
+            //rt.show("FINAL BAND " + count + " TABLE");
 
             rtList.add(rt);
 
@@ -466,7 +459,11 @@ public class TableUtility {
 
 						String head = stratified.getColumnHeading(k);
 
-						rt.setValue(bandName + head, i, stratified.getValue(head, j));
+						if(!head.contains("Label")) {
+
+							rt.setValue(bandName + head, i, stratified.getValue(head, j));
+
+						}
 					}
 				}
 			}

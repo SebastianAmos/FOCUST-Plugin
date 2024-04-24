@@ -8,6 +8,7 @@ import java.util.Map;
 
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.Segmentation;
 import clcm.focust.utility.TableUtility;
 import ij.IJ;
 import ij.ImagePlus;
@@ -31,15 +32,6 @@ import net.haesleinhuepf.clij2.CLIJ2;
 
 
 public class StratifyAndQuantifyLabels {
-	
-	
-	/*
-	 * CHANGE TO FIRST INPUT = LABEL TYPE TO STRATIFY
-	 * 
-	 * @param imgData 
-	 * @param bandPercent
-	 * @return
-	 */
 	
 	/**
 	 * 
@@ -125,28 +117,24 @@ public class StratifyAndQuantifyLabels {
 		
 		if(params.getOutputDir().isEmpty()) {
 			for (ClearCLBuffer band : bandTypes) {
-				
 				ClearCLBuffer copy = clij2.create(band);
 				clij2.copy(band, copy);
 				ImagePlus imp = clij2.pull(copy);
 				imp.setCalibration(cal);
-				
+				Segmentation.adjustLutRange(imp);
 				IJ.saveAs(imp, "TIF", params.getInputDir() + objectType + counter + "_" + imgName);
-				System.out.println("Saving band: " + counter);
 				counter++;
 				copy.close();
 				imp.close();
 			} 
 		} else {
 			for (ClearCLBuffer band : bandTypes) {
-				
 				ClearCLBuffer copy = clij2.create(band);
 				clij2.copy(band, copy);
 				ImagePlus imp = clij2.pull(copy);
 				imp.setCalibration(cal);
-				
+				Segmentation.adjustLutRange(imp);
 				IJ.saveAs(imp, "TIF", params.getOutputDir() + objectType + counter + "_"+ imgName);
-				System.out.println("Saving band: " + counter);
 				counter++;
 				copy.close();
 				imp.close();
@@ -173,6 +161,7 @@ public class StratifyAndQuantifyLabels {
 		buffers.forEach(e -> {
 			clij2.addImages(e, type, intermediate);
 			clij2.copy(intermediate, type);
+			e.close();
 		});
 		
 		clij2.multiplyImages(type, labels, result);
@@ -303,10 +292,6 @@ public class StratifyAndQuantifyLabels {
 		double max = clij2.getMaximumOfAllPixels(dMap);
 		double min = clij2.getMinimumOfAllPixels(dMap);
 
-		//TODO
-		System.out.println("distance map min: " + min);
-		System.out.println("distance map max: " + max);
-		
 		List<ClearCLBuffer> bands = new ArrayList<>();
 		
 		// set thresholds and mask, incrementing the histogram bin by x % for each iteration.

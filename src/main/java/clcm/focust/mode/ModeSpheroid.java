@@ -11,7 +11,7 @@ import clcm.focust.utility.ResultsTableUtility;
 import clcm.focust.utility.TableUtility;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
-
+import net.haesleinhuepf.clij2.CLIJ2;
 
 
 public class ModeSpheroid implements Mode {
@@ -106,7 +106,12 @@ public class ModeSpheroid implements Mode {
 			
 		rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
 		rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
-		
+
+
+		// clean up
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		clij2.clear();
+
 	}
 
 }
