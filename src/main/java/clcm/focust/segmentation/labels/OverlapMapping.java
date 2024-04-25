@@ -87,12 +87,13 @@ public class OverlapMapping {
 		clij2.labelOverlapCountMap(image, centroids, overlapMap);
 		clij2.statisticsOfLabelledPixels(image, overlapMap, rt);
 
-		results.setColumn("Label", rt.getColumnAsVariables("Label"));
+		results.setColumn("Label", rt.getColumnAsVariables("IDENTIFIER"));
 		results.setColumn("Number_Of_" + objectName + "_Objects", rt.getColumnAsVariables("Max"));
 
 		lab.close();
 		centroids.close();
 		overlapMap.close();
+		image.close();
 		
 		return results;
 	}

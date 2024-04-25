@@ -116,15 +116,11 @@ public class Segmentation {
 		output.setCalibration(larger.getCalibration());
 		LUT lut = LutLoader.openLut(IJ.getDirectory("luts") + "glasbey_on_dark.lut");
 		output.setLut(lut);
-		
-		ImagePlus dup1 = output.duplicate();
-		dup1.setTitle("1");
-		dup1.show();
-		
-		
+
 		largerBuffer.close();
 		smallerBuffer.close();
 		largeMinusSmall.close();
+		labelled.close();
 		
 		
 		return output;
