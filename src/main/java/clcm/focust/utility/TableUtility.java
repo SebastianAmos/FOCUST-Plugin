@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 
 import clcm.focust.parameters.ParameterCollection;
-import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
@@ -387,7 +386,7 @@ public class TableUtility {
 	 * Match skeletons to labels objects as they typically don't adopt the same labelling and some shapes may skeletonize incompletely.
 	 * This way users have visibility to shared skeletons and data may still be analysed in linked and meaningful ways.
 	 * 
-	 * @param data The compiled table to match and add skeletons to.
+	 * @param rt The compiled table to match and add skeletons to.
 	 * @param skel The skeleton results holder object that labelled skeletons can be pulled from.
 	 * @return The compiled table with matched skeletons appended.
 	 */
@@ -436,14 +435,15 @@ public class TableUtility {
 	public static void addBandResults(ResultsTable rt , List<ResultsTable> rtList, String bandName) {
 		int count = 1;
 		for (ResultsTable table : rtList) {
-			appendStratifiedResults(rt, table, bandName);
+			appendResultsByLabel(rt, table, bandName);
 			count++;
 		}
 
 
 	}
 
-	public static void appendStratifiedResults(ResultsTable rt, ResultsTable stratified, String bandName) {
+
+	public static void appendResultsByLabel(ResultsTable rt, ResultsTable stratified, String bandName) {
 
 		for (int i = 0; i < rt.size(); i++) {
 
@@ -471,10 +471,24 @@ public class TableUtility {
 	}
 
 
+	/**
+	 * Combine all results held in a list by label.
+	 *
+	 * @param list The list of ResultsTables to combine
+	 * @return a single ResultsTable with all results appended.
+	 */
+	public static ResultsTable appendAllResultsByLabel(List<ResultsTable> list){
+
+		ResultsTable rt = list.get(0);
+
+		for (int i = 1; i < list.size(); i++) {
+			appendResultsByLabel(rt, list.get(i), "");
+		}
+
+		return rt;
+	}
 
 
-	
-	
 	/**
 	 * Combine two ResultsTables where col matches.
 	 * Could change col to a list for multiple matches, but only operating on single image data at this stage.
@@ -571,5 +585,21 @@ public class TableUtility {
 		//Math.floor(lab);
 		return (int) lab;
 	}
-	
+
+
+	/**
+	 * Append a string to the beginning of each column header in a ResultsTable.
+	 * Exclude the Label, ImageID, and Group column.
+	 * @param txt To append before each header.
+	 * @param rt The ResultsTable to modify.
+	 */
+	static public void appendToHeader(String txt, ResultsTable rt) {
+		String[] headers = rt.getHeadings();
+		for (String header : headers) {
+			if (!header.equals("Label") && !header.equals("ImageID") && !header.equals("Group")){
+				rt.renameColumn(header, txt + header);
+			}
+
+		}
+	}
 }

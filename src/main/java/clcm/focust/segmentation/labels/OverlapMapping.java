@@ -1,5 +1,6 @@
 package clcm.focust.segmentation.labels;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,152 +13,151 @@ import net.haesleinhuepf.clij2.CLIJ2;
 
 public class OverlapMapping {
 
+	public ClearCLBuffer centroids;
+
 
 	/**
 	 * Process a list of ClearCLBuffer bands to count how many labels sit within each band.
-	 * 
 	 * @param bands
-	 * @param label
-	 * @param colHeader
+	 * @param bandType
 	 * @return
 	 */
-	public ResultsTable perBand(List<ClearCLBuffer> bands, ImagePlus label, String bandType, String labType) {
+	public List<ResultsTable> perBand(List<ClearCLBuffer> bands, ClearCLBuffer centroids, String bandType) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
-
-		ClearCLBuffer lab = clij2.push(label);
-		ClearCLBuffer centroids = clij2.create(lab);
-		ClearCLBuffer overlapMap = clij2.create(lab);
 
 		// init at 1 = core of banding
 		int count = 1;
 
-		ResultsTable results = new ResultsTable();
-
-		// use centroids so each label is only represented in one band.
-		clij2.reduceLabelsToCentroids(lab, centroids);
+		List<ResultsTable> results = new ArrayList<>();
 
 		// for each band in the list create a results table to hold data
 		for (ClearCLBuffer band : bands) {
 
-			ResultsTable rt = new ResultsTable();
+			ClearCLBuffer overlapMap = clij2.create(band);
+			ClearCLBuffer copy = clij2.create(band);
+
+			clij2.copy(band, copy);
 
 			clij2.labelOverlapCountMap(band, centroids, overlapMap);
-			clij2.statisticsOfLabelledPixels(band, overlapMap, rt);
 
-			results.setColumn("Label", rt.getColumnAsVariables("IDENTIFIER"));
-			results.setColumn("Number_Of_" + labType + "Objects_In_Band_" + bandType + count, rt.getColumnAsVariables("MAXIMUM_INTENSITY"));
+			IntensityMeasures im = new IntensityMeasures(clij2.pull(overlapMap), clij2.pull(copy));
 
+			ResultsTable rt = im.getMax();
+
+			rt.renameColumn("Max", bandType + count + ".NumberOfNuclei");
+
+			overlapMap.close();
+			copy.close();
 			count++;
+
+			results.add(rt);
+
 		}
-
-		lab.close();
-		centroids.close();
-		overlapMap.close();
-
 
 		return results;
 	}
 
 
 	/**
-	 * Count how many labels reside within in the imp.  
-	 * 
+	 * Count how many labels reside within in the imp
 	 * @param imp
 	 * @param label
-	 * @param objectName A string to add to the column header
 	 * @return
 	 */
-	public ResultsTable perLabel(ImagePlus imp, ImagePlus label, String objectName) {
+	public ResultsTable countChildren(ImagePlus imp, ImagePlus label) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
 		ClearCLBuffer lab = clij2.push(label);
 		ClearCLBuffer image = clij2.push(imp);
-		ClearCLBuffer centroids = clij2.create(lab);
+		centroids = clij2.create(lab);
 		ClearCLBuffer overlapMap = clij2.create(lab);
 
-		ResultsTable results = new ResultsTable();
-		
-		// use centroids so each label is only present in 1 x region
+		// use centroids so each primary label is only represented in 1 region
 		clij2.reduceLabelsToCentroids(lab, centroids);
-
-		ResultsTable rt = new ResultsTable();
-
 		clij2.labelOverlapCountMap(image, centroids, overlapMap);
-		clij2.statisticsOfLabelledPixels(image, overlapMap, rt);
+		ImagePlus overlap = clij2.pull(overlapMap);
 
-		results.setColumn("Label", rt.getColumnAsVariables("IDENTIFIER"));
-		results.setColumn("Number_Of_" + objectName + "_Objects", rt.getColumnAsVariables("Max"));
+		IntensityMeasures im = new IntensityMeasures(overlap, imp);
+		ResultsTable rt = im.getMax();
 
+		rt.renameColumn("Max", "NumberOfNuclei");
+
+		overlap.close();
 		lab.close();
-		centroids.close();
 		overlapMap.close();
 		image.close();
 		
-		return results;
+		return rt;
 	}
 
 
 
-	
 	/**
-	 * Calculates the band that each label resides within.
-	 * @param bands
-	 * @param labels
-	 * @return
+	 * Calculate the band that each label centroid resides within.
+	 * @param bands The list of ClearCLBuffers.
+	 * @param centroids The ClearCLBuffer points.
+	 * @param bandType Name to append to the "Max" header
+	 * @return List of ResultsTables with the band ID of each centroid.
 	 */
-	public ResultsTable parentBand(List<ClearCLBuffer> bands, ImagePlus labels, String bandType) {
-
-		ResultsTable results = new ResultsTable();
+	public List<ResultsTable> parentBand(List<ClearCLBuffer> bands, ClearCLBuffer centroids, String bandType) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
-		
-		ClearCLBuffer relabelledBands = clij2.create(bands.get(0));
-		ClearCLBuffer temp = clij2.create(relabelledBands);
-		
-		AtomicInteger counter = new AtomicInteger(1);
-		
-		// set all pixels for each band type = counter value.
-		// and combine all of the band types together into a single buffer once re-labeled. 
-		bands.forEach(e -> {
-			int count = counter.getAndIncrement();
-			clij2.set(e, (double) count);
-			clij2.addImages(e, relabelledBands, temp);
-			clij2.copy(temp, relabelledBands);
-		});
-		
-		
-		final IntensityMeasures im = new IntensityMeasures(clij2.pull(relabelledBands), labels);
-		
-		results.setColumn("Label", im.getMax().getColumnAsVariables("Label"));
-		results.setColumn("Parent_Object_ID_" + bandType,im.getMax().getColumnAsVariables("Max"));
-		
+		int count = 1;
+		List<ResultsTable> results = new ArrayList<>();
+
+		ClearCLBuffer centroidCopy = clij2.create(centroids);
+		clij2.copy(centroids, centroidCopy);
+		ImagePlus centroidsImp = clij2.pull(centroidCopy);
+		centroidCopy.close();
+
+		for (ClearCLBuffer band : bands) {
+
+			ClearCLBuffer copy = clij2.create(band);
+			clij2.copy(band, copy);
+			ImagePlus bandImp = clij2.pull(copy);
+
+			IntensityMeasures im = new IntensityMeasures(bandImp, centroidsImp);
+			ResultsTable rt = im.getMax();
+			rt.renameColumn("Max", bandType + count + ".ParentBandID");
+
+			bandImp.close();
+			copy.close();
+
+			results.add(rt);
+			count++;
+		}
+
+		centroidsImp.close();
+
 		return results;
 	}
 
-	
 
-	
+
+
 	/**
-	 * Calculates the imp2 object that imp1 resides within.
-	 * 
-	 * @param imp1
-	 * @param imp2
-	 * @return
+	 * Calculate the imp object that each centroid resides within.
+	 * @param imp A labelled image that are matched to centroids of other labels
+	 * @param centroids The centroids to match to the imp
+	 * @return ResultsTable with the parent object ID for each centroid.
 	 */
-	public ResultsTable parentLabel(ImagePlus imp1, ImagePlus imp2) {
+	public ResultsTable parentLabelOfCentroids(ImagePlus imp, ClearCLBuffer centroids) {
 		
-		ResultsBuilder rb = new ResultsBuilder();
-		final IntensityMeasures im = new IntensityMeasures(imp2, imp1);
-		rb.addResult(im.getMax());
-	
-		return rb.getResultsTable();
+		ResultsTable rt = new ResultsTable();
+
+		CLIJ2 clij2 = CLIJ2.getInstance();
+		ClearCLBuffer copy = clij2.create(centroids);
+		clij2.copy(centroids, copy);
+
+		ImagePlus cent = clij2.pull(copy);
+
+		final IntensityMeasures im = new IntensityMeasures(imp, cent);
+		rt = im.getMax();
+		rt.renameColumn("Max", "ParentID");
+		cent.close();
+		return rt;
 	}
-	
-	
-
-	
-
 
 }

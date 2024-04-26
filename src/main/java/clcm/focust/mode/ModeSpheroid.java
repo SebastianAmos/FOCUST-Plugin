@@ -17,10 +17,8 @@ import net.haesleinhuepf.clij2.CLIJ2;
 public class ModeSpheroid implements Mode {
 
 	
-	List<ResultsTable> tertiary = new ArrayList<>();
-	List<ResultsTable> secondary = new ArrayList<>();
-	List<ResultsTable> primary = new ArrayList<>();
-	OverlapMapping countLabels = new OverlapMapping();
+
+    private final OverlapMapping countLabels = new OverlapMapping();
 	
 
 	/** 
@@ -30,23 +28,30 @@ public class ModeSpheroid implements Mode {
 	
 	@Override
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
-		
+
+		List<ResultsTable> tertiary = new ArrayList<>();
+        List<ResultsTable> secondary = new ArrayList<>();
+        List<ResultsTable> primary = new ArrayList<>();
+
+		CLIJ2 clij2 = CLIJ2.getInstance();
+
 		// init with current collated table for each type.
-		primary.add(imgData.getPrimary());
-		secondary.add(imgData.getSecondary());
 		imgData.images.getTertiary().ifPresent(t -> {
 			tertiary.add(imgData.getTertiary());
 		});
-	
+
 		
 		// Count the number of primary/child objects within each secondary/parent object
-		primary.add(countLabels.perLabel(imgData.getImages().getSecondary(), imgData.getImages().getPrimary(), "Primary"));
-		
-		
-		// Calculate the ID of the secondary/parent object each primary/child object resides within.
-		secondary.add(countLabels.parentLabel(imgData.getImages().getPrimary(), imgData.getImages().getSecondary()));
-		
-		
+		// centroids are created here and accessed by countLabels.centroids
+		ResultsTable sec = imgData.getSecondary();
+		TableUtility.appendResultsByLabel(sec, countLabels.countChildren(imgData.getImages().getSecondary(), imgData.getImages().getPrimary()), "");
+		secondary.add(sec);
+
+
+		ResultsTable pri = imgData.getPrimary();
+		TableUtility.appendResultsByLabel(pri, countLabels.parentLabelOfCentroids(imgData.getImages().getSecondary(), countLabels.centroids), "");
+		primary.add(pri);
+
 		// Calculate the secondary/parent band (if available) for each primary/child object and the number of primary/children per secondary/parent.
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 
@@ -54,29 +59,28 @@ public class ModeSpheroid implements Mode {
 			List<ClearCLBuffer> bands = band.getValue().getBands();
 			
 			switch (type) {
+
 			case "sec25":
 
-				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary(), "Q")); // Q = quarter
-				secondary.add(countLabels.perBand(bands, imgData.getImages().getPrimary(), "Q", "Primary")); 
-				
+				primary.addAll(countLabels.parentBand(bands, countLabels.centroids, "Q")); // Q = quarter
+				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "Q"));
+				break;
+
 			case "sec50":
-				
-				primary.add(countLabels.parentBand(bands, imgData.getImages().getPrimary(), "H")); // H = half
-				secondary.add(countLabels.perBand(bands, imgData.getImages().getPrimary(), "H", "Primary"));
-				
+
+				primary.addAll(countLabels.parentBand(bands, countLabels.centroids, "H")); // H = half
+				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "H"));
+				break;
+
 			default:
 				break;
 			}
 			
 		}
 
-		
-		
-		TableUtility tu = new TableUtility();
 		ResultsTableUtility rtSave = new ResultsTableUtility();
-		
-		imgData.setPrimary(tu.compileAllResults(primary));
-		rtSave.saveAndStackResults(imgData.getPrimary(), "primary_objects", parameters);
+
+		rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(primary), "primary_objects", parameters);
 		
 		
 		/* If the tertiary objects were created by subtraction and do not represent induvidual cytoplasms, add them to the secondary table.
@@ -88,30 +92,29 @@ public class ModeSpheroid implements Mode {
 			if (parameters.getTertiaryIsDifference()) { // combine with secondary -> labels should match
 				
 				// TODO: ********change names in tertiary table to (+ cyto) so that they can be merged safely without overwriting where col names match: 
-				
-				tertiary.stream().forEach(t -> secondary.add(t));
-				imgData.setSecondary(tu.compileAllResults(secondary));
-				rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
+
+				// Add "Tertiary" to all headers in tert tables before appending.
+				ResultsTable ter = TableUtility.appendAllResultsByLabel(tertiary);
+				TableUtility.appendToHeader("Tertiary.", ter);
+
+                secondary.add(ter);
+				rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
 				
 			} else {
 				
-				// compile secondary and tertiary independently
-				imgData.setSecondary(tu.compileAllResults(secondary));
-				imgData.setTertiary(tu.compileAllResults(tertiary));
+				// compile and save secondary and tertiary independently
+				rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
+				rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(tertiary), "tertiary_objects", parameters);
 			}
 			
 		} else {
-			imgData.setSecondary(tu.compileAllResults(secondary));
+			rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
 		}
-			
-		rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
-		rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
-
 
 		// clean up
-		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
 
+		System.gc();
 	}
 
 }
