@@ -19,29 +19,22 @@ public class StratifyProcess {
 		
 		StratifyAndQuantifyLabels stratify = new StratifyAndQuantifyLabels();
 
-		System.out.println("Primary25 = " + params.getStratifyParameters().getPrimary25());
-
 		if(params.getStratifyParameters().getPrimary25()) {
 			IJ.log("Generating 25 % bands for primary object.");
 			
 			tables.put("pri25", stratify.process(segmentedChannels, segmentedChannels.getPrimary(), quarter, "Primary_Q", params, imgName));
 		}
 
-		System.out.println("Primary50 = " + params.getStratifyParameters().getPrimary50());
-
 		if(params.getStratifyParameters().getPrimary50()) {
 			IJ.log("Generating 50 % bands for primary object.");
 			tables.put("pri50", stratify.process(segmentedChannels, segmentedChannels.getPrimary(), half, "Primary_H", params, imgName));
 		}
-		
-		System.out.println("Secondary25 = " + params.getStratifyParameters().getSecondary25());
 
 		if(params.getStratifyParameters().getSecondary25()) {
 			IJ.log("Generating 25 % bands for secondary object.");
 			tables.put("sec25", stratify.process(segmentedChannels, segmentedChannels.getSecondary(), quarter, "Secondary_Q", params, imgName));
 		}
 		
-		System.out.println("Secondary50 = " + params.getStratifyParameters().getSecondary50());
 
 		if(params.getStratifyParameters().getSecondary50()) {
 			IJ.log("Generating 50 % bands for secondary object.");

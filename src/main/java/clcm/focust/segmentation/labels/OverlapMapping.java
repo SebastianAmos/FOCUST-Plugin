@@ -22,7 +22,7 @@ public class OverlapMapping {
 	 * @param bandType
 	 * @return
 	 */
-	public List<ResultsTable> perBand(List<ClearCLBuffer> bands, ClearCLBuffer centroids, String bandType) {
+	public List<ResultsTable> perBand(List<ClearCLBuffer> bands, ClearCLBuffer centroids, String bandType, String name) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
@@ -45,7 +45,7 @@ public class OverlapMapping {
 
 			ResultsTable rt = im.getMax();
 
-			rt.renameColumn("Max", bandType + count + ".NumberOfNuclei");
+			rt.renameColumn("Max", bandType + count + ".NumberOf" + name);
 
 			overlapMap.close();
 			copy.close();
@@ -65,7 +65,7 @@ public class OverlapMapping {
 	 * @param label
 	 * @return
 	 */
-	public ResultsTable countChildren(ImagePlus imp, ImagePlus label) {
+	public ResultsTable countChildren(ImagePlus imp, ImagePlus label, String name) {
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
@@ -82,7 +82,7 @@ public class OverlapMapping {
 		IntensityMeasures im = new IntensityMeasures(overlap, imp);
 		ResultsTable rt = im.getMax();
 
-		rt.renameColumn("Max", "NumberOfNuclei");
+		rt.renameColumn("Max", "NumberOf" + name);
 
 		overlap.close();
 		lab.close();
@@ -159,5 +159,6 @@ public class OverlapMapping {
 		cent.close();
 		return rt;
 	}
+
 
 }

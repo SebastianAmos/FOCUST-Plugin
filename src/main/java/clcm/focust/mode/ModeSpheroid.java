@@ -44,7 +44,7 @@ public class ModeSpheroid implements Mode {
 		// Count the number of primary/child objects within each secondary/parent object
 		// centroids are created here and accessed by countLabels.centroids
 		ResultsTable sec = imgData.getSecondary();
-		TableUtility.appendResultsByLabel(sec, countLabels.countChildren(imgData.getImages().getSecondary(), imgData.getImages().getPrimary()), "");
+		TableUtility.appendResultsByLabel(sec, countLabels.countChildren(imgData.getImages().getSecondary(), imgData.getImages().getPrimary(), "Nuclei"), "");
 		secondary.add(sec);
 
 
@@ -63,13 +63,13 @@ public class ModeSpheroid implements Mode {
 			case "sec25":
 
 				primary.addAll(countLabels.parentBand(bands, countLabels.centroids, "Q")); // Q = quarter
-				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "Q"));
+				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "Q", "Nuclei"));
 				break;
 
 			case "sec50":
 
 				primary.addAll(countLabels.parentBand(bands, countLabels.centroids, "H")); // H = half
-				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "H"));
+				secondary.addAll(countLabels.perBand(bands, countLabels.centroids, "H", "Nuclei"));
 				break;
 
 			default:

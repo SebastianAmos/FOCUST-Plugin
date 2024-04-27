@@ -197,7 +197,6 @@ public class StratifyAndQuantifyLabels {
 
 		// TODO -> Consider using im.max or something here again - otherwise should use the LABEL (i think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
 
-		//stats.show("StatisticsOfLabelledPixels Table");
 		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// add the whole label and the stratified bands into the map.
@@ -299,10 +298,6 @@ public class StratifyAndQuantifyLabels {
 			ClearCLBuffer result = clij2.create(dMap);
 			float thresholdMin = (float) (min + j * percent * (max-min));
 			float thresholdMax = (float) (min + (j + 1) * percent * (max-min));
-			System.out.println("j = " + j);
-			System.out.println("maxFloat: " + thresholdMax);
-			System.out.println("minFloat: " + thresholdMin);
-
 			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
 			bands.add(result);
 		}
