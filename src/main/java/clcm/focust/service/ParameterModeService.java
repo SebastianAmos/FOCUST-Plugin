@@ -7,6 +7,7 @@ import clcm.focust.data.DataListener;
 import clcm.focust.data.DatumSubscriptionService;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.data.object.SegmentedChannels;
+import clcm.focust.mode.ModeProcess;
 import clcm.focust.parameters.ParameterCollection;
 
 public class ParameterModeService implements FOCUSTService, DataListener<DataConstants.Datum, ParameterCollection> {
@@ -36,8 +37,10 @@ public class ParameterModeService implements FOCUSTService, DataListener<DataCon
 
 	@Override
 	public void dataUpdated(Datum key, ParameterCollection newData) {
-	
-		segmentedUpdateService.notifyUpdated(newData.getMode().getMode().run(newData));
+
+		ModeProcess process = new ModeProcess();
+		process.run(newData);
+		//segmentedUpdateService.notifyUpdated(newData.getMode().getMode().run(newData));
 		
 	}
 

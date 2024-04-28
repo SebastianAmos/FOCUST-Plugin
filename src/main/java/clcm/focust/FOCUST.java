@@ -1,27 +1,15 @@
 
 package clcm.focust;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import javax.swing.JFileChooser;
+import java.util.concurrent.*;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import org.scijava.command.Command;
-import org.scijava.plugin.Plugin;
-
-import clcm.focust.data.DataConstants;
 import clcm.focust.data.DataMapManager;
-import clcm.focust.data.DataMapUpdateService;
 import clcm.focust.data.DatumManager;
 import clcm.focust.data.object.SegmentedChannels;
-import clcm.focust.gui.MainScreen;
 import clcm.focust.gui.MainScreen2;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.service.ParameterModeService;
@@ -34,16 +22,7 @@ import clcm.focust.speckle.service.SpeckleResultsHandlerService;
 import clcm.focust.speckle.service.SpeckleService;
 import clcm.focust.utility.CheckPlugins;
 
-@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
-
 public final class FOCUST {
-
-	public static FutureTask<JFileChooser> futureFileChooser = new FutureTask<>(JFileChooser::new);
-	public static File[] imageFiles;
-	public static String inputDir = "";
-	public static String outputDir = "";
-	public static JFileChooser fileChooser = null;
-	public static Path inputPath;
 
 	private List<FOCUSTService> services;
 
@@ -65,7 +44,7 @@ public final class FOCUST {
 	 */
 	private FOCUST() {
 		services = new ArrayList<>();
-		ExecutorService dataExecService = Executors.newSingleThreadExecutor();
+		ExecutorService dataExecService = new FOCUSTExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 		/* Data managers. */
 		specklesManager = new DataMapManager<>(dataExecService);
@@ -76,19 +55,14 @@ public final class FOCUST {
 		paramManager = new DatumManager<>(dataExecService);
 		segmentedChannelsManager = new DatumManager<>(dataExecService);
 		
-		
-		
-		
+
 		/* Services - Speckle. */
 		services.add(new SpeckleProcessor(configurationManager, specklesManager, expectedSpeckleResultsManager));
 		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
 		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager,
 				configurationManager));
 		services.add(new ParameterModeService(paramManager, segmentedChannelsManager));
-		
-		
-		
-		
+
 	}
 
 	/**
@@ -126,8 +100,8 @@ public final class FOCUST {
 			MainGui.setVisible(true);
 			MainGui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		});
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.execute(futureFileChooser);
+
+		ExecutorService executor =  new FOCUSTExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 
 	/**
@@ -144,28 +118,7 @@ public final class FOCUST {
 		return configurationManager;
 	}
 
-	public static void fileFinder() {
-		try {
-			fileChooser = futureFileChooser.get();
-		} catch (InterruptedException | ExecutionException e1) {
-			e1.printStackTrace();
-		}
 
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		fileChooser.setMultiSelectionEnabled(true);
-		fileChooser.setDialogTitle("Select a Directory or File(s):");
-
-		// abort if nothing selected or return the selected files
-		int returnValue = fileChooser.showOpenDialog(null);
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			imageFiles = fileChooser.getSelectedFiles();
-			String imagePathString = imageFiles[0].getParent();
-			inputPath = Paths.get(imagePathString);
-
-		} else {
-			return;
-		}
-	}
 
 	public DatumManager<SegmentedChannels> getSegmentedChannelsManager() {
 		return segmentedChannelsManager;
