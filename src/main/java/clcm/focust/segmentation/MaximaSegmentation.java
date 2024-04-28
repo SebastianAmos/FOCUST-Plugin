@@ -38,7 +38,7 @@ public class MaximaSegmentation implements Method{
 		// pull image
 		ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
 	
-		// clean up GPU without using clij2.clear() - as this will interrupt optimization workflow.
+		// clean up GPU without using clij2.clear()
 		input.close();
 		bg.close();
 		filtered.close();

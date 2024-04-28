@@ -7,7 +7,7 @@ import inra.ijpb.plugins.AnalyzeRegions3D;
 import process3d.Erode_;
 import ij.measure.ResultsTable;
 
-
+@Deprecated
 public class BinarySearch {
 	
 
@@ -18,7 +18,7 @@ public class BinarySearch {
 	
 	/**
 	 * Generates an object that is approximately 50 % of the input objects volume based on the closest number of erosion iterations.
-	 *  
+	 * @deprecated
 	 * @param imp 
 	 * 			An ImagePlus to be eroded.
 	 * @param volumePercentageRemaining
@@ -26,7 +26,7 @@ public class BinarySearch {
 	 * 
 	 * @return The eroded image.
 	 */
-	
+	@Deprecated
 	public static ImagePlus createSpheroidCore(ImagePlus imp, double volumePercentageRemaining) {
 		ImagePlus img = LabelEditor.makeBinary(imp);
 		
