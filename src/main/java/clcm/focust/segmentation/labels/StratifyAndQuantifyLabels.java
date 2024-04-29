@@ -54,6 +54,7 @@ public class StratifyAndQuantifyLabels {
 		Calibration cal = imp.getCalibration();
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
+
 		ClearCLBuffer labs = clij2.push(imp.duplicate());
 	
 		// Generate the bands based on the specification
