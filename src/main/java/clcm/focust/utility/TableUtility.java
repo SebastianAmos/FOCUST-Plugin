@@ -227,7 +227,7 @@ public class TableUtility {
 	}
 	
 	
-	public static List<ResultsTable> compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal) {
+	public static List<ResultsTable> compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal, ParameterCollection parameters) {
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		List<ResultsTable> rtList = new ArrayList<>();
@@ -258,7 +258,13 @@ public class TableUtility {
 
                 // channel 1
                 if ((j + 1) == 1) {
-                    String c1Name = (count + ".c1");
+                    String c1Name = null;
+
+					if (!parameters.getNameChannel1().isEmpty()) {
+						c1Name = count + "." + parameters.getNameChannel1();
+					} else {
+						c1Name = (count + ".c1");
+					}
 
                     for (String head : headers) {
                         String headerName = (c1Name + "." + head);
@@ -269,7 +275,13 @@ public class TableUtility {
 
                 // channel 2
                 if ((j + 1) == 2) {
-                    String c2Name = (count + ".c2");
+                    String c2Name = null;
+
+					if (!parameters.getNameChannel2().isEmpty()) {
+						c2Name = count + "." + parameters.getNameChannel2();
+					} else {
+						c2Name = (count + ".c2");
+					}
 
                     for (String head : headers) {
                         String headerName = (c2Name + "." + head);
@@ -279,7 +291,13 @@ public class TableUtility {
 
                 // channel 3
                 if ((j + 1) == 3) {
-                    String c3Name = (count + ".c3");
+                    String c3Name = null;
+
+					if (!parameters.getNameChannel3().isEmpty()) {
+						c3Name = count + "." + parameters.getNameChannel3();
+					} else {
+						c3Name = (count + ".c3");
+					}
 
                     for (String head : headers) {
                         String headerName = (c3Name + "." + head);
@@ -289,7 +307,14 @@ public class TableUtility {
 
                 // channel 4
                 if ((j + 1) == 4) {
-                    String c4Name = (count + ".c4");
+                    String c4Name = null;
+
+					if (!parameters.getNameChannel4().isEmpty()) {
+						c4Name = count + "." + parameters.getNameChannel4();
+					} else {
+						c4Name = (count + ".c4");
+					}
+
 
                     for (String head : headers) {
                         String headerName = (c4Name + "." + head);
@@ -299,18 +324,14 @@ public class TableUtility {
 
             }
 
-
             rt.setColumn("Label", labelID);
             //rt.show("FINAL BAND " + count + " TABLE");
 
             rtList.add(rt);
 
             count++;
-        } // This one
-		
-		//TableUtility tu = new TableUtility();
-		//ResultsTable output = TableUtility.compileAllResults(rtList);
-		
+        }
+
 		return rtList;
 	}
 	

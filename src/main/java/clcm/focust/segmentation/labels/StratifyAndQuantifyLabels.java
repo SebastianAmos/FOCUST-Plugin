@@ -91,7 +91,7 @@ public class StratifyAndQuantifyLabels {
 		
 		/** Generate Results */
 		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
-		List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal);
+		List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal, params);
 
 
         return StratifiedResultsHolder.builder()
