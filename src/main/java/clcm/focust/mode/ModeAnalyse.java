@@ -15,7 +15,7 @@ import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 
-public class ModeAnalyse {
+public class ModeAnalyse implements Mode{
 	
 	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
 	ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
