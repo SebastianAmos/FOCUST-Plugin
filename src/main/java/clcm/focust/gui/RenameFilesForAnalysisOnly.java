@@ -1,4 +1,4 @@
-package clcm.focust.utility;
+package clcm.focust.gui;
 
 import ij.IJ;
 import org.scijava.command.Command;
@@ -6,7 +6,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import java.io.File;
 
-@Plugin(type = Command.class, label = "FOCUST: Rename Files", menuPath = "Plugins>FOCUST>Rename Files")
+@Plugin(type = Command.class, label = "FOCUST: Rename Files", menuPath = "Plugins > FOCUST > Rename Files")
 
 /*
  * This class allows users to rename existing images so they can be recognised by FOCUST's Analysis Only mode.
