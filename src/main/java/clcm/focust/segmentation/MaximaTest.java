@@ -25,7 +25,8 @@ public class MaximaTest {
 		clij2.labelSpots(maxima, labels);
 		clij2.thresholdOtsu(filtered, threshold);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labels, threshold, output);
-		
+
+
 		ImagePlus img = clij2.pull(output);
 		img.show();
 

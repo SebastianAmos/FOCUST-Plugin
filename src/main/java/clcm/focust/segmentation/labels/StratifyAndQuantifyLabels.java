@@ -15,6 +15,8 @@ import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ImageConverter;
+import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.binary.distmap.DistanceTransform3DFloat;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
@@ -24,6 +26,7 @@ import inra.ijpb.data.image.Images3D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
+import net.haesleinhuepf.clijx.morpholibj.MorphoLibJChamferDistanceMap;
 
 /**
  * @author SebastianAmos
@@ -31,7 +34,12 @@ import net.haesleinhuepf.clij2.CLIJ2;
 
 
 public class StratifyAndQuantifyLabels {
-	
+
+
+
+	private final static String weightLabel = ChamferWeights3D.WEIGHTS_3_4_5_7.toString();
+	private final static boolean normalize = true;
+
 	/**
 	 * 
 	 * @param imgData
@@ -188,7 +196,8 @@ public class StratifyAndQuantifyLabels {
 		labels.setCalibration(cal);
 
 		// generate distance map on the whole label image before masking out each label
-		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal); 
+		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal);
+		//ClearCLBuffer dMap = xComputeDistanceMap(labels ,clij2, cal);
 
 		ResultsTable stats = new ResultsTable();
 
@@ -227,16 +236,7 @@ public class StratifyAndQuantifyLabels {
 	}
 	
 	
-	
-	/**
-	 * @param label
-	 * @return A list of band segmentations at 25 % volume increments from a label.
-	 * 
-	 * List should contain 4 images in order [outer 25%, outer-middle 25%, inner-middle 25%, inner 25%].
-	 * 
-	 * Chamfer weight set to MorpholibJ default: Svensson
-	 */
-	
+
 	/**
 	 * Computes a distance map from an input buffer.
 	 * @param labelledImg
@@ -245,7 +245,7 @@ public class StratifyAndQuantifyLabels {
 	 * @return
 	 */
 	private ClearCLBuffer computeChamferDistanceMap(ImagePlus labelledImg, CLIJ2 clij2, Calibration cal) {
-		
+
 		if (labelledImg.getBitDepth() != 8) {
 			System.out.println("Stratification Note: Image not 8-bit, converting for distance map algo.");
 			ImageConverter converter = new ImageConverter(labelledImg);
@@ -275,6 +275,26 @@ public class StratifyAndQuantifyLabels {
 
 		return output;
 	}
+
+
+	// TODO testing clijx version - uses deprecated method in ChamferWeights3D
+	@Deprecated
+	private ClearCLBuffer xComputeDistanceMap(ImagePlus imp, CLIJ2 clij2, Calibration cal){
+
+		if (imp.getBitDepth() != 8) {
+			System.out.println("Stratification Note: Image not 8-bit, converting for distance map algo.");
+			ImageConverter converter = new ImageConverter(imp);
+			converter.convertToGray8();
+		}
+
+		ChamferWeights3D chamferWeights = ChamferWeights3D.fromLabel(weightLabel);
+		float[] weights = chamferWeights.getFloatWeights();
+		inra.ijpb.binary.distmap.DistanceTransform3D algo = new DistanceTransform3DFloat(weights, normalize);
+
+		ImageStack output_stack = algo.distanceMap(imp.getStack());
+
+        return clij2.push(new ImagePlus("title", output_stack));
+	}
 	
 	
 	/**
@@ -287,7 +307,7 @@ public class StratifyAndQuantifyLabels {
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, CLIJ2 clij2, Double percent, Integer iterations){
 
-		// get the min and max pixel values for the distance map
+		// get the min and max pixel values from the distance map
 		double max = clij2.getMaximumOfAllPixels(dMap);
 		double min = clij2.getMinimumOfAllPixels(dMap);
 
@@ -297,7 +317,7 @@ public class StratifyAndQuantifyLabels {
 		for (int j = 0; j < iterations; j++) {
 			ClearCLBuffer result = clij2.create(dMap);
 			float thresholdMin = (float) (min + j * percent * (max-min));
-			float thresholdMax = (float) (min + (j + 1) * percent * (max-min));
+			float thresholdMax = (float) (min + (j + 1) * percent * (max-min)) + 0.01f; // had an issue with the max value not being included - add a float to include.
 			net.haesleinhuepf.clij2.plugins.WithinIntensityRange.withinIntensityRange(clij2, dMap, result, thresholdMin, thresholdMax);
 			bands.add(result);
 		}

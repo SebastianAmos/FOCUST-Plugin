@@ -1,7 +1,7 @@
 package clcm.focust.mode;
 
+import static clcm.focust.mode.ModeConstants.*;
 import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,11 +19,6 @@ import ij.ImagePlus;
 
 public class ModeProcess{
 
-	private static final String primaryPrefix = "Primary_Objects_";
-	private static final String secondaryPrefix = "Secondary_Objects_";
-	private static final String tertiaryPrefix = "Tertiary_Objects_";
-
-		
 	/**
 	 * This method is the kick off for image processing.
 	 * Opens images from the directory, passes them to the segment class, then the user-defined mode.
@@ -45,7 +40,7 @@ public class ModeProcess{
 			if (parameters.getAnalysisOnly()) {
 				ArrayList<String> tempList = new ArrayList<>();
 				for (String imgName : list) {
-					if (!imgName.startsWith(primaryPrefix) && !imgName.startsWith(secondaryPrefix) && !imgName.startsWith(tertiaryPrefix)) {
+					if (!imgName.startsWith(PRIMARY_PREFIX) && !imgName.startsWith(SECONDARY_PREFIX) && !imgName.startsWith(TERTIARY_PREFIX)) {
 						tempList.add(imgName);
 					}
 				}
@@ -53,7 +48,7 @@ public class ModeProcess{
 					list = tempList.toArray(list);
 			}
 			
-			ijLog("Number of images to process: " + list.length);
+			ijLog("Number of unique images to process: " + list.length);
 			
 			String path = parameters.getInputDir() + list[i];
 			
