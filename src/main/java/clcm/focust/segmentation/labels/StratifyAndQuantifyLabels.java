@@ -275,26 +275,6 @@ public class StratifyAndQuantifyLabels {
 
 		return output;
 	}
-
-
-	// TODO testing clijx version - uses deprecated method in ChamferWeights3D
-	@Deprecated
-	private ClearCLBuffer xComputeDistanceMap(ImagePlus imp, CLIJ2 clij2, Calibration cal){
-
-		if (imp.getBitDepth() != 8) {
-			System.out.println("Stratification Note: Image not 8-bit, converting for distance map algo.");
-			ImageConverter converter = new ImageConverter(imp);
-			converter.convertToGray8();
-		}
-
-		ChamferWeights3D chamferWeights = ChamferWeights3D.fromLabel(weightLabel);
-		float[] weights = chamferWeights.getFloatWeights();
-		inra.ijpb.binary.distmap.DistanceTransform3D algo = new DistanceTransform3DFloat(weights, normalize);
-
-		ImageStack output_stack = algo.distanceMap(imp.getStack());
-
-        return clij2.push(new ImagePlus("title", output_stack));
-	}
 	
 	
 	/**
@@ -312,7 +292,7 @@ public class StratifyAndQuantifyLabels {
 		double min = clij2.getMinimumOfAllPixels(dMap);
 
 		List<ClearCLBuffer> bands = new ArrayList<>();
-		
+
 		// set thresholds and mask, incrementing the histogram bin by x % for each iteration.
 		for (int j = 0; j < iterations; j++) {
 			ClearCLBuffer result = clij2.create(dMap);
