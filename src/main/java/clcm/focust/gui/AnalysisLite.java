@@ -8,7 +8,7 @@ import org.scijava.plugin.Plugin;
 import ij.IJ;
 
 
-@Plugin(type = Command.class, label = "FOCUST: Analysis Lite", menuPath = "Plugins>FOCUST>Lite>Analysis")
+@Plugin(type = Command.class, menuPath = "Plugins>FOCUST>Analysis Lite")
 
 public class AnalysisLite implements Command {
 	

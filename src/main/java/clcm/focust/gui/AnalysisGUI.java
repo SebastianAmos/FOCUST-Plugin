@@ -481,7 +481,7 @@ public class AnalysisGUI extends JFrame {
 		gbc_ckbCellsTertiaryOption.gridx = 0;
 		gbc_ckbCellsTertiaryOption.gridy = 6;
 		pnlVariable.add(ckbTertiaryObjectOption, gbc_ckbCellsTertiaryOption);
-		ckbTertiaryObjectOption.setVisible(false);
+		ckbTertiaryObjectOption.setVisible(true);
 		
 		JCheckBox ckbAdditionalProcessing = new JCheckBox("Process Labels");
 		
@@ -2072,52 +2072,7 @@ public class AnalysisGUI extends JFrame {
 				
 				
 				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
-				
-				
-				
-				// Testing new distance-based label stratification and skeletonization
-				
-				/*
-				
-				File f = new File(parameterCollection.getInputDir());
-				String[] list = f.list();
-				
-				for (int i = 0; i < list.length; i++) {
-					
-					String path = parameterCollection.getInputDir() + list[i];
-					ImagePlus imp = IJ.openImage(path);
-					String imgName  = imp.getTitle();
-					
-					String objectType = imgName + "_" + i;
-				
-					Skeleton skeleton = new Skeleton();
-					ImagePlus skel = skeleton.createSkeletons(imp, imgName, objectType);
-					SkeletonResultsHolder results = skeleton.analyzeSkeletons(skel, imp.duplicate(), imgName);
-					skel.setTitle(imgName + "_Skeletons");
-					skel.show();
 
-					results.getStandard().show("Standard Results" + imgName);
-					results.getExtra().show("Extra Results" + imgName);
-					
-				}
-				
-				*/
-				
-				/*
-				
-				File f = new File(parameterCollection.getInputDir());
-				String[] list = f.list();
-				String path = parameterCollection.getInputDir() + list[0];
-				ImagePlus imp = IJ.openImage(path);
-				
-				// Build compiledImageData object.
-				SegmentedChannels images = SegmentedChannels.builder().primary(imp).build();
-		
-				*/
-				
-				
-				//ModeProcess process = new ModeProcess();
-				//process.run(parameterCollection);
 				
 				
 				// Hand off to DatumUpdateService
@@ -2353,7 +2308,7 @@ public class AnalysisGUI extends JFrame {
 				case NONE:
 					pnlAdditionalProcessing.setVisible(false);
 					ckbAdditionalProcessing.setVisible(false);
-					ckbTertiaryObjectOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(true);
 					break;
 				case BASIC:
 					ckbAdditionalProcessing.setVisible(true);
@@ -2383,7 +2338,7 @@ public class AnalysisGUI extends JFrame {
 					pnlAdditionalProcessing.setVisible(false);
 					ckbAdditionalProcessing.setSelected(false);
 					ckbAdditionalProcessing.setVisible(false);
-					ckbTertiaryObjectOption.setVisible(false);
+					ckbTertiaryObjectOption.setVisible(true);
 					ckbProcessAllObjects.setVisible(false);
 					break;
 				}

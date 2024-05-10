@@ -3,7 +3,7 @@ package clcm.focust;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
 
-@Plugin(type = Command.class, label = "FOCUST", menuPath = "Plugins>FOCUST")
+@Plugin(type = Command.class, menuPath = "Plugins>FOCUST>FOCUST")
 public class FOCUSTCommand implements Command {
 	
 	@Override
