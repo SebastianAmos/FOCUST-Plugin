@@ -15,6 +15,7 @@ import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
 import ij.IJ;
 import ij.ImagePlus;
+import net.haesleinhuepf.clij2.CLIJ2;
 
 
 public class ModeProcess{
@@ -34,8 +35,20 @@ public class ModeProcess{
 		String[] list = f.list();
         assert list != null;
 
+		// Save parameter file.
+		try {
+			ParameterCollection.saveParameterCollection(parameters, "/FOCUST-Parameter-File.json");
+			IJ.log("FOCUST parameter file saved.");
+		} catch (IOException e1) {
+			System.out.println("Unable to save FOCUST parameter file.");
+			e1.printStackTrace();
+		}
+
 		for (int i = 0; i < list.length; i++) {
-			
+
+			CLIJ2 clij2 = CLIJ2.getInstance();
+			clij2.clear();
+
 			// if analysis-only mode: filter the list to remove objects and only list original images.
 			if (parameters.getAnalysisOnly()) {
 				ArrayList<String> tempList = new ArrayList<>();
@@ -59,14 +72,7 @@ public class ModeProcess{
 			String imgName = imp.getTitle();
 			
 			
-			// Save parameter file.
-			try {
-				ParameterCollection.saveParameterCollection(parameters, "/FOCUST-Parameter-File.json");
-				IJ.log("FOCUST parameter file saved.");
-			} catch (IOException e1) {
-				System.out.println("Unable to save FOCUST parameter file.");
-				e1.printStackTrace();
-			}
+
 			
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);

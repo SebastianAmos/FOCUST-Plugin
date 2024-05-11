@@ -2023,7 +2023,7 @@ public class AnalysisGUI extends JFrame {
 		pnlFooter.add(btnRunAnalysis, gbc_btnRunAnalysis);
 		
 		
-	
+
 		
 		/*
 		 * Action listeners for panel dynamics here to avoid variable scope issues.
@@ -2160,13 +2160,11 @@ public class AnalysisGUI extends JFrame {
 				String primaryMethod = cbPrimaryMethod.getSelectedItem().toString(); 
 				
 				if(primaryMethod.equals("Trained Classifier")) {
-					btnBrowsePrimaryClassifer.setVisible(true);
 					txtPrimaryClassiferDirectory.setVisible(true);
 					pnlPrimarySpotSize.setVisible(false);
 					pnlPrimaryMethodThreshold.setVisible(false);
 					cbPrimaryMethodThreshold.setVisible(false);
 				} else {
-					btnBrowsePrimaryClassifer.setVisible(false);
 					txtPrimaryClassiferDirectory.setVisible(false);
 					pnlPrimarySpotSize.setVisible(true);
 					cbPrimaryMethodThreshold.setVisible(true);
@@ -2184,16 +2182,10 @@ public class AnalysisGUI extends JFrame {
 					pnlSecondarySpotSize.setVisible(false);
 					pnlSecondaryThreshold.setVisible(false);
 					cbSecondaryMethodThreshold.setVisible(false);
-					
-					btnBrowseSecondaryClassifer.setVisible(true);
-					txtSecondaryClassiferDirectory.setVisible(true);
 				} else {
 					pnlSecondarySpotSize.setVisible(true);
 					pnlSecondaryThreshold.setVisible(true);
 					cbSecondaryMethodThreshold.setVisible(true);
-					
-					btnBrowseSecondaryClassifer.setVisible(false);
-					txtSecondaryClassiferDirectory.setVisible(false);
 					
 				}
 			}
@@ -2208,16 +2200,10 @@ public class AnalysisGUI extends JFrame {
 					pnlTertiarySpotSize.setVisible(false);
 					pnlTertiaryThreshold.setVisible(false);
 					cbTertiaryMethodThreshold.setVisible(false);
-					
-					btnBrowseTertiaryClassifer.setVisible(true);
-					txtTertiaryClassiferDirectory.setVisible(true);
 				} else {
 					pnlTertiarySpotSize.setVisible(true);
 					pnlTertiaryThreshold.setVisible(true);
 					cbTertiaryMethodThreshold.setVisible(true);
-					
-					btnBrowseTertiaryClassifer.setVisible(false);
-					txtTertiaryClassiferDirectory.setVisible(false);
 					
 				}	
 			}
