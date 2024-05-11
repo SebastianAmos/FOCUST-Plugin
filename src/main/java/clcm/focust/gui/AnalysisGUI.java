@@ -47,6 +47,7 @@ import ij.IJ;
 
 import java.awt.Toolkit;
 import javax.swing.JTabbedPane;
+import javax.swing.JProgressBar;
 
 /**
  * Built with WindowsBuilder Editor
@@ -118,9 +119,6 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtSecFilter2X;
 	private JTextField txtSecFilter2Y;
 	private JTextField txtSecFilter2Z;
-	private JTextField txtSecondaryClassiferDirectory;
-	private JTextField txtTertiaryClassiferDirectory;
-	private JButton btnBrowseTertiaryClassifer;
 	private JTextField txtTertFilter2X;
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
@@ -567,7 +565,7 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
 		GridBagLayout gbl_pnlPrimary = new GridBagLayout();
-		gbl_pnlPrimary.columnWidths = new int[]{0, 0, 0};
+		gbl_pnlPrimary.columnWidths = new int[] {0, 0};
 		gbl_pnlPrimary.rowHeights = new int[] {30, 0, 0, 0, 0, 30, 0, 0, 35, 0, 30, 0};
 		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_pnlPrimary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -937,26 +935,6 @@ public class AnalysisGUI extends JFrame {
 		txtPrimaryBGRadius.setColumns(6);
 		pnlPrimaryBGRadius.add(txtPrimaryBGRadius);
 		
-		JButton btnBrowsePrimaryClassifer = new JButton("Load");
-		btnBrowsePrimaryClassifer.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnBrowsePrimaryClassifer = new GridBagConstraints();
-		gbc_btnBrowsePrimaryClassifer.anchor = GridBagConstraints.EAST;
-		gbc_btnBrowsePrimaryClassifer.insets = new Insets(0, 5, 5, 5);
-		gbc_btnBrowsePrimaryClassifer.gridx = 0;
-		gbc_btnBrowsePrimaryClassifer.gridy = 9;
-		pnlPrimary.add(btnBrowsePrimaryClassifer, gbc_btnBrowsePrimaryClassifer);
-		btnBrowsePrimaryClassifer.setVisible(false);
-		
-		txtPrimaryClassiferDirectory = new JTextField();
-		txtPrimaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtPrimaryClassiferDirectory.setColumns(10);
-		GridBagConstraints gbc_txtPrimaryClassiferDirectory = new GridBagConstraints();
-		gbc_txtPrimaryClassiferDirectory.insets = new Insets(0, 0, 5, 0);
-		gbc_txtPrimaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtPrimaryClassiferDirectory.gridx = 1;
-		gbc_txtPrimaryClassiferDirectory.gridy = 9;
-		pnlPrimary.add(txtPrimaryClassiferDirectory, gbc_txtPrimaryClassiferDirectory);
-		
 		JComboBox cbPrimaryMethodThreshold = new JComboBox();
 		//cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel(new String[] {"Otsu", "G.C", "Huang", "Yen"}));
 		cbPrimaryMethodThreshold.setModel(new DefaultComboBoxModel<>(ThresholdType.values()));
@@ -989,8 +967,7 @@ public class AnalysisGUI extends JFrame {
 		txtPrimaryMethodThreshold.setEnabled(false);
 		pnlPrimaryMethodThreshold.add(txtPrimaryMethodThreshold);
 		txtPrimaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtPrimaryMethodThreshold.setColumns(6);
-		txtPrimaryClassiferDirectory.setVisible(false);
+		txtPrimaryMethodThreshold.setColumns(4);
 		
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
@@ -1285,28 +1262,6 @@ public class AnalysisGUI extends JFrame {
 		gbc_lblNewLabel_5_1_2.gridx = 0;
 		gbc_lblNewLabel_5_1_2.gridy = 8;
 		pnlSecondary.add(lblNewLabel_5_1_2, gbc_lblNewLabel_5_1_2);
-		
-		JButton btnBrowseSecondaryClassifer = new JButton("Load");
-		btnBrowseSecondaryClassifer.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnBrowseSecondaryClassifer = new GridBagConstraints();
-		gbc_btnBrowseSecondaryClassifer.anchor = GridBagConstraints.EAST;
-		gbc_btnBrowseSecondaryClassifer.insets = new Insets(0, 0, 5, 5);
-		gbc_btnBrowseSecondaryClassifer.gridx = 0;
-		gbc_btnBrowseSecondaryClassifer.gridy = 9;
-		pnlSecondary.add(btnBrowseSecondaryClassifer, gbc_btnBrowseSecondaryClassifer);
-		btnBrowseSecondaryClassifer.setVisible(false);
-		
-		
-		txtSecondaryClassiferDirectory = new JTextField();
-		txtSecondaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtSecondaryClassiferDirectory.setColumns(4);
-		GridBagConstraints gbc_txtSecondaryClassiferDirectory = new GridBagConstraints();
-		gbc_txtSecondaryClassiferDirectory.insets = new Insets(0, 0, 5, 5);
-		gbc_txtSecondaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtSecondaryClassiferDirectory.gridx = 1;
-		gbc_txtSecondaryClassiferDirectory.gridy = 9;
-		pnlSecondary.add(txtSecondaryClassiferDirectory, gbc_txtSecondaryClassiferDirectory);
-		txtSecondaryClassiferDirectory.setVisible(false);
 
 		JPanel pnlSecondarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlSecondarySpotSize = new GridBagConstraints();
@@ -1319,7 +1274,6 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(pnlSecondarySpotSize, gbc_pnlSecondarySpotSize);
 		
 		
-		//cbSecondaryMethod.setModel(new DefaultComboBoxModel(new String[] {"M.C.W Maxima", "M.C.W Minima", "Trained Classifer"}));
 		JComboBox<MethodTypes> cbSecondaryMethod = new JComboBox<>();
 		cbSecondaryMethod.setModel(new DefaultComboBoxModel<>(MethodTypes.values()));
 		cbSecondaryMethod.setSelectedIndex(0);
@@ -1419,7 +1373,7 @@ public class AnalysisGUI extends JFrame {
 		txtSecondaryMethodThreshold.setText("1");
 		txtSecondaryMethodThreshold.setEnabled(false);
 		txtSecondaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtSecondaryMethodThreshold.setColumns(6);
+		txtSecondaryMethodThreshold.setColumns(4);
 		pnlSecondaryThreshold.add(txtSecondaryMethodThreshold);
 		
 		JPanel pnlTertiary = new JPanel();
@@ -1789,28 +1743,6 @@ public class AnalysisGUI extends JFrame {
 		gbc_cbTertiaryMethod.gridy = 8;
 		pnlTertiary.add(cbTertiaryMethod, gbc_cbTertiaryMethod);
 		
-		btnBrowseTertiaryClassifer = new JButton("Load");
-		btnBrowseTertiaryClassifer.setEnabled(false);
-		btnBrowseTertiaryClassifer.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnBrowseTertiaryClassifer = new GridBagConstraints();
-		gbc_btnBrowseTertiaryClassifer.insets = new Insets(0, 0, 5, 5);
-		gbc_btnBrowseTertiaryClassifer.gridx = 0;
-		gbc_btnBrowseTertiaryClassifer.gridy = 9;
-		pnlTertiary.add(btnBrowseTertiaryClassifer, gbc_btnBrowseTertiaryClassifer);
-		btnBrowseTertiaryClassifer.setVisible(false);
-		
-		txtTertiaryClassiferDirectory = new JTextField();
-		txtTertiaryClassiferDirectory.setEnabled(true);
-		txtTertiaryClassiferDirectory.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtTertiaryClassiferDirectory.setColumns(10);
-		GridBagConstraints gbc_txtTertiaryClassiferDirectory = new GridBagConstraints();
-		gbc_txtTertiaryClassiferDirectory.insets = new Insets(0, 0, 5, 0);
-		gbc_txtTertiaryClassiferDirectory.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtTertiaryClassiferDirectory.gridx = 1;
-		gbc_txtTertiaryClassiferDirectory.gridy = 9;
-		pnlTertiary.add(txtTertiaryClassiferDirectory, gbc_txtTertiaryClassiferDirectory);
-		txtTertiaryClassiferDirectory.setVisible(false);
-		
 		JPanel pnlTertiarySpotSize = new JPanel();
 		GridBagConstraints gbc_pnlTertiarySpotSize = new GridBagConstraints();
 		gbc_pnlTertiarySpotSize.insets = new Insets(0, 0, 5, 0);
@@ -1872,7 +1804,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.add(pnlTertiaryThreshold, gbc_pnlTertiaryThreshold);
 		
 		JLabel lblNewLabel_6_3_1_1_1 = new JLabel("Threshold:");
-		lblNewLabel_6_3_1_1_1.setEnabled(true);
+		lblNewLabel_6_3_1_1_1.setEnabled(false);
 		lblNewLabel_6_3_1_1_1.setVerticalAlignment(SwingConstants.TOP);
 		lblNewLabel_6_3_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel_6_3_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1882,7 +1814,7 @@ public class AnalysisGUI extends JFrame {
 		txtTertiaryMethodThreshold.setText("1");
 		txtTertiaryMethodThreshold.setEnabled(false);
 		txtTertiaryMethodThreshold.setFont(new Font("Arial", Font.PLAIN, 14));
-		txtTertiaryMethodThreshold.setColumns(6);
+		txtTertiaryMethodThreshold.setColumns(4);
 		pnlTertiaryThreshold.add(txtTertiaryMethodThreshold);
 		
 		JComboBox cbTertiaryMethodThreshold = new JComboBox();
@@ -1971,7 +1903,6 @@ public class AnalysisGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtPriSpotX.getText())).y(Double.parseDouble(txtPriSpotY.getText())).z(Double.parseDouble(txtPriSpotZ.getText())).build()).
 										thresholdType((ThresholdType) cbPrimaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtPrimaryMethodThreshold.getText())).
-										classifierFilename(txtPrimaryClassiferDirectory.getText()).
 										build()
 						).
 						build();
@@ -1999,7 +1930,6 @@ public class AnalysisGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtSecondaryMethodX.getText())).y(Double.parseDouble(txtSecondaryMethodY.getText())).z(Double.parseDouble(txtSecondaryMethodZ.getText())).build()).
 										thresholdType((ThresholdType) cbSecondaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtSecondaryMethodThreshold.getText())).
-										classifierFilename(txtSecondaryClassiferDirectory.getText()).
 										build()
 						).
 						build();
@@ -2027,7 +1957,6 @@ public class AnalysisGUI extends JFrame {
 										sigma(Vector3D.builder().x(Double.parseDouble(txtTertiaryMethodX.getText())).y(Double.parseDouble(txtTertiaryMethodY.getText())).z(Double.parseDouble(txtTertiaryMethodZ.getText())).build()).
 										thresholdType((ThresholdType) cbTertiaryMethodThreshold.getSelectedItem()).
 										thresholdSize(Double.parseDouble(txtTertiaryMethodThreshold.getText())).
-										classifierFilename(txtTertiaryClassiferDirectory.getText()).
 										build()
 						).
 						build();
