@@ -7,11 +7,15 @@ import java.util.Map.Entry;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.OverlapMapping;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
+import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import clcm.focust.utility.ResultsTableUtility;
 import clcm.focust.utility.TableUtility;
+import ij.IJ;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 
 public class ModeSpheroid implements Mode {
@@ -111,10 +115,15 @@ public class ModeSpheroid implements Mode {
 			rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
 		}
 
+		StratifyAndQuantifyLabels.reportMemory( "Before CLEAR",clij2);
+
 		// clean up
 		clij2.clear();
 
-		System.gc();
+		StratifyAndQuantifyLabels.reportMemory( "AFTER CLEAR",clij2);
+
+		ijLog("Analysis Finished.");
+		System.out.println(IJ.currentMemory());
 	}
 
 }

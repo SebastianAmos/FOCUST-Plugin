@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 public class ModeSpeckle implements Mode {
 
 	private final OverlapMapping countLabels = new OverlapMapping();
@@ -107,10 +109,10 @@ public class ModeSpeckle implements Mode {
 			rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(tertiary), "tertiary_objects", parameters);
 		});
 
-
-
 		// clean up
 		clij2.clear();
+
+		ijLog("Analysis Finished.");
 		
 	}
 

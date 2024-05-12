@@ -1,6 +1,7 @@
 package clcm.focust.mode;
 
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import ij.IJ;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -8,6 +9,8 @@ import clcm.focust.utility.ManageDuplicates;
 import clcm.focust.utility.RelabelledObjects;
 import clcm.focust.utility.ResultsTableUtility;
 import clcm.focust.utility.TableUtility;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 public class ModeSingleCell implements Mode {
 	
@@ -50,6 +53,8 @@ public class ModeSingleCell implements Mode {
 		// clean up
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
-
+		StratifyAndQuantifyLabels.reportMemory("End of ModeSingleCell", clij2);
+		ijLog("Analysis Finished.");
+		System.out.println(IJ.currentMemory());
 	}
 }

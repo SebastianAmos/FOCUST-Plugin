@@ -35,7 +35,10 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJChamferDistanceMap;
 
 public class StratifyAndQuantifyLabels {
 
-
+	// TODO testing memory reports
+	public static void reportMemory(String method, CLIJ2 clij2){
+		System.out.println("GPU memory in method: " + method + " is " + clij2.reportMemory());
+	}
 
 	private final static String weightLabel = ChamferWeights3D.WEIGHTS_3_4_5_7.toString();
 	private final static boolean normalize = true;
@@ -51,7 +54,9 @@ public class StratifyAndQuantifyLabels {
 	 * @return StratifiedResultsHolder:
 	 */
 	public StratifiedResultsHolder process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
-		
+
+
+
 		// Lists to store each band type
 		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25 %
 		List<ClearCLBuffer> b2 = new ArrayList<>(); // inner-middle 25 %
@@ -61,6 +66,8 @@ public class StratifyAndQuantifyLabels {
 		Calibration cal = imp.getCalibration();
 		
 		CLIJ2 clij2 = CLIJ2.getInstance();
+
+		reportMemory("StratifyAndQuantifyLabels", CLIJ2.getInstance());
 
 		ClearCLBuffer labs = clij2.push(imp.duplicate());
 	
@@ -161,7 +168,9 @@ public class StratifyAndQuantifyLabels {
 	 * @return
 	 */
 	private ClearCLBuffer combineAndRelabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2, int bandType) {
-		
+
+		reportMemory("STARTcombineAndRelabelBuffers", clij2);
+
 		ClearCLBuffer intermediate = clij2.create(buffers.get(0));
 		ClearCLBuffer type = clij2.create(intermediate);
 		ClearCLBuffer result = clij2.create(intermediate);
@@ -176,6 +185,8 @@ public class StratifyAndQuantifyLabels {
 
 		type.close();
 		intermediate.close();
+
+		reportMemory("ENDcombineAndRelabelBuffers", clij2);
 
 		return result;
 	}
@@ -198,6 +209,8 @@ public class StratifyAndQuantifyLabels {
 		// generate distance map on the whole label image before masking out each label
 		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal);
 		//ClearCLBuffer dMap = xComputeDistanceMap(labels ,clij2, cal);
+
+		reportMemory("generateStratifiedBands", clij2);
 
 		ResultsTable stats = new ResultsTable();
 
@@ -223,7 +236,8 @@ public class StratifyAndQuantifyLabels {
 			clij2.mask(dMap, mask, distanceMask);
 
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
-			
+
+			reportMemory("generateStratifiedBands AFTER distance map bands", clij2);
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
 			stratifiedLabels.put(i, bands);
 			
@@ -286,6 +300,8 @@ public class StratifyAndQuantifyLabels {
 	 * @return an ordered list of bands from inner to outer. [inner 25%, inner-middle 25%, outer-middle 25%, outer 25%] OR [inner 50%, outer 50%]
 	 */
 	private List<ClearCLBuffer> gpuGenerateDistanceMapBands(ClearCLBuffer dMap, CLIJ2 clij2, Double percent, Integer iterations){
+
+		reportMemory("Within GenerateDistanceMapBands", clij2);
 
 		// get the min and max pixel values from the distance map
 		double max = clij2.getMaximumOfAllPixels(dMap);
