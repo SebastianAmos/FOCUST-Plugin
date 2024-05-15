@@ -10,6 +10,7 @@ import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import clcm.focust.utility.ResultsTableUtility;
 import clcm.focust.utility.TableUtility;
+import clcm.focust.utility.Timer;
 import ij.IJ;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -115,15 +116,10 @@ public class ModeSpheroid implements Mode {
 			rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
 		}
 
-		StratifyAndQuantifyLabels.reportMemory( "Before CLEAR",clij2);
-
 		// clean up
 		clij2.clear();
 
-		StratifyAndQuantifyLabels.reportMemory( "AFTER CLEAR",clij2);
-
-		ijLog("Analysis Finished.");
-		System.out.println(IJ.currentMemory());
+		Timer.stop(parameters);
 	}
 
 }

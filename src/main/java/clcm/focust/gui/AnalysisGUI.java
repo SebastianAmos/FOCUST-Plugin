@@ -1998,19 +1998,10 @@ public class AnalysisGUI extends JFrame {
 						stratifyParameters(stratifyParameters).
 						skeletonParameters(skeletonParameters).
 						build();
-				
-				
-				ijLog("Analysis Mode:" + cbAnalysisMode.getSelectedItem());
 
-				
-				
 				// Hand off to DatumUpdateService
 				paramManager.notifyUpdated(parameterCollection);
-				
-				
-				
-				
-				
+
 			}
 		});
 		btnRunAnalysis.setFont(new Font("Arial", Font.BOLD, 14));
@@ -2160,12 +2151,10 @@ public class AnalysisGUI extends JFrame {
 				String primaryMethod = cbPrimaryMethod.getSelectedItem().toString(); 
 				
 				if(primaryMethod.equals("Trained Classifier")) {
-					txtPrimaryClassiferDirectory.setVisible(true);
 					pnlPrimarySpotSize.setVisible(false);
 					pnlPrimaryMethodThreshold.setVisible(false);
 					cbPrimaryMethodThreshold.setVisible(false);
 				} else {
-					txtPrimaryClassiferDirectory.setVisible(false);
 					pnlPrimarySpotSize.setVisible(true);
 					cbPrimaryMethodThreshold.setVisible(true);
 					

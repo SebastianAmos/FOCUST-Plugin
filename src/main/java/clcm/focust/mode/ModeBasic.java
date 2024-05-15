@@ -4,6 +4,7 @@ import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.utility.ResultsTableUtility;
+import clcm.focust.utility.Timer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
 
@@ -38,5 +39,7 @@ public class ModeBasic implements Mode {
 			// clean up
 			CLIJ2 clij2 = CLIJ2.getInstance();
 			clij2.clear();
+
+			Timer.stop(parameters);
 	}
 } 

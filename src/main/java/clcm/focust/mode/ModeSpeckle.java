@@ -5,6 +5,7 @@ import clcm.focust.segmentation.labels.OverlapMapping;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.utility.ResultsTableUtility;
 import clcm.focust.utility.TableUtility;
+import clcm.focust.utility.Timer;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -112,7 +113,7 @@ public class ModeSpeckle implements Mode {
 		// clean up
 		clij2.clear();
 
-		ijLog("Analysis Finished.");
+		Timer.stop(parameters);
 		
 	}
 

@@ -92,9 +92,6 @@ public class ModeAnalyse implements Mode{
 			});
 		}
 
-
-
-
 		// Append the stratification results tables if they were generated
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
 			

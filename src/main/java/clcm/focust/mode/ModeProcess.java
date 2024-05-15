@@ -13,6 +13,7 @@ import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.labels.StratifyProcess;
 import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
+import clcm.focust.utility.Timer;
 import ij.IJ;
 import ij.ImagePlus;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -29,7 +30,8 @@ public class ModeProcess{
 	
 	public void run(ParameterCollection parameters) {
 
-		IJ.log("FOCUST: Running in " + parameters.getMode().toString() + " mode.");
+		ijLog("FOCUST: Running in " + parameters.getMode().toString() + " mode.");
+		Timer.setTotalTime(0);
 
 		File f = new File(parameters.getInputDir());
 		String[] list = f.list();
@@ -38,13 +40,15 @@ public class ModeProcess{
 		// Save parameter file.
 		try {
 			ParameterCollection.saveParameterCollection(parameters, "/FOCUST-Parameter-File.json");
-			IJ.log("FOCUST parameter file saved.");
+			ijLog("FOCUST parameter file saved.");
 		} catch (IOException e1) {
 			System.out.println("Unable to save FOCUST parameter file.");
 			e1.printStackTrace();
 		}
 
 		for (int i = 0; i < list.length; i++) {
+
+			Timer.start(); // start timer for each image. Total time is accumulated.
 
 			CLIJ2 clij2 = CLIJ2.getInstance();
 			clij2.clear();
@@ -60,20 +64,19 @@ public class ModeProcess{
 					list = new String[tempList.size()];
 					list = tempList.toArray(list);
 			}
-			
-			ijLog("Number of unique images to process: " + list.length);
-			
+
+			Timer.numberOfImages(list.length);
+			Timer.currentImgIndex(i + 1);
+
+			ijLog("Processing image " + Timer.getCurrentImgIndex() + " of " + Timer.getNImgs());
+
 			String path = parameters.getInputDir() + list[i];
-			
-			
+
 			// Open image.
 			ijLog("Opening image path: " + path);
 			ImagePlus imp = IJ.openImage(path);
 			String imgName = imp.getTitle();
-			
-			
 
-			
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
 
@@ -82,13 +85,11 @@ public class ModeProcess{
 			Map<String, SkeletonResultsHolder> skeletonResults = skeletonize.run(parameters, segmentedChannels, imgName);
 			SaveSkeletons saveSkeletons = new SaveSkeletons();
 			saveSkeletons.saveSkeletons(skeletonResults, parameters, imgName);
-			
-			
+
 			// Generate stratified bands - bands are saved within
 			StratifyProcess stratify = new StratifyProcess();
 			Map<String, StratifiedResultsHolder> stratifyResults = stratify.process(parameters, segmentedChannels, imgName);
-			
-			
+
 			// Build compiledImageData object.
 			CompiledImageData imgData = CompiledImageData.builder().
 					images(segmentedChannels).
@@ -98,15 +99,12 @@ public class ModeProcess{
 			
 			// Hand off to mode analyse for common anaylses
 			ModeAnalyse analyse = new ModeAnalyse();
-			
-			
+
 			if(!parameters.getMode().equals(ModeType.NONE)) {
 				analyse.run(parameters, imgData, imgName);
 			} else { 
-				IJ.log("Images saved, no further analysis conducted.");
+				Timer.stop(parameters);
 			}
-			
-			
 		}
 	}
 }
