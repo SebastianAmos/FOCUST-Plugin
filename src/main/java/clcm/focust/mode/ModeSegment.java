@@ -52,8 +52,7 @@ public class ModeSegment{
 			IJ.log("Opening: " + parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 
-			System.out.println("TertiaryIsDifference: " + parameters.getTertiaryIsDifference());
-			System.out.println("" + parameters.getProcessTertiary());
+
 
 			if (parameters.getTertiaryIsDifference()) {
 				//tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
