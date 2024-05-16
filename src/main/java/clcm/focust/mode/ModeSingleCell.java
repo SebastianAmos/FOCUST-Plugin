@@ -40,7 +40,7 @@ public class ModeSingleCell implements Mode {
 		ResultsTable rt = tu.joinTablesByLabel(primaryRelabelled.getResults(), primaryObjectName, imgData.getSecondary(), secondaryObjectName, "Label");
 
 		// TODO - NOT TESTED FOR SEGMENTING INDUVIDUAL CYTOS, ONLY FROM TERTIARY AS DIFFERENCE
-		// join tertiary into combined if tertiary data is available -
+		// join tertiary into combined if tertiary data is available
 		if (parameters.getProcessTertiary() || parameters.getTertiaryIsDifference()) {
 			rt = tu.joinTablesByLabel(rt, "", imgData.getTertiary(), tertiaryObjectName, "Label");
 		}
