@@ -28,7 +28,14 @@ public class ModeSingleCell implements Mode {
 		 */
 		ManageDuplicates md = new ManageDuplicates();
 		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), imgData.getPrimary());
-		IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Primary_Objects_Relabelled_" + imgName);
+
+		if(!parameters.getOutputDir().isEmpty()){
+			IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getOutputDir() + "Primary_Objects_Relabelled_" + imgName);
+		} else {
+			IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getInputDir() + "Primary_Objects_Relabelled_" + imgName);
+		}
+
+
 
 		/*
 		 * MERGE THE DATA BY LABEL 
