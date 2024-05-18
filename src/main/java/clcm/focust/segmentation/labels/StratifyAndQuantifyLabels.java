@@ -16,7 +16,6 @@ import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ImageConverter;
 import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DFloat;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
@@ -26,7 +25,8 @@ import inra.ijpb.data.image.Images3D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
-import net.haesleinhuepf.clijx.morpholibj.MorphoLibJChamferDistanceMap;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 /**
  * @author SebastianAmos
@@ -55,7 +55,8 @@ public class StratifyAndQuantifyLabels {
 	 */
 	public StratifiedResultsHolder process(SegmentedChannels imgData, ImagePlus imp, Double bandPercent, String objectType, ParameterCollection params, String imgName) {
 
-
+		ijLog("Stratification commencing...");
+		long startTime = System.currentTimeMillis();
 
 		// Lists to store each band type
 		List<ClearCLBuffer> b1 = new ArrayList<>(); // inner 25 %
@@ -106,8 +107,14 @@ public class StratifyAndQuantifyLabels {
 		
 		/** Generate Results */
 		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
-		List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal, params);
 
+		//List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal, params); // this is slow.
+
+		List<ResultsTable> rtList = TableUtility.compileBandIntensitiesMultithreaded(bandTypes, imgData.getChannels().toArray(channels), cal, params);
+
+
+		long endTime = System.currentTimeMillis();
+		ijLog("Time to stratify and quantify: " + (endTime - startTime)/1000 + "seconds.");
 
         return StratifiedResultsHolder.builder()
 				.bands(bandTypes)
@@ -115,7 +122,7 @@ public class StratifyAndQuantifyLabels {
 				.build();
 	}
 	
-	
+
 	/**
 	 * Saves all of the band types, appending the current object type and band number to the name.
 	 * Objects are either of the type "Q" = quarter, or "H" = half.

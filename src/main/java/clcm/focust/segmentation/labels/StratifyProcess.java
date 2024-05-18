@@ -14,8 +14,8 @@ public class StratifyProcess {
 		
 		Map<String, StratifiedResultsHolder> tables = new HashMap<>();
 		
-		double quarter = 0.25;
-		double half = 0.5;
+		final double quarter = 0.25;
+		final double half = 0.5;
 		
 		StratifyAndQuantifyLabels stratify = new StratifyAndQuantifyLabels();
 

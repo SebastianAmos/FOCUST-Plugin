@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
@@ -34,11 +38,47 @@ public class ModeAnalyse implements Mode{
 		
 		// Quantify primary, secondary, and optional tertiary.
 		ijLog("Analysing objects...");
+
+
+		long startTime = System.currentTimeMillis();
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+		Future<ResultsTable> primaryFuture = executor.submit(() -> analyze3D.process(imgData.images.getPrimary()));
+		Future<ResultsTable> secondaryFuture = executor.submit(() -> analyze3D.process(imgData.images.getSecondary()));
+
+		try {
+			primaryResults.add(primaryFuture.get());
+			secondaryResults.add(secondaryFuture.get());
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		imgData.images.getTertiary().ifPresent(t -> {
+			try {
+				Future<ResultsTable> tertiaryFuture = executor.submit(() -> analyze3D.process(t));
+				tertiaryResults.add(tertiaryFuture.get());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+		executor.shutdown();
+
+		long endTime = System.currentTimeMillis();
+		ijLog("Time to run analyze3D multithreaded: " + (endTime - startTime)/1000 + "seconds.");
+
+
+
+		/*
+		long startTime = System.currentTimeMillis();
 		primaryResults.add(analyze3D.process(imgData.images.getPrimary()));
 		secondaryResults.add(analyze3D.process(imgData.images.getSecondary()));
 		imgData.images.getTertiary().ifPresent(t -> tertiaryResults.add(analyze3D.process(t)));
-		
-		
+		long endTime = System.currentTimeMillis();
+		ijLog("Time to run analyze3D on a single thread: " + (endTime - startTime)/1000 + "seconds.");
+
+		*/
+
 		// Add segmented images to list for intensity analysis
 		segmentedObjects.add(imgData.images.getPrimary());
 		segmentedObjects.add(imgData.images.getSecondary());
@@ -47,7 +87,7 @@ public class ModeAnalyse implements Mode{
 		
 		// Map intensity data to each object type
 		ijLog("Measuring channel intensities...");
-		Map<ImagePlus, ResultsTable> intensityTables = TableUtility.compileIntensityResults(segmentedObjects, 
+		Map<ImagePlus, ResultsTable> intensityTables = TableUtility.compileIntensityResultsMultithread(segmentedObjects,
 				imgData.images.getChannels().toArray(new ImagePlus[imgData.images.getChannels().size()]),
 				parameters);
 		

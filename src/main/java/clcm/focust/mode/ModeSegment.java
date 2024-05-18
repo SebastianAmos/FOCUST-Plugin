@@ -4,6 +4,11 @@ import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
@@ -58,7 +63,7 @@ public class ModeSegment{
 				//tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 				//tertiary = Optional.ofNullable(LabelEditor.subtractOneFromTwo(primary, secondary));
 
-				tertiary = Optional.ofNullable(Segmentation.generateBySubtractionAndRelabel(secondary, primary));
+				tertiary = Optional.of(Segmentation.generateBySubtractionAndRelabel(secondary, primary));
 				
 				if (!parameters.getOutputDir().isEmpty()) {
 					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getOutputDir() + ModeConstants.TERTIARY_PREFIX + imgName);
@@ -78,8 +83,53 @@ public class ModeSegment{
 			// analysis-only = false, run the user-defined segmentation.
 			
 			ijLog("Number of channels: " + channels.length);
-			
+
+			long startTime = System.currentTimeMillis();
+
+
+
+			// Attempt at multithreading segmentation
+			ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+			Future<ImagePlus> primaryFuture = executor.submit(() -> Segmentation.run(channels[parameters.getPrimaryObject().getChannel()].duplicate(),
+					parameters.getPrimaryObject(),
+					parameters));
+
+			Future<ImagePlus> secondaryFuture = executor.submit(() -> Segmentation.run(channels[parameters.getSecondaryObject().getChannel()].duplicate(),
+					parameters.getSecondaryObject(),
+					parameters));
+
+			try {
+				primary = primaryFuture.get();
+				secondary = secondaryFuture.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+
+			if (parameters.getProcessTertiary()) {
+				Future<ImagePlus> tertiaryFuture = executor.submit(() -> Segmentation.run(channels[parameters.getTertiaryObject().getChannel()].duplicate(),
+						parameters.getTertiaryObject(),
+						parameters));
+				try {
+					tertiary = Optional.ofNullable(tertiaryFuture.get());
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+
+			} else if (parameters.getTertiaryIsDifference()) {
+				tertiary = Optional.of(Segmentation.generateBySubtraction(secondary, primary, parameters));
+			}
+
+			executor.shutdown();
+
+			long endTime = System.currentTimeMillis();
+			ijLog("Time to run segmentation multithreaded: " + (endTime - startTime)/1000 + "seconds.");
+
+
+
+
 			// Run user-defined segmentation on the correct channel
+			/*
 			primary = Segmentation.run(channels[parameters.getPrimaryObject().getChannel()].duplicate(),
 					parameters.getPrimaryObject(),
 					parameters);
@@ -96,11 +146,17 @@ public class ModeSegment{
 			} else if (parameters.getTertiaryIsDifference()) {
 				tertiary = Optional.ofNullable(Segmentation.generateBySubtraction(secondary, primary, parameters));
 			}
-			
-			
+
+			long endTime = System.currentTimeMillis();
+			ijLog("Time to run segmentation on a single thread: " + (endTime - startTime)/1000 + "seconds.");
+
+			 */
+
 			// Set calibrations
-			primary.setCalibration(cal);
-			secondary.setCalibration(cal);
+            assert primary != null;
+            primary.setCalibration(cal);
+            assert secondary != null;
+            secondary.setCalibration(cal);
 			tertiary.ifPresent(t -> t.setCalibration(cal));
 			
 			

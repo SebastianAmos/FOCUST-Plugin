@@ -2,6 +2,7 @@ package clcm.focust.utility;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.*;
 
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
@@ -14,6 +15,8 @@ import inra.ijpb.measure.IntensityMeasures;
 import inra.ijpb.measure.ResultsBuilder;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 /**
  * This helper class contains helper methods for calculating intensities and saving results tables. 
@@ -144,6 +147,10 @@ public class TableUtility {
 	 */
 	public static Map<ImagePlus, ResultsTable> compileIntensityResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
 
+		ijLog("Running single threaded intensity calculations.");
+
+		long start = System.currentTimeMillis();
+
 		// A map for intensity calcs
 		Map<ImagePlus, ResultsTable> intensityTables = new HashMap<>();
 		
@@ -221,14 +228,191 @@ public class TableUtility {
 			intensityTables.put(segmentedObjects.get(j), rt);
 			
 		}
-		
+
+		long end = System.currentTimeMillis();
+		ijLog("Single threaded intensity calculations completed in " + (end - start)/1000 + " seconds.");
+
 		return intensityTables;
 		
 	}
-	
+
+	public static Map<ImagePlus, ResultsTable> compileIntensityResultsMultithread(ArrayList<ImagePlus> segmetentedObjects, ImagePlus[] channels, ParameterCollection parameters) {
+
+		ijLog("Running Multi-threaded intensity calculations.");
+		long start = System.currentTimeMillis();
+
+		Map<ImagePlus, ResultsTable> intensityResults = new HashMap<>();
+
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+		for (ImagePlus segmentedObject : segmetentedObjects) {
+
+			List<Future<ResultsTable>> futures = new ArrayList<>();
+
+			for (int k = 0; k < channels.length; k++) {
+
+				ImagePlus channel = channels[k];
+
+				String channelName = getChannelName(k, parameters);
+
+				Future<ResultsTable> future = executor.submit(() -> {
+					ResultsTable temp = TableUtility.processIntensity(channel, segmentedObject);
+					List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+					headers.remove(0);
+
+					for (String head : headers) {
+						String newHead = channelName + "." + head;
+						temp.renameColumn(head, newHead);
+					}
+
+					return temp;
+
+				});
+
+				futures.add(future);
+
+			}
+
+			ResultsTable rt = new ResultsTable();
+
+			for (Future<ResultsTable> future : futures) {
+				try {
+					ResultsTable temp = future.get();
+					List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+					for (String head : headers) {
+						rt.setColumn(head, temp.getColumnAsVariables(head));
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			intensityResults.put(segmentedObject, rt);
+
+		}
+
+		executor.shutdown();
+
+		long end = System.currentTimeMillis();
+		ijLog("Multi-threaded intensity calculations completed in " + (end - start)/1000 + " seconds.");
+
+		return intensityResults;
+	}
+
+
+	/** TODO While this implementation is slightly faster to compute, the channel data can be in any order, so stacks results would need more work that probably isn't worth a few seconds per image...
+	 *
+	 * @param segmetentedObjects
+	 * @param channels
+	 * @param parameters
+	 * @return
+	 */
+	public static Map<ImagePlus, ResultsTable> compileIntensityResultsMultithreadConcurrentMap(ArrayList<ImagePlus> segmetentedObjects, ImagePlus[] channels, ParameterCollection parameters) {
+
+		ijLog("Running Multi-threaded (2) intensity calculations.");
+		long start = System.currentTimeMillis();
+
+		Map<ImagePlus, ResultsTable> intensityResults = new ConcurrentHashMap<>();
+
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		ijLog("Number of threads: " + Runtime.getRuntime().availableProcessors() + " cores.");
+
+		/* Multithreaded */
+		for (ImagePlus segmentedObject : segmetentedObjects){
+			for (int i = 0; i < channels.length; i++) {
+				ImagePlus channel = channels[i];
+				String channelName = getChannelName(i, parameters);
+
+				executor.submit(() -> {
+					ResultsTable temp = TableUtility.processIntensity(channel, segmentedObject);
+					List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+					headers.remove(0);
+
+					for (String head : headers){
+						String newHead = channelName + "." + head;
+						temp.renameColumn(head, newHead);
+					}
+
+					// sync to concurrent map
+					synchronized (intensityResults){
+						if(intensityResults.containsKey(segmentedObject)) {
+							ResultsTable existingTable = intensityResults.get(segmentedObject);
+							List<String> renamedHeaders = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+							for (String head : renamedHeaders){
+								existingTable.setColumn(head, temp.getColumnAsVariables(head));
+							}
+						} else {
+							intensityResults.put(segmentedObject, temp);
+						}
+					}
+					return null;
+				});
+			}
+		}
+		executor.shutdown();
+		/* End Multithreaded */
+
+		try {
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		long end = System.currentTimeMillis();
+		ijLog("Multi-threaded (2) intensity calculations completed in " + (end - start)/1000 + " seconds.");
+		return intensityResults;
+	}
+
+
+
+
+	private static String getChannelName(int k, ParameterCollection parameters) {
+		String channelName = "C";
+
+		if (k == 0 ) {
+			if(!parameters.getNameChannel1().isEmpty()){
+				channelName = parameters.getNameChannel1();
+			} else {
+				channelName = "C" + (k + 1);
+			}
+		}
+
+		if (k == 1) {
+			if(!parameters.getNameChannel2().isEmpty()){
+				channelName = parameters.getNameChannel2();
+			} else {
+				channelName = "C" + (k + 1);
+			}
+		}
+
+		if (k == 2) {
+			if(!parameters.getNameChannel3().isEmpty()){
+				channelName = parameters.getNameChannel3();
+			} else {
+				channelName = "C" + (k + 1);
+			}
+		}
+
+		if (k == 3) {
+			if(!parameters.getNameChannel4().isEmpty()){
+				channelName = parameters.getNameChannel4();
+			} else {
+				channelName = "C" + (k + 1);
+			}
+		}
+
+		return channelName;
+	}
+
+
+
 	
 	public static List<ResultsTable> compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal, ParameterCollection parameters) {
-		
+
+		ijLog("Compiling band intensity results.");
+		long start = System.currentTimeMillis();
+
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		List<ResultsTable> rtList = new ArrayList<>();
 		int count = 1;
@@ -243,7 +427,7 @@ public class TableUtility {
             for (int j = 0; j < channels.length; j++) {
 
                 ClearCLBuffer copy = clij2.create(band);
-                clij2.copy(band, copy);
+               //clij2.copy(band, copy);
                 ImagePlus imp = clij2.pull(copy);
                 imp.setCalibration(cal);
                 copy.close();
@@ -332,10 +516,73 @@ public class TableUtility {
             count++;
         }
 
+		long end = System.currentTimeMillis();
+		ijLog("Band intensity results compiled in " + (end - start)/1000 + " seconds.");
+
 		return rtList;
 	}
-	
-	
+
+
+
+	public static List<ResultsTable> compileBandIntensitiesMultithreaded(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal, ParameterCollection parameters) {
+
+		ijLog("Compiling band intensity results multithreaded.");
+		long start = System.currentTimeMillis();
+
+		CLIJ2 clij2 = CLIJ2.getInstance();
+
+		List<Future<ResultsTable>> futureList = new ArrayList<>();
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		ijLog("Number of threads: " + Runtime.getRuntime().availableProcessors() + " cores.");
+		int count = 0;
+		for (ClearCLBuffer band: bands){
+
+			count++;
+
+			for(int j = 0; j < channels.length; j++) {
+
+				ImagePlus channel = channels[j];
+				int finalJ = j;
+				int finalCount = count;
+				Future<ResultsTable> future = executor.submit(() ->{
+					ClearCLBuffer copy = clij2.create(band);
+					clij2.copy(band, copy);
+					ImagePlus imp = clij2.pull(copy);
+					imp.setCalibration(cal);
+					copy.close();
+
+					ResultsTable temp = TableUtility.processIntensity(channel, imp);
+					imp.close();
+					List<String> headers = new ArrayList<>(Arrays.asList(temp.getHeadings()));
+					headers.remove(0);
+
+					String channelName = getChannelName(finalJ, parameters);
+					for (String head : headers) {
+						String newHead = finalCount + "." + channelName + "." + head;
+						temp.renameColumn(head, newHead);
+					}
+					return temp;
+				});
+				futureList.add(future);
+			}
+		}
+
+		List<ResultsTable> rtList = new ArrayList<>();
+		for (Future<ResultsTable> future : futureList) {
+			try {
+				rtList.add(future.get());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		executor.shutdown();
+
+		long end = System.currentTimeMillis();
+		ijLog("Band intensity results (multithreaded) compiled in " + (end - start)/1000 + " seconds.");
+
+		return rtList;
+	}
 	
 	
 	public static ResultsTable extractGroupAndTitle(ResultsTable rt, ParameterCollection parameters, String imgName) {

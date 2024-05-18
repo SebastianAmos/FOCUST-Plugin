@@ -88,6 +88,7 @@ public class ModeProcess{
 
 			// Generate stratified bands - bands are saved within
 			StratifyProcess stratify = new StratifyProcess();
+
 			Map<String, StratifiedResultsHolder> stratifyResults = stratify.process(parameters, segmentedChannels, imgName);
 
 			// Build compiledImageData object.
