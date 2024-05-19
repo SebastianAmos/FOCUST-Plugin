@@ -47,6 +47,8 @@ public class ModeSegment{
 		// open images if analysis-only = true
 		if(parameters.getAnalysisOnly()) {
 
+			ijLog("Analysis only mode: Opening images from input directory.");
+
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
 
@@ -83,7 +85,7 @@ public class ModeSegment{
 			// analysis-only = false, run the user-defined segmentation.
 			
 			ijLog("Number of channels: " + channels.length);
-
+			ijLog("Segmenting objects...");
 			long startTime = System.currentTimeMillis();
 
 
@@ -123,7 +125,7 @@ public class ModeSegment{
 			executor.shutdown();
 
 			long endTime = System.currentTimeMillis();
-			ijLog("Time to run segmentation multithreaded: " + (endTime - startTime)/1000 + "seconds.");
+			ijLog("Segmented completed in: " + (endTime - startTime)/1000 + " seconds.");
 
 
 
@@ -185,7 +187,6 @@ public class ModeSegment{
 				tertiary(tertiary).
 				channels(Arrays.asList(channels)).build();
 
-		ijLog("Segmentation Complete.");
 
 		return segmentedChannels;
 

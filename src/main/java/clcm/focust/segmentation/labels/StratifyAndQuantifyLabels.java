@@ -244,6 +244,11 @@ public class StratifyAndQuantifyLabels {
 
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
 
+			// sort the bands into types here
+
+			//
+
+
 			reportMemory("generateStratifiedBands AFTER distance map bands", clij2);
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
 			stratifiedLabels.put(i, bands);

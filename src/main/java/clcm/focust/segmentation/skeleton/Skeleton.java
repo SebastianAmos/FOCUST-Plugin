@@ -36,7 +36,7 @@ public class Skeleton {
 
 		Skeletonize3D_ skeletonise = new Skeletonize3D_();
 		if (imp.getBitDepth() != 8) {
-			IJ.log("Skeletonize note: Image not 8-bit, converting for thinning.");
+			IJ.log("Skeletonization note: Image not 8-bit, converting for thinning.");
 			ImageConverter converter = new ImageConverter(imp);
 			converter.convertToGray8();
 		}
@@ -80,7 +80,6 @@ public class Skeleton {
 		results = buildResults(skeletonResults, results, imgName, cal);
 		results.setLabelledSkeletons(labelledSkeletons);
 		results.setLabelMatched(matchSkeletonToLabels(labelledSkeletons, labels));
-
 
 		return results;
 	}

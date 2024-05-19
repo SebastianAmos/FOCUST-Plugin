@@ -65,19 +65,8 @@ public class ModeAnalyse implements Mode{
 		executor.shutdown();
 
 		long endTime = System.currentTimeMillis();
-		ijLog("Time to run analyze3D multithreaded: " + (endTime - startTime)/1000 + "seconds.");
+		ijLog("Completed in " + (endTime - startTime)/1000 + " seconds.");
 
-
-
-		/*
-		long startTime = System.currentTimeMillis();
-		primaryResults.add(analyze3D.process(imgData.images.getPrimary()));
-		secondaryResults.add(analyze3D.process(imgData.images.getSecondary()));
-		imgData.images.getTertiary().ifPresent(t -> tertiaryResults.add(analyze3D.process(t)));
-		long endTime = System.currentTimeMillis();
-		ijLog("Time to run analyze3D on a single thread: " + (endTime - startTime)/1000 + "seconds.");
-
-		*/
 
 		// Add segmented images to list for intensity analysis
 		segmentedObjects.add(imgData.images.getPrimary());

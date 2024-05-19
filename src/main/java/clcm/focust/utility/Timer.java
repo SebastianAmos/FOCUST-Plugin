@@ -37,7 +37,7 @@ public class Timer {
             ijLog("FOCUST Batch Completed.");
             ijLog("Total time to process " + nImgs + " images: " + totalTime + " seconds.");
 
-            String logContents = IJ.getLog();
+
             String dir = null;
 
             if(!parameters.getOutputDir().isEmpty()){
@@ -46,6 +46,14 @@ public class Timer {
                 dir = parameters.getInputDir();
             }
 
+            // Log window outputs were incomplete, delay save.
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            String logContents = IJ.getLog();
             String path = dir + "/FOCUST-Log.txt";
             IJ.saveString(logContents, path);
 

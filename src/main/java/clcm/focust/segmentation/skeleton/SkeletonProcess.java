@@ -26,20 +26,27 @@ public class SkeletonProcess {
 		
 		if(params.getSkeletonParameters().getPrimary()) {
 			IJ.log("Skeletonizing primary objects...");
+			long startTime = System.currentTimeMillis();
 			results.put("Primary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getPrimary().duplicate(), imgName, "Primary"), segmentedChannels.getPrimary(), imgName, segmentedChannels.getPrimary().getCalibration()));
-			
+			long endTime = System.currentTimeMillis();
+			IJ.log("Completed in:  " + (endTime - startTime)/1000 + " seconds.");
 		}
 		
 		if(params.getSkeletonParameters().getSecondary()) {
 			IJ.log("Skeletonizing secondary objects...");
+			long startTime = System.currentTimeMillis();
 			results.put("Secondary", skeleton.analyzeSkeletons(skeleton.createSkeletons(segmentedChannels.getSecondary().duplicate(), imgName, "Secondary"), segmentedChannels.getSecondary(), imgName, segmentedChannels.getSecondary().getCalibration()));
-			
+			long endTime = System.currentTimeMillis();
+			IJ.log("Completed in:  " + (endTime - startTime)/1000 + " seconds.");
 		}
 		
 		if(params.getSkeletonParameters().getTertairy()) {
 			segmentedChannels.getTertiary().ifPresent(t -> {
 				IJ.log("Skeletonizing tertiary objects...");
+				long startTime = System.currentTimeMillis();
 				results.put("Tertiary", skeleton.analyzeSkeletons(skeleton.createSkeletons(t.duplicate(),imgName, "Tertiary"), t, imgName, t.getCalibration()));
+				long endTime = System.currentTimeMillis();
+				IJ.log("Completed in:  " + (endTime - startTime)/1000 + " seconds.");
 			});
 		}
 

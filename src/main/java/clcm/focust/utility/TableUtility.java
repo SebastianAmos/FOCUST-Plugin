@@ -147,8 +147,6 @@ public class TableUtility {
 	 */
 	public static Map<ImagePlus, ResultsTable> compileIntensityResults(ArrayList<ImagePlus> segmentedObjects, ImagePlus[] channels, ParameterCollection parameters){
 
-		ijLog("Running single threaded intensity calculations.");
-
 		long start = System.currentTimeMillis();
 
 		// A map for intensity calcs
@@ -238,7 +236,6 @@ public class TableUtility {
 
 	public static Map<ImagePlus, ResultsTable> compileIntensityResultsMultithread(ArrayList<ImagePlus> segmetentedObjects, ImagePlus[] channels, ParameterCollection parameters) {
 
-		ijLog("Running Multi-threaded intensity calculations.");
 		long start = System.currentTimeMillis();
 
 		Map<ImagePlus, ResultsTable> intensityResults = new HashMap<>();
@@ -295,13 +292,13 @@ public class TableUtility {
 		executor.shutdown();
 
 		long end = System.currentTimeMillis();
-		ijLog("Multi-threaded intensity calculations completed in " + (end - start)/1000 + " seconds.");
+		ijLog("Intensity calculations completed in " + (end - start)/1000 + " seconds.");
 
 		return intensityResults;
 	}
 
 
-	/** TODO While this implementation is slightly faster to compute, the channel data can be in any order, so stacks results would need more work that probably isn't worth a few seconds per image...
+	/** TODO While this implementation is slightly faster to compute, the channel data can be in any order, so stacks results would need more work that probably isn't worth a second or two per image...
 	 *
 	 * @param segmetentedObjects
 	 * @param channels
@@ -310,7 +307,6 @@ public class TableUtility {
 	 */
 	public static Map<ImagePlus, ResultsTable> compileIntensityResultsMultithreadConcurrentMap(ArrayList<ImagePlus> segmetentedObjects, ImagePlus[] channels, ParameterCollection parameters) {
 
-		ijLog("Running Multi-threaded (2) intensity calculations.");
 		long start = System.currentTimeMillis();
 
 		Map<ImagePlus, ResultsTable> intensityResults = new ConcurrentHashMap<>();
@@ -360,7 +356,7 @@ public class TableUtility {
 		}
 
 		long end = System.currentTimeMillis();
-		ijLog("Multi-threaded (2) intensity calculations completed in " + (end - start)/1000 + " seconds.");
+		ijLog("Intensity calculations completed in " + (end - start)/1000 + " seconds.");
 		return intensityResults;
 	}
 
@@ -410,7 +406,7 @@ public class TableUtility {
 	
 	public static List<ResultsTable> compileBandIntensities(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal, ParameterCollection parameters) {
 
-		ijLog("Compiling band intensity results.");
+		ijLog("Calculating band-restricted intensities...");
 		long start = System.currentTimeMillis();
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
@@ -526,14 +522,13 @@ public class TableUtility {
 
 	public static List<ResultsTable> compileBandIntensitiesMultithreaded(List<ClearCLBuffer> bands, ImagePlus[] channels, Calibration cal, ParameterCollection parameters) {
 
-		ijLog("Compiling band intensity results multithreaded.");
+		ijLog("Measuring band-restricted intensities...");
 		long start = System.currentTimeMillis();
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
 		List<Future<ResultsTable>> futureList = new ArrayList<>();
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		ijLog("Number of threads: " + Runtime.getRuntime().availableProcessors() + " cores.");
 		int count = 0;
 		for (ClearCLBuffer band: bands){
 
@@ -579,7 +574,7 @@ public class TableUtility {
 		executor.shutdown();
 
 		long end = System.currentTimeMillis();
-		ijLog("Band intensity results (multithreaded) compiled in " + (end - start)/1000 + " seconds.");
+		ijLog("Completed in " + (end - start)/1000 + " seconds.");
 
 		return rtList;
 	}
