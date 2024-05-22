@@ -8,8 +8,7 @@ import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
 
 public class CheckPlugins {
 
-	
-	
+
 	public static boolean areAvailable() {
 
 		if (isCLIJ2Available() && isIJPBAvailable() && isCLIJxAvailable() && isCLIJAvailable()) {

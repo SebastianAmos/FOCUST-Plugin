@@ -1,10 +1,7 @@
 package clcm.focust.segmentation.labels;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
@@ -15,7 +12,6 @@ import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ImageConverter;
-import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
 import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
@@ -35,16 +31,18 @@ import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 public class StratifyAndQuantifyLabels {
 
+	private ClearCLBuffer band1; // inner 25 % or 50 %
+	private ClearCLBuffer band2; // inner-middle 25 % or outer 50 %
+	private ClearCLBuffer band3; // outer-middle 25 %
+	private ClearCLBuffer band4; // outer 25 %
+
+
 	// TODO testing memory reports
 	public static void reportMemory(String method, CLIJ2 clij2){
 		System.out.println("GPU memory in method: " + method + " is " + clij2.reportMemory());
 	}
 
-	private final static String weightLabel = ChamferWeights3D.WEIGHTS_3_4_5_7.toString();
-	private final static boolean normalize = true;
-
 	/**
-	 * 
 	 * @param imgData
 	 * @param imp
 	 * @param bandPercent
@@ -65,63 +63,47 @@ public class StratifyAndQuantifyLabels {
 		List<ClearCLBuffer> b4 = new ArrayList<>(); // outer 25 %
 		
 		Calibration cal = imp.getCalibration();
-		
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
 		reportMemory("StratifyAndQuantifyLabels", CLIJ2.getInstance());
 
 		ClearCLBuffer labs = clij2.push(imp.duplicate());
-	
+
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
-		
-		Map<Integer, List<ClearCLBuffer>> bands = generateStratifiedBands(labs, imp.duplicate(), bandPercent, iterations, clij2, cal);
-		
-		// Group the band types together
-		for (Map.Entry<Integer, List<ClearCLBuffer>> entry : bands.entrySet()) {
-			
-			List<ClearCLBuffer> stratifiedBands = entry.getValue();
-			
-			// Collect the bands into lists so they can be joined back into one image per band type for intensity analysis.
-			b1.add(stratifiedBands.get(0));
-			b2.add(stratifiedBands.get(1));
-			if (bandPercent == 0.25) {
-				b3.add(stratifiedBands.get(2));
-				b4.add(stratifiedBands.get(3));
-			}
-		}
-		
-		// Hold the 4 final band type images.
-		List<ClearCLBuffer> bandTypes = new ArrayList<>();
-		
-		// Add all labels of each band type into the same buffer for intensity analysis
-		bandTypes.add(combineAndRelabelBuffers(b1, labs, clij2, 1));
-		bandTypes.add(combineAndRelabelBuffers(b2, labs, clij2, 2));
-		if (bandPercent == 0.25) {
-			bandTypes.add(combineAndRelabelBuffers(b3, labs, clij2, 3));
-			bandTypes.add(combineAndRelabelBuffers(b4, labs, clij2, 4));
-		}
 
+		// initialise the band buffers.
+		band1 = clij2.create(labs);
+		band2 = clij2.create(labs);
+		if (bandPercent == 0.25) {
+			band3 = clij2.create(labs);
+			band4 = clij2.create(labs);
+		}
 		
-		saveBands(bandTypes, objectType, params, imgName, cal);
+		List<ClearCLBuffer> bands = generateStratifiedBands(labs, imp.duplicate(), bandPercent, iterations, clij2, cal);
+
+		// relabel the bands
+		relabelBuffers(bands, labs, clij2);
+		labs.close();
+
+		//saveBands(bandTypes, objectType, params, imgName, cal);
+		saveBands(bands, objectType, params, imgName, cal);
 		
-		/** Generate Results */
+		/* Generate Results */
 		ImagePlus[] channels = new ImagePlus[imgData.getChannels().size()];
 
 		//List<ResultsTable> rtList = TableUtility.compileBandIntensities(bandTypes, imgData.getChannels().toArray(channels), cal, params); // this is slow.
-
-		List<ResultsTable> rtList = TableUtility.compileBandIntensitiesMultithreaded(bandTypes, imgData.getChannels().toArray(channels), cal, params);
-
+		List<ResultsTable> rtList = TableUtility.compileBandIntensitiesMultithreaded(bands, imgData.getChannels().toArray(channels), cal, params);
 
 		long endTime = System.currentTimeMillis();
 		ijLog("Time to stratify and quantify: " + (endTime - startTime)/1000 + "seconds.");
 
         return StratifiedResultsHolder.builder()
-				.bands(bandTypes)
+				.bands(bands)
 				.tableList(rtList)
 				.build();
 	}
-	
+
 
 	/**
 	 * Saves all of the band types, appending the current object type and band number to the name.
@@ -174,7 +156,7 @@ public class StratifyAndQuantifyLabels {
 	 * @param clij2 instance.
 	 * @return
 	 */
-	private ClearCLBuffer combineAndRelabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2, int bandType) {
+	private ClearCLBuffer combineAndRelabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2) {
 
 		reportMemory("STARTcombineAndRelabelBuffers", clij2);
 
@@ -197,25 +179,55 @@ public class StratifyAndQuantifyLabels {
 
 		return result;
 	}
-	
-	
+
+
 	/**
-//	 * Extracts each label from an image and stratifies it into x % distance bands.
+	 * Combine buffer bands into the final band type buffer.
+	 * @param buffer
+	 * @param clij2
+	 * @return
+	 */
+	private void combineBuffers(ClearCLBuffer buffer, ClearCLBuffer band, CLIJ2 clij2) {
+		ClearCLBuffer copy = clij2.create(band);
+		clij2.copy(band, copy); // wasn't copying original band - testing whether that was why only one label existed.
+		clij2.addImages(buffer, copy, band);
+		copy.close();
+		buffer.close();
+	}
+
+
+	/**
+	 * Relabel a band with the label_ID from the original labelled image.
+	 * @param buffers
+	 * @param labels
+	 * @param clij2
+	 */
+	private void relabelBuffers(List<ClearCLBuffer> buffers, ClearCLBuffer labels, CLIJ2 clij2) {
+
+		for (ClearCLBuffer b : buffers) {
+			ClearCLBuffer copy = clij2.create(b);
+			clij2.copy(b, copy); // to avoid in place
+			clij2.multiplyImages(copy, labels, b);
+			copy.close();
+		}
+
+	}
+
+
+	/**
+	 * Extracts each label from an image and stratifies it into x % distance bands.
 	 * 
 	 * @param labs Labelled image to process.
 	 * @param bandPercent Percentage of the distance map histogram to segment for each label.
 	 * @param bandIterations Number of bands to create. Should be related to the percentage. i.e 25% = 4 iterations.
 	 * @return
 	 */
-	private Map<Integer, List<ClearCLBuffer>> generateStratifiedBands(ClearCLBuffer labs, ImagePlus labels, Double bandPercent, Integer bandIterations, CLIJ2 clij2, Calibration cal){
-		
-		Map<Integer, List<ClearCLBuffer>> stratifiedLabels = new HashMap<>();
+	private List<ClearCLBuffer> generateStratifiedBands(ClearCLBuffer labs, ImagePlus labels, Double bandPercent, Integer bandIterations, CLIJ2 clij2, Calibration cal){
 
 		labels.setCalibration(cal);
 
 		// generate distance map on the whole label image before masking out each label
 		ClearCLBuffer dMap = computeChamferDistanceMap(labels ,clij2, cal);
-		//ClearCLBuffer dMap = xComputeDistanceMap(labels ,clij2, cal);
 
 		reportMemory("generateStratifiedBands", clij2);
 
@@ -224,18 +236,16 @@ public class StratifyAndQuantifyLabels {
 		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
 
-		// TODO -> Consider using im.max or something here again - otherwise should use the LABEL (i think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
+		// TODO -> Consider using im.max here - otherwise should use the LABEL (I think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
 
-		
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
-		// add the whole label and the stratified bands into the map.
 		// label IDs will ascend without gaps - so using i as label ID is fine - just start from 1 to avoid processing the background(0).
 		
 		for (int i = 1; i <= stats.size(); i++) {
 			
 			ClearCLBuffer mask = clij2.create(labs);
 			ClearCLBuffer distanceMask = clij2.create(labs);
-	
+
 			// extract a single label
 			clij2.labelToMask(labs, mask, i);
 			
@@ -244,24 +254,38 @@ public class StratifyAndQuantifyLabels {
 
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
 
-			// sort the bands into types here
 
-			//
 
+			// TODO sort the bands into types here
+			// Combine the new bands with the correct global band type buffer.
+			combineBuffers(bands.get(0), band1, clij2);
+			combineBuffers(bands.get(1), band2, clij2);
+			if (bandPercent == 0.25) {
+				combineBuffers(bands.get(2), band3, clij2);
+				combineBuffers(bands.get(3), band4, clij2);
+			}
 
 			reportMemory("generateStratifiedBands AFTER distance map bands", clij2);
 			// add the ordered bands for this label to the map, paired to the index of the label they were generated from.
-			stratifiedLabels.put(i, bands);
+
+			//stratifiedLabels.put(i, bands);
 			
 			mask.close();
 			distanceMask.close();
 
 		}
+
+		// initialise an arraylist with the 4 band types.
+		List<ClearCLBuffer> bandTypes = new ArrayList<>(Arrays.asList(band1, band2));
+		if (bandPercent == 0.25) {
+			bandTypes.addAll(Arrays.asList(band3, band4));
+		}
+
+
 		
-		return stratifiedLabels;
+		return bandTypes;
 	}
-	
-	
+
 
 	/**
 	 * Computes a distance map from an input buffer.
@@ -335,6 +359,5 @@ public class StratifyAndQuantifyLabels {
 		
 		return bands;
 	}
-
 
 }

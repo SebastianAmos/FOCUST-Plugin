@@ -539,6 +539,7 @@ public class TableUtility {
 				ImagePlus channel = channels[j];
 				int finalJ = j;
 				int finalCount = count;
+
 				Future<ResultsTable> future = executor.submit(() ->{
 					ClearCLBuffer copy = clij2.create(band);
 					clij2.copy(band, copy);
