@@ -96,7 +96,7 @@ public class StratifyAndQuantifyLabels {
 		List<ResultsTable> rtList = TableUtility.compileBandIntensitiesMultithreaded(bands, imgData.getChannels().toArray(channels), cal, params);
 
 		long endTime = System.currentTimeMillis();
-		ijLog("Time to stratify and quantify: " + (endTime - startTime)/1000 + "seconds.");
+		ijLog("Time to stratify and quantify: " + (endTime - startTime)/1000 + " seconds.");
 
         return StratifiedResultsHolder.builder()
 				.bands(bands)
