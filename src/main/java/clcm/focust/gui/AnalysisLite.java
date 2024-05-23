@@ -7,12 +7,11 @@ import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.parameters.SkeletonParameters;
 import clcm.focust.parameters.StratifyParameters;
-
+import ij.IJ;
 import org.scijava.ItemVisibility;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-
 
 
 @Plugin(type = Command.class, menuPath = "Plugins>FOCUST>Analysis Lite")
@@ -50,11 +49,19 @@ public class AnalysisLite implements Command {
 	@Override
 	public void run() {
 
-		//IJ.log("Loading parameter file...");
+        try {
+			Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        IJ.log("Running Analysis Lite...");
+
+		IJ.log("Loading parameter file...");
 
 		try {
 			ParameterCollection param = ParameterCollection.loadParameterCollection(parameterfile.getAbsolutePath());
-			//IJ.log("Parameter file loaded.");
+			IJ.log("Parameter file loaded.");
 
 			launchFOCUST(param);
 
