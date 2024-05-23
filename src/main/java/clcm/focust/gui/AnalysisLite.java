@@ -49,12 +49,6 @@ public class AnalysisLite implements Command {
 	@Override
 	public void run() {
 
-        try {
-			Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         IJ.log("Running Analysis Lite...");
 
 		IJ.log("Loading parameter file...");
@@ -78,6 +72,10 @@ public class AnalysisLite implements Command {
 			ObjectParameters tertiaryObject = param.getTertiaryObject();
 			SkeletonParameters skeletonParams = param.getSkeletonParameters();
 			StratifyParameters stratifyParams = param.getStratifyParameters();
+
+			if (outputdir != null){
+				outputdir = inputdir;
+			}
 
 			ParameterCollection parameterCollection = ParameterCollection.builder().
 					inputDir(inputdir.getAbsolutePath() + "\\").
