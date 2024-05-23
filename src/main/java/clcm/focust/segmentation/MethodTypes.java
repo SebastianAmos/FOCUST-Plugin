@@ -6,7 +6,8 @@ public enum MethodTypes {
 	CLASSICWATERSHED(new ClassicWatershed(), "Classic Watershed"),
 	VORONOIOTSU(new VoronoiOtsuLabelling(), "Voronoi Otsu"),
 	EXTENDBYVORONOI(new ExtendByVoronoi(), "Extend by Voronoi"),
-	CONNECTEDCOMP(new ConnectedComponents(), "Conn. Comp.");
+	CONNECTEDCOMP(new ConnectedComponents(), "Conn. Comp."),
+	DISTANCETRANSFORM(new DistanceTransform(), "Dist. Tran."),;
 	
 	private Method method;
 	private String displayName;
