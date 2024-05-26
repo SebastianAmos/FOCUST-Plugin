@@ -38,7 +38,7 @@ public class Timer {
             ijLog("Total time to process " + nImgs + " images: " + totalTime + " seconds.");
 
 
-            String dir = null;
+            String dir;
 
             if(!parameters.getOutputDir().isEmpty()){
                 dir = parameters.getOutputDir();

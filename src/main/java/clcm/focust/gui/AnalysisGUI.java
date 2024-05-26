@@ -2531,7 +2531,6 @@ public class AnalysisGUI extends JFrame {
 					try {
 						cbAnalysisMode.setSelectedItem(param.getMode());
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						cbAnalysisMode.setSelectedItem(ModeType.NONE);
 					}
 				
@@ -2558,22 +2557,17 @@ public class AnalysisGUI extends JFrame {
 					System.out.println("Could not locate or load FOCUST parameter file.");
 					e1.printStackTrace();
 				}
-				
-				
-				
-				
-				
+
 			}
 		});
 		
 
 	}
 	
-	
-	
-	
-
-
+	/**
+	 * Set the mode of the analysis.
+	 * @param index
+	 */
 	public void setMode(int index) {
 		cbAnalysisMode.setSelectedIndex(index);
 	}

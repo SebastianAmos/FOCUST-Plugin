@@ -1,13 +1,11 @@
 package clcm.focust.mode;
 
 import clcm.focust.parameters.ParameterCollection;
-import clcm.focust.segmentation.labels.StratifyAndQuantifyLabels;
 import clcm.focust.utility.*;
 import ij.IJ;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij2.CLIJ2;
 
-import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 public class ModeSingleCell implements Mode {
 	
@@ -27,7 +25,7 @@ public class ModeSingleCell implements Mode {
 		 * MAP DUPLICATE PRIMARY OBJECTS
 		 */
 		ManageDuplicates md = new ManageDuplicates();
-		RelabelledObjects primaryRelabelled = md.run(imgData.images.getSecondary(), imgData.images.getPrimary(), imgData.getPrimary());
+		RelabelledObjects primaryRelabelled = md.run(imgData.getImages().getSecondary(), imgData.getImages().getPrimary(), imgData.getPrimary());
 
 		if(!parameters.getOutputDir().isEmpty()){
 			IJ.saveAs(primaryRelabelled.getRelabelled(), "TIF", parameters.getOutputDir() + "Primary_Objects_Relabelled_" + imgName);

@@ -43,12 +43,12 @@ public class ParameterCollection implements DataObject {
     final StratifyParameters stratifyParameters;
 
     // Optimize Parameters
-    final boolean primaryDisplayOriginal;
-    final boolean primaryOverlay;
-    final boolean secondaryDisplayOriginal;
-    final boolean secondaryOverlay;
-    final boolean tertiaryDisplayOriginal;
-    final boolean tertiaryOverlay;
+    private final boolean primaryDisplayOriginal;
+    private final boolean primaryOverlay;
+    private final boolean secondaryDisplayOriginal;
+    private final boolean secondaryOverlay;
+    private final boolean tertiaryDisplayOriginal;
+    private final boolean tertiaryOverlay;
     
     
     public static void saveParameterCollection(ParameterCollection parameterCollection, String filename) throws IOException {

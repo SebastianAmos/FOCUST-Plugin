@@ -35,13 +35,13 @@ public class ModeSpheroid implements Mode {
 	public void run(ParameterCollection parameters, CompiledImageData imgData, String imgName) {
 
 		List<ResultsTable> tertiary = new ArrayList<>();
-        List<ResultsTable> secondary = new ArrayList<>();
+		List<ResultsTable> secondary = new ArrayList<>();
         List<ResultsTable> primary = new ArrayList<>();
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
 
 		// init with current collated table for each type.
-		imgData.images.getTertiary().ifPresent(t -> {
+		imgData.getImages().getTertiary().ifPresent(t -> {
 			tertiary.add(imgData.getTertiary());
 		});
 
@@ -92,7 +92,7 @@ public class ModeSpheroid implements Mode {
 		 * otherwise, tertiary data needs to be saved independently and the same nested relationships between primary and secondaries as above need to be established
 		 */
 		
-		if (imgData.images.getTertiary().isPresent()) {
+		if (imgData.getImages().getTertiary().isPresent()) {
 	
 			if (parameters.getTertiaryIsDifference()) { // combine with secondary -> labels should match
 				

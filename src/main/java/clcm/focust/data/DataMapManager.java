@@ -10,9 +10,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
-
-import ij.IJ;
 
 /**
  * Publish-subscribe model for data in a map format of a given type.
@@ -47,7 +44,7 @@ public class DataMapManager<K, T extends DataObject>
 	/**
 	 * Constructor.
 	 * 
-	 * @param what to execute updates upon.
+	 * @param anExecutorService to execute updates upon.
 	 */
 	public DataMapManager(final ExecutorService anExecutorService) {
 		listeners = new HashMap<>();

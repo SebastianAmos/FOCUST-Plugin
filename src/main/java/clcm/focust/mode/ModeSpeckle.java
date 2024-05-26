@@ -9,14 +9,10 @@ import clcm.focust.utility.Timer;
 import ij.measure.ResultsTable;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 public class ModeSpeckle implements Mode {
 
@@ -52,7 +48,7 @@ public class ModeSpeckle implements Mode {
 
 		// Count number of tertiary objects within primary 	objects
 		// centroids = tertiary
-		imgData.images.getTertiary().ifPresent(t -> {
+		imgData.getImages().getTertiary().ifPresent(t -> {
 			// count speckles per nucleus
 			ResultsTable ter = imgData.getTertiary();
 			TableUtility.appendResultsByLabel(pri, countLabels.countChildren(imgData.getImages().getPrimary(), t, "TertiarySpeckles"), ""); // countLabels.centroids is reset here
@@ -106,9 +102,7 @@ public class ModeSpeckle implements Mode {
 		ResultsTableUtility rtSave = new ResultsTableUtility();
 		rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(primary), "primary_objects", parameters);
 		rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
-		imgData.getImages().getTertiary().ifPresent(t -> {
-			rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(tertiary), "tertiary_objects", parameters);
-		});
+		imgData.getImages().getTertiary().ifPresent(t -> rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(tertiary), "tertiary_objects", parameters));
 
 		// clean up
 		clij2.clear();

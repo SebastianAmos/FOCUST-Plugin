@@ -8,9 +8,9 @@ import lombok.Builder;
 @Data
 @Builder
 public class MethodParameters {
-    MethodTypes methodType;
-    ThresholdType thresholdType; 
-    Vector3D sigma;
-    String classifierFilename;
-    double thresholdSize;
+    private MethodTypes methodType;
+    private ThresholdType thresholdType;
+    private Vector3D sigma;
+    private String classifierFilename;
+    private double thresholdSize;
 }

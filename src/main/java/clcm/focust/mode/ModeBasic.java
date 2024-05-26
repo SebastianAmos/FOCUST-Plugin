@@ -30,11 +30,8 @@ public class ModeBasic implements Mode {
 			rtSave.saveAndStackResults(imgData.getSecondary(), "secondary_objects", parameters);
 
 			// Tertiary results (optional)
-			imgData.images.getTertiary().ifPresent(t ->{
-				rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters);
-			});
+			imgData.getImages().getTertiary().ifPresent(t -> rtSave.saveAndStackResults(imgData.getTertiary(), "tertiary_objects", parameters));
 
-			ijLog("Analysis Finished.");
 			
 			// clean up
 			CLIJ2 clij2 = CLIJ2.getInstance();

@@ -2,6 +2,7 @@ package clcm.focust.mode;
 
 
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.utility.Timer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
 public class ModeNone implements Mode {
@@ -22,6 +23,8 @@ public class ModeNone implements Mode {
 		// clean up
 		CLIJ2 clij2 = CLIJ2.getInstance();
 		clij2.clear();
+
+		Timer.stop(parameters);
 		
 	}
 }

@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 @Builder
 public class StratifyParameters {
-		Boolean primary25;
-		Boolean primary50;
-		Boolean secondary25;
-		Boolean secondary50;
-		Boolean tertiary25;
-		Boolean tertiary50;
+	private Boolean primary25;
+	private Boolean primary50;
+	private Boolean secondary25;
+	private Boolean secondary50;
+	private Boolean tertiary25;
+	private Boolean tertiary50;
 }
