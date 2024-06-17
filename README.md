@@ -47,4 +47,13 @@ To lodge a query or ask a question, please use the [forum](https://forum.image.s
 
 I am alway open to implementing new features and functionality when I can find the time - so if you have an interesting use-case or a cool idea, let me know on the forum or of Github. 
 
+## Dependencies
+FOCUST depends on the following projects:
 
+- [CLIJ2](https://clij.github.io/)
+- [MorpholibJ](https://ijpb.github.io/MorphoLibJ/)
+- [Skeletonize3D](https://imagej.net/plugins/skeletonize3d)
+- [AnalyzeSkeleton3D](https://imagej.net/plugins/analyze-skeleton/)
+- [Google GSON](https://github.com/google/gson)
+
+We thank the original authors for their contributions.
