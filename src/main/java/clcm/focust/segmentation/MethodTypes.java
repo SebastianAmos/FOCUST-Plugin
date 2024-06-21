@@ -5,9 +5,8 @@ public enum MethodTypes {
 	MAXIMA(new MaximaSegmentation(), "Maxima"),
 	CLASSICWATERSHED(new ClassicWatershed(), "Classic Watershed"),
 	VORONOIOTSU(new VoronoiOtsuLabelling(), "Voronoi Otsu"),
-	EXTENDBYVORONOI(new ExtendByVoronoi(), "Extend by Voronoi"),
 	CONNECTEDCOMP(new ConnectedComponents(), "Conn. Comp."),
-	DISTANCETRANSFORM(new DistanceTransform(), "Dist. Tran."),;
+	MORPHOLOGICALWATERSHED(new MorphologicalWatershed(), "" );
 	
 	private Method method;
 	private String displayName;
