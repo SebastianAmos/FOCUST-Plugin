@@ -122,7 +122,7 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertFilter2X;
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
-
+	private String[] channelNumbers = {"1", "2", "3", "4", "5", "-"};
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			AnalysisGUI gui = new AnalysisGUI(null);
@@ -591,7 +591,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbPrimaryChannel = new JComboBox();
 		cbPrimaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
-		cbPrimaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
+		cbPrimaryChannel.setModel(new DefaultComboBoxModel(channelNumbers));
 		cbPrimaryChannel.setSelectedIndex(0);
 		GridBagConstraints gbc_cbPrimaryChannel = new GridBagConstraints();
 		gbc_cbPrimaryChannel.insets = new Insets(0, 0, 5, 0);
@@ -997,7 +997,7 @@ public class AnalysisGUI extends JFrame {
 		pnlSecondary.add(lblNewLabel_5_2, gbc_lblNewLabel_5_2);
 		
 		JComboBox cbSecondaryChannel = new JComboBox();
-		cbSecondaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
+		cbSecondaryChannel.setModel(new DefaultComboBoxModel(channelNumbers));
 		cbSecondaryChannel.setSelectedIndex(1);
 		cbSecondaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbSecondaryChannel = new GridBagConstraints();
@@ -1408,7 +1408,7 @@ public class AnalysisGUI extends JFrame {
 		
 		JComboBox cbTertiaryChannel = new JComboBox();
 		cbTertiaryChannel.setEnabled(false);
-		cbTertiaryChannel.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "-"}));
+		cbTertiaryChannel.setModel(new DefaultComboBoxModel(channelNumbers));
 		cbTertiaryChannel.setSelectedIndex(2);
 		cbTertiaryChannel.setFont(new Font("Arial", Font.PLAIN, 14));
 		GridBagConstraints gbc_cbTertiaryChannel = new GridBagConstraints();
