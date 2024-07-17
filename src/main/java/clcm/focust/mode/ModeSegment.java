@@ -8,16 +8,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
-import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.ChannelSplitter;
-import ij.plugin.ImageCalculator;
 import org.apache.commons.io.FilenameUtils;
 
 public class ModeSegment{

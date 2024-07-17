@@ -3,13 +3,8 @@ package clcm.focust.gui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import clcm.focust.data.DataConstants;
-import clcm.focust.data.DataMapManager;
-import clcm.focust.data.DatumManager;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.parameters.ParameterCollection;
-import clcm.focust.speckle.SpecklesConfiguration;
 import ij.gui.GenericDialog;
 import java.awt.Toolkit;
 import java.awt.Window;

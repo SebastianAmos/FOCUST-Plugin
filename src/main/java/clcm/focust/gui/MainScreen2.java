@@ -2,14 +2,8 @@ package clcm.focust.gui;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import clcm.focust.data.DataConstants;
-import clcm.focust.data.DataMapManager;
-import clcm.focust.data.DatumManager;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.parameters.ParameterCollection;
-import clcm.focust.speckle.SpecklesConfiguration;
 import ij.gui.GenericDialog;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -21,28 +15,19 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.Font;
 import javax.swing.JButton;
-import java.awt.GridLayout;
 import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-
-
 public class MainScreen2 extends JFrame{
 	private JPanel mainPane;
-	
+
 
 	/** Button to open the optimization window. */
 	private JButton btnOptimize;
-	/** Button to open Spheroid window. */
-	private JButton btnSpheroid;
-	/** Button to open the single cell window. */
-	private JButton btnSingleCell;
-	/** Button to open the speckle window. */ 
-	private JButton btnSpeckle;
+
 	
 	/**
 	 * construct the main menu gui. 
@@ -123,13 +108,11 @@ public class MainScreen2 extends JFrame{
 		btnAnalyze.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(() -> {
-					
-					// launch anaylsis with the speckle analysis mode selected
+					// launch anaylsis gui
 					AnalysisGUI gui = new AnalysisGUI(paramManager);
 					gui.setMode(0);
 					gui.setLocationRelativeTo(null);
 					gui.setVisible(true);
-					
 					Window win = SwingUtilities.getWindowAncestor(btnAnalyze);
 					win.dispose();
 				});

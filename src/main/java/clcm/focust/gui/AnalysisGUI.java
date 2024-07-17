@@ -138,7 +138,7 @@ public class AnalysisGUI extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1102, 643);
+		setBounds(100, 100, 1100, 643);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 240, 240));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -565,9 +565,9 @@ public class AnalysisGUI extends JFrame {
 		pnlPrimary.setBorder(new MatteBorder(0, 1, 0, 1, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlPrimary);
 		GridBagLayout gbl_pnlPrimary = new GridBagLayout();
-		gbl_pnlPrimary.columnWidths = new int[] {0, 0};
+		gbl_pnlPrimary.columnWidths = new int[] {95, 0};
 		gbl_pnlPrimary.rowHeights = new int[] {30, 0, 0, 0, 0, 30, 0, 0, 35, 0, 30, 0};
-		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
+		gbl_pnlPrimary.columnWeights = new double[]{1.0, 1.0};
 		gbl_pnlPrimary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		pnlPrimary.setLayout(gbl_pnlPrimary);
 		
@@ -749,7 +749,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimaryFirstBlur = new GridBagConstraints();
 		gbc_pnlPrimaryFirstBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimaryFirstBlur.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlPrimaryFirstBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimaryFirstBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimaryFirstBlur.gridwidth = 2;
 		gbc_pnlPrimaryFirstBlur.gridx = 0;
 		gbc_pnlPrimaryFirstBlur.gridy = 6;
@@ -800,7 +800,7 @@ public class AnalysisGUI extends JFrame {
 		GridBagConstraints gbc_pnlPrimarySecondBlur = new GridBagConstraints();
 		gbc_pnlPrimarySecondBlur.anchor = GridBagConstraints.EAST;
 		gbc_pnlPrimarySecondBlur.gridwidth = 2;
-		gbc_pnlPrimarySecondBlur.insets = new Insets(0, 0, 5, 5);
+		gbc_pnlPrimarySecondBlur.insets = new Insets(0, 0, 5, 0);
 		gbc_pnlPrimarySecondBlur.fill = GridBagConstraints.VERTICAL;
 		gbc_pnlPrimarySecondBlur.gridx = 0;
 		gbc_pnlPrimarySecondBlur.gridy = 7;
@@ -972,7 +972,7 @@ public class AnalysisGUI extends JFrame {
 		JPanel pnlSecondary = new JPanel();
 		pnlMain.add(pnlSecondary);
 		GridBagLayout gbl_pnlSecondary = new GridBagLayout();
-		gbl_pnlSecondary.columnWidths = new int[]{0, 0};
+		gbl_pnlSecondary.columnWidths = new int[]{95, 0};
 		gbl_pnlSecondary.rowHeights = new int[] {30, 0, 0, 0, 0, 30, 0, 0, 37, 0, 0, 0};
 		gbl_pnlSecondary.columnWeights = new double[]{1.0, 1.0};
 		gbl_pnlSecondary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -1380,7 +1380,7 @@ public class AnalysisGUI extends JFrame {
 		pnlTertiary.setBorder(new MatteBorder(0, 1, 0, 0, (Color) new Color(169, 169, 169)));
 		pnlMain.add(pnlTertiary);
 		GridBagLayout gbl_pnlTertiary = new GridBagLayout();
-		gbl_pnlTertiary.columnWidths = new int[] {0, 0};
+		gbl_pnlTertiary.columnWidths = new int[] {95, 0};
 		gbl_pnlTertiary.rowHeights = new int[]{30, 0, 0, 0, 0, 30, 0, 0, 35, 0, 30, 0};
 		gbl_pnlTertiary.columnWeights = new double[]{1.0, 1.0};
 		gbl_pnlTertiary.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};

@@ -7,37 +7,21 @@ import java.util.ArrayList;
 import java.util.concurrent.*;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import clcm.focust.data.DataMapManager;
 import clcm.focust.data.DatumManager;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.gui.MainScreen2;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.service.ParameterModeService;
-import clcm.focust.speckle.ExpectedSpeckleResults;
-import clcm.focust.speckle.SpeckleResult;
-import clcm.focust.speckle.Speckles;
-import clcm.focust.speckle.SpecklesConfiguration;
-import clcm.focust.speckle.service.SpeckleProcessor;
-import clcm.focust.speckle.service.SpeckleResultsHandlerService;
-import clcm.focust.speckle.service.SpeckleService;
 import clcm.focust.utility.CheckPlugins;
 
 public final class FOCUST {
 
 	private List<FOCUSTService> services;
 
-	/** Data manager for speckles. */
-	private DataMapManager<String, Speckles> specklesManager;
-
-	private DataMapManager<String, SpeckleResult> speckleResultsManager;
-
-	private final DatumManager<ExpectedSpeckleResults> expectedSpeckleResultsManager;
-	
+	/** Data manager for runtime. */
 	private final DatumManager<ParameterCollection> paramManager; 
 	private final DatumManager<SegmentedChannels> segmentedChannelsManager;
 
-	/** Data manager for runtime configuration. */
-	private DatumManager<SpecklesConfiguration> configurationManager;
 
 	/**
 	 * Constructor. Use {@link #instance()}
@@ -47,20 +31,11 @@ public final class FOCUST {
 		ExecutorService dataExecService = new FOCUSTExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
 		/* Data managers. */
-		specklesManager = new DataMapManager<>(dataExecService);
-		speckleResultsManager = new DataMapManager<>(dataExecService);
-		expectedSpeckleResultsManager = new DatumManager<>(dataExecService);
-		configurationManager = new DatumManager<>(dataExecService);
-		
 		paramManager = new DatumManager<>(dataExecService);
 		segmentedChannelsManager = new DatumManager<>(dataExecService);
 		
 
 		/* Services - Speckle. */
-		services.add(new SpeckleProcessor(configurationManager, specklesManager, expectedSpeckleResultsManager));
-		services.add(new SpeckleService(configurationManager, specklesManager, speckleResultsManager));
-		services.add(new SpeckleResultsHandlerService(speckleResultsManager, expectedSpeckleResultsManager,
-				configurationManager));
 		services.add(new ParameterModeService(paramManager, segmentedChannelsManager));
 
 	}
@@ -112,12 +87,6 @@ public final class FOCUST {
 	public static FOCUST instance() {
 		return InstanceHolder.INSTANCE;
 	}
-
-
-	public final DatumManager<SpecklesConfiguration> specklesConfigurationManager() {
-		return configurationManager;
-	}
-
 
 
 	public DatumManager<SegmentedChannels> getSegmentedChannelsManager() {
