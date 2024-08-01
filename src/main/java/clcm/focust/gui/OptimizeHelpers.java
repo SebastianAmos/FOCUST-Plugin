@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.ChannelSplitter;
 import ij.process.ImageProcessor;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
@@ -128,9 +129,16 @@ public class OptimizeHelpers {
 		ImagePlus segmentedDup = segmented.duplicate();
 
 		if (original.getBitDepth() != segmented.getBitDepth()) {
-			ImageProcessor segmentedProcessor = segmentedDup.getProcessor();
-			segmentedProcessor = convertBitDepth(segmentedProcessor, original.getBitDepth());
-			segmentedDup.setProcessor(segmentedProcessor);
+			ImageStack originalStack = segmented.getStack();
+			ImageStack newStack = new ImageStack(segmented.getWidth(), segmented.getHeight());
+
+			for (int i = 1; i <= originalStack.getSize(); i++) {
+				ImageProcessor ip = originalStack.getProcessor(i);
+				ImageProcessor convertedIP = convertBitDepth(ip, original.getBitDepth());
+				newStack.addSlice(originalStack.getSliceLabel(i), convertedIP);
+			}
+
+			segmented.setStack(newStack);
 		}
 
 		ArrayList<ImagePlus> images = new ArrayList<>();
