@@ -111,7 +111,6 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertiaryS1X;
 	private JTextField txtTertiaryS1Y;
 	private JTextField txtTertiaryS1Z;
-	private JTextField txtPrimaryClassiferDirectory;
 	private JTextField txtPrimaryMethodThreshold;
 	private JTextField txtPriFilter2X;
 	private JTextField txtPriFilter2Y;
@@ -122,7 +121,7 @@ public class AnalysisGUI extends JFrame {
 	private JTextField txtTertFilter2X;
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
-	private String[] channelNumbers = {"1", "2", "3", "4", "5", "-"};
+	private String[] channelNumbers = {"1", "2", "3", "4", "-"};
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			AnalysisGUI gui = new AnalysisGUI(null);

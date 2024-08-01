@@ -9,11 +9,13 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
+import inra.ijpb.morphology.Morphology;
+import inra.ijpb.morphology.Strel3D;
 import inra.ijpb.watershed.Watershed;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
-public class MorphologicalWatershed implements Method {
+public class MorphologicalWatershedBorder implements Method {
 
     @Override
     public ImagePlus apply(CLIJ2 clij2, ImagePlus imp, BackgroundType background, FilterType filter, ThresholdType threshold, ObjectParameters parameters, ParameterCollection parameterCollection) {
@@ -33,14 +35,23 @@ public class MorphologicalWatershed implements Method {
         double tolerance = parameters.getMethodParameters().getSigma().getX(); // Use around 2000-3000 for 16-bit images.
 
         // Connectivity = Method Parameters Sigma Y
-        int connectivity = Integer.parseInt(String.valueOf(parameters.getMethodParameters().getSigma().getY())) ; // Can be either 6 or 26.
+        int connectivity = (int) Math.round(parameters.getMethodParameters().getSigma().getY()); // Can be either 6 or 26.
 
         ImageStack min = MinimaAndMaxima3D.extendedMinima(img.getStack(), tolerance, connectivity);
         ImageStack imposeMin = MinimaAndMaxima3D.imposeMinima(img.getStack(), min, connectivity);
         ImageStack labelledMin = BinaryImages.componentsLabeling(min, connectivity, 32);
-
         ImageStack result = Watershed.computeWatershed(imposeMin, labelledMin, connectivity, dams);
-        return new ImagePlus("", result);
+        ClearCLBuffer segmented = clij2.push(new ImagePlus("", result));
+
+        ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
+
+        // close buffers and stacks
+        input.close();
+        bg.close();
+        filtered.close();
+        input.close();
+
+        return output;
 
     }
 

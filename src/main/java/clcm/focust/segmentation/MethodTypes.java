@@ -6,7 +6,8 @@ public enum MethodTypes {
 	CLASSICWATERSHED(new ClassicWatershed(), "Classic Watershed"),
 	VORONOIOTSU(new VoronoiOtsuLabelling(), "Voronoi Otsu"),
 	CONNECTEDCOMP(new ConnectedComponents(), "Conn. Comp."),
-	MORPHOLOGICALWATERSHED(new MorphologicalWatershed(), "" );
+	MORPHOLOGICALWATERSHEDBORDER(new MorphologicalWatershedBorder(), "Morpho. Border"),
+	MORPHOLOGICALWATERSHEDOBJECT(new MorphologicalWatershedObject(), "Morpho. Object");
 	
 	private Method method;
 	private String displayName;

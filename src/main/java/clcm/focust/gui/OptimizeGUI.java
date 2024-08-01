@@ -125,7 +125,7 @@ public class OptimizeGUI extends JFrame {
 	private JTextField txtTertFilter2Y;
 	private JTextField txtTertFilter2Z;
 	private KillBorderTypes selectedKillBorderOption;
-	private String[] channelNumbers = {"1", "2", "3", "4", "5"};
+	private String[] channelNumbers = {"1", "2", "3", "4"};
 
 	
 	public String inputDir;
@@ -206,7 +206,8 @@ public class OptimizeGUI extends JFrame {
 		JButton btnHelp = new JButton("Help");
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// TODO
+				// Add docs website link
 			}
 		});
 		
@@ -966,8 +967,6 @@ public class OptimizeGUI extends JFrame {
 				Boolean displayOriginal = ckbPrimaryDisplay.isSelected();
 				Boolean withOverlay = ckbPrimaryDisplayOverlay.isSelected();
 
-				
-				
 				// Build the primary parameter object
 				ObjectParameters primaryParams = ObjectParameters.builder().
 						channel(cbPrimaryChannel.getSelectedIndex()).
@@ -1004,7 +1003,9 @@ public class OptimizeGUI extends JFrame {
 				
 				try {
 					ImagePlus primaryDuplicate = primaryImg.duplicate();
-					
+
+					// run segmentation on a new thread
+
 					primaryOutput = Segmentation.run(primaryDuplicate, primaryParams, parameterCollection);
 					IJ.resetMinAndMax(primaryOutput);
 					primaryOutput.setTitle("Primary Objects");
