@@ -7,15 +7,25 @@ import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 
+
 public class OptimizeExecutor {
 
     private final ImageExecutor imageExecutor;
     private final OptimizeHelpers optimizeHelpers = new OptimizeHelpers();
 
-    public OptimizeExecutor(int threads) {
-        this.imageExecutor = new ImageExecutor(threads);
+    public OptimizeExecutor() {
+        this.imageExecutor = new ImageExecutor();
     }
 
+    /**
+     * Execute segmentation with ImageExecutor for multi-threading of optimization processing.
+     * @param img
+     * @param objectParameters
+     * @param parameters
+     * @param name
+     * @param displayOriginal
+     * @param withOverlay
+     */
     public void processSegmentation(ImagePlus img, ObjectParameters objectParameters,
                                     ParameterCollection parameters, String name,
                                     Boolean displayOriginal, Boolean withOverlay) {
@@ -27,7 +37,7 @@ public class OptimizeExecutor {
                 output.setTitle(name + " Objects");
                 if (displayOriginal) {
                     ImagePlus duplicate = img.duplicate();
-                    ImagePlus objectDisplayOverlay = optimizeHelpers.processDisplay(duplicate, output, withOverlay);
+                    ImagePlus objectDisplayOverlay = optimizeHelpers.processDisplay(duplicate, output.duplicate(), withOverlay);
                     objectDisplayOverlay.setTitle(name + " Display");
                     objectDisplayOverlay.show();
                 }
@@ -40,6 +50,8 @@ public class OptimizeExecutor {
         }
 
     }
-
+    public void shutdown() {
+        imageExecutor.shutdown();
+    }
 
 }

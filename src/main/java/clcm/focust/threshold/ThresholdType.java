@@ -17,7 +17,8 @@ public enum ThresholdType {
 	MOMENTS(new MomentsThreshold(), "Moments"),
 	PERCENTILE(new PercentileThreshold(), "Percentile"),
 	RENYIENTROPY(new RenyiEntropyThreshold(), "Renyi Ent."),
-	GREATERCONSTANT(new GreaterConstantThreshold(), "G.Const.");
+	GREATERCONSTANT(new GreaterConstantThreshold(), "G. Const."),
+	SMALLERCONSTANT(new SmallerConstantThreshold(), "S. Const.");
 	
 
 	

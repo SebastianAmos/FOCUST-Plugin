@@ -51,6 +51,7 @@ import clcm.focust.segmentation.Segmentation;
 import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.threshold.ThresholdType;
 import clcm.focust.utility.KillBorderTypes;
+import clcm.focust.utility.OptimizeExecutor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -998,34 +999,14 @@ public class OptimizeGUI extends JFrame {
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						killBorderType(selectedKillBorderOption).
 						build();
-				
-				primaryImg = channelArray[primaryParams.getChannel()];	
-				
-				try {
-					ImagePlus primaryDuplicate = primaryImg.duplicate();
 
-					// run segmentation on a new thread
-
-					primaryOutput = Segmentation.run(primaryDuplicate, primaryParams, parameterCollection);
-					IJ.resetMinAndMax(primaryOutput);
-					primaryOutput.setTitle("Primary Objects");
-					
-					if (displayOriginal) {
-						ImagePlus outputDuplicate = primaryOutput.duplicate();
-						ImagePlus primaryDisplayOverlay = optimize.processDisplay(primaryDuplicate, outputDuplicate, withOverlay);
-						primaryDisplayOverlay.setTitle("Primary Display");
-						primaryDisplayOverlay.show();
-					}
-					
-					primaryOutput.show();
-					IJ.run("Tile", ""); // Arranges the windows so all visible images can be seen on the screen at once.
-
-				} catch (Exception e1) {
-					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
-					e1.printStackTrace();
-				}
-
+				// Run the primary object segmentation
+				OptimizeExecutor optimizeExecutor = new OptimizeExecutor();
+				optimizeExecutor.processSegmentation(channelArray[primaryParams.getChannel()],
+						primaryParams, parameterCollection, "Primary",
+						displayOriginal, withOverlay);
 			}
+
 		});
 		
 		btnProcessPrimary.setToolTipText("Run primary object segmentation");
@@ -1506,32 +1487,12 @@ public class OptimizeGUI extends JFrame {
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						killBorderType(selectedKillBorderOption).
 						build();
-				
-				
-				secondaryImg = channelArray[secondaryParams.getChannel()];
-				
-				try {
-					ImagePlus secondaryDuplicate = secondaryImg.duplicate();
-					
-					secondaryOutput = Segmentation.run(secondaryDuplicate, secondaryParams, parameterCollection);
-					IJ.resetMinAndMax(secondaryOutput);
-					secondaryOutput.setTitle("Secondary Objects");
-					
-					if (displayOriginal) {
-						ImagePlus outputDuplicate = secondaryOutput.duplicate();
-						ImagePlus secondaryDisplayOverlay = optimize.processDisplay(secondaryDuplicate, outputDuplicate, withOverlay);
-						secondaryDisplayOverlay.setTitle("Secondary Display");
-						secondaryDisplayOverlay.show();
-					}
-					
-					
-					secondaryOutput.show();
-					IJ.run("Tile", "");
 
-				} catch (Exception e1) {
-					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
-					e1.printStackTrace();
-				}
+				// Run the secondary object segmentation
+				OptimizeExecutor optimizeExecutor = new OptimizeExecutor();
+				optimizeExecutor.processSegmentation(channelArray[secondaryParams.getChannel()],
+						secondaryParams, parameterCollection, "Secondary",
+						displayOriginal, withOverlay);
 
 			}
 		});
@@ -2062,40 +2023,18 @@ public class OptimizeGUI extends JFrame {
 				ParameterCollection parameterCollection = ParameterCollection.builder().
 						killBorderType(selectedKillBorderOption).
 						build();
-				
 
 				tertiaryImg = channelArray[tertiaryParams.getChannel()];
-				
-				try {
 
-					ImagePlus tertiaryDuplicate = tertiaryImg.duplicate();
-					
-					tertiaryOutput = Segmentation.run(tertiaryDuplicate, tertiaryParams, parameterCollection);
-					IJ.resetMinAndMax(tertiaryOutput);
-					tertiaryOutput.setTitle("Tertiary Objects");
-					
-					if (displayOriginal) {
-						ImagePlus outputDuplicate = tertiaryOutput.duplicate();
-						ImagePlus tertiaryDisplayOverlay = optimize.processDisplay(tertiaryDuplicate, outputDuplicate, withOverlay);
-						tertiaryDisplayOverlay.setTitle("Tertiary Display");
-						tertiaryDisplayOverlay.show();
-					}
-					
-					
-					tertiaryOutput.show();
-					IJ.run("Tile", "");
-
-				} catch (Exception e1) {
-					IJ.showMessage("No image to process. Select a directory and try again. Ensure your images have the required number of channels.");
-					e1.printStackTrace();
-				}
-				
-				
-				
-				
-				
+				// Run the tertiary object segmentation
+				OptimizeExecutor optimizeExecutor = new OptimizeExecutor();
+				optimizeExecutor.processSegmentation(channelArray[tertiaryParams.getChannel()],
+						tertiaryParams, parameterCollection, "Tertiary",
+						displayOriginal, withOverlay);
 			}
 		});
+
+
 		btnProcessTertiary.setToolTipText("Run tertiary object segmentation");
 		btnProcessTertiary.setEnabled(false);
 		btnProcessTertiary.setFont(new Font("Arial", Font.PLAIN, 14));

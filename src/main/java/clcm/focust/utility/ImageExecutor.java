@@ -8,8 +8,8 @@ public class ImageExecutor {
 
     private final ExecutorService executorService;
 
-    public ImageExecutor(int threads) {
-        this.executorService = Executors.newFixedThreadPool(threads);
+    public ImageExecutor() {
+        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
     public void submit(Runnable runnable) {

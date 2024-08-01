@@ -6,6 +6,7 @@ import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
+import ij.process.ImageProcessor;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
@@ -76,7 +77,6 @@ public class OptimizeHelpers {
 	
 	public ImagePlus createComposite(ImagePlus[] channels) {
 
-		
 		ImagePlus img;
 
 		// display the image if array only contains a single element
@@ -124,12 +124,20 @@ public class OptimizeHelpers {
 	 * @return
 	 */
 	public ImagePlus processDisplay(ImagePlus original, ImagePlus segmented, Boolean withOverlay) {
-		
+
+		ImagePlus segmentedDup = segmented.duplicate();
+
+		if (original.getBitDepth() != segmented.getBitDepth()) {
+			ImageProcessor segmentedProcessor = segmentedDup.getProcessor();
+			segmentedProcessor = convertBitDepth(segmentedProcessor, original.getBitDepth());
+			segmentedDup.setProcessor(segmentedProcessor);
+		}
+
 		ArrayList<ImagePlus> images = new ArrayList<>();
 		images.add(original);
 		
 		if (withOverlay) {
-			ImagePlus edges = LabelEditor.detectEdgesLabelled(segmented);
+			ImagePlus edges = LabelEditor.detectEdgesLabelled(segmentedDup);
 			images.add(edges);
 			
 		}
@@ -141,7 +149,25 @@ public class OptimizeHelpers {
 		
 		return output;
 	}
-	
+
+
+	private ImageProcessor convertBitDepth(ImageProcessor ip, int targetBitDepth) {
+		if (ip.getBitDepth() == targetBitDepth) {
+			return ip;
+		}
+		switch (targetBitDepth) {
+			case 8:
+				return ip.convertToByte(false);
+			case 16:
+				return ip.convertToShort(false);
+			case 32:
+				return ip.convertToFloat();
+			default:
+				throw new IllegalArgumentException("Unsupported bit depth: " + targetBitDepth);
+		}
+	}
+
+
 	
 	public ImagePlus setSliceMiddle(ImagePlus imp) {
 		int nChannels = imp.getNChannels();
@@ -156,9 +182,5 @@ public class OptimizeHelpers {
 		
 		return imp;
 	}
-	
-	
-	
-
 
 }
