@@ -126,8 +126,6 @@ public class OptimizeHelpers {
 	 */
 	public ImagePlus processDisplay(ImagePlus original, ImagePlus segmented, Boolean withOverlay) {
 
-		ImagePlus segmentedDup = segmented.duplicate();
-
 		if (original.getBitDepth() != segmented.getBitDepth()) {
 			ImageStack originalStack = segmented.getStack();
 			ImageStack newStack = new ImageStack(segmented.getWidth(), segmented.getHeight());
@@ -145,17 +143,15 @@ public class OptimizeHelpers {
 		images.add(original);
 		
 		if (withOverlay) {
-			ImagePlus edges = LabelEditor.detectEdgesLabelled(segmentedDup);
+			ImagePlus edges = LabelEditor.detectEdgesLabelled(segmented);
 			images.add(edges);
 			
 		}
 		
 		ImagePlus[] imagesArray = new ImagePlus[images.size()];
 		imagesArray = images.toArray(imagesArray);
-		
-		ImagePlus output = createComposite(imagesArray);
-		
-		return output;
+
+        return createComposite(imagesArray);
 	}
 
 
