@@ -33,7 +33,6 @@ public final class FOCUST {
 		/* Data managers. */
 		paramManager = new DatumManager<>(dataExecService);
 		segmentedChannelsManager = new DatumManager<>(dataExecService);
-		
 
 		/* Services - Speckle. */
 		services.add(new ParameterModeService(paramManager, segmentedChannelsManager));

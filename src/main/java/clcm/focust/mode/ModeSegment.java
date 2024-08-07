@@ -49,11 +49,11 @@ public class ModeSegment{
 			// prep file extension
 			String rmExtName = FilenameUtils.removeExtension(fileName);
 
-			IJ.log("Opening: " + parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
+			ijLog("Opening: " + parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
 
 			primary = IJ.openImage(parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
 
-			IJ.log("Opening: " + parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
+			ijLog("Opening: " + parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 			secondary = IJ.openImage(parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 
 
@@ -61,6 +61,8 @@ public class ModeSegment{
 			if (parameters.getTertiaryIsDifference()) {
 				//tertiary = Optional.ofNullable(ImageCalculator.run(secondary, primary, "Subtract create stack"));
 				//tertiary = Optional.ofNullable(LabelEditor.subtractOneFromTwo(primary, secondary));
+
+				ijLog("Generating teritary object by subtraction...");
 
 				tertiary = Optional.of(Segmentation.generateBySubtractionAndRelabel(secondary, primary));
 				
@@ -70,8 +72,11 @@ public class ModeSegment{
 					IJ.saveAs(tertiary.get().duplicate(), "TIF", parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + imgName);
 				}
 
-			} else if (parameters.getProcessTertiary()) {
+			}
 
+			if (parameters.getProcessTertiary()) {
+
+				ijLog("Opening: " + parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif");
 				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif"));
 
 			}

@@ -709,28 +709,32 @@ public class TableUtility {
 
 	public static void appendResultsByLabel(ResultsTable rt, ResultsTable stratified, String bandName) {
 
-		for (int i = 0; i < rt.size(); i++) {
+		try {
+			for (int i = 0; i < rt.size(); i++) {
 
-			double lbl = Double.parseDouble(rt.getStringValue("Label", i));
+				double lbl = Double.parseDouble(rt.getStringValue("Label", i));
 
-			for (int j = 0; j < stratified.size(); j++) {
+				for (int j = 0; j < stratified.size(); j++) {
 
-				double lbl1 = Double.parseDouble(stratified.getStringValue("Label", j));
+					double lbl1 = Double.parseDouble(stratified.getStringValue("Label", j));
 
-				if (lbl == lbl1) {
+					if (lbl == lbl1) {
 
-					for (int k = 0; k < stratified.getLastColumn()+1; k++) {
+						for (int k = 0; k < stratified.getLastColumn()+1; k++) {
 
-						String head = stratified.getColumnHeading(k);
+							String head = stratified.getColumnHeading(k);
 
-						if(!head.contains("Label")) {
+							if(!head.contains("Label")) {
 
-							rt.setValue(bandName + head, i, stratified.getValue(head, j));
+								rt.setValue(bandName + head, i, stratified.getValue(head, j));
 
+							}
 						}
 					}
 				}
 			}
+		} catch (NumberFormatException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

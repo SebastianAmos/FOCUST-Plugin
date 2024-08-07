@@ -1,6 +1,7 @@
 package clcm.focust.mode;
 
 import clcm.focust.parameters.ParameterCollection;
+import clcm.focust.segmentation.labels.LabelOverlap;
 import clcm.focust.segmentation.labels.OverlapMapping;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.utility.ResultsTableUtility;
@@ -12,6 +13,8 @@ import net.haesleinhuepf.clij2.CLIJ2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 
 public class ModeSpeckle implements Mode {
@@ -26,11 +29,6 @@ public class ModeSpeckle implements Mode {
 		List<ResultsTable> primary = new ArrayList<>();
 
 		CLIJ2 clij2 = CLIJ2.getInstance();
-
-		/*
-		 * TODO:
-		 * - COLOC -> spatial overlap??
-		 */
 
 		// Count number of secondary objects within primary objects
 		ResultsTable pri = imgData.getPrimary();
@@ -58,6 +56,20 @@ public class ModeSpeckle implements Mode {
 			tertiary.add(ter);
 		});
 
+		 //Calculate the overlap between secondary and tertiary speckles for each primary object.
+		imgData.getImages().getTertiary().ifPresent(t -> {
+			try {
+				ijLog("Running overlap analysis...");
+				LabelOverlap labelOverlap = new LabelOverlap();
+				ResultsTable test = labelOverlap.run(clij2, imgData.getImages().getPrimary().duplicate(), imgData.getImages().getSecondary().duplicate(), t.duplicate());
+				//test.show("test");
+				primary.add(test);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		ijLog("Speckle overlap analysis complete");
 
 		// if banding is available, count speckles within each band of the parent
 		for (Entry<String, StratifiedResultsHolder> band : imgData.getStratifyResults().entrySet()) {
@@ -98,11 +110,14 @@ public class ModeSpeckle implements Mode {
 		}
 
 
+
 		// save the results
 		ResultsTableUtility rtSave = new ResultsTableUtility();
 		rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(primary), "primary_objects", parameters);
 		rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(secondary), "secondary_objects", parameters);
 		imgData.getImages().getTertiary().ifPresent(t -> rtSave.saveAndStackResults(TableUtility.appendAllResultsByLabel(tertiary), "tertiary_objects", parameters));
+
+		ijLog("Results Saved.");
 
 		// clean up
 		clij2.clear();

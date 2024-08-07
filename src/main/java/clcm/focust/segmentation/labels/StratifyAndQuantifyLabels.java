@@ -232,21 +232,19 @@ public class StratifyAndQuantifyLabels {
 
 		ResultsTable stats = new ResultsTable();
 
-		// use pixel stats w/o background --> LABELS MUST BE INDEXED WITHOUT SPACES
 		clij2.statisticsOfLabelledPixels(labs, labs, stats);
-
-		// TODO -> Consider using im.max here - otherwise should use the LABEL (I think its called IDENTIFIER in clij2 tables) in the below loop instead of i.
 
 		// for each label value, generate a mask, compute distance map, stratify based on histogram, add bands into a list mapped to the original label --> OR index int?
 		// label IDs will ascend without gaps - so using i as label ID is fine - just start from 1 to avoid processing the background(0).
 		
-		for (int i = 1; i <= stats.size(); i++) {
+		for (int i = 0; i < stats.size(); i++) {
 			
 			ClearCLBuffer mask = clij2.create(labs);
 			ClearCLBuffer distanceMask = clij2.create(labs);
 
 			// extract a single label
-			clij2.labelToMask(labs, mask, i);
+			int label = Integer.parseInt(stats.getStringValue("IDENTIFIER", i));
+			clij2.labelToMask(labs, mask, label);
 			
 			// mask the distance map by the label to only process that region of the distance map
 			clij2.mask(dMap, mask, distanceMask);
