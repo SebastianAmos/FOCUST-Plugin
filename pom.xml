@@ -26,8 +26,7 @@
 	</organization>
 	<licenses>
 		<license>                         <!-- FIXME: Your license here -->
-			<name>GNU Lesser General Public License v3+</name>
-			<url>http://www.gnu.org/licenses/lgpl.html</url>
+			<name>BSD 3-Clause License</name>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -79,7 +78,7 @@
 	<properties>
 		<package-name>clcm.focust</package-name>                   <!-- FIXME: Your project package prefix here -->
 		<main-class>clcm.focust.run</main-class>        <!-- FIXME: Your project main class here, or delete for none -->
-		<license.licenseName>lgpl_v3</license.licenseName>                      <!-- FIXME: Your license-maven-plugin license code here -->
+		<license.licenseName>bsd_3</license.licenseName>                      <!-- FIXME: Your license-maven-plugin license code here -->
 		<license.copyrightOwners>UWA</license.copyrightOwners> <!-- FIXME: Your organization legal entity name here -->
 	</properties>
 
