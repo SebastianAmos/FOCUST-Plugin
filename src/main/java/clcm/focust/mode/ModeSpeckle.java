@@ -86,7 +86,7 @@ public class ModeSpeckle implements Mode {
 
 					imgData.getImages().getTertiary().ifPresent(t -> {
 						tertiary.addAll(countLabels.parentBand(bands, countLabels.centroids, "Q"));
-						primary.addAll(countLabels.perBand(bands, countLabels.centroids, "Q", "tertiarySpeckles"));
+						primary.addAll(countLabels.perBand(bands, countLabels.centroids, "Q", "TertiarySpeckles"));
 					});
 
 					break;
@@ -98,7 +98,7 @@ public class ModeSpeckle implements Mode {
 
 					imgData.getImages().getTertiary().ifPresent(t -> {
 						tertiary.addAll(countLabels.parentBand(bands, countLabels.centroids, "H"));
-						primary.addAll(countLabels.perBand(bands, countLabels.centroids, "H", "tertiarySpeckles"));
+						primary.addAll(countLabels.perBand(bands, countLabels.centroids, "H", "TertiarySpeckles"));
 					});
 					break;
 
