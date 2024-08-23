@@ -1,4 +1,4 @@
-package clcm.focust.mode;
+package clcm.focust.utility;
 
 import ij.ImagePlus;
 import ij.measure.ResultsTable;

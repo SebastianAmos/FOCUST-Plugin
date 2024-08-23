@@ -1,51 +1,41 @@
-# FOCUST-Plugin
-**F**luorescent **O**bject and **C**ell gp**U**-accelerated **S**egmentation **T**oolbox for ImageJ/Fiji. 
-This plugin allows the user to analyse spheroid, single cell or speckle datasets in ways we hope are useful. 
+# FOCUST
+The **F**luorescent **O**bject and **C**ell gp**U**-accelerated **S**egmentation **T**oolbox for FIJI/ImageJ. 
+
+This plugin allows the user to optimize and analyze the segmentation of 3D fluorescent image data in ways we hope are useful.
 FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or image anaylsis more broadly, configure the parameters for segmenting 3D fluorescent datasets. 
 
-Under the hood, FOCUST depends on the outstanding [CLIJ2](https://github.com/clij/clij2) and [MorpholibJ](https://github.com/ijpb/MorphoLibJ) projects. If you use this plugin, please be sure to cite their work.
-
-Data generated in the FOCUST plugin will output in a minimal number of .csv files (excel sheet) in tidy format. This means that data can be qickly and easily filtered, graphed or imported directly into data workflows in software such as R-Studio.
-
 ## Installation
-To install and use FOCUST in FIJI, please use the update site: Help > Update > Manage Update Sites > __Tick the box next to__ FOCSUT > Close > Apply Changes. Restart ImageJ/FIJI and you will now find FOCUST in the Plugins sub-menu. 
+1. Download and install [FIJI](https://imagej.net/software/fiji/downloads)
+2. In the Toolbar: Help > Update
+3. Click manage update sites
+4. Tick the following options:
+   - FOCUST
+   - CLIJ
+   - CLIJ2
+   - CLIJx-Assistant
+   - IJPB-Plugins
 
-## Spheroid Analysis
-FOCUST includes a spheroid mode to analyse densely-packed nuclei within a spheroid or organoid. For this mode, datasets must contain a stain for the nucleus and a stain that represents the spheroid/organoid as a whole structure (such as a memebrane or cytoskeletal stain).
-<ins> The spheroid analysis mode will: </ins>
-- Segment the nuclei and the spheroid as a whole.
-- Quantify the morphology of nuclear and spheroid objects (including volume, voxel count, elongation and sphericity). 
-- Generate "core" and "periphery" regions of interest.
-- Quantify the intensity of fluorescent stains in channel 2, 3 and 4 (if enabled) in the nuclei, whole spheroid, core and periphery.
+For documentation please [click here to visit the website!](https://sebastianamos.github.io/FOCUST-Plugin-Site/)
 
-## Single Cell Analysis
+The goal: To provide a user-friendly solution for segmenting and relating 3D datasets acquired by fluorescence microscopy in ways that reflect the biological sample. FOCUST provides an interactive optimization mode to configure segmentation parameters and numerous analysis modes to relate and manage data in a biologically meaningful way.
 
-For this mode, datasets must contain a stain that represents the nucleus and a stain that represents each cell more broadly (such as a membrane or cytoskeletal dye). 
+## Analysis
+FOCUST centers around object types (primary, secondary and teritary) representing different components of a biological sample. 
 
-<ins> The single cell analysis mode will: </ins>
-- Segment the nuclei and cell bodies and generate a cytoplasmic region of interest. 
-- Relate each nucleus object to the cell body object it sits within.
-- Generate morphological measurements on the nuclei, cell and cytoplasm objects.
-- Quantify the intensity of stains in channels 2, 3 and 4 (if present) within the segmented objects.
-- Generate intensity ratios of stains in channels 2, 3 and 4 (if present) between the nucleus and the cytoplasm.
-
-
-## Speckle Analysis
-
-For this mode, datasets must contain a stain that represents the nucleus and a stain that represents up to 2 (two) sub-nuclear condensates, or speckles.
-
-<ins> The speckle analysis mode will: </ins>
-- Segment the nuclei and speckles as defined by the user.
-- Count the number of speckles per nucleus.
-- Generate morphological measurements of the nuclei and speckle objects.
-- Generate colocalisation data on two different types of speckles (if present).
-- Relate each speckle to it's parent nucleus.
+Currently available analysis modes are:
+- None (Execute segmentation only)
+- Basic (Analyze segmented objects - no object relationships)
+- Spheroid (Nuclei inside a whole spheroid)
+- Single Cell (Nuclei inside a single cell)
+- Speckle (Speckles (a.k.a. subnuclear condensates) inside a nucleus)
 
 ## Help
-For assistance with using FOCUST, please see the manual or YouTube video for a demonstration.
-To lodge a query or ask a question, please use the [forum](https://forum.image.sc/). Be sure to search for relevant topics before creating a new one.
+For assistance with using FOCUST, please see the website - YouTube demo coming soon!
+To lodge a query or ask a question, please use the [forum](https://forum.image.sc/) and tag me @SebastianAmos. 
+Be sure to search for relevant topics before creating a new one.
+You can also create a GitHub issue above. 
 
-I am alway open to implementing new features and functionality when I can find the time - so if you have an interesting use-case or a cool idea, let me know on the forum or of Github. 
+I am always open to implementing new features and functionality when I can find the time - so if you have an interesting use-case or a cool idea, let me know on the forum or of Github. 
 
 ## Dependencies
 FOCUST depends on the following projects:

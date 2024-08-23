@@ -2535,18 +2535,32 @@ public class OptimizeGUI extends JFrame {
 		btnUpdateOverlays.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				Boolean primary = ckbPrimaryLabel.isSelected();
-				Boolean primaryEdge = ckbPrimaryEdge.isSelected();
+				boolean primary = ckbPrimaryLabel.isSelected();
+				boolean primaryEdge = ckbPrimaryEdge.isSelected();
 				
-				Boolean secondary = ckbSecondaryLabel.isSelected();
-				Boolean secondaryEdge = ckbSecondaryEdge.isSelected();
+				boolean secondary = ckbSecondaryLabel.isSelected();
+				boolean secondaryEdge = ckbSecondaryEdge.isSelected();
 				
-				Boolean tertiary = ckbTertiaryLabel.isSelected();
-				Boolean tertiaryEdge = ckbTertiaryEdge.isSelected();
+				boolean tertiary = ckbTertiaryLabel.isSelected();
+				boolean tertiaryEdge = ckbTertiaryEdge.isSelected();
 				
 				if(!primary && !primaryEdge && !secondary && !secondaryEdge && !tertiary && !tertiaryEdge) {
 					IJ.showMessage("Please select at least one outline to display.");
 				} else {
+
+					ImagePlus[] openImps = optimize.getOpenImages();
+
+					// Assign images to objects
+					for (ImagePlus imp : openImps) {
+						if (imp.getTitle().contains("Primary")) {
+							primaryOutput = imp;
+						} else if (imp.getTitle().contains("Secondary")) {
+							secondaryOutput = imp;
+						} else if (imp.getTitle().contains("Tertiary")) {
+							tertiaryOutput = imp;
+						}
+					}
+
 					
 					try {
 						ArrayList<ImagePlus> labels = new ArrayList<>();
@@ -2556,46 +2570,62 @@ public class OptimizeGUI extends JFrame {
 							if (primaryOutput != null) {
 								ImagePlus primaryLab = primaryOutput.duplicate();
 								labels.add(primaryLab);
-							} 
+							} else {
+								IJ.showMessage("No primary objects image open.");
+							}
 						}
-						
+
 						if (primaryEdge) {
-							if(primaryOutput != null) {
+							if (primaryOutput != null) {
 								ImagePlus primaryLab = primaryOutput.duplicate();
 								ImagePlus primaryOutlines = LabelEditor.detectEdgesLabelled(primaryLab);
 								labels.add(primaryOutlines);
+							} else {
+								IJ.showMessage("No primary objects image open.");
 							}
 						}
-						
+
 						// Secondary
 						if (secondary) {
+							IJ.log("secondary output: " + secondaryOutput);
 							if (secondaryOutput != null) {
 								ImagePlus secondaryLab = secondaryOutput.duplicate();
 								labels.add(secondaryLab);
-							} 
+								IJ.log("secondary added");
+							} else {
+								IJ.showMessage("No secondary objects image open.");
+							}
 						}
-						
+
 						if (secondaryEdge) {
-							if(secondaryOutput != null) {
+							IJ.log("secondary output: " + secondaryOutput);
+							if (secondaryOutput != null) {
 								ImagePlus secondaryLab = secondaryOutput.duplicate();
 								ImagePlus secondaryOutlines = LabelEditor.detectEdgesLabelled(secondaryLab);
 								labels.add(secondaryOutlines);
+								IJ.log("secondary added");
+							} else {
+								IJ.showMessage("No secondary objects image open.");
 							}
 						}
-						
+
 						// Tertiary
 						if (tertiary) {
 							if (tertiaryOutput != null) {
 								ImagePlus tertiaryLab = tertiaryOutput.duplicate();
 								labels.add(tertiaryLab);
-							} 
+							} else {
+								IJ.showMessage("No tertiary objects image open.");
+							}
 						}
-						
+
 						if (tertiaryEdge) {
-							if(tertiaryOutput != null) {
+							if (tertiaryOutput != null) {
 								ImagePlus tertiaryLab = tertiaryOutput.duplicate();
 								ImagePlus tertiaryOutlines = LabelEditor.detectEdgesLabelled(tertiaryLab);
 								labels.add(tertiaryOutlines);
+							} else {
+								IJ.showMessage("No tertiary objects image open.");
 							}
 						}
 						
@@ -2603,15 +2633,21 @@ public class OptimizeGUI extends JFrame {
 						ImagePlus[] selectedLabelsArray = new ImagePlus[labels.size()];
 						selectedLabelsArray = labels.toArray(selectedLabelsArray);
 
-						ImagePlus compositeImage = optimize.createComposite(selectedLabelsArray);
+						// Debug logging
+						for (ImagePlus img : selectedLabelsArray) {
+							IJ.log("Image title: " + img.getTitle());
+						}
 
-						// display
-						compositeImage.setTitle("Label Overlays");
-						compositeImage.show();
+						if (selectedLabelsArray.length > 0) {
+							ImagePlus compositeImage = optimize.createComposite(selectedLabelsArray);
+							compositeImage.show();
+						} else {
+							IJ.showMessage("No images found to create composite.");
+						}
 
 						labels.clear();
 					} catch (Exception e1) {
-						IJ.showMessage("Process all selected channel before combining their outputs.");
+						IJ.showMessage("Process all selected channels before combining their outputs.");
 						e1.printStackTrace();
 					}
 				}

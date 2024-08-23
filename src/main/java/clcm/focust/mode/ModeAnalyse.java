@@ -12,11 +12,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
+import clcm.focust.utility.Measure3D;
 import clcm.focust.utility.TableUtility;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
-import inra.ijpb.measure.region3d.MorphometricFeatures3D;
-import inra.ijpb.plugins.AnalyzeRegions3D;
 
 public class ModeAnalyse implements Mode{
 

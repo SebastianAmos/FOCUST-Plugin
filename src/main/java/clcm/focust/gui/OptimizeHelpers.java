@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import clcm.focust.segmentation.labels.LabelEditor;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.ImageStack;
 import ij.plugin.ChannelSplitter;
 import ij.process.ImageProcessor;
@@ -183,6 +184,30 @@ public class OptimizeHelpers {
 		}
 		
 		return imp;
+	}
+
+	/**
+	 * Filter the open images for those that contain "Object" in the title.
+	 * @return an array containing images with "Object" in the title.
+	 */
+	public ImagePlus[] getOpenImages(){
+
+		int[] windowList = WindowManager.getIDList();
+
+		ArrayList<ImagePlus> filteredImages = new ArrayList<>();
+
+		for (int imp : windowList) {
+			ImagePlus img = WindowManager.getImage(imp);
+			if (img != null && img.getTitle().contains("Object")) {
+				filteredImages.add(img);
+			}
+		}
+
+		if(filteredImages.size() == 0) {
+			IJ.showMessage("No segmented objects found. Ensure you process segmentation first.");
+		}
+
+		return filteredImages.toArray(new ImagePlus[0]);
 	}
 
 }
