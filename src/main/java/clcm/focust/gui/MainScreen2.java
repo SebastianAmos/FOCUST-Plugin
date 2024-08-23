@@ -5,21 +5,20 @@ import javax.swing.JPanel;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.parameters.ParameterCollection;
 import ij.gui.GenericDialog;
-import java.awt.Toolkit;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
 import net.miginfocom.swing.MigLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
 public class MainScreen2 extends JFrame{
 	private JPanel mainPane;
@@ -70,10 +69,14 @@ public class MainScreen2 extends JFrame{
 								
 								btnHelp.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
-										SwingUtilities.invokeLater(() -> {
-											
-											
-										});
+
+										try {
+											Desktop.getDesktop().browse(new URL("https://sebastianamos.github.io/FOCUST-Plugin-Site/").toURI());
+										} catch (IOException | URISyntaxException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+
 									}
 								});
 		

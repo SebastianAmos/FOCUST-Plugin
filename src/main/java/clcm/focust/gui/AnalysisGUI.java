@@ -3,19 +3,13 @@ package clcm.focust.gui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Window;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.Font;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -23,8 +17,6 @@ import javax.swing.JSeparator;
 
 import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
-import java.awt.Color;
-import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
@@ -32,6 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.awt.event.ItemEvent;
+import java.net.URISyntaxException;
+import java.net.URL;
 import javax.swing.border.MatteBorder;
 import clcm.focust.data.DatumUpdateService;
 import clcm.focust.filter.BackgroundType;
@@ -45,7 +39,6 @@ import clcm.focust.threshold.ThresholdType;
 import clcm.focust.utility.KillBorderTypes;
 import ij.IJ;
 
-import java.awt.Toolkit;
 import javax.swing.JTabbedPane;
 import javax.swing.JProgressBar;
 
@@ -137,7 +130,7 @@ public class AnalysisGUI extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AnalysisGUI.class.getResource("/clcm/focust/resources/icon.png")));
 		setTitle("FOCUST: Run Analysis");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 1100, 643);
+		setBounds(100, 100, 1159, 643);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 240, 240));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -189,8 +182,13 @@ public class AnalysisGUI extends JFrame {
 		JButton btnHelp = new JButton("Help");
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
+
+				try {
+					Desktop.getDesktop().browse(new URL("https://sebastianamos.github.io/FOCUST-Plugin-Site/").toURI());
+				} catch (IOException | URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 			}
 		});

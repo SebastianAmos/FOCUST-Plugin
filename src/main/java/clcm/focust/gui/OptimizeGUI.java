@@ -23,6 +23,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -31,6 +32,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.awt.event.ItemEvent;
 import javax.swing.border.MatteBorder;
@@ -207,8 +210,14 @@ public class OptimizeGUI extends JFrame {
 		JButton btnHelp = new JButton("Help");
 		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO
-				// Add docs website link
+				
+				try {
+					Desktop.getDesktop().browse(new URL("https://sebastianamos.github.io/FOCUST-Plugin-Site/").toURI());
+				} catch (IOException | URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		
@@ -273,8 +282,6 @@ public class OptimizeGUI extends JFrame {
 		String[] analysisOptions = {"None", "Spheroid", "Single Cells", "Speckles"};
 		DefaultComboBoxModel<String> analysisModel = new DefaultComboBoxModel<String>(analysisOptions);
 		
-		JButton btnAnalysis = new JButton("Analysis");
-		
 		JLabel lblNewLabel_2_1 = new JLabel("Current image:");
 		lblNewLabel_2_1.setFont(new Font("Arial", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNewLabel_2_1 = new GridBagConstraints();
@@ -294,15 +301,6 @@ public class OptimizeGUI extends JFrame {
 		gbc_ImageName.gridx = 1;
 		gbc_ImageName.gridy = 1;
 		pnlHeader.add(ImageName, gbc_ImageName);
-		
-		btnAnalysis.setFont(new Font("Arial", Font.PLAIN, 14));
-		GridBagConstraints gbc_btnAnalysis = new GridBagConstraints();
-		gbc_btnAnalysis.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnAnalysis.gridwidth = 4;
-		gbc_btnAnalysis.insets = new Insets(0, 0, 5, 0);
-		gbc_btnAnalysis.gridx = 8;
-		gbc_btnAnalysis.gridy = 1;
-		pnlHeader.add(btnAnalysis, gbc_btnAnalysis);
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setForeground(new Color(169, 169, 169));
