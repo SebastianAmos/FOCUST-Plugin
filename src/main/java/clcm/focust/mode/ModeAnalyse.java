@@ -15,16 +15,17 @@ import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.utility.TableUtility;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
+import inra.ijpb.measure.region3d.MorphometricFeatures3D;
 import inra.ijpb.plugins.AnalyzeRegions3D;
 
 public class ModeAnalyse implements Mode{
-	
-	private final AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+
+	private final Measure3D measure3D = new Measure3D();
 	private ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
 	private List<ResultsTable> primaryResults = new ArrayList<>();
 	private List<ResultsTable> secondaryResults = new ArrayList<>();
 	private List<ResultsTable> tertiaryResults = new ArrayList<>();
-	
+
 	/**
 	 * Method to conduct common analyses shared between modes.
 	 * 
@@ -41,8 +42,8 @@ public class ModeAnalyse implements Mode{
 		long startTime = System.currentTimeMillis();
 		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-		Future<ResultsTable> primaryFuture = executor.submit(() -> analyze3D.process(imgData.getImages().getPrimary()));
-		Future<ResultsTable> secondaryFuture = executor.submit(() -> analyze3D.process(imgData.getImages().getSecondary()));
+		Future<ResultsTable> primaryFuture = executor.submit(() -> measure3D.run(imgData.getImages().getPrimary()));
+		Future<ResultsTable> secondaryFuture = executor.submit(() -> measure3D.run(imgData.getImages().getSecondary()));
 
 		try {
 			primaryResults.add(primaryFuture.get());
@@ -53,7 +54,7 @@ public class ModeAnalyse implements Mode{
 
 		imgData.getImages().getTertiary().ifPresent(t -> {
 			try {
-				Future<ResultsTable> tertiaryFuture = executor.submit(() -> analyze3D.process(t));
+				Future<ResultsTable> tertiaryFuture = executor.submit(() -> measure3D.run(t));
 				tertiaryResults.add(tertiaryFuture.get());
 			} catch (Exception e) {
 				e.printStackTrace();
