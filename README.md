@@ -1,7 +1,7 @@
 # FOCUST
 The **F**luorescent **O**bject and **C**ell gp**U**-accelerated **S**egmentation **T**oolbox for FIJI/ImageJ. 
 
-This plugin allows the user to optimize and analyze the segmentation of 3D fluorescent image data in ways we hope are useful.
+This plugin allows the user to segment and analyze 3D fluorescent image data in ways we hope are useful.
 FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or image anaylsis more broadly, configure the parameters for segmenting 3D fluorescent datasets. 
 
 ## Installation
