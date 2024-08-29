@@ -12,8 +12,9 @@ FOCUST also includes an optimization mode, to help users new to ImageJ/FIJI or i
    - FOCUST
    - CLIJ
    - CLIJ2
-   - CLIJx-Assistant
-   - IJPB-Plugins
+   - CLIJx-assistant
+   - CLIJx-assistant-extensions
+   - IJPB-plugins
 
 For documentation please [click here to visit the website!](https://sebastianamos.github.io/FOCUST-Plugin-Site/)
 
