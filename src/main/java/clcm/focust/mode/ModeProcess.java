@@ -79,6 +79,7 @@ public class ModeProcess{
 
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
+			ijLog("Line 82 in ModeProcess");
 
 			// Generate skeletons based on user inputs and save
 			SkeletonProcess skeletonize = new SkeletonProcess();

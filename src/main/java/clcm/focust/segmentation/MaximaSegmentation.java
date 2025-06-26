@@ -6,10 +6,11 @@ import clcm.focust.parameters.ObjectParameters;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.threshold.ThresholdType;
 import ij.ImagePlus;
-import ij.process.StackConverter;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
+import net.haesleinhuepf.clij.coremem.enums.NativeTypeEnum;
 import net.haesleinhuepf.clij2.CLIJ2;
 import net.haesleinhuepf.clijx.morpholibj.MorphoLibJMarkerControlledWatershed;
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
 
 public class MaximaSegmentation implements Method{
 
@@ -24,15 +25,12 @@ public class MaximaSegmentation implements Method{
 		ClearCLBuffer maxima = clij2.create(input);
 		ClearCLBuffer labelled = clij2.create(input);
 		ClearCLBuffer segmented = clij2.create(input);
+		ClearCLBuffer filteredFloat = clij2.create(input.getDimensions(), NativeTypeEnum.Float); // float buffer for invert operation
+		ClearCLBuffer inverted = clij2.create(input.getDimensions(), NativeTypeEnum.Float); // float buffer for invert operation
 
-		// Convert to 32-bit before running invert - this is required otherwise invert is empty.
-		ImagePlus filteredPull = clij2.pull(filtered);
-		StackConverter sc = new StackConverter(filteredPull);
-		sc.convertToGray32();
-		ClearCLBuffer invertedInput = clij2.push(filteredPull);
-		ClearCLBuffer inverted = clij2.create(invertedInput);
-
-		clij2.invert(invertedInput, inverted);
+		// convert filtered to 32-bit float buffer by copying to a buffer of type float
+		clij2.copy(filtered, filteredFloat);
+		clij2.invert(filteredFloat, inverted); // requires float or result is empty
 
 		clij2.detectMaxima3DBox(filtered, maxima, 
 				parameters.getMethodParameters().getSigma().getX(), 
@@ -41,17 +39,17 @@ public class MaximaSegmentation implements Method{
 		
 		clij2.labelSpots(maxima, labelled);
 		MorphoLibJMarkerControlledWatershed.morphoLibJMarkerControlledWatershed(clij2, inverted, labelled, thresholdImg, segmented);
-
 		// pull image
 		ImagePlus output = Segmentation.pullAndSetDisplay(clij2, segmented, imp.getCalibration(), parameterCollection);
 
 		// clean up GPU without using clij2.clear()
-		filteredPull.close();
+		//filteredPull.close();
+		filteredFloat.close();
 		input.close();
 		bg.close();
 		filtered.close();
 		thresholdImg.close();
-		invertedInput.close();
+		//invertedInput.close();
 		inverted.close();
 		maxima.close();
 		labelled.close();

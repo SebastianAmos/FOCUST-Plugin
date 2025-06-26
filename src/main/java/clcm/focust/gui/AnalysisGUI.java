@@ -2549,7 +2549,7 @@ public class AnalysisGUI extends JFrame {
 					ckbTer50Bands.setSelected(stratifyParams.getTertiary50());
 					
 				
-					System.out.println("FOCUST paramter file found and loaded.");
+					System.out.println("FOCUST parameter file found and loaded.");
 				} catch (IOException e1) {
 					System.out.println("Could not locate or load FOCUST parameter file.");
 					e1.printStackTrace();
