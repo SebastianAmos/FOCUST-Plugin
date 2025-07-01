@@ -13,8 +13,8 @@ import clcm.focust.segmentation.labels.StratifiedResultsHolder;
 import clcm.focust.segmentation.labels.StratifyProcess;
 import clcm.focust.segmentation.skeleton.SkeletonProcess;
 import clcm.focust.segmentation.skeleton.SkeletonResultsHolder;
+import clcm.focust.utility.ImageUtility;
 import clcm.focust.utility.Timer;
-import ij.IJ;
 import ij.ImagePlus;
 import net.haesleinhuepf.clij2.CLIJ2;
 
@@ -74,11 +74,12 @@ public class ModeProcess{
 
 			// Open image.
 			ijLog("Opening image path: " + path);
-			ImagePlus imp = IJ.openImage(path);
+			ImagePlus imp = ImageUtility.openImage(path); // tested with tif, ome.tif, nd2 and czi files - behaves consistently.
 			String imgName = imp.getTitle();
 
 			ModeSegment segment = new ModeSegment();
 			SegmentedChannels segmentedChannels = segment.run(parameters, imp, list[i]);
+
 
 			// Generate skeletons based on user inputs and save
 			SkeletonProcess skeletonize = new SkeletonProcess();

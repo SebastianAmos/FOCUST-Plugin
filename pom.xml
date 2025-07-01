@@ -18,7 +18,7 @@
 
 	<name>FOCUST</name>                                               <!-- FIXME: Your project name here          -->
 	<description>Fluorescent Object and Cell gpU-accelerated Segmentation Toolbox.</description> <!-- FIXME: Your project description here   -->
-	<url>tbd/</url>                   <!-- FIXME: Your project website here       -->
+	<url>https://sebastianamos.github.io/FOCUST-Plugin-Site/</url>                   <!-- FIXME: Your project website here       -->
 	<inceptionYear>2023</inceptionYear>                                        <!-- FIXME: Your project starting year here -->
 	<organization>
 		<name>UWA Choi Lab Cell Mechanobiology</name>           <!-- FIXME: Your organization name here    -->
@@ -140,7 +140,7 @@
 		<dependency>
     		<groupId>org.projectlombok</groupId>
     		<artifactId>lombok</artifactId>
-    		<version>1.18.28</version>
+    		<version>1.18.30</version>
     		<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -164,5 +164,24 @@
 			<artifactId>gson</artifactId>
 			<version>2.10.1</version>
 		</dependency>
+		<dependency>
+			<groupId>ome</groupId>
+			<artifactId>bio-formats_plugins</artifactId>
+			<version>8.2.0</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java/clcm/focust/resources</directory>
+				<targetPath>clcm/focust/resources</targetPath>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

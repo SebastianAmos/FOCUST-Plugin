@@ -159,32 +159,32 @@ public class LabelEditor {
 	 * @param input The whole spheroid.
 	 * @return output An image containing a label that is 50 % of the volume of input (the core of the spheroid).
 	 */
-	public static ImagePlus createSpheroidCore(ImagePlus input) {
-		ImagePlus img = LabelEditor.makeBinary(input);
-		
-		AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
-		ResultsTable results = analyze3D.process(img);
-		results.show("Whole Spheroid Results Table");
-		int totalVoxNum = (int) results.getValue("VoxelCount", 0);
-		int targetVoxNum = (int) (0.5 * totalVoxNum);
-		int kernel = 3*3*3;
-		int iterations = (int) Math.ceil(targetVoxNum/ kernel);
-		System.out.println("Total voxels: " + totalVoxNum);
-		System.out.println("Target voxels: " + targetVoxNum);
-		System.out.println("Number of iterations: " + iterations);
-		
-		IJ.run(img, "Options...", "iterations=" + iterations + " count=1 black do=Erode stack");
-		
-		ResultsTable newResults = analyze3D.process(img);
-		newResults.show("Eroded Spheroid Reuslts");
-		int newVoxNum = (int) newResults.getValue("VoxelCount", 0);
-		
-		
-		System.out.println("Final voxels: " + newVoxNum);
-		
-		ImagePlus output = img;
-		return output;
-	}
+//	public static ImagePlus createSpheroidCore(ImagePlus input) {
+//		ImagePlus img = LabelEditor.makeBinary(input);
+//
+//		AnalyzeRegions3D analyze3D = new AnalyzeRegions3D();
+//		ResultsTable results = analyze3D.process(img);
+//		results.show("Whole Spheroid Results Table");
+//		int totalVoxNum = (int) results.getValue("VoxelCount", 0);
+//		int targetVoxNum = (int) (0.5 * totalVoxNum);
+//		int kernel = 3*3*3;
+//		int iterations = (int) Math.ceil(targetVoxNum/ kernel);
+//		System.out.println("Total voxels: " + totalVoxNum);
+//		System.out.println("Target voxels: " + targetVoxNum);
+//		System.out.println("Number of iterations: " + iterations);
+//
+//		IJ.run(img, "Options...", "iterations=" + iterations + " count=1 black do=Erode stack");
+//
+//		ResultsTable newResults = analyze3D.process(img);
+//		newResults.show("Eroded Spheroid Reuslts");
+//		int newVoxNum = (int) newResults.getValue("VoxelCount", 0);
+//
+//
+//		System.out.println("Final voxels: " + newVoxNum);
+//
+//		ImagePlus output = img;
+//		return output;
+//	}
 	
 	
 	

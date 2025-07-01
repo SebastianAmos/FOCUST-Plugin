@@ -12,14 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.labels.StratifiedResultsHolder;
-import clcm.focust.utility.Measure3D;
+import clcm.focust.utility.MeasureRegions;
 import clcm.focust.utility.TableUtility;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 
 public class ModeAnalyse implements Mode{
 
-	private final Measure3D measure3D = new Measure3D();
+	private final MeasureRegions measure3D = new MeasureRegions();
 	private ArrayList<ImagePlus> segmentedObjects = new ArrayList<>();
 	private List<ResultsTable> primaryResults = new ArrayList<>();
 	private List<ResultsTable> secondaryResults = new ArrayList<>();

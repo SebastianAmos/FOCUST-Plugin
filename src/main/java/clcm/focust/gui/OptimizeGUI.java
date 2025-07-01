@@ -53,6 +53,7 @@ import clcm.focust.segmentation.MethodTypes;
 import clcm.focust.segmentation.Segmentation;
 import clcm.focust.segmentation.labels.LabelEditor;
 import clcm.focust.threshold.ThresholdType;
+import clcm.focust.utility.ImageUtility;
 import clcm.focust.utility.KillBorderTypes;
 import clcm.focust.utility.OptimizeExecutor;
 import ij.IJ;
@@ -234,7 +235,8 @@ public class OptimizeGUI extends JFrame {
 				File f = new File(inputDir);
 				list = f.list();
 				String path = inputDir + list[0];
-				ImagePlus imp = IJ.openImage(path);
+				ImagePlus imp = ImageUtility.openImage(path);
+				// ImagePlus imp = IJ.openImage(path);
 				channelArray = ChannelSplitter.split(imp);
 				ImageName.setText(list[0]);
 			}
@@ -2874,7 +2876,7 @@ public class OptimizeGUI extends JFrame {
 						stratifyParameters(stratifyParameters).
 						tertiaryObject(tertiaryObject).
 						killBorderType(selectedKillBorderOption).
-						tertiaryIsDifference(true).
+						tertiaryIsDifference(false).
 						processTertiary(ckbTertiary.isSelected()).
 						build();
 				

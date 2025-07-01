@@ -7,6 +7,8 @@ import clcm.focust.segmentation.Segmentation;
 import ij.IJ;
 import ij.ImagePlus;
 
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 
 public class OptimizeExecutor {
 

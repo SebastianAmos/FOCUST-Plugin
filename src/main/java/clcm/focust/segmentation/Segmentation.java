@@ -14,10 +14,13 @@ import inra.ijpb.data.image.Images3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
 
+import static clcm.focust.utility.SwingIJLoggerUtils.ijLog;
+
 public class Segmentation {
 	
 	public static ImagePlus run(ImagePlus input, ObjectParameters parameters, ParameterCollection parameterCollection) {
-	
+
+
 		// Extract parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
 		FilterParameters filter = parameters.getFilterParameters();
@@ -34,7 +37,8 @@ public class Segmentation {
 				method.getThresholdType(), 
 				parameters,
 				parameterCollection);
-		
+
+
 		return output;
 		
 	}
