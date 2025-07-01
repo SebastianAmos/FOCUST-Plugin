@@ -3,6 +3,7 @@ package clcm.focust.gui;
 import java.util.ArrayList;
 
 import clcm.focust.segmentation.labels.LabelEditor;
+import clcm.focust.utility.ImageUtility;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -27,7 +28,8 @@ public class OptimizeHelpers {
 	public void initialiseImage() {
 		if(gui.inputDir != null && gui.list != null && gui.currentIndex >= 0 && gui.currentIndex <= gui.list.length) {
 			String imgPath = gui.inputDir + gui.list[gui.currentIndex];
-			gui.currentImage = IJ.openImage(imgPath);
+			//gui.currentImage = IJ.openImage(imgPath);
+			gui.currentImage = ImageUtility.openImage(imgPath);
 			gui.channelArray = ChannelSplitter.split(gui.currentImage);
 			
 			gui.ImageName.setText(gui.list[gui.currentIndex]);

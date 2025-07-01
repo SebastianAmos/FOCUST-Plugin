@@ -20,7 +20,7 @@ public class Segmentation {
 	
 	public static ImagePlus run(ImagePlus input, ObjectParameters parameters, ParameterCollection parameterCollection) {
 
-		ijLog("inside segmentation.run");
+
 		// Extract parameter data
 		BackgroundParameters background = parameters.getBackgroundParameters();
 		FilterParameters filter = parameters.getFilterParameters();
@@ -38,7 +38,7 @@ public class Segmentation {
 				parameters,
 				parameterCollection);
 
-		ijLog("finished segmentation.run");
+
 		return output;
 		
 	}

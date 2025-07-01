@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 import clcm.focust.data.object.SegmentedChannels;
 import clcm.focust.parameters.ParameterCollection;
 import clcm.focust.segmentation.Segmentation;
+import clcm.focust.utility.ImageUtility;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -51,10 +52,10 @@ public class ModeSegment{
 
 			ijLog("Opening: " + parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
 
-			primary = IJ.openImage(parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
+			primary = ImageUtility.openImage(parameters.getInputDir() + ModeConstants.PRIMARY_PREFIX + rmExtName + ".tif");
 
 			ijLog("Opening: " + parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
-			secondary = IJ.openImage(parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
+			secondary = ImageUtility.openImage(parameters.getInputDir() + ModeConstants.SECONDARY_PREFIX + rmExtName + ".tif");
 
 
 
@@ -77,7 +78,7 @@ public class ModeSegment{
 			if (parameters.getProcessTertiary()) {
 
 				ijLog("Opening: " + parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif");
-				tertiary = Optional.ofNullable(IJ.openImage(parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif"));
+				tertiary = Optional.ofNullable(ImageUtility.openImage(parameters.getInputDir() + ModeConstants.TERTIARY_PREFIX + rmExtName + ".tif"));
 
 			}
 

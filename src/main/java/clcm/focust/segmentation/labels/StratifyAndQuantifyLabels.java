@@ -11,12 +11,13 @@ import ij.ImageStack;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
+import inra.ijpb.binary.distmap.*;
+import inra.ijpb.data.image.ImageUtils;
 import inra.ijpb.label.distmap.ChamferDistanceTransform3DFloat;
 import inra.ijpb.algo.DefaultAlgoListener;
-import inra.ijpb.binary.distmap.ChamferDistanceTransform3DShort;
-import inra.ijpb.binary.distmap.ChamferMask3D;
-import inra.ijpb.binary.distmap.ChamferMasks3D;
 import inra.ijpb.data.image.Images3D;
+import inra.ijpb.label.distmap.DistanceTransform2D;
 import inra.ijpb.label.distmap.DistanceTransform3D;
 import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij2.CLIJ2;
@@ -68,6 +69,10 @@ public class StratifyAndQuantifyLabels {
 
 		ClearCLBuffer labs = clij2.push(imp.duplicate());
 
+//		ImagePlus labCopy2 = imp.duplicate();
+//		labCopy2.setTitle("Stratified Labels in StratifyAndQuantifyLabels"); // TODO
+//		labCopy2.show();
+
 		// Generate the bands based on the specification
 		Integer iterations = (int) (1 / bandPercent);
 
@@ -80,6 +85,16 @@ public class StratifyAndQuantifyLabels {
 		}
 		
 		List<ClearCLBuffer> bands = generateStratifiedBands(labs, imp.duplicate(), bandPercent, iterations, clij2, cal);
+
+//		// check each compiled band
+//		for (int i = 0; i < bands.size(); i++) {
+//			ClearCLBuffer bandCopy = clij2.create(bands.get(i));
+//			ClearCLBuffer band = bands.get(i);
+//			ImagePlus copy = clij2.pull(band);
+//			copy.setTitle("Band " + i + ": " + copy.getTitle()); // TODO
+//			copy.show();
+//		}
+
 
 		// relabel the bands
 		relabelBuffers(bands, labs, clij2);
@@ -187,11 +202,13 @@ public class StratifyAndQuantifyLabels {
 	 * @return
 	 */
 	private void combineBuffers(ClearCLBuffer buffer, ClearCLBuffer band, CLIJ2 clij2) {
+
 		ClearCLBuffer copy = clij2.create(band);
 		clij2.copy(band, copy); // wasn't copying original band - testing whether that was why only one label existed.
 		clij2.addImages(buffer, copy, band);
 		copy.close();
 		buffer.close();
+
 	}
 
 
@@ -249,7 +266,16 @@ public class StratifyAndQuantifyLabels {
 			// mask the distance map by the label to only process that region of the distance map
 			clij2.mask(dMap, mask, distanceMask);
 
+//			// TODO
+//			ClearCLBuffer copy = clij2.create(distanceMask);
+//			clij2.copy(distanceMask, copy); // to avoid in place
+//			ImagePlus distanceMapCopy = clij2.pull(copy);
+//			distanceMapCopy.setTitle("Distance Map for Label " + label);
+//			distanceMapCopy.show();
+
+
 			List<ClearCLBuffer> bands = gpuGenerateDistanceMapBands(distanceMask, clij2, bandPercent, bandIterations);
+
 
 			// Combine the new bands with the correct global band type buffer.
 			combineBuffers(bands.get(0), band1, clij2);
@@ -291,28 +317,49 @@ public class StratifyAndQuantifyLabels {
 			converter.convertToGray8();
 		}
 
-		// Create 3D chamfer map of label - set to default Svensson
-		ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
-		
-		ChamferMask3D weights = weightsOption.getMask();
-		
-		DistanceTransform3D algo = new ChamferDistanceTransform3DFloat(weights, true);
-		
-		ChamferDistanceTransform3DShort cdist = new ChamferDistanceTransform3DShort(weights);
-		
-		DefaultAlgoListener.monitor(algo);
-		
-		ImageStack result = cdist.distanceMap(labelledImg.getStack());
-		
-		ImagePlus resultPlus = new ImagePlus("img", result);
-		
-		double[] distExtent = Images3D.findMinAndMax(resultPlus);
-		resultPlus.setDisplayRange(0, distExtent[1]);
-		resultPlus.setCalibration(cal);
+		if (labelledImg.getStackSize() > 2) {
+			ijLog("Generating 3D distance map");
+			// Create 3D chamfer map of label - set to default Svensson
+			ChamferMasks3D weightsOption = ChamferMasks3D.SVENSSON_3_4_5_7;
 
-		ClearCLBuffer output = clij2.push(resultPlus);
+			ChamferMask3D weights = weightsOption.getMask();
 
-		return output;
+			DistanceTransform3D algo = new ChamferDistanceTransform3DFloat(weights, true);
+
+			ChamferDistanceTransform3DShort cdist = new ChamferDistanceTransform3DShort(weights);
+
+			DefaultAlgoListener.monitor(algo);
+
+			ImageStack result = cdist.distanceMap(labelledImg.getStack());
+
+			ImagePlus resultPlus = new ImagePlus("img", result);
+
+			double[] distExtent = Images3D.findMinAndMax(resultPlus);
+
+			resultPlus.setDisplayRange(0, distExtent[1]);
+			resultPlus.setCalibration(cal);
+
+            return clij2.push(resultPlus);
+
+		} else {
+			ijLog("Generating 2D distance map");
+
+			// Create 2D chamfer map of label - set to default Svensson
+			ChamferMasks2D weightsOption = ChamferMasks2D.CHESSKNIGHT;
+			ChamferMask2D weights = weightsOption.getMask();
+			DistanceTransform algo = new ChamferDistanceTransform2DFloat(weights, true);
+			ChamferDistanceTransform2DShort cdist = new ChamferDistanceTransform2DShort(weights);
+			DefaultAlgoListener.monitor(algo);
+			ImageProcessor result = cdist.distanceMap(labelledImg.getProcessor());
+			ImagePlus resultPlus = new ImagePlus("img", result);
+
+			double maxVal = ImageUtils.findMaxValue(resultPlus);
+			resultPlus.setDisplayRange(0, maxVal);
+			resultPlus.setCalibration(cal);
+
+            return clij2.push(resultPlus);
+		}
+
 	}
 	
 	
@@ -345,7 +392,17 @@ public class StratifyAndQuantifyLabels {
 		
 		// flip the list so 1 = core.
 		Collections.reverse(bands);
-		
+
+
+//		// TODO!!
+//		for (int i = 0; i < bands.size(); i++) {
+//			ClearCLBuffer band = bands.get(i);
+//			ImagePlus copy = clij2.pull(band);
+//			copy.setTitle("band_" + i);
+//			copy.show();
+//		}
+
+
 		return bands;
 	}
 
